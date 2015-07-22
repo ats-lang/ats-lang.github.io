@@ -1,0 +1,247 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Currying and Uncurrying</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="c408.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: A Higher-Order Fun Puzzle"
+HREF="x854.html"><LINK
+REL="NEXT"
+TITLE="Datatypes"
+HREF="c904.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x854.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c904.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="currying-and-uncurrying"
+>Currying and Uncurrying</A
+></H1
+><P
+>&#13;Currying, which is named after the logician Haskell Curry, means to
+turn a function taking multiple arguments simultaneously into a function of
+the same body (modulo corresponding recursive function calls being changed
+accordingly) that takes these arguments sequentially. Uncurrying means
+precisely the opposite of currying. In the following code, both of the
+defined functions <FONT
+COLOR="RED"
+>acker1</FONT
+> and <FONT
+COLOR="RED"
+>acker2</FONT
+> implement the
+Ackermann's function (which is famous for being recursive but not primitive
+recursive):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN892"
+></A
+><PRE
+CLASS="programlisting"
+>fun acker1
+  (m: int, n: int): int =
+(
+  if m &#62; 0 then
+    if n &#62; 0 then acker1 (m-1, acker1 (m, n-1)) else acker1 (m-1, 1)
+  else n+1 // end of [if]
+)
+
+fun acker2
+  (m: int) (n: int): int =
+(
+  if m &#62; 0 then
+    if n &#62; 0 then acker2 (m-1) (acker2 m (n-1)) else acker2 (m-1) 1
+  else n+1 // end of [if]
+)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The function <FONT
+COLOR="RED"
+>acker2</FONT
+> is a curried version of <FONT
+COLOR="RED"
+>acker1</FONT
+>
+while the function <FONT
+COLOR="RED"
+>acker1</FONT
+> in an uncurried version of
+<FONT
+COLOR="RED"
+>acker2</FONT
+>. Applying <FONT
+COLOR="RED"
+>acker2</FONT
+> to an integer value
+generates a closure-function, which causes a memory-leak unless it can be
+reclaimed by garbage collection (GC) at run-time.
+</P
+><P
+>&#13;In functional languages such as ML and Haskell, a function of multiple
+arguments needs to be either curried or translated into a corresponding
+unary function of a single argument that itself is a tuple. In such
+languages, currying often leads to better performance at run-time and thus
+is preferred. In ATS, functions of multiple arguments are supported
+directly. Also, given a function of multiple arguments, a curried version
+of the function is likely to perform less efficiently at run-time than the
+function itself (due to the treatment of curried functions by the ATS
+compiler <B
+CLASS="command"
+>atsopt</B
+>).  Therefore, the need for currying in
+ATS is greatly diminished. Unless convincing reasons can be given, currying
+is in general <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>not</I
+></SPAN
+> a recommended programming style in ATS.
+</P
+><P
+>&#13;Please find
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_FUNCTION/acker.dats"
+TARGET="_top"
+>on-line</A
+>
+the entire code in this section plus some additional
+code for testing.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x854.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c904.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: A Higher-Order Fun Puzzle</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c408.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Datatypes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

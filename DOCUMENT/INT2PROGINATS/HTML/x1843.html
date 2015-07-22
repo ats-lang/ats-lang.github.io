@@ -1,0 +1,271 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>&#13;Generic Template Implementation
+</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Modularity"
+HREF="c1703.html"><LINK
+REL="PREVIOUS"
+TITLE="
+Static and Dynamic ATS Files
+"
+HREF="x1779.html"><LINK
+REL="NEXT"
+TITLE="
+Specific Template Implementation
+"
+HREF="x1860.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1779.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. Modularity</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1860.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="generic_template_implementation"
+>Generic Template Implementation</A
+></H1
+><P
+>&#13;Interfaces for function templates are mostly similar to those for
+functions.  For example, the following syntax declares an interface in a
+dynamic file for a function template of the name <FONT
+COLOR="RED"
+>list0_fold_left</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1847"
+></A
+><PRE
+CLASS="programlisting"
+>extern
+fun{
+a:t0p}{b:t0p
+} list0_fold_left
+  (xs: list0 b, f: (a, b) -&#60;cloref1&#62; a, init: a): a
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>t0p</FONT
+> is a shorthand for <FONT
+COLOR="RED"
+>t@ype</FONT
+>.</P
+><P
+>&#13;If the same interface is declared in a static file, the keyword
+<FONT
+COLOR="RED"
+>extern</FONT
+> should be dropped. Implementing an interface for a
+function template is also mostly similar to implementing one for a
+function. The above interface for <FONT
+COLOR="RED"
+>list0_fold_left</FONT
+> is given an
+implementation in the following code:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1854"
+></A
+><PRE
+CLASS="programlisting"
+>implement{a}{b}
+list0_fold_left
+  (xs, f, init) = let
+//
+fun loop
+(
+  xs: list0 b, res: a
+) : a =
+(
+  case+ xs of
+  | list0_nil () =&#62; res
+  | list0_cons (x, xs) =&#62; loop (xs, f (res, x))
+) (* end of [loop] *)
+//
+in
+  loop (xs, init)
+end // end of [list0_fold_left]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that template parameters are required to appear immediately after the
+keyword <FONT
+COLOR="RED"
+>implement</FONT
+>, and they cannot be omitted.  Template
+parameters can also be passed sequentially as is shown in the following
+short example:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1857"
+></A
+><PRE
+CLASS="programlisting"
+>extern
+fun
+{a,b:t0p}{c:t0p}
+app2 (f: (a, b) -&#60;cloref1&#62; c, x: a, y: b): c
+
+implement{a,b}{c} app2 (f, x, y) = f (x, y)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The style of template implementation presented in this section is
+referred to as generic template implementation. I will later present a
+different style of template implementation, which is often referred to as
+specific template implementation.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1779.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1860.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Static and Dynamic ATS Files</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1703.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Specific Template Implementation</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

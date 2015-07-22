@@ -1,0 +1,421 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Envless Functions and Closure-Functions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="c408.html"><LINK
+REL="PREVIOUS"
+TITLE="Mutually Defined Tail-Recursion"
+HREF="x711.html"><LINK
+REL="NEXT"
+TITLE="Higher-Order Functions"
+HREF="x796.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x711.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x796.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="envless-functions-and-function-closures"
+>Envless Functions and Closure-Functions</A
+></H1
+><P
+>&#13;I use <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>envless</I
+></SPAN
+> as a shorthand for environmentless,
+which is not a legal word but I suppose that you have no problem figuring
+out what it means.
+</P
+><P
+>&#13;An envless function is represented by a pointer pointing to some place in a
+code segment where the object code for executing a call to this function is
+located. Every function in the programming language C is envless. A
+closure-function is also represented by a pointer, but the pointer points
+to some place in a heap where a tuple is allocated (at run-time). Usually,
+the first component of this tuple is a pointer representing an envless
+function and the rest of the components represent some bindings. A tuple as
+such is often referred to as a closure-function or simply closure, which
+can be thought of as an envless function paired with an environment. It is
+possible that the environment of a closure-function is empty, but this does
+not equate a closure-function with an envless function. Every function in
+functional languages such as ML and Haskell is a closure-function.
+</P
+><P
+>&#13;In the following example, the function <FONT
+COLOR="RED"
+>sum</FONT
+>, which is assigned
+the type <FONT
+COLOR="RED"
+>(int) -&#62; int</FONT
+>, sums up all the integers between 1 and a
+given natural number:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN750"
+></A
+><PRE
+CLASS="programlisting"
+>fun sum
+  (n: int): int = let
+  fun loop
+  (
+    i: int, res: int
+  ) :&#60;cloref1&#62; int =
+    if i &#60;= n then loop (i+1, res+i) else res
+  // end of [loop]
+in
+  loop (1(*i*), 0(*res*))
+end // end of [sum]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The inner function <FONT
+COLOR="RED"
+>loop</FONT
+> is a closure-function as is indicated
+by the special syntax <FONT
+COLOR="RED"
+>:&#60;cloref1&#62;</FONT
+>, and the type assigned
+to <FONT
+COLOR="RED"
+>loop</FONT
+> is denoted by <FONT
+COLOR="RED"
+>(int, int) -&#60;cloref1&#62;
+int</FONT
+>. Hence, envless functions and closure-functions can be distinguished
+at the level of types.
+</P
+><P
+>&#13;If the syntax <FONT
+COLOR="RED"
+>:&#60;cloref1&#62;</FONT
+> is replaced with the colon
+symbol <FONT
+COLOR="RED"
+>:</FONT
+> alone, the code can still pass typechecking but its
+compilation may eventually lead to a warning or even an error indicating
+that <FONT
+COLOR="RED"
+>loop</FONT
+> cannot be compiled into a toplevel function in C. The
+reason for this warning/error is due to the body of <FONT
+COLOR="RED"
+>loop</FONT
+>
+containing a variable <FONT
+COLOR="RED"
+>n</FONT
+> that is neither at toplevel nor a part
+of the arguments of <FONT
+COLOR="RED"
+>loop</FONT
+> itself. It is straightforward to make
+<FONT
+COLOR="RED"
+>loop</FONT
+> an envless function by including <FONT
+COLOR="RED"
+>n</FONT
+> as an
+argument in addition to the original ones:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN765"
+></A
+><PRE
+CLASS="programlisting"
+>fun sum
+  (n: int): int = let
+  fun loop
+  (
+    n:int, i: int, res: int
+  ) : int =
+    if i &#60;= n then loop (n, i+1, res+i) else res
+  // end of [loop]
+in
+  loop (n, 1(*i*), 0(*res*))
+end // end of [sum]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+As a matter of fact, what happens during compilation is that the first
+implementation of <FONT
+COLOR="RED"
+>sum</FONT
+> and <FONT
+COLOR="RED"
+>loop</FONT
+> gets translated,
+more or less, into the second implementation, and there is <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>no</I
+></SPAN
+>
+actual creation of closures at run-time.
+</P
+><P
+>&#13;The need for creating closures often appears when a function is not
+directly applied. For instance, the return value of a function call may
+also be a function. In the following code, the defined function
+<FONT
+COLOR="RED"
+>addx</FONT
+> returns another function when applied to a given integer
+<FONT
+COLOR="RED"
+>x</FONT
+>, and the returned function is a closure-function, which
+always adds the integer <FONT
+COLOR="RED"
+>x</FONT
+> to its own argument:
+
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN774"
+></A
+><PRE
+CLASS="programlisting"
+>fun addx (x: int): int -&#60;cloref1&#62; int = lam y =&#62; x + y
+
+val plus1 = addx (1) // [plus1] is of the type int -&#60;cloref1&#62; int
+val plus2 = addx (2) // [plus2] is of the type int -&#60;cloref1&#62; int
+</PRE
+><P
+></P
+></DIV
+>
+
+
+It should be clear that <FONT
+COLOR="RED"
+>plus1(0)</FONT
+> and <FONT
+COLOR="RED"
+>plus2(0)</FONT
+>
+return <FONT
+COLOR="RED"
+>1</FONT
+> and <FONT
+COLOR="RED"
+>2</FONT
+>, respectively.  The closure-function
+that is given the name <FONT
+COLOR="RED"
+>plus1</FONT
+> consists of an envless function
+and an environment binding <FONT
+COLOR="RED"
+>x</FONT
+> to <FONT
+COLOR="RED"
+>1</FONT
+>. The envless
+function can essentially be described by the pseudo syntax <FONT
+COLOR="RED"
+>lam
+(env, y) =&#62; env.x + y</FONT
+>, where <FONT
+COLOR="RED"
+>env</FONT
+> and <FONT
+COLOR="RED"
+>env.x</FONT
+> refer
+to an environment and the value to which <FONT
+COLOR="RED"
+>x</FONT
+> is bound in that
+environment. When evaluating <FONT
+COLOR="RED"
+>plus1(0)</FONT
+>, we can first bind
+<FONT
+COLOR="RED"
+>env</FONT
+> and <FONT
+COLOR="RED"
+>y</FONT
+> to the environment in <FONT
+COLOR="RED"
+>plus1</FONT
+>
+and the argument <FONT
+COLOR="RED"
+>0</FONT
+>, respectively, and then start to evaluate
+the body of the envless function in <FONT
+COLOR="RED"
+>plus1</FONT
+>, which is
+<FONT
+COLOR="RED"
+>env.x + y</FONT
+>. Clearly, this evaluation yields the value
+<FONT
+COLOR="RED"
+>1</FONT
+> as is expected.
+</P
+><P
+>&#13;Closures are often passed as arguments to functions that are referred
+to as higher-order functions.  It is also fairly common for closures to
+be embedded in data structures.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x711.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x796.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Mutually Defined Tail-Recursion</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c408.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Higher-Order Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

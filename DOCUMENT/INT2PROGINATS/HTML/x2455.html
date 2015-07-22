@@ -1,0 +1,321 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Binary Search on Arrays</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Introduction to Dependent Types"
+HREF="c2223.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: String Processing"
+HREF="x2408.html"><LINK
+REL="NEXT"
+TITLE="Termination-Checking for Recursive Functions"
+HREF="x2480.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2408.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Introduction to Dependent Types</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2480.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_binary_search_on_arrays"
+>Example: Binary Search on Arrays</A
+></H1
+><P
+>&#13;Given a type T of the sort <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>t@ype</I
+></SPAN
+> and a static integer I (i.e.,
+a static term of the sort <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>int</I
+></SPAN
+>), <FONT
+COLOR="RED"
+>arrayref(T, I)</FONT
+> is
+a boxed type for arrays of size I in which each stored element is of the
+type T. Note that such arrays have no size information attached to them.
+The following interface is for a function template
+<FONT
+COLOR="RED"
+>array_make_elt</FONT
+> that can be called to create an array (with no
+size information attached to it):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2462"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a:t@ype}
+array_make_elt{n:int} (asz: size_t n, elt: a): arrayref (a, n)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given a static integer I, the type <FONT
+COLOR="RED"
+>size_t(I)</FONT
+> is a singleton
+type for a value of the type size_t in C that represents the integer equal
+to I. The function templates for reading from and writing to an array cell
+have the following interfaces:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2465"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a:t@ype}
+arrayref_get_at
+  {n:int}{i:nat | i &#60; n} (A: arrayref (a, n), i: size_t i): a
+overload [] with arrayref_get_at
+
+fun{a:t@ype}
+arrayref_set_at
+  {n:int}{i:nat | i &#60; n} (A: arrayref (a, n), i: size_t i, x: a): void
+overload [] with arrayref_set_at
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that these two function templates do not incur any run-time
+array-bounds checking: The types assigned to them guarantee that each index
+used for array subscripting is always legal, that is, within the bounds of
+the array being subscripted.
+</P
+><P
+>&#13;As a convincing example of practical programming with dependent types, the
+following code implements the standard binary search algorithm on an ordered
+array:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2468"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype
+} bsearch_arr{n:nat}
+(
+  A: arrayref (a, n), n: int n, x0: a, cmp: (a, a) -&#62; int
+) : int = let
+//
+fun loop
+  {i,j:int |
+   0 &#60;= i; i &#60;= j+1; j+1 &#60;= n}
+(
+  A: arrayref (a, n), l: int i, u: int j
+) :&#60;cloref1&#62; int =
+(
+  if l &#60;= u then let
+    val m = l + half (u - l)
+    val x = A[m]
+    val sgn = cmp (x0, x)
+  in
+    if sgn &#62;= 0 then loop (A, m+1, u) else loop (A, l, m-1)
+  end else u // end of [if]
+) (* end of [loop] *)
+//
+in
+  loop (A, 0, n-1)
+end // end of [bsearch_arr]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The function <FONT
+COLOR="RED"
+>loop</FONT
+> defined in the body of
+<FONT
+COLOR="RED"
+>bsearch_arr</FONT
+> searches the segment of the array <FONT
+COLOR="RED"
+>A</FONT
+>
+between the indices <FONT
+COLOR="RED"
+>l</FONT
+> and <FONT
+COLOR="RED"
+>u</FONT
+>, inclusive.  Clearly,
+the type assigned to <FONT
+COLOR="RED"
+>loop</FONT
+> indicates that the integer values i
+and j of the arguments <FONT
+COLOR="RED"
+>l</FONT
+> and <FONT
+COLOR="RED"
+>u</FONT
+> must satisfy the
+precondition consisting of the constraints 0 &#60;= i, i &#60;= j+1, and j+1 &#60;= n,
+where n is the size of the array being searched.  The progress we have made
+by introducing dependent types into ATS should be evident in this example:
+We can not only specify much more precisely than before but also enforce
+effectively the enhanced precision in specification.
+</P
+><P
+>&#13;Please find <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_DEPTYPES/bsearch_arr.dats"
+TARGET="_top"
+>on-line</A
+> the
+code employed for illustration in this section plus some additional code
+for testing.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2408.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2480.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: String Processing</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2223.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Termination-Checking for Recursive Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,283 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Evaluation of Recursive Function Calls</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="c408.html"><LINK
+REL="PREVIOUS"
+TITLE="Recursive Functions"
+HREF="x514.html"><LINK
+REL="NEXT"
+TITLE="Example: Coin Changes for Fun"
+HREF="x593.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x514.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x593.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="evaluation-of-recursive-function-calls"
+>Evaluation of Recursive Function Calls</A
+></H1
+><P
+>Evaluating a call to a recursive function is not much different from
+evaluating one to a non-recursive function.  Let <FONT
+COLOR="RED"
+>fib</FONT
+> be the
+following defined function for computing the Fibonacci numbers:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN561"
+></A
+><PRE
+CLASS="programlisting"
+>fun fib (n: int): int =
+  if n &#62;= 2 then fib(n-1) + fib(n-2) else n
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Suppose that we are to evaluate <FONT
+COLOR="RED"
+>fib(2)</FONT
+> under some environment
+ENV0. Given that <FONT
+COLOR="RED"
+>2</FONT
+> is already a value, we extend ENV0 to ENV1
+with a binding between <FONT
+COLOR="RED"
+>n</FONT
+> and <FONT
+COLOR="RED"
+>2</FONT
+> and start to
+evaluate the body of <FONT
+COLOR="RED"
+>fib</FONT
+> under ENV1; clearly, this evaluation
+leads to the evaluation of <FONT
+COLOR="RED"
+>fib(n-1) + fib(n-2)</FONT
+>; it is easy to
+see that evaluating <FONT
+COLOR="RED"
+>fib(n-1)</FONT
+> and <FONT
+COLOR="RED"
+>fib(n-2)</FONT
+> under
+ENV1 leads to <FONT
+COLOR="RED"
+>1</FONT
+> and <FONT
+COLOR="RED"
+>0</FONT
+>, respectively, and the
+evaluation of <FONT
+COLOR="RED"
+>fib(n-1) + fib(n-2)</FONT
+> eventually returns
+<FONT
+COLOR="RED"
+>1</FONT
+> (as the result of <FONT
+COLOR="RED"
+>1+0</FONT
+>); thus the evaluation of
+<FONT
+COLOR="RED"
+>fib(2)</FONT
+> under ENV0 yields the integer value <FONT
+COLOR="RED"
+>1</FONT
+>.
+</P
+><P
+>Let us now evaluate <FONT
+COLOR="RED"
+>fib(3)</FONT
+> under ENV0; we extend ENV0
+to ENV2 with a binding between <FONT
+COLOR="RED"
+>n</FONT
+> and <FONT
+COLOR="RED"
+>3</FONT
+>, and start
+to evaluate the body of <FONT
+COLOR="RED"
+>fib</FONT
+> under ENV2; we then reach the
+evaluation of <FONT
+COLOR="RED"
+>fib(n-1) + fib(n-2)</FONT
+> under ENV2; evaluating
+<FONT
+COLOR="RED"
+>fib(n-1)</FONT
+> under ENV2 leads to the evaluation of
+<FONT
+COLOR="RED"
+>fib(2)</FONT
+> under ENV2, which eventually returns <FONT
+COLOR="RED"
+>1</FONT
+>;
+evaluating <FONT
+COLOR="RED"
+>fib(n-2)</FONT
+> under ENV2 leads to the evaluation of
+<FONT
+COLOR="RED"
+>fib(1)</FONT
+> under ENV2, which eventually returns <FONT
+COLOR="RED"
+>1</FONT
+>;
+therefore, evaluating <FONT
+COLOR="RED"
+>fib(3)</FONT
+> under ENV0 returns <FONT
+COLOR="RED"
+>2</FONT
+>
+(as the result of <FONT
+COLOR="RED"
+>1+1</FONT
+>).
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x514.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x593.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Recursive Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c408.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Coin Changes for Fun</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

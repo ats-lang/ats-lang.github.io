@@ -1,0 +1,457 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Elements of Programming</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Functional Programming"
+HREF="p42.html"><LINK
+REL="PREVIOUS"
+TITLE="A Makefile Template"
+HREF="x89.html"><LINK
+REL="NEXT"
+TITLE="Names and Bindings"
+HREF="x162.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x89.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x162.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="elements_of_programming"
+></A
+>Chapter 2. Elements of Programming</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c96.html#expressions_and_values"
+>Expressions and Values</A
+></DT
+><DT
+><A
+HREF="x162.html"
+>Names and Bindings</A
+></DT
+><DT
+><A
+HREF="x187.html"
+>Scopes for Bindings</A
+></DT
+><DT
+><A
+HREF="x214.html"
+>Environments for Evaluation</A
+></DT
+><DT
+><A
+HREF="x230.html"
+>Static Semantics</A
+></DT
+><DT
+><A
+HREF="x240.html"
+>Primitive Types</A
+></DT
+><DT
+><A
+HREF="x298.html"
+>Tuples and Tuple Types</A
+></DT
+><DT
+><A
+HREF="x318.html"
+>Records and Record Types</A
+></DT
+><DT
+><A
+HREF="x346.html"
+>Conditional Expressions</A
+></DT
+><DT
+><A
+HREF="x374.html"
+>Sequence Expressions</A
+></DT
+><DT
+><A
+HREF="x390.html"
+>Comments in Code</A
+></DT
+></DL
+></DIV
+><P
+>The core of ATS is a call-by-value functional programming language. I will
+explain the meaning of <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>call-by-value</I
+></SPAN
+> in a moment. As
+for functional programming, there is really no precise definition.  The
+most important aspect of functional programming that I want to explore is
+the notion of binding, which relates names to expressions.</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="expressions_and_values"
+>Expressions and Values</A
+></H1
+><P
+>&#13;ATS is both syntax-rich and feature-rich, and its grammar is probably more
+complex than most existing programming languages. In ATS, there are a large
+variety of forms of expressions, which I will introduce gradually.</P
+><P
+>&#13;Let us first start with some integer arithmetic expressions (IAEs):
+<FONT
+COLOR="RED"
+>1</FONT
+>, <FONT
+COLOR="RED"
+>~2</FONT
+>, <FONT
+COLOR="RED"
+>1+2</FONT
+>, <FONT
+COLOR="RED"
+>1+2*3-4</FONT
+>,
+<FONT
+COLOR="RED"
+>(1+2)/(3-4)</FONT
+>, etc. Note that the negative sign is represented by
+the tilde symbol (<FONT
+COLOR="RED"
+>~</FONT
+>) in ATS.  There is also support for
+floating point numbers, and some floating point constants are given here:
+<FONT
+COLOR="RED"
+>1.0</FONT
+>, <FONT
+COLOR="RED"
+>~2.0</FONT
+>, <FONT
+COLOR="RED"
+>3.</FONT
+>, <FONT
+COLOR="RED"
+>0.12345</FONT
+>,
+<FONT
+COLOR="RED"
+>2.71828</FONT
+>, <FONT
+COLOR="RED"
+>31416E-4</FONT
+>, etc. Note that <FONT
+COLOR="RED"
+>3.</FONT
+>
+and <FONT
+COLOR="RED"
+>31416E-4</FONT
+> are the same as <FONT
+COLOR="RED"
+>3.0</FONT
+> and
+<FONT
+COLOR="RED"
+>3.1416</FONT
+>, respectively. What I really want to emphasize at this
+point is that <FONT
+COLOR="RED"
+>1</FONT
+> and <FONT
+COLOR="RED"
+>1.0</FONT
+> are two distinct numbers in
+ATS: the former is an integer while the latter is a floating point number
+(of double precision).</P
+><P
+>&#13;There are also boolean constants: <FONT
+COLOR="RED"
+>true</FONT
+> and <FONT
+COLOR="RED"
+>false</FONT
+>.
+We can form boolean expressions such as <FONT
+COLOR="RED"
+>1 &#62;= 0</FONT
+>,
+<FONT
+COLOR="RED"
+>not(2-1 &#62;= 2)</FONT
+>, <FONT
+COLOR="RED"
+>(1 &#60; 2) andalso (2 &#60; 3)</FONT
+> and
+<FONT
+COLOR="RED"
+>(~1 &#62; 1) orelse (~1 &#60;= 1)</FONT
+>, where <FONT
+COLOR="RED"
+>not</FONT
+>,
+<FONT
+COLOR="RED"
+>andalso</FONT
+> and <FONT
+COLOR="RED"
+>orelse</FONT
+> stand for negation, conjunction
+and disjunction, respectively. For programmers familiar with C-like syntax,
+I point out that operators <FONT
+COLOR="RED"
+>&#38;&#38;</FONT
+> and <FONT
+COLOR="RED"
+>||</FONT
+> are synonyms
+for <FONT
+COLOR="RED"
+>andalso</FONT
+> and <FONT
+COLOR="RED"
+>orelse</FONT
+>, respectively.  
+</P
+><P
+>&#13;Other commonly used constant values include characters and strings.  For
+instance, following are some character constants: <FONT
+COLOR="RED"
+>'a'</FONT
+>,
+<FONT
+COLOR="RED"
+>'B'</FONT
+>, <FONT
+COLOR="RED"
+>'\n'</FONT
+> (newline), <FONT
+COLOR="RED"
+>'\t'</FONT
+> (tab),
+<FONT
+COLOR="RED"
+>'\('</FONT
+> (left parenthesis), <FONT
+COLOR="RED"
+>')'</FONT
+> (right
+parenthesis), <FONT
+COLOR="RED"
+>'\{'</FONT
+> (left curly brace), <FONT
+COLOR="RED"
+>'}'</FONT
+>
+(right curly brace), etc; following are some string constants:
+<FONT
+COLOR="RED"
+>"My name is Zoe"</FONT
+>, <FONT
+COLOR="RED"
+>"Don't call me \"Chloe\""</FONT
+>,
+<FONT
+COLOR="RED"
+>"this is a newline:\n"</FONT
+>, etc.
+</P
+><P
+>&#13;Given a (function) name, say, foo, and an expression exp, the expression
+foo(exp) is a function application or function call. The parentheses in
+foo(exp) may be dropped if no ambiguity is created by doing so. For
+instance, <FONT
+COLOR="RED"
+>print("Hello")</FONT
+> is a function application, which can
+also be written as <FONT
+COLOR="RED"
+>print "Hello"</FONT
+>.  If foo is a nullary
+function, then a function application foo() can be formed.  If foo is a
+binary function, then a function application foo(exp1, exp2) can be formed
+for expressions exp1 and exp2. Functions of more arguments can be treated
+accordingly.
+</P
+><P
+>&#13;Note that we cannot write <FONT
+COLOR="RED"
+>+(1,2)</FONT
+> as the name <FONT
+COLOR="RED"
+>+</FONT
+> has
+already been given the infix status requiring that it be treated as an
+infix operator.  However, we can write <FONT
+COLOR="RED"
+>op+(1,2)</FONT
+>, where
+<FONT
+COLOR="RED"
+>op</FONT
+> is a keyword in ATS that can be used to temporarily suspend
+the infix status of any name immediately following it. I will explain in
+detail the issue of fixity (prefix, infix and postfix) elsewhere.
+</P
+><P
+>&#13;Values are essentially expressions of certain special forms, which cannot
+be reduced or simplified further. For instance, integer constants such as
+<FONT
+COLOR="RED"
+>1</FONT
+> and <FONT
+COLOR="RED"
+>~2</FONT
+> are values, but the integer expression
+<FONT
+COLOR="RED"
+>1+2</FONT
+> is not a value, which can be reduced to the value
+<FONT
+COLOR="RED"
+>3</FONT
+>.  Evaluation refers to the computational process that reduces
+a given expression into a value. However, certain expressions such as
+<FONT
+COLOR="RED"
+>1/0</FONT
+> cannot be reduced to a value, and evaluating such an
+expression must abort at some point. I will gradually present more
+information on evaluation.
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x89.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x162.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>A Makefile Template</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p42.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Names and Bindings</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

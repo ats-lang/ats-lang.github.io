@@ -1,0 +1,560 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Dataview for Linear Arrays</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Dataviews as Linear Dataprops"
+HREF="c3541.html"><LINK
+REL="PREVIOUS"
+TITLE="Disjunctive Views"
+HREF="x3564.html"><LINK
+REL="NEXT"
+TITLE="Dataview for Linear Strings"
+HREF="x3665.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3564.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 14. Dataviews as Linear Dataprops</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3665.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="linear_arrays"
+>Dataview for Linear Arrays</A
+></H1
+><P
+>&#13;Unlike in most programming languages, arrays are not a primitive data
+structure in ATS. More specifically, persistent arrays can be implemented
+based on linear arrays, which allow for being freed safely by the
+programmer, and linear arrays can be implemented based on
+at-views. Intuitively, the view for an array storing N elements of type
+T consists of N at-views: T@L<SUB
+>0</SUB
+>, T@L<SUB
+>1</SUB
+>, ..., and
+T@L<SUB
+>N-1</SUB
+>, where L<SUB
+>0</SUB
+> is the starting address of the array and
+each subsequent L equals the previous one plus the size of T, that is, the
+number of bytes needed to store a value of the type T. The following
+declared dataview <FONT
+COLOR="RED"
+>array_v</FONT
+> precisely captures this intuituion:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3613"
+></A
+><PRE
+CLASS="programlisting"
+>dataview
+array_v (
+  a:t@ype+ // covariant argument
+, addr(*beg*)
+, int(*size*)
+) = // array_v
+  | {l:addr}
+    array_v_nil (a, l, 0)
+  | {l:addr}{n:nat}
+    array_v_cons (a, l, n+1) of (a @ l, array_v (a, l+sizeof(a), n))
+// end of [array_v]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;Given a type T, an address L and an integer N, <FONT
+COLOR="RED"
+>array_v(T, L, N)</FONT
+>
+is a view for the array starting at L that stores N elements of the type T.
+As can be readily expected, the function templates for array-accessing and
+array-updating are given the following interfaces:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3617"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype
+} arrget{l:addr}{n,i:nat | i &#60; n}
+  (pf: !array_v (a, l, n) | p: ptr l, i: int i): a
+// end of [arrget] // end of [fun]
+
+fun{
+a:t@ype
+} arrset{l:addr}{n,i:nat | i &#60; n}
+  (pf: !array_v (a, l, n) | p: ptr l, i: int i, x: a): void
+// end of [arrset] // end of [fun]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;Before implementing <FONT
+COLOR="RED"
+>arrget</FONT
+> and <FONT
+COLOR="RED"
+>arrset</FONT
+>, I present as
+follows some code that implements a function template to access the first
+element of a nonempty array:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3622"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype
+} arrgetfst{l:addr}{n:pos}
+(
+  pf: !array_v (a, l, n) | p: ptr l
+) : a = x where {
+  prval array_v_cons (pf1, pf2) = pf
+  // pf1: a @ l; pf2: array_v (a, l+sizeof(a), n-1)
+  val x = !p
+  prval () = pf := array_v_cons (pf1, pf2)
+} // end of [arrgetfst]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;Obviously, the function template <FONT
+COLOR="RED"
+>arrget</FONT
+> can be implemented
+based on <FONT
+COLOR="RED"
+>arrgetfst</FONT
+>:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3627"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+{a}(*tmp*)
+arrget (pf | p, i) =
+  if i &#62; 0 then let
+    prval array_v_cons (pf1, pf2) = pf
+    val x = arrget (pf2 | ptr_succ&#60;a&#62; (p), i-1)
+    prval () = pf := array_v_cons (pf1, pf2)
+  in
+    x
+  end else
+    arrgetfst (pf | p)
+  // end of [if]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;This is a tail-recursive implementation of time-complexity O(n). However,
+the very point of having arrays is to support O(1)-time accessing and
+updating operations. My initial effort spent on implementing such
+operations immediately dawned on me the need to construct proof functions
+for supporting view-changes (of no run-time cost).
+
+</P
+><P
+>&#13;Clearly, an array starting at L that stores N elements of type T can also
+be thought of as two arrays: one starting at L that stores I elements while
+the other starting at L+I*sizeof(T) that stores N-I elements, where I is
+an natural number less that or equal to N. Formally, this statement can be
+encoded in the type of the proof function <FONT
+COLOR="RED"
+>array_v_split</FONT
+>:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3632"
+></A
+><PRE
+CLASS="programlisting"
+>prfun
+array_v_split
+  {a:t@ype}
+  {l:addr}{n,i:nat | i &#60;= n}
+(
+  pfarr: array_v (a, l, n)
+) : (array_v (a, l, i), array_v (a, l+i*sizeof(a), n-i))
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;The other direction of the above statement can be encoded in the type of
+the proof function <FONT
+COLOR="RED"
+>array_v_unsplit</FONT
+>:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3636"
+></A
+><PRE
+CLASS="programlisting"
+>prfun
+array_v_unsplit
+  {a:t@ype}
+  {l:addr}{n1,n2:nat}
+(
+  pf1arr: array_v (a, l, n1), pf2arr: array_v (a, l+n1*sizeof(a), n2)
+) : array_v (a, l, n1+n2)
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;With <FONT
+COLOR="RED"
+>array_v_split</FONT
+> and <FONT
+COLOR="RED"
+>array_v_unsplit</FONT
+>, we can
+readily give implementations of <FONT
+COLOR="RED"
+>arrget</FONT
+> and <FONT
+COLOR="RED"
+>arrset</FONT
+>
+that are O(1)-time:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3643"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+{a}(*tmp*)
+arrget{l}{n,i}
+  (pf | p, i) = x where {
+  prval (pf1, pf2) = array_v_split{a}{l}{n,i}(pf)
+  prval array_v_cons (pf21, pf22) = pf2
+  val x = ptr_get1&#60;a&#62; (pf21 | ptr_add&#60;a&#62; (p, i))
+  prval pf2 = array_v_cons (pf21, pf22)
+  prval () = pf := array_v_unsplit{a}{l}{i,n-i}(pf1, pf2)
+} (* end of [arrget] *)
+
+implement
+{a}(*tmp*)
+arrset{l}{n,i}
+  (pf | p, i, x) = () where {
+  prval (pf1, pf2) = array_v_split{a}{l}{n,i}(pf)
+  prval array_v_cons (pf21, pf22) = pf2
+  val () = ptr_set1&#60;a&#62; (pf21 | ptr_add&#60;a&#62; (p, i), x)
+  prval pf2 = array_v_cons (pf21, pf22)
+  prval () = pf := array_v_unsplit{a}{l}{i,n-i}(pf1, pf2)
+} (* end of [arrset] *)
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;Of course, the proof functions <FONT
+COLOR="RED"
+>array_v_split</FONT
+> and
+<FONT
+COLOR="RED"
+>array_v_split</FONT
+> are still to be implemented, which I will do when
+covering the topic of view-change.
+
+</P
+><P
+>&#13;Given a type T, an address L and a natural number N, a proof of the view
+<FONT
+COLOR="RED"
+>array_v(T?, L, N)</FONT
+> can be obtained and released by calling the
+functions <FONT
+COLOR="RED"
+>malloc</FONT
+> and <FONT
+COLOR="RED"
+>free</FONT
+>, respectively, which are
+to be explained in details elsewhere. I now give as follows an implemention
+of a function template for array intialization:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3652"
+></A
+><PRE
+CLASS="programlisting"
+>typedef natLt (n:int) = [i:nat | i &#60; n] int (i)
+
+fun{a:t@ype}
+array_ptr_tabulate
+  {l:addr}{n:nat}
+(
+  pf: !array_v (a?,l,n) &#62;&#62; array_v (a,l,n)
+| p: ptr (l), n: int (n), f: natLt(n) -&#60;cloref1&#62; a
+) : void = let
+  fun loop{l:addr}
+    {i:nat | i &#60;= n} .&#60;n-i&#62;.
+  (
+    pf: !array_v (a?,l,n-i) &#62;&#62; array_v (a,l,n-i)
+  | p: ptr l, n: int n, f: natLt(n) -&#60;cloref1&#62; a, i: int i
+  ) : void =
+    if i &#60; n then let
+      prval array_v_cons (pf1, pf2) = pf
+      val () = !p := f (i)
+      val () = loop (pf2 | ptr_succ&#60;a&#62; (p), n, f, i+1)
+    in
+      pf := array_v_cons (pf1, pf2)
+    end else let
+      prval array_v_nil () = pf in pf := array_v_nil {a} ()
+    end // end of [if]
+  // end of [loop]
+in
+  loop (pf | p, n, f, 0)
+end // end of [array_ptr_tabulate]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;Given a natural number n, the type <FONT
+COLOR="RED"
+>natLt(n)</FONT
+> is for all natural
+numbers less than n. Given a type T, the function
+<FONT
+COLOR="RED"
+>array_ptr_tabulate&#60;T&#62;</FONT
+> takes a pointer to an uninitialized
+array, the size of the array and a function f that maps each natural number
+less than n to a value of the type T, and it initializes the array with the
+sequence of values of f(0), f(1), ..., and f(n-1). In other words, the
+array stores a tabulation of the given function f after the initialization
+is over.
+
+</P
+><P
+>&#13;Given a type T and an integer N, @[T][N] is a built-in type in ATS for N
+consecutive values of the type T. Therefore, the at-view @[T][N]@L for any
+given address L is equivalent to the array-view <FONT
+COLOR="RED"
+>array_v(T, L,
+N)</FONT
+>.  By making use of the feature of call-by-reference, we can also
+assign the following interfaces to the previously presented functions
+<FONT
+COLOR="RED"
+>arrget</FONT
+> and <FONT
+COLOR="RED"
+>arrset</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3661"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype
+} arrget {n,i:nat | i &#60; n} (A: &#38;(@[a][n]), i: int i): a
+
+fun{
+a:t@ype
+} arrset {n,i:nat | i &#60; n} (A: &#38;(@[a][n]), i: int i, x: a): void
+</PRE
+><P
+></P
+></DIV
+>
+
+
+These interfaces are more concise as they obviate the need to mention
+explicitly where the array argument is located.
+
+</P
+><P
+>&#13;Please find the entirety of the above presented code
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_DATAVIEW/array.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3564.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3665.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Disjunctive Views</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3541.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Dataview for Linear Strings</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

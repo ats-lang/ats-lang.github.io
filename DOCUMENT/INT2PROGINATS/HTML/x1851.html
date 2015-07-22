@@ -1,0 +1,401 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>&#13;Specific Template Implementation
+</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Modularity"
+HREF="c1694.html"><LINK
+REL="PREVIOUS"
+TITLE="
+Generic Template Implementation
+"
+HREF="x1834.html"><LINK
+REL="NEXT"
+TITLE="
+Abstract Types
+"
+HREF="x1894.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1834.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. Modularity</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1894.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="specific_template_implementation"
+>Specific Template Implementation</A
+></H1
+><P
+>&#13;Implementing an interface for a function template specifically means to
+give an implementation for a fixed instance of the template. For instance,
+the following interface is for a function template of the name
+<FONT
+COLOR="RED"
+>eq_elt_elt</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1855"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a:t0p}
+eq_elt_elt (x: a, y: a): bool // a generic equality
+</PRE
+><P
+></P
+></DIV
+>
+
+
+There is no meaningful generic implementation for <FONT
+COLOR="RED"
+>eq_elt_elt</FONT
+> as
+equality test for values of a type T depends on T.  Two specific template
+implementations are given as follows for the instances
+<FONT
+COLOR="RED"
+>eq_elt_elt&#60;int&#62;</FONT
+> and <FONT
+COLOR="RED"
+>eq_elt_elt&#60;double&#62;</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1860"
+></A
+><PRE
+CLASS="programlisting"
+>implement eq_elt_elt&#60;int&#62; (x, y) = g0int_eq (x, y)
+implement eq_elt_elt&#60;double&#62; (x, y) = g0float_eq (x, y)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>eq_int_int</FONT
+> and <FONT
+COLOR="RED"
+>eq_double_double</FONT
+> are equality
+functions for values of the type <FONT
+COLOR="RED"
+>int</FONT
+> and <FONT
+COLOR="RED"
+>double</FONT
+>,
+respectively. It is also possible to give the implementations as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1866"
+></A
+><PRE
+CLASS="programlisting"
+>implement eq_elt_elt&#60;int&#62; (x, y) = (x = y)
+implement eq_elt_elt&#60;double&#62; (x, y) = (x = y)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+This is allowed as the symbol <FONT
+COLOR="RED"
+>=</FONT
+> is already overloaded with
+<FONT
+COLOR="RED"
+>g0int_eq</FONT
+> and <FONT
+COLOR="RED"
+>g0float_eq</FONT
+> (in addition to many other
+functions).
+</P
+><P
+>&#13;Let us now see a typical use of specific template implementation.  The
+following defined function template <FONT
+COLOR="RED"
+>listeq</FONT
+> implements an
+equality function on lists:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1873"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t0p
+} listeq
+(
+  xs: list0 a
+, ys: list0 a
+) : bool = (
+  case+ (xs, ys) of
+  | (list0_cons (x, xs),
+     list0_cons (y, ys)) =&#62; 
+      if eq_elt_elt&#60;a&#62; (x, y) then listeq (xs, ys) else false
+  | (list0_nil (), list0_nil ()) =&#62; true
+  | (_, _) =&#62; false
+) (* end of [listeq] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given two lists xs and ys, <FONT
+COLOR="RED"
+>listeq</FONT
+> returns <FONT
+COLOR="RED"
+>true</FONT
+> if
+and only if xs and ys are of the same length and each element in xs equals
+the corresponding one in ys (according to <FONT
+COLOR="RED"
+>eq_elt_elt</FONT
+>).
+Given a type T, it is clear that the instance
+<FONT
+COLOR="RED"
+>eq_elt_elt&#60;T&#62;</FONT
+> is needed if <FONT
+COLOR="RED"
+>listeq</FONT
+> is called
+on two lists of the type <FONT
+COLOR="RED"
+>list0(T)</FONT
+>. In other words, a specific
+implementation for <FONT
+COLOR="RED"
+>eq_elt_elt&#60;T&#62;</FONT
+> should be given if a
+call to <FONT
+COLOR="RED"
+>listeq</FONT
+> is to be made on two lists of the type
+<FONT
+COLOR="RED"
+>list0(T)</FONT
+>. Note that the implementation for an instance of a
+function template is required to be accessible from the file where the
+instance is called.
+</P
+><P
+>As a comparison, the following defined function template
+<FONT
+COLOR="RED"
+>listeqf</FONT
+> also implements equality test on two given lists:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1886"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t0p
+} listeqf
+(
+  xs: list0 a
+, ys: list0 a
+, eq: (a, a) -&#62; bool
+) : bool = (
+  case+ (xs, ys) of
+  | (list0_cons (x, xs),
+     list0_cons (y, ys)) =&#62; 
+      if eq (x, y) then listeqf (xs, ys, eq) else false
+  | (list0_nil (), list0_nil ()) =&#62; true
+  | (_, _) =&#62; false
+) (* end of [listeqf] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+In this case, <FONT
+COLOR="RED"
+>listeqf</FONT
+> takes an additional argument
+<FONT
+COLOR="RED"
+>eq</FONT
+> that tests whether two list elements are equal.  As
+<FONT
+COLOR="RED"
+>listeq</FONT
+> is a first-order function while <FONT
+COLOR="RED"
+>listeqf</FONT
+> is a
+higher-order one, it is likely for the former to be compiled into more
+efficient object code. I would like to point out that the library of ATS
+makes pervasive use of specifically implemented templates.
+
+</P
+><P
+>Please find the code presented in this section plus some additional
+testing code available <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_MODULARITY/listeq.dats"
+TARGET="_top"
+>on-line</A
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1834.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1894.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Generic Template Implementation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1694.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Abstract Types</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

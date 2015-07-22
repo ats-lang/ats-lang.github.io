@@ -1,0 +1,300 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Dataviews as Linear Dataprops</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Programming with Views and Viewtypes"
+HREF="p3297.html"><LINK
+REL="PREVIOUS"
+TITLE="Heap-Allocated Linear Closure-Functions"
+HREF="x3511.html"><LINK
+REL="NEXT"
+TITLE="Disjunctive Views"
+HREF="x3554.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3511.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3554.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="dataviews"
+></A
+>Chapter 14. Dataviews as Linear Dataprops</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c3531.html#optional_views"
+>Optional Views</A
+></DT
+><DT
+><A
+HREF="x3554.html"
+>Disjunctive Views</A
+></DT
+><DT
+><A
+HREF="x3595.html"
+>Dataview for Linear Arrays</A
+></DT
+><DT
+><A
+HREF="x3655.html"
+>Dataview for Linear Strings</A
+></DT
+><DT
+><A
+HREF="x3659.html"
+>Dataview for Singly-Linked Lists</A
+></DT
+><DT
+><A
+HREF="x3713.html"
+>Proof Functions for View-Changes</A
+></DT
+></DL
+></DIV
+><P
+>&#13;The at-views of the form <FONT
+COLOR="RED"
+>T@L</FONT
+> for types T and addresses L are
+building blocks for constructing other forms of views. One mechanism for
+putting together such building blocks is by declaring dataviews, which is
+mostly identical to declaring dataprops. I now present in this chapter some
+commonly encountered dataviews and their uses.
+
+</P
+><P
+>&#13;Please find <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_DATAVIEW/"
+TARGET="_top"
+>on-line</A
+> the code presented
+for illustration in this chapter.
+
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="optional_views"
+>Optional Views</A
+></H1
+><P
+>&#13;The dataview <FONT
+COLOR="RED"
+>option_v</FONT
+> is declared as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3541"
+></A
+><PRE
+CLASS="programlisting"
+>dataview option_v (v:view+, bool) =
+  | Some_v (v, true) of (v) | None_v (v, false) of ()
+</PRE
+><P
+></P
+></DIV
+>
+
+
+This declaration indicates that the dataview <FONT
+COLOR="RED"
+>option_v</FONT
+> is
+covariant in its first argument and there are two proof constructors
+associated with it: <FONT
+COLOR="RED"
+>Some_v</FONT
+> and <FONT
+COLOR="RED"
+>None_v</FONT
+>.  Given a
+view V, <FONT
+COLOR="RED"
+>option_v(V, b)</FONT
+> is often called an optional view, where
+b is a boolean. Clearly, a proof of the view <FONT
+COLOR="RED"
+>option_v(V, true)</FONT
+>
+contains a proof of the view V while a proof the view <FONT
+COLOR="RED"
+>option_v(V,
+false)</FONT
+> contains nothing.
+
+</P
+><P
+>&#13;As an example, the following function interface involves a typical use of
+optional view:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3550"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a:t@ype}
+ptr_alloc_opt (): [l:addr] (option_v (a? @ l, l &#62; null) | ptr l)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given a type T, the function <FONT
+COLOR="RED"
+>ptr_alloc_opt&#60;T&#62;</FONT
+> returns a
+pointer paired with a proof of an optional view; if the returned pointer is
+not null, then the proof can be turned into a proof of the view
+<FONT
+COLOR="RED"
+>T?@L</FONT
+>, where L is the location to which the pointer points;
+otherwise, there is no at-view associated with the returned pointer.
+
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3511.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3554.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Heap-Allocated Linear Closure-Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p3297.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Disjunctive Views</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

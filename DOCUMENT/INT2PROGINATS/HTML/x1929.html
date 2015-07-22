@@ -1,0 +1,404 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>&#13;Example: A Package for Rationals
+</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Modularity"
+HREF="c1695.html"><LINK
+REL="PREVIOUS"
+TITLE="
+Abstract Types
+"
+HREF="x1895.html"><LINK
+REL="NEXT"
+TITLE="
+Example: A Functorial Package for Rationals
+"
+HREF="x1969.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1895.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. Modularity</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1969.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_a_package_for_rationals"
+>Example: A Package for Rationals</A
+></H1
+><P
+>&#13;Let us represent a rational number as a pair of integers.  If we declare a
+boxed abstract type <FONT
+COLOR="RED"
+>rat</FONT
+> for values representing rational
+numbers, then each value of the type <FONT
+COLOR="RED"
+>rat</FONT
+> is stored in
+heap-allocated memory, which can only be reclaimed through garbage
+collection (GC). Instead, we follow an alternative approach by declaring
+<FONT
+COLOR="RED"
+>rat</FONT
+> as an unboxed abstract type. Therefore, a declaration like
+the following one is expected:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1935"
+></A
+><PRE
+CLASS="programlisting"
+>abst@ype rat
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The problem with this declaration is that it is too abstract. As there is
+not information given about the size of the type <FONT
+COLOR="RED"
+>rat</FONT
+>, the ATS
+compiler does not even know how much memory is needed for storing a value
+of the type <FONT
+COLOR="RED"
+>rat</FONT
+>. However, the programmer should not assume that
+such a form of declaration is useless. There are realistic circumstances
+where a declaration of this form can be of great importance, and this is a
+topic I will cover elsewhere. For now, let us declare an unboxed abstract
+type as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1939"
+></A
+><PRE
+CLASS="programlisting"
+>abst@ype rat = (int, int)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+This declaration simply informs the ATS compiler that the representation
+for values of the type <FONT
+COLOR="RED"
+>rat</FONT
+> is the same as the one for values of
+the type <FONT
+COLOR="RED"
+>(int, int)</FONT
+>. However, this information is not made
+available to the typechecker of ATS. In particular, if a value of the type
+<FONT
+COLOR="RED"
+>rat</FONT
+> is treated as a pair of integers in a program, then a
+type-error will surely occur.  </P
+><P
+>The following code is contained in a file named
+<TT
+CLASS="filename"
+>ratmod.sats</TT
+>, which is available
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_MODULARITY/ratmod.sats"
+TARGET="_top"
+>on-line</A
+>.
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1947"
+></A
+><PRE
+CLASS="programlisting"
+>exception Denominator
+exception DivisionByZero
+
+fun rat_make_int_int (p: int, q: int): rat
+
+fun ratneg: (rat) -&#62; rat // negation
+fun ratadd: (rat, rat) -&#62; rat // addition
+fun ratsub: (rat, rat) -&#62; rat // subtraction
+fun ratmul: (rat, rat) -&#62; rat // multiplication
+fun ratdiv: (rat, rat) -&#62; rat // division
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The exception <FONT
+COLOR="RED"
+>Denominator</FONT
+> is for reporting an erroneous
+occasion where a rational number is to be formed with a denominator equal
+to zero.  Given two integers representing the numerator and denominator of
+a rational number, the function <FONT
+COLOR="RED"
+>rat_make_int_int</FONT
+> returns a
+value representing the rational number. The following implementation of
+<FONT
+COLOR="RED"
+>rat_make_int_int</FONT
+> can be found in a file named
+<TT
+CLASS="filename"
+>ratmod.dats</TT
+>, which is also available
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_MODULARITY/ratmod.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1954"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+rat_make_int_int (p, q) = let
+  fun make (
+    p: int, q: int
+  ) : rat = let
+    val r = gcd (p, q) in (p / r, q / r)
+  end // end of [make]
+//
+  val () = if q = 0 then $raise Denominator
+//
+in
+  if q &#62; 0 then make (p, q) else make (~p, ~q)
+end // end of [rat_make_int_int]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given a pair of integers p and q such that q is not zero, the function
+<FONT
+COLOR="RED"
+>rat_make_int_int</FONT
+> returns another pair of integers
+p<SUB
+>1</SUB
+> and q<SUB
+>1</SUB
+> such that
+q<SUB
+>1</SUB
+> is positive, p<SUB
+>1</SUB
+> and
+q<SUB
+>1</SUB
+> are coprimes, that is, their greatest common
+divisor is 1, and p<SUB
+>1</SUB
+>/q<SUB
+>1</SUB
+>
+equals p/q. With <FONT
+COLOR="RED"
+>rat_make_int_int</FONT
+>, it is straightforward to
+implement as follows the arithmetic operations on rational numbers:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1965"
+></A
+><PRE
+CLASS="programlisting"
+>implement ratneg (x) = (~x.0, x.1)
+
+implement
+ratadd (x, y) =
+  rat_make_int_int (x.0 * y.1 + x.1 * y.0, x.1 * y.1)
+// end of [ratadd]
+
+implement
+ratsub (x, y) =
+  rat_make_int_int (x.0 * y.1 - x.1 * y.0, x.1 * y.1)
+// end of [ratsub]
+
+implement
+ratmul (x, y) = rat_make_int_int (x.0 * y.0, x.1 * y.1)
+
+implement
+ratdiv (x, y) = (
+if y.0 &#62; 0
+  then rat_make_int_int (x.0 * y.1, x.1 * y.0) else $raise DivisionByZero()
+// end of [if]
+) (* end of [ratdiv] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+There is also some testing code available
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_MODULARITY/test_ratmod.dats"
+TARGET="_top"
+>on-line</A
+> that makes
+use of some functions declared in <TT
+CLASS="filename"
+>ratmod.sats</TT
+>.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1895.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1969.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Abstract Types</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1695.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: A Functorial Package for Rationals</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

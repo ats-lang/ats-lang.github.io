@@ -1,0 +1,246 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>External Types and Values in ATS</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Interaction with C"
+HREF="c2005.html"><LINK
+REL="PREVIOUS"
+TITLE="Interaction with C"
+HREF="c2005.html"><LINK
+REL="NEXT"
+TITLE="Inclusion of External Code in ATS"
+HREF="x2084.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c2005.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Interaction with C</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2084.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="external_types_and_values"
+>External Types and Values in ATS</A
+></H1
+><P
+>&#13;External types and values can be readily formed in ATS to refer to types
+and values declared in C.
+
+</P
+><P
+>&#13;Suppose that there is a type in C of the name <FONT
+COLOR="RED"
+>some_type_in_c</FONT
+>,
+then this type can be referred to in ATS as
+<FONT
+COLOR="RED"
+>$extype"some_type_in_c"</FONT
+>. For instance, type definitions are
+introduced in the following code for some external types in C:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2075"
+></A
+><PRE
+CLASS="programlisting"
+>typedef Cint = $extype"int"
+typedef Clint = $extype"long int"
+typedef Cllint = $extype"long long int"
+typedef Cint2 = $extype"struct{ int x; int y; }"
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Suppose that there is a value in C of the name <FONT
+COLOR="RED"
+>some_value_in_c</FONT
+>,
+then this value can be referred to in ATS as <FONT
+COLOR="RED"
+>$extval(<FONT
+COLOR="RED"
+>T</FONT
+>, "some_value_in_c")</FONT
+>,
+where T is a type in ATS assigned to this value.  For instance, macro
+definitions are introduced in the following code for some external values
+in C:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2080"
+></A
+><PRE
+CLASS="programlisting"
+>macdef NULL = $extval(ptr, "0")
+macdef stdin_ref = $extval(FILEref, "stdin")
+macdef stdout_ref = $extval(FILEref, "stdout")
+</PRE
+><P
+></P
+></DIV
+>
+
+
+External values can also be formed to refer to functions in C as done
+in the following code:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2082"
+></A
+><PRE
+CLASS="programlisting"
+>macdef atoi = $extval(string -&#62; int, "atoi")
+macdef atol = $extval(string -&#62; lint, "atol")
+macdef atof = $extval(string -&#62; double, "atof")
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that there are other ways in ATS that are often more approriate for
+directly referring to functions in C.  Typically, the primary purpose of
+forming an external value in ATS is to allow a constant declared in C to be
+directly referred to in ATS code.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c2005.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2084.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Interaction with C</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2005.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Inclusion of External Code in ATS</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

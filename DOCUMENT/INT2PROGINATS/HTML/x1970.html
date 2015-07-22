@@ -1,0 +1,369 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>&#13;Example: A Functorial Package for Rationals
+</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Modularity"
+HREF="c1696.html"><LINK
+REL="PREVIOUS"
+TITLE="
+Example: A Package for Rationals
+"
+HREF="x1930.html"><LINK
+REL="NEXT"
+TITLE="Interaction with C"
+HREF="c1998.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1930.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. Modularity</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c1998.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_a_functorial_package_for_rationals"
+>Example: A Functorial Package for Rationals</A
+></H1
+><P
+>&#13;The previous package for rational numbers contains a serious limitation:
+The type for the integers employed in the representation of rational
+numbers is fixed to be <FONT
+COLOR="RED"
+>int</FONT
+>. If we ever want to represent
+rational numbers based on integers of a different type (for instance,
+<FONT
+COLOR="RED"
+>lint</FONT
+> for long integers or <FONT
+COLOR="RED"
+>llint</FONT
+> for long long
+integers), then we need to implement another package for rationals based on
+such integers. It is clearly advantageous to avoid this style of
+programming as it involves code duplication to a great extent.  </P
+><P
+>&#13;The approach I employ in this section to implement a package for rational
+numbers that can address the aforementioned limitation follows the idea of
+functors in the programming language Standard ML (SML). Let us first
+introduce a type definition as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1977"
+></A
+><PRE
+CLASS="programlisting"
+>typedef
+intmod (a:t@ype) = '{
+  ofint= int -&#62; a
+, fprint= (FILEref, a) -&#62; void
+, neg= (a) -&#62; a // negation
+, add= (a, a) -&#62; a // addition
+, sub= (a, a) -&#62; a // subtraction
+, mul= (a, a) -&#62; a // multiplication
+, div= (a, a) -&#62; a // division
+, mod= (a, a) -&#62; a // modulo operation
+, cmp= (a, a) -&#62; int // comparison
+} // end of [intmod]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given a type T, <FONT
+COLOR="RED"
+>intmod(T)</FONT
+> is a boxed record type in which each
+field is a function type. A value of the type <FONT
+COLOR="RED"
+>intmod(T)</FONT
+> is
+supposed to represent a module of integer operations on integers
+represented by values of the type T. Similarly, let us introduce another
+type definition as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1981"
+></A
+><PRE
+CLASS="programlisting"
+>abst@ype rat (a:t@ype) = (a, a)
+
+typedef
+ratmod (a:t@ype) = '{
+  make= (a, a) -&#60;cloref1&#62; rat a
+, fprint= (FILEref, rat a) -&#60;cloref1&#62; void
+, numer= rat a -&#62; a // numerator
+, denom= rat a -&#62; a // denominator
+, neg= (rat a) -&#60;cloref1&#62; rat a // negation
+, add= (rat a, rat a) -&#60;cloref1&#62; rat a // addition
+, sub= (rat a, rat a) -&#60;cloref1&#62; rat a // subtraction
+, mul= (rat a, rat a) -&#60;cloref1&#62; rat a // multiplication
+, div= (rat a, rat a) -&#60;cloref1&#62; rat a // division
+, cmp= (rat a, rat a) -&#60;cloref1&#62; int // comparison
+} // end of [ratmod]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given a type T, a value of the type <FONT
+COLOR="RED"
+>ratmod(T)</FONT
+> is supposed to
+represent a module of rational operations on rationals represented by
+values of the type <FONT
+COLOR="RED"
+>rat(T)</FONT
+>. The function we need to implement can
+now be given the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1985"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a:t@ype} ratmod_make_intmod (int: intmod a): ratmod a
+</PRE
+><P
+></P
+></DIV
+>
+
+
+If applied to a given module of integer operations,
+<FONT
+COLOR="RED"
+>ratmod_make_intmod</FONT
+> returns a module of rational operations such
+that the integers in the former and the latter modules have the same
+representation. Therefore, <FONT
+COLOR="RED"
+>ratmod_make_intmod</FONT
+> behaves like a
+functor in SML.  In the following code, let us implement two modules
+<FONT
+COLOR="RED"
+>ratmod_int</FONT
+> and <FONT
+COLOR="RED"
+>ratmod_dbl</FONT
+> of rational operations in
+which integers are represented as values of the types <FONT
+COLOR="RED"
+>int</FONT
+> and
+<FONT
+COLOR="RED"
+>double</FONT
+>, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1993"
+></A
+><PRE
+CLASS="programlisting"
+>staload M = "libc/SATS/math.sats"
+
+val ratmod_int = let
+//
+val intmod_int = '{
+  ofint= lam (i) =&#62; i
+, fprint= lam (out, x) =&#62; $extfcall (void, "fprintf", out, "%i", x)
+, neg= lam (x) =&#62; ~x
+, add= lam (x, y) =&#62; x + y
+, sub= lam (x, y) =&#62; x - y
+, mul= lam (x, y) =&#62; x * y
+, div= lam (x, y) =&#62; x / y
+, mod= lam (x, y) =&#62; op mod (x, y)
+, cmp= lam (x, y) =&#62; compare (x, y)
+} : intmod (int) // end of [val]
+//
+in
+  ratmod_make_intmod&#60;int&#62; (intmod_int)
+end // end of [val]
+
+val ratmod_dbl = let
+//
+val intmod_dbl = '{
+  ofint= lam (i) =&#62; g0i2f(i)
+, fprint= lam (out, x) =&#62; $extfcall (void, "fprintf", out, "%0.f", x)
+, neg= lam (x) =&#62; ~x
+, add= lam (x, y) =&#62; x + y
+, sub= lam (x, y) =&#62; x - y
+, mul= lam (x, y) =&#62; x * y
+, div= lam (x, y) =&#62; $M.trunc (x / y) // truncation
+, mod= lam (x, y) =&#62; $M.fmod (x, y)
+, cmp= lam (x, y) =&#62; compare (x, y)
+} : intmod (double) // end of [val]
+//
+in
+  ratmod_make_intmod&#60;double&#62; (intmod_dbl)
+end // end of [ratmod_dbl]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+An implementation of the function <FONT
+COLOR="RED"
+>ratmod_make_intmod</FONT
+> is
+available <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_MODULARITY/ratfun.dats"
+TARGET="_top"
+>on-line</A
+> and there
+is some related testing code available
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_MODULARITY/test_ratfun.dats"
+TARGET="_top"
+>on-line</A
+> as well.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1930.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c1998.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: A Package for Rationals</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1696.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Interaction with C</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

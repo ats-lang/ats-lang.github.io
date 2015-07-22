@@ -1,0 +1,313 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Binary Search Tree</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Datatypes"
+HREF="c904.html"><LINK
+REL="PREVIOUS"
+TITLE="Exhaustiveness of Pattern-Matching"
+HREF="x1026.html"><LINK
+REL="NEXT"
+TITLE="Example: Evaluating Integer Expressions"
+HREF="x1095.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1026.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Datatypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1095.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_binary_search_tree"
+>Example: Binary Search Tree</A
+></H1
+><P
+>&#13;A binary search tree is a binary tree satisfying the following property:
+for each node in the tree, the key stored in the node is greater than or
+equal to every key stored in the left child of the node and less than or
+equal to every key stored in the right child of the node. In other words, a
+binary tree is a binary search tree if a pre-order traversal encounters a
+sequence of keys ordered ascendingly (according to some ordering on keys). In
+practice, binary search trees are commonly employed to represent sets and
+maps.
+
+</P
+><P
+>&#13;The following declaration introduces a datatype <FONT
+COLOR="RED"
+>bstree</FONT
+> for
+binary search trees in which the stored keys are strings:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1077"
+></A
+><PRE
+CLASS="programlisting"
+>datatype bstree =
+  | E of () | B of (bstree, string, bstree)
+// end of [bstree]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;It should be noted that not every value of the type <FONT
+COLOR="RED"
+>bstree</FONT
+>
+represents a valid binary search tree as it is certainly possible to
+construct a value representing a binary tree but not a binary search tree.
+
+</P
+><P
+>&#13;The following function [bstree_inord] does a in-order traversal of a
+given binary tree:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1082"
+></A
+><PRE
+CLASS="programlisting"
+>fun bstree_inord
+(
+  t0: bstree, fwork: string -&#60;cloref1&#62; void
+) : void =
+(
+case+ t0 of
+| E () =&#62; ()
+| B (t1, k, t2) =&#62;
+  {
+    val () = bstree_inord (t1, fwork)
+    val () = fwork (k)
+    val () = bstree_inord (t2, fwork)
+  }
+) (* end of [bstree_inord] *)
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;If [t0] is a binary search tree, then the sequence of
+keys processed by [fwork] are ordered ascendingly.
+
+</P
+><P
+>&#13;Given a binary search tree and a key, the following function
+[bstree_search] checks whether the key is stored inside the tree:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1086"
+></A
+><PRE
+CLASS="programlisting"
+>fun bstree_search
+  (t0: bstree, k0: string): bool =
+(
+case+ t0 of
+| E () =&#62; false
+| B (t1, k, t2) =&#62; let
+    val sgn = compare (k0, k)
+  in
+    case+ 0 of
+    | _ when sgn &#60; 0 =&#62; bstree_search (t1, k0)
+    | _ when sgn &#62; 0 =&#62; bstree_search (t2, k0)
+    | _ (*k0 = k*) =&#62; true
+  end // end of [B]
+) (* end of [bstree_search] *)
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;Note that [bstree_search] returns true if the given key is
+found. Otherwise, it returns false.
+
+</P
+><P
+>&#13;Given a binary search tree and a key, the following function
+[bstree_insert] inserts the key into the tree:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1090"
+></A
+><PRE
+CLASS="programlisting"
+>fun bstree_insert
+  (t0: bstree, k0: string): bstree =
+(
+case+ t0 of
+| E () =&#62; B (E, k0, E)
+| B (t1, k, t2) =&#62; let
+    val sgn = compare (k0, k)
+  in
+    case+ 0 of
+    | _ when sgn &#60; 0 =&#62; B (bstree_insert (t1, k0), k, t2)
+    | _ when sgn &#62; 0 =&#62; B (t1, k, bstree_insert (t2, k0))
+    | _ (*k0 = k*) =&#62; t0 // [k0] found and no actual insertion
+  end // end of [B]
+) (* end of [bstree_insert] *)
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;Note that [bstree_insert] inserts the key only if it is not already stored
+inside the given tree. Also, if inserted, the key is always stored in a newly
+created leaf node.
+
+</P
+><P
+>&#13;Please find
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_DATATYPE/bstree.dats"
+TARGET="_top"
+>on-line</A
+>
+the entirety of the code in this section plus some additional code for
+testing.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1026.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1095.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Exhaustiveness of Pattern-Matching</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c904.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Evaluating Integer Expressions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,309 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Sequentiality of Pattern Matching</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Datatype Refinement"
+HREF="c2573.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Mergesort on Lists (Redux)"
+HREF="x2755.html"><LINK
+REL="NEXT"
+TITLE="Example: Functional Red-Black Trees"
+HREF="x2812.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2755.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 10. Datatype Refinement</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2812.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="sequentiality_of_pattern_matching"
+>Sequentiality of Pattern Matching</A
+></H1
+><P
+>&#13;In ATS, pattern matching is performed sequentially at run-time. In other
+words, a clause is selected only if a given value matches the pattern
+guard associated with this clause but the value fails to match the pattern
+associated with any clause ahead of it. Naturally, one may expect that the
+following implementation of <FONT
+COLOR="RED"
+>list_zipwith</FONT
+> also typechecks:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2787"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a1,
+a2:t@ype
+}{b:t@ype
+} list_zipwith
+  {n:nat}
+(
+  xs1: list (a1, n)
+, xs2: list (a2, n)
+, f: (a1, a2) -&#60;cloref1&#62; b
+) : list (b, n) =
+  case+ (xs1, xs2) of
+  | (list_cons (x1, xs1),
+     list_cons (x2, xs2)) =&#62;
+    (
+      list_cons{b}(f (x1, x2), list_zipwith&#60;a1,a2&#62;&#60;b&#62; (xs1, xs2, f))
+    )
+  | (_, _) =&#62; list_nil (*void*)
+// end of [list_zipwith]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+This, however, is not the case. In ATS, typechecking clauses is done
+nondeterministically (rather than sequentially). In this example, the
+second clause fails to typecheck as it is done without the assumption of
+the given pair <FONT
+COLOR="RED"
+>(xs1, xs2)</FONT
+> failing to match the pattern
+guard associated with the first clause.  The second clause can be modified
+slightly as follows to pass typechecking:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2790"
+></A
+><PRE
+CLASS="programlisting"
+>  | (_, _) =&#62;&#62; list_nil ()
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The use of the symbol <FONT
+COLOR="RED"
+>=&#62;&#62;</FONT
+> (in place of <FONT
+COLOR="RED"
+>=&#62;</FONT
+>)
+indicates to the typechecker that this clause needs to be typechecked under
+the sequentiality assumption that the given value matching it does not
+match the pattern guards associated with any previous clauses. Therefore,
+when the modified second clause is typechecked, it can be assumed that the
+pair <FONT
+COLOR="RED"
+>(xs1, xs2)</FONT
+> matching the pattern <FONT
+COLOR="RED"
+>(_, _)</FONT
+> must
+match one of the following three patterns:
+
+<P
+></P
+><UL
+><LI
+><P
+>&#13;<FONT
+COLOR="RED"
+>(list_cons (_, _), list_nil ())</FONT
+>
+</P
+></LI
+><LI
+><P
+>&#13;<FONT
+COLOR="RED"
+>(list_nil (), list_cons (_, _))</FONT
+>
+</P
+></LI
+><LI
+><P
+>&#13;<FONT
+COLOR="RED"
+>(list_nil (), list_nil ())</FONT
+>
+</P
+></LI
+></UL
+>
+
+Given that <FONT
+COLOR="RED"
+>xs1</FONT
+> and <FONT
+COLOR="RED"
+>xs2</FONT
+> are of the same length,
+the typechecker can readily infer that <FONT
+COLOR="RED"
+>(xs1, xs2)</FONT
+> cannot match
+either of the first two patterns. After these two patterns are ruled out,
+typechecking is essentially done as if the second clause was written as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2809"
+></A
+><PRE
+CLASS="programlisting"
+>  | (list_nil (), list_nil ()) =&#62; list_nil ()
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;One may be wondering why typechecking clauses is not required to be
+done sequentially by default. The simple reason is that this requirement,
+if fully enforced, can have a great negative impact on the efficiency of
+typechecking. Therefore, it is a reasonable design to provide the
+programmer with an explict means to occasionally make use of the
+sequentiality assumption needed for typechecking a particular clause.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2755.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2812.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Mergesort on Lists (Redux)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2573.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Functional Red-Black Trees</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

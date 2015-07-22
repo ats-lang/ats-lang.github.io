@@ -1,0 +1,617 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Linear Binary Search Trees</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Dataviewtypes as Linear Datatypes"
+HREF="c3768.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Quick-Sort on Linear Lists"
+HREF="x4020.html"><LINK
+REL="NEXT"
+TITLE="Transition from Datatypes to Dataviewtypes"
+HREF="x4111.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x4020.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 15. Dataviewtypes as Linear Datatypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x4111.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="linear_binary_search_trees"
+>Linear Binary Search Trees</A
+></H1
+><P
+>&#13;A binary search tree with respect to a given ordering is a binary tree such
+that the value stored in each node inside the tree is greater than or equal
+to those stored in the left child of the node and less than or equal to
+those stored in the right child of the node.  Binary search trees are a
+common data structure for implementing finite maps.
+
+</P
+><P
+>&#13;A family of binary
+trees are said to be balanced if there is a fixed constant C (for the
+entire family) such that the ratio between the length of a longest path and
+the length of a shortest path is bounded by C for every tree in the
+family. For instance, common examples of balanced binary trees include AVL
+trees and red-black trees. Finite maps based on balanced binary search
+trees support guaranteed log-time insertion and deletion operations, that
+is, the time to complete such an operation is O(log(n)) in the worst case,
+where n is the size of the map.
+
+</P
+><P
+>&#13;In this section, I am to implement several basic operations on linear
+binary search trees, further illustrating some use of dataviewtypes. Let us
+first declare as follows a dataviewtype <FONT
+COLOR="RED"
+>bstree_vt</FONT
+> for linear
+binary (search) trees:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4063"
+></A
+><PRE
+CLASS="programlisting"
+>datavtype
+bstree_vt (a:t@ype+, int) =
+  | bstree_vt_nil (a, 0) of ()
+  | {n1,n2:nat}
+    bstree_vt_cons (a, n1+n2+1) of (bstree_vt (a, n1), a, bstree_vt (a, n2))
+// end of [bstree_vt]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Note that the integer index of <FONT
+COLOR="RED"
+>bstree_vt</FONT
+> captures the size
+information of a binary (search) tree.  There are two constructors
+<FONT
+COLOR="RED"
+>bstree_vt_cons</FONT
+> and <FONT
+COLOR="RED"
+>bstree_vt_nil</FONT
+> associated with
+<FONT
+COLOR="RED"
+>bstree_vt</FONT
+>. It should be pointed out that the tree created by
+<FONT
+COLOR="RED"
+>bstree_vt_nil</FONT
+> is empty and thus not a leaf, which on the other
+hand is a node whose left and right children are both empty.  As a simple
+example, the following function template <FONT
+COLOR="RED"
+>size</FONT
+> computes the size
+of a given tree:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4072"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype
+} size{n:nat} .&#60;n&#62;.
+(
+  t: !bstree_vt (a, n)
+) : int (n) =
+  case+ t of
+  | bstree_vt_nil () =&#62; 0
+  | bstree_vt_cons
+     (tl, _, tr) =&#62; 1 + size (tl) + size (tr)
+// end of [size]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Assume that we have a binary search tree with repect to some ordering.  If
+a predicate P on the elements stored in the tree possesses the property
+that P(x1) implies P(x2) whenever x1 is less than x2 (according to the
+ordering), then we can locate the least element in the tree that satisfies
+the predicate P by employing so-called binary search as is demonstrated in
+the following implementation of <FONT
+COLOR="RED"
+>search</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4076"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype
+} search
+  {n:nat} .&#60;n&#62;.
+(
+  t: !bstree_vt (a, n), P: (&#38;a) -&#60;cloref&#62; bool
+) : Option_vt (a) =
+  case+ t of
+  | @bstree_vt_cons
+      (tl, x, tr) =&#62;
+      if P (x) then let
+        val res = search (tl, P)
+        val res = (
+          case+ res of
+          | ~None_vt () =&#62; Some_vt (x) | _ =&#62; res
+        ) : Option_vt (a)
+      in
+        fold@ (t); res
+      end else let
+        val res = search (tr, P) in fold@ (t); res
+      end // end of [if]
+  | @bstree_vt_nil () =&#62; (fold@ (t); None_vt ())
+// end of [search]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, if the argument <FONT
+COLOR="RED"
+>t</FONT
+> of <FONT
+COLOR="RED"
+>search</FONT
+> ranges over a
+family of balanced trees, then the time-complexity of <FONT
+COLOR="RED"
+>search</FONT
+> is
+O(log(n)) (assuming that <FONT
+COLOR="RED"
+>P</FONT
+> is O(1)).
+
+</P
+><P
+>&#13;Let us next see some code implementing an operation that inserts a given
+element into a binary search tree:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4083"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype
+} insert{n:nat} .&#60;n&#62;.
+(
+  t: bstree_vt (a, n), x0: &#38;a, cmp: cmp(a)
+) : bstree_vt (a, n+1) =
+  case+ t of
+  | @bstree_vt_cons
+      (tl, x, tr) =&#62; let
+      val sgn = compare&#60;a&#62; (x0, x, cmp)
+    in
+      if sgn &#60;= 0 then let
+        val () = tl := insert (tl, x0, cmp)
+      in
+        fold@ (t); t
+      end else let
+        val () = tr := insert (tr, x0, cmp)
+      in
+        fold@ (t); t
+      end (* end of [if] *)
+    end // end of [bstree_vt_cons]
+  | ~bstree_vt_nil () =&#62;
+      bstree_vt_cons (bstree_vt_nil, x0, bstree_vt_nil)
+    // end of [bstree_vt_nil]
+// end of [insert]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;When inserting an element, the function template <FONT
+COLOR="RED"
+>insert</FONT
+> extends
+the given tree with a new leaf node containing the element, and this form
+of insertion is often referred to as leaf-insertion.  There is another form
+of insertion often referred to as root-insertion, which always puts at the
+root position the new node containing the inserted element. The following
+function template <FONT
+COLOR="RED"
+>insertRT</FONT
+> is implemented to perform a standard
+root-insertion operation:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4088"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype
+} insertRT{n:nat} .&#60;n&#62;.
+(
+  t: bstree_vt (a, n), x0: &#38;a, cmp: cmp(a)
+) : bstree_vt (a, n+1) =
+  case+ t of
+  | @bstree_vt_cons
+      (tl, x, tr) =&#62; let
+      val sgn = compare&#60;a&#62; (x0, x, cmp)
+    in
+      if sgn &#60;= 0 then let
+        val tl_ = insertRT (tl, x0, cmp)
+        val+@bstree_vt_cons (_, tll, tlr) = tl_
+        val () = tl := tlr
+        prval () = fold@ (t)
+        val () = tlr := t
+      in
+        fold@ (tl_); tl_
+      end else let
+        val tr_ = insertRT (tr, x0, cmp)
+        val+@bstree_vt_cons (trl, _, trr) = tr_
+        val () = tr := trl
+        prval () = fold@ (t)
+        val () = trl := t
+      in
+        fold@ (tr_); tr_
+      end
+    end // end of [bstree_vt_cons]
+  | ~bstree_vt_nil () =&#62;
+      bstree_vt_cons (bstree_vt_nil, x0, bstree_vt_nil)
+    // end of [bstree_vt_nil]
+// end of [insertRT]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The code immediately following the first recursive call to
+<FONT
+COLOR="RED"
+>insertRT</FONT
+> performs a right tree rotation. Let us use T(tl, x,
+tr) for a tree such that its root node contains the element x and its left
+and right children are tl and tr, respectively. Then a right rotation turns
+T(T(tll, xl, tlr), x, tr) into T(tll, xl, T(tlr, x, tr)).  The code
+immediately following the second recursive call to <FONT
+COLOR="RED"
+>insertRT</FONT
+>
+performs a left tree rotation, which turns T(tl, x, T(trl, xr, trr)) into
+T(T(tl, x, tlr), xr, trr).
+
+</P
+><P
+>&#13;To further illustrate tree rotations, I present as follows
+two function templates <FONT
+COLOR="RED"
+>lrotate</FONT
+> and <FONT
+COLOR="RED"
+>rrotate</FONT
+>, which
+implement the left and right tree rotations, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4095"
+></A
+><PRE
+CLASS="programlisting"
+>fn{
+a:t@ype
+} lrotate
+  {l,l_tl,l_x,l_tr:addr} 
+  {nl,nr:int | nl &#62;= 0; nr &#62; 0}
+(
+  pf_tl: bstree_vt (a, nl) @ l_tl
+, pf_x: a @ l_x
+, pf_tr: bstree_vt (a, nr) @ l_tr
+| t: bstree_vt_cons_unfold (l, l_tl, l_x, l_tr)
+, p_tl: ptr l_tl
+, p_tr: ptr l_tr
+) : bstree_vt (a, 1+nl+nr) = let
+  val tr = !p_tr
+  val+@bstree_vt_cons (trl, _, trr) = tr
+  val () = !p_tr := trl
+  prval () = fold@ (t); val () = trl := t
+in
+  fold@ (tr); tr
+end // end of [lrotate]
+
+fn{
+a:t@ype
+} rrotate
+  {l,l_tl,l_x,l_tr:addr}
+  {nl,nr:int | nl &#62; 0; nr &#62;= 0}
+(
+  pf_tl: bstree_vt (a, nl) @ l_tl
+, pf_x: a @ l_x
+, pf_tr: bstree_vt (a, nr) @ l_tr
+| t: bstree_vt_cons_unfold (l, l_tl, l_x, l_tr)
+, p_tl: ptr l_tl
+, p_tr: ptr l_tr
+) : bstree_vt (a, 1+nl+nr) = let
+  val tl = !p_tl
+  val+@bstree_vt_cons (tll, x, tlr) = tl
+  val () = !p_tl := tlr
+  prval () = fold@ (t); val () = tlr := t
+in
+  fold@ (tl); tl
+end // end of [rrotate]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given 4 addresses L0, L1, L2 and L3, the type
+<FONT
+COLOR="RED"
+>bstree_vt_cons_unfold(L0, L1, L2, l3)</FONT
+> is for a tree node
+created by a call to <FONT
+COLOR="RED"
+>bstree_vt_cons</FONT
+> such that the node is
+located at L0 and the three arguments of <FONT
+COLOR="RED"
+>bstree_vt_cons</FONT
+> are
+located at L1, L2 and L3, and the proofs for the at-views associated with
+L1, L2 and L3 are put in the store for currently available proofs.
+
+</P
+><P
+>&#13;The function template <FONT
+COLOR="RED"
+>insertRT</FONT
+> for root-insertion can now be
+implemented as follows by making direct use of <FONT
+COLOR="RED"
+>lrotate</FONT
+> and
+<FONT
+COLOR="RED"
+>rrotate</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4104"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype
+} insertRT {n:nat} .&#60;n&#62;.
+(
+  t: bstree_vt (a, n), x0: &#38;a, cmp: cmp(a)
+) : bstree_vt (a, n+1) =
+  case+ t of
+  | @bstree_vt_cons
+      (tl, x, tr) =&#62; let
+      prval pf_x = view@x
+      prval pf_tl = view@tl
+      prval pf_tr = view@tr
+      val sgn = compare&#60;a&#62; (x0, x, cmp)
+    in
+      if sgn &#60;= 0 then let
+        val () = tl := insertRT&#60;a&#62; (tl, x0, cmp)
+      in
+        rrotate&#60;a&#62; (pf_tl, pf_x, pf_tr | t, addr@tl, addr@tr)
+      end else let
+        val () = tr := insertRT&#60;a&#62; (tr, x0, cmp)
+      in
+        lrotate&#60;a&#62; (pf_tl, pf_x, pf_tr | t, addr@tl, addr@tr)
+      end (* end of [if] *)
+    end // end of [bstree_vt_cons]
+  | ~bstree_vt_nil () =&#62;
+      bstree_vt_cons (bstree_vt_nil, x0, bstree_vt_nil)
+    // end of [bstree_vt_nil]
+// end of [insertRT]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;I would like to point out that neither <FONT
+COLOR="RED"
+>insert</FONT
+> nor
+<FONT
+COLOR="RED"
+>insertRT</FONT
+> is tail-recursive. While it is straightforward to give
+the former a tail-recursive implementation, there is no direct way to do
+the same to the latter. In order to implement root-insertion in a
+tail-recursive manner, we are in need of binary search trees with parental
+pointers (so as to allow each node to gain direct access to its parent),
+which can be done with dataviews but not with dataviewtypes.
+
+</P
+><P
+>&#13;Please find the entire code in this section plus some additional
+code for testing <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_DATAVTYPE/bstree_vt.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x4020.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x4111.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Quick-Sort on Linear Lists</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3768.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Transition from Datatypes to Dataviewtypes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

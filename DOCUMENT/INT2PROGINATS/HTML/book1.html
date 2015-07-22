@@ -1,0 +1,970 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Introduction to Programming in ATS</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="NEXT"
+TITLE="Preface"
+HREF="f32.html"><META
+NAME="KEYWORD"
+CONTENT="ATS"><META
+NAME="KEYWORD"
+CONTENT="Programming"><META
+NAME="KEYWORD"
+CONTENT="Theorem-Proving"><META
+NAME="KEYWORD"
+CONTENT="Program-first"><META
+NAME="KEYWORD"
+CONTENT="Programmer-centric"><META
+NAME="KEYWORD"
+CONTENT="Verification"><META
+NAME="KEYWORD"
+CONTENT="Dependent Types"><META
+NAME="KEYWORD"
+CONTENT="Linear Types"><META
+NAME="KEYWORD"
+CONTENT="Function Templates"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="book"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="BOOK"
+><A
+NAME="INT2PROGINATS"
+></A
+><DIV
+CLASS="TITLEPAGE"
+><H1
+CLASS="title"
+><A
+NAME="AEN2"
+>Introduction to Programming in ATS</A
+></H1
+><H2
+CLASS="subtitle"
+></H2
+><H3
+CLASS="author"
+><A
+NAME="AEN6"
+></A
+>Hongwei Xi</H3
+><DIV
+CLASS="affiliation"
+><DIV
+CLASS="address"
+><P
+CLASS="address"
+><br>
+ATS&nbsp;Trustful&nbsp;Software,&nbsp;Inc.<br>
+</P
+></DIV
+></DIV
+><P
+CLASS="copyright"
+>Copyright &copy; 2010-201? Hongwei Xi</P
+><DIV
+><DIV
+CLASS="abstract"
+><P
+></P
+><A
+NAME="AEN13"
+></A
+><P
+>&#13;As a programming language, ATS is both syntax-rich and feature-rich.
+This book introduces the reader to some core features of ATS, including
+basic functional programming, simple types, (recursively defined)
+datatypes, polymorphic types, dependent types, linear types, theorem-proving,
+programming with theorem-proving (PwTP), and template-based programming.
+Although the reader is not assumed to be familiar with programming in general,
+the book is likely to be rather dense for someone without considerable
+programming experience.
+</P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="legalnotice"
+><P
+></P
+><A
+NAME="AEN18"
+></A
+><P
+>&#13;All rights are reserved. Permission is granted to print this document for personal use.
+</P
+><P
+></P
+></DIV
+><HR></DIV
+><H1
+><A
+NAME="AEN30"
+></A
+>Dedication</H1
+><P
+>&#13;To Jinning, Zoe, and Chloe.
+</P
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="f32.html"
+>Preface</A
+></DT
+><DT
+>I. <A
+HREF="p42.html"
+>Basic Functional Programming</A
+></DT
+><DD
+><DL
+><DT
+>1. <A
+HREF="c44.html"
+>Preparation for Starting</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c44.html#a_running_program"
+>A Running Program</A
+></DT
+><DT
+><A
+HREF="x81.html"
+>A Template for Single-File Programs</A
+></DT
+><DT
+><A
+HREF="x89.html"
+>A Makefile Template</A
+></DT
+></DL
+></DD
+><DT
+>2. <A
+HREF="c96.html"
+>Elements of Programming</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c96.html#expressions_and_values"
+>Expressions and Values</A
+></DT
+><DT
+><A
+HREF="x162.html"
+>Names and Bindings</A
+></DT
+><DT
+><A
+HREF="x187.html"
+>Scopes for Bindings</A
+></DT
+><DT
+><A
+HREF="x214.html"
+>Environments for Evaluation</A
+></DT
+><DT
+><A
+HREF="x230.html"
+>Static Semantics</A
+></DT
+><DT
+><A
+HREF="x240.html"
+>Primitive Types</A
+></DT
+><DT
+><A
+HREF="x298.html"
+>Tuples and Tuple Types</A
+></DT
+><DT
+><A
+HREF="x318.html"
+>Records and Record Types</A
+></DT
+><DT
+><A
+HREF="x346.html"
+>Conditional Expressions</A
+></DT
+><DT
+><A
+HREF="x374.html"
+>Sequence Expressions</A
+></DT
+><DT
+><A
+HREF="x390.html"
+>Comments in Code</A
+></DT
+></DL
+></DD
+><DT
+>3. <A
+HREF="c408.html"
+>Functions</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c408.html#functions-as-a-simple-form-of-abstraction"
+>Functions as a Simple Form of Abstraction</A
+></DT
+><DT
+><A
+HREF="x460.html"
+>Function Arity</A
+></DT
+><DT
+><A
+HREF="x485.html"
+>Function Interface</A
+></DT
+><DT
+><A
+HREF="x494.html"
+>Evaluation of Function Calls</A
+></DT
+><DT
+><A
+HREF="x514.html"
+>Recursive Functions</A
+></DT
+><DT
+><A
+HREF="x557.html"
+>Evaluation of Recursive Function Calls</A
+></DT
+><DT
+><A
+HREF="x593.html"
+>Example: Coin Changes for Fun</A
+></DT
+><DT
+><A
+HREF="x616.html"
+>Tail-Call and Tail-Recursion</A
+></DT
+><DT
+><A
+HREF="x627.html"
+>Example: The Eight-Queens Puzzle</A
+></DT
+><DT
+><A
+HREF="x690.html"
+>Mutually Recursive Functions</A
+></DT
+><DT
+><A
+HREF="x711.html"
+>Mutually Defined Tail-Recursion</A
+></DT
+><DT
+><A
+HREF="x742.html"
+>Envless Functions and Closure-Functions</A
+></DT
+><DT
+><A
+HREF="x796.html"
+>Higher-Order Functions</A
+></DT
+><DT
+><A
+HREF="x841.html"
+>Example: Binary Search for Fun</A
+></DT
+><DT
+><A
+HREF="x855.html"
+>Example: A Higher-Order Fun Puzzle</A
+></DT
+><DT
+><A
+HREF="x888.html"
+>Currying and Uncurrying</A
+></DT
+></DL
+></DD
+><DT
+>4. <A
+HREF="c905.html"
+>Datatypes</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c905.html#patterns"
+>Patterns</A
+></DT
+><DT
+><A
+HREF="x946.html"
+>Pattern-Matching</A
+></DT
+><DT
+><A
+HREF="x967.html"
+>Matching Clauses and Case-Expressions</A
+></DT
+><DT
+><A
+HREF="x974.html"
+>Enumerative Datatypes</A
+></DT
+><DT
+><A
+HREF="x1010.html"
+>Recursively Defined Datatypes</A
+></DT
+><DT
+><A
+HREF="x1027.html"
+>Exhaustiveness of Pattern-Matching</A
+></DT
+><DT
+><A
+HREF="x1073.html"
+>Example: Binary Search Tree</A
+></DT
+><DT
+><A
+HREF="x1096.html"
+>Example: Evaluating Integer Expressions</A
+></DT
+></DL
+></DD
+><DT
+>5. <A
+HREF="c1122.html"
+>Parametric Polymorphism</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c1122.html#function_templates"
+>Function Templates</A
+></DT
+><DT
+><A
+HREF="x1173.html"
+>Polymorphic Functions</A
+></DT
+><DT
+><A
+HREF="x1220.html"
+>Polymorphic Datatypes</A
+></DT
+><DT
+><A
+HREF="x1255.html"
+>Example: Function Templates on Lists</A
+></DT
+><DT
+><A
+HREF="x1338.html"
+>Example: Mergesort on Lists</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>II. <A
+HREF="p1372.html"
+>Support for Practical Programming</A
+></DT
+><DD
+><DL
+><DT
+>6. <A
+HREF="c1374.html"
+>Effectful Programming Features</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c1374.html#exceptions"
+>Exceptions</A
+></DT
+><DT
+><A
+HREF="x1451.html"
+>Example: Testing for Braun Trees</A
+></DT
+><DT
+><A
+HREF="x1486.html"
+>References</A
+></DT
+><DT
+><A
+HREF="x1509.html"
+>Example: A Counter Implementation</A
+></DT
+><DT
+><A
+HREF="x1520.html"
+>Arrays</A
+></DT
+><DT
+><A
+HREF="x1560.html"
+>Example: Ordering Permutations</A
+></DT
+><DT
+><A
+HREF="x1596.html"
+>Matrices</A
+></DT
+><DT
+><A
+HREF="x1637.html"
+>Example: Estimating the Constant Pi</A
+></DT
+><DT
+><A
+HREF="x1645.html"
+>Simple Input and Output</A
+></DT
+></DL
+></DD
+><DT
+>7. <A
+HREF="c1703.html"
+>Modularity</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c1703.html#types_as_a_form_of_specification"
+>Types as a Form of Specification</A
+></DT
+><DT
+><A
+HREF="x1779.html"
+>Static and Dynamic ATS Files</A
+></DT
+><DT
+><A
+HREF="x1843.html"
+>Generic Template Implementation</A
+></DT
+><DT
+><A
+HREF="x1860.html"
+>Specific Template Implementation</A
+></DT
+><DT
+><A
+HREF="x1903.html"
+>Abstract Types</A
+></DT
+><DT
+><A
+HREF="x1937.html"
+>Example: A Package for Rationals</A
+></DT
+><DT
+><A
+HREF="x1977.html"
+>Example: A Functorial Package for Rationals</A
+></DT
+></DL
+></DD
+><DT
+>8. <A
+HREF="c2005.html"
+>Interaction with C</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c2005.html#external_name"
+>External Global Names</A
+></DT
+><DT
+><A
+HREF="x2069.html"
+>External Types and Values in ATS</A
+></DT
+><DT
+><A
+HREF="x2084.html"
+>Inclusion of External Code in ATS</A
+></DT
+><DT
+><A
+HREF="x2105.html"
+>Calling External Functions in ATS</A
+></DT
+><DT
+><A
+HREF="x2117.html"
+>Unsafe C-style Programming in ATS</A
+></DT
+><DT
+><A
+HREF="x2168.html"
+>Exporting Types in ATS for Use in C</A
+></DT
+><DT
+><A
+HREF="x2212.html"
+>Example: Constructing a Statically Allocated List</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>III. <A
+HREF="p2230.html"
+>Programming with Dependent Types</A
+></DT
+><DD
+><DL
+><DT
+>9. <A
+HREF="c2232.html"
+>Introduction to Dependent Types</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c2232.html#enhanced_expressiveness_for_specification"
+>Enhanced Expressiveness for Specification</A
+></DT
+><DT
+><A
+HREF="x2392.html"
+>Constraint-Solving during Typechecking</A
+></DT
+><DT
+><A
+HREF="x2417.html"
+>Example: String Processing</A
+></DT
+><DT
+><A
+HREF="x2464.html"
+>Example: Binary Search on Arrays</A
+></DT
+><DT
+><A
+HREF="x2489.html"
+>Termination-Checking for Recursive Functions</A
+></DT
+><DT
+><A
+HREF="x2539.html"
+>Example: Dependent Types for Debugging</A
+></DT
+></DL
+></DD
+><DT
+>10. <A
+HREF="c2573.html"
+>Datatype Refinement</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c2573.html#dependent_datatypes"
+>Dependent Datatypes</A
+></DT
+><DT
+><A
+HREF="x2683.html"
+>Example: Function Templates on Lists (Redux)</A
+></DT
+><DT
+><A
+HREF="x2755.html"
+>Example: Mergesort on Lists (Redux)</A
+></DT
+><DT
+><A
+HREF="x2783.html"
+>Sequentiality of Pattern Matching</A
+></DT
+><DT
+><A
+HREF="x2812.html"
+>Example: Functional Red-Black Trees</A
+></DT
+></DL
+></DD
+><DT
+>11. <A
+HREF="c2855.html"
+>Theorem-Proving in ATS/LF</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c2855.html#encoding_relations_as_dataprops"
+>Encoding Relations as Dataprops</A
+></DT
+><DT
+><A
+HREF="x2917.html"
+>Constructing Proofs as Total Functions</A
+></DT
+><DT
+><A
+HREF="x2971.html"
+>Example: Distributivity of Multiplication</A
+></DT
+><DT
+><A
+HREF="x2986.html"
+>Example: Commutativity of Multiplication</A
+></DT
+><DT
+><A
+HREF="x3003.html"
+>Algebraic Datasorts</A
+></DT
+><DT
+><A
+HREF="x3046.html"
+>Example: Establishing Properties on Braun Trees</A
+></DT
+><DT
+><A
+HREF="x3086.html"
+>Programmer-Centric Theorem-Proving</A
+></DT
+></DL
+></DD
+><DT
+>12. <A
+HREF="c3142.html"
+>Programming with Theorem-Proving</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c3142.html#circumventing_nonlinear_constraints"
+>Circumventing Nonlinear Constraints</A
+></DT
+><DT
+><A
+HREF="x3184.html"
+>Example: Safe Matrix Subscripting</A
+></DT
+><DT
+><A
+HREF="x3203.html"
+>Specifying with Enhanced Precision</A
+></DT
+><DT
+><A
+HREF="x3229.html"
+>Example: Another Verified Factorial</A
+></DT
+><DT
+><A
+HREF="x3252.html"
+>Example: Verified Fast Exponentiation</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>IV. <A
+HREF="p3307.html"
+>Programming with Views and Viewtypes</A
+></DT
+><DD
+><DL
+><DT
+>13. <A
+HREF="c3309.html"
+>Introduction to Views and Viewtypes</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c3309.html#views_for_pointers"
+>Views for Memory Access through Pointers</A
+></DT
+><DT
+><A
+HREF="x3406.html"
+>Viewtypes as a Combination of Views and Types</A
+></DT
+><DT
+><A
+HREF="x3435.html"
+>Left-Values and Call-by-Reference</A
+></DT
+><DT
+><A
+HREF="x3462.html"
+>Stack-Allocated Variables</A
+></DT
+><DT
+><A
+HREF="x3521.html"
+>Heap-Allocated Linear Closure-Functions</A
+></DT
+></DL
+></DD
+><DT
+>14. <A
+HREF="c3541.html"
+>Dataviews as Linear Dataprops</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c3541.html#optional_views"
+>Optional Views</A
+></DT
+><DT
+><A
+HREF="x3564.html"
+>Disjunctive Views</A
+></DT
+><DT
+><A
+HREF="x3605.html"
+>Dataview for Linear Arrays</A
+></DT
+><DT
+><A
+HREF="x3665.html"
+>Dataview for Linear Strings</A
+></DT
+><DT
+><A
+HREF="x3669.html"
+>Dataview for Singly-Linked Lists</A
+></DT
+><DT
+><A
+HREF="x3723.html"
+>Proof Functions for View-Changes</A
+></DT
+></DL
+></DD
+><DT
+>15. <A
+HREF="c3778.html"
+>Dataviewtypes as Linear Datatypes</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c3778.html#linear_optional_values"
+>Linear Optional Values</A
+></DT
+><DT
+><A
+HREF="x3807.html"
+>Linear Lists</A
+></DT
+><DT
+><A
+HREF="x3960.html"
+>Example: Merge-Sort on Linear Lists</A
+></DT
+><DT
+><A
+HREF="x3997.html"
+>Example: Insertion Sort on Linear Lists</A
+></DT
+><DT
+><A
+HREF="x4030.html"
+>Example: Quick-Sort on Linear Lists</A
+></DT
+><DT
+><A
+HREF="x4067.html"
+>Linear Binary Search Trees</A
+></DT
+><DT
+><A
+HREF="x4121.html"
+>Transition from Datatypes to Dataviewtypes</A
+></DT
+></DL
+></DD
+><DT
+>16. <A
+HREF="c4153.html"
+>Abstract Views and Viewtypes</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c4153.html#simple-linear-objects"
+>Simple Linear Objects</A
+></DT
+><DT
+><A
+HREF="x4205.html"
+>Memory Allocation and Deallocation</A
+></DT
+><DT
+><A
+HREF="x4269.html"
+>Example: Array-Based Circular Buffers</A
+></DT
+><DT
+><A
+HREF="x4306.html"
+>Locking and Unlocking</A
+></DT
+><DT
+><A
+HREF="x4354.html"
+>Linear Channels for Asynchronous IPC</A
+></DT
+></DL
+></DD
+></DL
+></DD
+><DT
+>V. <A
+HREF="p4444.html"
+>Programming with Function Templates</A
+></DT
+><DD
+><DL
+><DT
+>17. <A
+HREF="c4446.html"
+>From Genericity to Late-Binding</A
+></DT
+><DD
+><DL
+><DT
+><A
+HREF="c4446.html#genericity-of-template-implementations"
+>Genericity of Template Implementations</A
+></DT
+><DT
+><A
+HREF="x4510.html"
+>Example: Generic Operations on Numbers</A
+></DT
+><DT
+><A
+HREF="x4543.html"
+>Templates as a Special Form of Functors</A
+></DT
+><DT
+><A
+HREF="x4573.html"
+>Example: Templates for Loop Construction</A
+></DT
+><DT
+><A
+HREF="x4626.html"
+>Template-Based Support for Late-Binding</A
+></DT
+></DL
+></DD
+></DL
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="f32.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Preface</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

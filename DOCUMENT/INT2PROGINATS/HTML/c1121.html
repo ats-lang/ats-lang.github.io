@@ -1,0 +1,464 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Parametric Polymorphism</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Functional Programming"
+HREF="p42.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Evaluating Integer Expressions"
+HREF="x1095.html"><LINK
+REL="NEXT"
+TITLE="Polymorphic Functions"
+HREF="x1170.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1095.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1170.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="parametric_polymorphism"
+></A
+>Chapter 5. Parametric Polymorphism</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c1121.html#function_templates"
+>Function Templates</A
+></DT
+><DT
+><A
+HREF="x1170.html"
+>Polymorphic Functions</A
+></DT
+><DT
+><A
+HREF="x1210.html"
+>Polymorphic Datatypes</A
+></DT
+><DT
+><A
+HREF="x1245.html"
+>Example: Function Templates on Lists</A
+></DT
+><DT
+><A
+HREF="x1328.html"
+>Example: Mergesort on Lists</A
+></DT
+></DL
+></DIV
+><P
+>&#13;Code sharing is of paramount importance in programming.  In a typed
+programming language, we often encounter a situation where the same
+functionality is needed for values of different types. For instance, we may
+need to compute the length of a list while the elements in the list can be
+characters, integers, strings, etc. Evidently, we want to avoid
+implementing a list-length function for each element type as it would
+probably be the worst form of code duplication. We want to implement one
+single function that can be applied to any list to compute the length of
+the list. This list-length function parameterizes over the element type of
+a given list, and it behaves uniformly regardless what the element type is.
+This is a form of code sharing that is often referred to as
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>parametric polymorphism</I
+></SPAN
+>, which should be distinguished from
+other forms of polymorphism such as inheritance polymorphism in
+object-oriented programming.
+</P
+><P
+>&#13;The code employed for illustration in this chapter plus some additional
+code for testing is available <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_POLYMORPH"
+TARGET="_top"
+>on-line</A
+>.
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="function_templates"
+>Function Templates</A
+></H1
+><P
+>&#13;A function template is a code template that implements a function.
+In the following code, two functions are defined to swap values:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1130"
+></A
+><PRE
+CLASS="programlisting"
+>typedef charint = (char, int)
+typedef intchar = (int, char)
+fun swap_char_int (xy: charint): intchar = (xy.1, xy.0)
+fun swap_int_char (xy: intchar): charint = (xy.1, xy.0)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+If types are ignored, the bodies of <FONT
+COLOR="RED"
+>swap_char_int</FONT
+> and
+<FONT
+COLOR="RED"
+>swap_int_char</FONT
+> are identical. In order to avoid this kind of
+code duplication, we can first implement a function template
+<FONT
+COLOR="RED"
+>swap</FONT
+> as follows and then implement <FONT
+COLOR="RED"
+>swap_char_int</FONT
+>
+and <FONT
+COLOR="RED"
+>swap_int_char</FONT
+> based on <FONT
+COLOR="RED"
+>swap</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1138"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a,b:t@ype
+} swap (xy: (a, b)): (b, a) = (xy.1, xy.0)
+fun swap_char_int (xy: charint): intchar = swap&#60;char,int&#62; (xy)
+fun swap_int_char (xy: intchar): charint = swap&#60;int,char&#62; (xy)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+It should be noted that a function template is not a first-class value in
+ATS: There is no expression for representing a function template.  The
+syntax <FONT
+COLOR="RED"
+>{a,b:t@ype}</FONT
+> following the keyword <FONT
+COLOR="RED"
+>fun</FONT
+>
+represents template parameters or arguments. The unusual symbol
+<FONT
+COLOR="RED"
+>t@ype</FONT
+> is a sort for static terms representing types of
+unspecified size, where the size of a type is the number of bytes needed
+for representing a value of the type (under the assumption that all of the
+values of the type have the same size).  There is another sort
+<FONT
+COLOR="RED"
+>type</FONT
+> in ATS, which is for static terms representing types of
+size equal to one word exactly, that is, 4 bytes on a 32-bit machine or 8
+bytes on a 64-bit machine.  The syntax <FONT
+COLOR="RED"
+>swap&#60;char,int&#62;</FONT
+>,
+where no space is allowed between <FONT
+COLOR="RED"
+>swap</FONT
+> and <FONT
+COLOR="RED"
+>&#60;</FONT
+> ,
+stands for an instance of the function template <FONT
+COLOR="RED"
+>swap</FONT
+> in which
+the parameters <FONT
+COLOR="RED"
+>a</FONT
+> and <FONT
+COLOR="RED"
+>b</FONT
+> are replaced with
+<FONT
+COLOR="RED"
+>char</FONT
+> and <FONT
+COLOR="RED"
+>int</FONT
+>, respectively.  The syntax
+<FONT
+COLOR="RED"
+>swap&#60;int,char&#62;</FONT
+> is interpreted similarly.
+</P
+><P
+>&#13;A different style of implementation of <FONT
+COLOR="RED"
+>swap</FONT
+> is given
+as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1155"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a:t@ype}{b:t@ype} swap2 (xy: (a, b)): (b, a) = (xy.1, xy.0)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the template parameters are given sequentially (instead of
+simultaneously). The following code shows how <FONT
+COLOR="RED"
+>swap2</FONT
+> can be
+instantiated to form instances:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1158"
+></A
+><PRE
+CLASS="programlisting"
+>fun swap_char_int (xy: charint): intchar = swap2&#60;char&#62;&#60;int&#62; (xy)
+fun swap_int_char (xy: intchar): charint = swap2&#60;int&#62;&#60;char&#62; (xy)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>&#62;&#60;</FONT
+> is a special symbol (of the name GTLT) and
+no space is allowed between <FONT
+COLOR="RED"
+>&#62;</FONT
+> and <FONT
+COLOR="RED"
+>&#60;</FONT
+>.
+</P
+><P
+>&#13;As another example, a higher-order function template for composing
+(closure) functions is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1164"
+></A
+><PRE
+CLASS="programlisting"
+>typedef
+cfun (t1:t@ype, t2:t@ype) = t1 -&#60;cloref1&#62; t2
+
+fun{
+a,b,c:t@ype
+} compose (
+  f: cfun (a, b), g: cfun (b, c)
+) :&#60;cloref1&#62; cfun (a, c) = lam x =&#62; g(f(x))
+
+val inc_by_1 = lam (x:int): int =&#60;cloref&#62; x+1
+val mul_by_2 = lam (x:int): int =&#60;cloref&#62; x*2
+
+val f_2x_1 = compose&#60;int,int,int&#62; (mul_by_2, inc_by_1)
+val f_2x_2 = compose&#60;int,int,int&#62; (inc_by_1, mul_by_2)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+It should be clear that the value <FONT
+COLOR="RED"
+>f_2x_1</FONT
+> represents the
+function that multiplies its integer argument by 2 and then adds 1 to the
+result. Similarly, the value <FONT
+COLOR="RED"
+>f_2x_2</FONT
+> represents the function
+that adds 1 to its integer argument and then multiplies the result by 2.
+</P
+><P
+>&#13;In ATS, function templates are typechecked but not compiled to code in C.
+Instead, they are compiled to an intermediate form.  Only instances of
+function templates are compiled to code in C. Suppose we have a function
+template foo taking one type parameter and two instances foo&#60;T1&#62; and
+foo&#60;T2&#62; are used in a program for some types T1 and T2. In general,
+one function in C is generated for each instance of foo when the program is
+compiled. However, if T1 and T2 have the same name, then the two instances
+may share one function in C.
+</P
+><P
+>&#13;Please note that I may simply use the name function to refer to a function
+template from now on if no confusion is expected.
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1095.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1170.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Evaluating Integer Expressions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p42.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Polymorphic Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,301 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Commutativity of Multiplication</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Theorem-Proving in ATS/LF"
+HREF="c2848.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Distributivity of Multiplication"
+HREF="x2964.html"><LINK
+REL="NEXT"
+TITLE="Algebraic Datasorts"
+HREF="x2996.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2964.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 11. Theorem-Proving in ATS/LF</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2996.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_commutativity_of_multiplication"
+>Example: Commutativity of Multiplication</A
+></H1
+><P
+>The commutativity of multiplication means that the following equation
+holds
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2982"
+></A
+><PRE
+CLASS="programlisting"
+>m * n = n * m</PRE
+><P
+></P
+></DIV
+>
+
+
+for m and n ranging over integers. A direct encoding of this equation
+is given by the following (proof) function interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2984"
+></A
+><PRE
+CLASS="programlisting"
+>//
+prfun
+mul_commute{m,n:int}{p:int}(MUL(m, n, p)): MUL(n, m, p)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+An implementation of <FONT
+COLOR="RED"
+>mul_commute</FONT
+> is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2987"
+></A
+><PRE
+CLASS="programlisting"
+>primplmnt
+mul_commute
+  {m,n}{p}(pf0) = let
+//
+prfun
+auxnat
+{m:nat}
+{p:int} .&#60;m&#62;.
+(
+pf: MUL(m, n, p)
+) : MUL(n, m, p) =
+(
+  case+ pf of
+  | MULbas() =&#62; mul_nx0_0{n}()
+  | MULind(pf1) =&#62;
+      mul_distribute(auxnat(pf1), mul_nx1_n{n}())
+    // end of [MULind]
+) (* end of [auxnat] *)
+//
+in
+//
+sif
+m &#62;= 0
+then auxnat(pf0)
+else let
+  prval MULneg(pf1) = pf0 in mul_neg_2(auxnat(pf1))
+end // end of [else]
+//
+end // end of [mul_commute]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the following proof functions are called:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2989"
+></A
+><PRE
+CLASS="programlisting"
+>//
+prfun
+mul_nx0_0{n:int}(): MUL(n, 0, 0) // n * 0 = 0
+//
+prfun
+mul_nx1_n{n:int}(): MUL(n, 1, n) // n * 1 = n
+//
+prfun
+mul_neg_2
+  {m,n:int}{p:int}(MUL(m,n,p)): MUL(m,~n,~p) // m*(~n) = ~(m*n)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The inner function <FONT
+COLOR="RED"
+>auxnat</FONT
+> encodes a straighforward
+proof based on mathematical induction that establishes the following
+equation:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2992"
+></A
+><PRE
+CLASS="programlisting"
+>m * n = n * m</PRE
+><P
+></P
+></DIV
+>
+
+
+for m ranging over natural numbers and n ranging over integers.
+The function <FONT
+COLOR="RED"
+>mul_commute</FONT
+> can then be implemented immediately
+based on <FONT
+COLOR="RED"
+>auxnat</FONT
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2964.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2996.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Distributivity of Multiplication</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2848.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Algebraic Datasorts</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

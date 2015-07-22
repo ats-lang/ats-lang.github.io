@@ -1,0 +1,467 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Template-Based Support for Late-Binding</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="From Genericity to Late-Binding"
+HREF="c4446.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Templates for Loop Construction"
+HREF="x4573.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x4573.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 17. From Genericity to Late-Binding</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+>&nbsp;</TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="template-based-support-for-late-binding"
+>Template-Based Support for Late-Binding</A
+></H1
+><P
+>&#13;When asked about the meaning of object-oriented programming (OOP),
+Alan Kay once said that OOP to him meant only messaging, local retention
+and protection and hiding of state-process, and extreme late-binding of all
+things.
+</P
+><P
+>&#13;In ATS, function templates can provide a highly flexible approach to
+supporting late-binding (of function calls). Let us first take a look at a
+simple example to see why late-binding can be so desirable. The following
+code declares a datatype <FONT
+COLOR="RED"
+>intfloat</FONT
+> such that each value of this
+declared type represents either an integer or a floating point number (of
+double precision):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4631"
+></A
+><PRE
+CLASS="programlisting"
+>//
+datatype
+intfloat =
+  INT of int | FLOAT of double
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+In order to print values of the type <FONT
+COLOR="RED"
+>intfloat</FONT
+>, we can implement
+<FONT
+COLOR="RED"
+>print_intfloat</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4635"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+print_intfloat
+  (x: intfloat): void =
+(
+case+ x of
+| INT(int) =&#62; print_int(int)
+| FLOAT(float) =&#62; print_double(float)
+)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>print_int</FONT
+> and <FONT
+COLOR="RED"
+>print_double</FONT
+> are monomorphic
+functions for printing an integer and a floating point number (of double
+precision), respectively. There are certainly many different ways to print
+integers and floating point numbers, but <FONT
+COLOR="RED"
+>print_intfloat</FONT
+> only
+uses a particular one for integers (via <FONT
+COLOR="RED"
+>print_int</FONT
+>) and a
+particular one for floating point numbers (via <FONT
+COLOR="RED"
+>print_double</FONT
+>).
+One possibility of avoiding this form of extreme inflexibility is to define
+a higher-order function <FONT
+COLOR="RED"
+>fprint_intfloat</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4643"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+fprint_intfloat
+(
+  x: intfloat
+, print_int: int -&#62; void
+, print_double: double -&#62; void
+) : void =
+(
+case+ x of
+| INT(int) =&#62; print_int(int)
+| FLOAT(float) =&#62; print_double(float)
+)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+With <FONT
+COLOR="RED"
+>fprint_intfloat</FONT
+>, one can decide to choose implementations
+for <FONT
+COLOR="RED"
+>print_int</FONT
+> and <FONT
+COLOR="RED"
+>print_double</FONT
+> at a later stage. In
+this regard, I say that higher-order functions can support a form of
+late-binding. However, using higher-order functions in such a manner is not
+without serious problems. Basically, any function that calls
+<FONT
+COLOR="RED"
+>print_int</FONT
+> either directly or indirectly needs to be turned into
+a higher-order function, and the same applies to functions calling
+<FONT
+COLOR="RED"
+>print_double</FONT
+> as well. This style of programming with extensive
+use of higher-order functions can soon become extremely unwieldy when the
+number of functions grows large that need to be treated like
+<FONT
+COLOR="RED"
+>print_int</FONT
+> and <FONT
+COLOR="RED"
+>print_double</FONT
+>.
+
+</P
+><P
+>&#13;Instead of using higher-order functions, we can rely on template functions
+to support late-binding (of function calls). For example, the following
+code implements a template function <FONT
+COLOR="RED"
+>tprint_intfloat</FONT
+> for
+printing values of the type <FONT
+COLOR="RED"
+>intfloat</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4655"
+></A
+><PRE
+CLASS="programlisting"
+>//
+extern
+fun{}
+tprint_int(int): void
+extern
+fun{}
+tprint_double(double): void
+extern
+fun{}
+tprint_intfloat(intfloat): void
+//
+(* ****** ****** *)
+//
+implement
+tprint_int&#60;&#62; (x) = print_int(x)
+implement
+tprint_double&#60;&#62; (x) = print_double(x)
+//
+(* ****** ****** *)
+//
+implement
+tprint_intfloat&#60;&#62; (x) =
+(
+case+ x of
+| INT(int) =&#62; tprint_int&#60;&#62; (int)
+| FLOAT(float) =&#62; tprint_double&#60;&#62; (float)
+)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Please note that the default implementations for <FONT
+COLOR="RED"
+>tprint_int</FONT
+> and
+<FONT
+COLOR="RED"
+>tprint_double</FONT
+> are based on <FONT
+COLOR="RED"
+>print_int</FONT
+> and <FONT
+COLOR="RED"
+>print_double</FONT
+>,
+respectively. As can be expected, the following code outputs two lines:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4661"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val () = (
+  tprint_intfloat&#60;&#62; (INT(0)); print_newline()
+) (* end of [val] *)
+//
+val () = (
+  tprint_intfloat&#60;&#62; (FLOAT(1.0)); print_newline()
+) (* end of [val] *)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the first line consists of the string "0" and the second one
+the string "1.000000". The following code also outputs two lines:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4663"
+></A
+><PRE
+CLASS="programlisting"
+>local
+//
+implement
+tprint_int&#60;&#62; (x) = print! ("INT(", x, ")")
+implement
+tprint_double&#60;&#62; (x) = print! ("FLOAT(", x, ")")
+//
+in (* in-of-local *)
+//
+val () = (
+  tprint_intfloat&#60;&#62; (INT(0)); print_newline()
+) (* end of [val] *)
+//
+val () = (
+  tprint_intfloat&#60;&#62; (FLOAT(1.0)); print_newline()
+) (* end of [val] *)
+//
+end // end of [local]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the first line consists of the string "INT(0)" and the second one the
+string "FLOAT(1.000000)"). In the latter case, the calls to template instances
+<FONT
+COLOR="RED"
+>tprint_int&#60;&#62;</FONT
+> and <FONT
+COLOR="RED"
+>tprint_double&#60;&#62;</FONT
+> are compiled
+according to the implementations for <FONT
+COLOR="RED"
+>tprint_int</FONT
+> and <FONT
+COLOR="RED"
+>tprint_double</FONT
+>
+given between the keywords <FONT
+COLOR="RED"
+>local</FONT
+> and <FONT
+COLOR="RED"
+>in</FONT
+>.
+</P
+><P
+>&#13;Please find on-line the file
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_FNTMPINT/intfloat.dats"
+TARGET="_top"
+>intfloat.dats</A
+> containing the
+entirety of the code presented in this section plus some testing code.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x4573.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Templates for Loop Construction</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c4446.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

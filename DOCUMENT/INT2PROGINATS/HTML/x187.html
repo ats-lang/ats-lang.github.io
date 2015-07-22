@@ -1,0 +1,284 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Scopes for Bindings</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Elements of Programming"
+HREF="c96.html"><LINK
+REL="PREVIOUS"
+TITLE="Names and Bindings"
+HREF="x162.html"><LINK
+REL="NEXT"
+TITLE="Environments for Evaluation"
+HREF="x214.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x162.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Elements of Programming</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x214.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="scopes_for_bindings"
+>Scopes for Bindings</A
+></H1
+><P
+>&#13;Each binding is given a fixed scope in which the binding is considered
+legal or effective. The scope of a toplevel binding in a file starts from
+the point where the binding is introduced until the very end of the
+file. The bindings introduced in the following example between the keywords
+<FONT
+COLOR="RED"
+>let</FONT
+> and <FONT
+COLOR="RED"
+>in</FONT
+> are effective until the keyword
+<FONT
+COLOR="RED"
+>end</FONT
+> is reached:
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN193"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;val area = let
+  val PI = 3.14 and radius = 10.0 in PI * radius * radius
+end // end of [let]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;Such bindings are referred to as local bindings, and the names such as
+<FONT
+COLOR="RED"
+>PI</FONT
+> and <FONT
+COLOR="RED"
+>radius</FONT
+> are referred to as local names.  This
+example can also be written in the following style:
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN198"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;val area =
+  PI * radius * radius where {
+  val PI = 3.14 and radius = 10.0 // simultaneous bindings
+} // end of [where] // end of [val]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;The keyword <FONT
+COLOR="RED"
+>where</FONT
+> appearing immediately after an expression
+introduces bindings that are solely effective for evaluating names
+contained in the expression.  Note that expressions formed using the
+keywords <FONT
+COLOR="RED"
+>let</FONT
+> and <FONT
+COLOR="RED"
+>where</FONT
+> are often referred to as
+let-expressions and where-expressions, respectively. The former can always
+be translated into the latter directly and vice versa.  Which style is
+better? I have not formed my opinion yet. The answer seems to entirely
+depend on the taste of the programmer.
+</P
+><P
+>&#13;The following example demonstrates an alternative approach to introducing
+local bindings:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN205"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;local
+
+val PI = 3.14 and radius = 10.0
+
+in (* in of [local] *)
+
+val area = PI * radius * radius
+
+end // end of [local]
+</PRE
+><P
+></P
+></DIV
+>
+
+where the bindings introduced between the keywords <FONT
+COLOR="RED"
+>local</FONT
+> and
+<FONT
+COLOR="RED"
+>in</FONT
+> are effective until the keyword <FONT
+COLOR="RED"
+>end</FONT
+> is
+reached. Note that the bindings introduced between the keywords
+<FONT
+COLOR="RED"
+>in</FONT
+> and <FONT
+COLOR="RED"
+>end</FONT
+> are themselves toplevel bindings. The
+difference between <FONT
+COLOR="RED"
+>let</FONT
+> and <FONT
+COLOR="RED"
+>local</FONT
+> should be clear:
+The former is used to form an expression while the latter is used to
+introduce a sequence of declarations.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x162.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x214.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Names and Bindings</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c96.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Environments for Evaluation</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Static Semantics</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Elements of Programming"
+HREF="c96.html"><LINK
+REL="PREVIOUS"
+TITLE="Environments for Evaluation"
+HREF="x214.html"><LINK
+REL="NEXT"
+TITLE="Primitive Types"
+HREF="x240.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x214.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Elements of Programming</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x240.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="static_semantics"
+>Static Semantics</A
+></H1
+><P
+>ATS is a programming language equipped with a highly expressive type
+system rooted in the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Applied Type System</I
+></SPAN
+> framework,
+which also gives ATS its name. I will gradually introduce the type system
+of ATS, which is probably the most outstanding and interesting part of this
+book.</P
+><P
+>It is common to treat a type as the set of values it classifies.
+However, I find it more approriate to treat a type as a form of
+meaning. There are formal rules for assigning types to expressions, which
+are referred to as typing rules.  If a type T can be assigned to an
+expression, then I say that the expression possesses the static meaning
+(semantics) represented by the type T. Note that an expression may be
+assigned many distinct static meanings.  An expression is well-typed if
+there exists a type T such that the expression can be assigned the type T.</P
+><P
+>If there is a binding between a name and an expression and the
+expression is of some type T, then the name is assumed to be of the type T
+in the effective scope of the binding. In other words, the name assumes the
+static meaning of the expression it refers to.</P
+><P
+>&#13;Let exp0 be an expression of some type T, that is, the type T can be
+assigned to exp0 according to certain typing rules. If we can evaluate exp0
+to exp1, then exp1 can also be assigned the type T. In other words, static
+meaning is an invariant under evaluation. This property is often referred
+to as <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>type preservation</I
+></SPAN
+>, which is part of the soundness of the
+type system of ATS. Based on this property, we can readily infer that any
+value is of the type T if exp0 can be evaluated to it (in multiple steps).
+</P
+><P
+>&#13;Let exp0 be an expression of some type T. Assume that exp0 is not a value.
+Then exp0 can always be evaluated one step further to another expression
+exp1. This property is often referred to as <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>progress</I
+></SPAN
+>, which is
+another part of the soundness of the type system of ATS.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x214.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x240.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Environments for Evaluation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c96.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Primitive Types</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,600 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Dataview for Singly-Linked Lists</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Dataviews as Linear Dataprops"
+HREF="c3531.html"><LINK
+REL="PREVIOUS"
+TITLE="Dataview for Linear Strings"
+HREF="x3655.html"><LINK
+REL="NEXT"
+TITLE="Proof Functions for View-Changes"
+HREF="x3713.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3655.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 14. Dataviews as Linear Dataprops</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3713.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="singly-linked_lists"
+>Dataview for Singly-Linked Lists</A
+></H1
+><P
+>&#13;The following dataview <FONT
+COLOR="RED"
+>slseg_v</FONT
+> captures the notion of a
+singly-linked list segment:
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3663"
+></A
+><PRE
+CLASS="programlisting"
+>dataview
+slseg_v (
+  a:t@ype+ // covariant argument
+, addr(*beg*)
+, addr(*end*)
+, int(*length*)
+) = // slseg_v
+  | {l:addr}
+    slseg_v_nil (a, l, l, 0) of ()
+  | {l_fst:agz}{l_nxt,l_end:addr}{n:nat}
+    slseg_v_cons (a, l_fst, l_end, n+1) of
+      ((a, ptr l_nxt) @ l_fst, slseg_v (a, l_nxt, l_end, n))
+// end of [slseg]_v
+</PRE
+><P
+></P
+></DIV
+>
+
+
+There are two proof constructors <FONT
+COLOR="RED"
+>slseg_v_nil</FONT
+> and
+<FONT
+COLOR="RED"
+>slseg_v_cons</FONT
+> associated with <FONT
+COLOR="RED"
+>slseg_v</FONT
+>, which are
+assigned the following types:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3668"
+></A
+><PRE
+CLASS="programlisting"
+>slseg_v_nil :
+  {a:t@ype}{l:addr} () -&#62; slseg_v (a, l, l, 0)
+slseg_v_cons :
+  {a:t@ype}{l_fst:agz}{l_nxt,l_end:addr}{n:nat}
+  ((a, ptr l_nxt) @ l_fst, slseg_v (a, l_nxt, l_end, n)) -&#62; slseg_v (a, l_fst, l_end, n+1)
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;Note that <FONT
+COLOR="RED"
+>agz</FONT
+> is a subset sort for addresses that are not null.
+Given a type T, two addresses L1 and L2, and a natural number N, the view
+<FONT
+COLOR="RED"
+>slseg_v(T, L1, L2, N)</FONT
+> is for a singly-linked list segment
+containing N elements of the type T that starts at L1 and finishes at L2.
+In the case where L2 is the null pointer, then the list segment is considered
+a list as is formally defined below:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3673"
+></A
+><PRE
+CLASS="programlisting"
+>viewdef slist_v
+  (a:t@ype, l:addr, n:int) = slseg_v (a, l, null, n)
+// end of [slist_v]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;Given a type T, a pointer pointing to L plus a proof of the view
+<FONT
+COLOR="RED"
+>slist_v(T, L, N)</FONT
+> for some natural number N is essentially the
+same as a pointer to a struct of the following declared type
+<FONT
+COLOR="RED"
+>slist_struct</FONT
+> in C:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3678"
+></A
+><PRE
+CLASS="programlisting"
+>typedef
+struct slist {
+  T data ; /* [T] matches the corresponding type in ATS */
+  struct slist *next ; /* pointing to the tail of the list */
+} slist_struct ;
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;Let us now see a simple example involving singly-linked lists:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3681"
+></A
+><PRE
+CLASS="programlisting"
+>fn{a:t@ype}
+slist_ptr_length
+  {l:addr}{n:nat}
+(
+  pflst: !slist_v (a, l, n) | p: ptr l
+) : int (n) = let
+  fun loop
+    {l:addr}{i,j:nat} .&#60;i&#62;.
+  (
+    pflst: !slist_v (a, l, i) | p: ptr l, j: int (j)
+  ) : int (i+j) =
+    if p &#62; 0 then let
+      prval slseg_v_cons (pfat, pf1lst) = pflst
+      val res = loop (pf1lst | !p.1, j+1) // !p.1 points to the tail
+      prval () = pflst := slseg_v_cons (pfat, pf1lst)
+    in
+      res
+    end else let // the length of a null list is 0
+      prval slseg_v_nil () = pflst in pflst := slseg_v_nil (); j
+    end (* end of [if] *)
+  // end of [loop]
+in
+  loop (pflst | p, 0)
+end // end of [slist_ptr_length]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The function template <FONT
+COLOR="RED"
+>slist_ptr_length</FONT
+> computes the length of a
+given singly-linked list. Note that the inner function <FONT
+COLOR="RED"
+>loop</FONT
+> is
+tail-recursive. The above implementation of <FONT
+COLOR="RED"
+>slist_ptr_length</FONT
+>
+essentially corresponds to the following implementation in C:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3686"
+></A
+><PRE
+CLASS="programlisting"
+>int slist_ptr_length (slist_struct *p) {
+  int res = 0 ;
+  while (p != NULL) { res = res + 1 ; p = p-&#62;next ; }
+  return res ;
+} // end of [slist_ptr_length]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;As another example, the following function template
+<FONT
+COLOR="RED"
+>slist_ptr_reverse</FONT
+> turns a given linked list into its reverse:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3690"
+></A
+><PRE
+CLASS="programlisting"
+>fn{a:t@ype}
+slist_ptr_reverse
+  {l:addr}{n:nat}
+(
+  pflst: slist_v (a, l, n) | p: ptr l
+) : [l:addr] (slist_v (a, l, n) | ptr l) = let
+  fun loop
+    {n1,n2:nat}
+    {l1,l2:addr} .&#60;n1&#62;. (
+    pf1lst: slist_v (a, l1, n1)
+  , pf2lst: slist_v (a, l2, n2)
+  | p1: ptr l1, p2: ptr l2
+  ) : [l:addr] (slist_v (a, l, n1+n2) | ptr l) =
+    if p1 &#62; 0 then let
+      prval slseg_v_cons (pf1at, pf1lst) = pf1lst
+      val p1_nxt = !p1.1
+      val () = !p1.1 := p2
+    in
+      loop (pf1lst, slseg_v_cons (pf1at, pf2lst) | p1_nxt, p1)
+    end else let
+      prval slseg_v_nil () = pf1lst in (pf2lst | p2)
+    end // end of [if]
+in
+  loop (pflst, slseg_v_nil | p, the_null_ptr)
+end // end of [slist_ptr_reverse]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+By translating the tail-recursive function <FONT
+COLOR="RED"
+>loop</FONT
+> into a
+while-loop, we can readily turn the implementation of
+<FONT
+COLOR="RED"
+>slist_ptr_reverse</FONT
+> in ATS into the following implementation in
+C:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3694"
+></A
+><PRE
+CLASS="programlisting"
+>slist_struct*
+slist_ptr_reverse (slist_struct *p)
+{
+  slist_struct *tmp, *res = NULL ;
+  while (p != NULL) {
+    tmp = p-&#62;next ; p-&#62;next = res ; res = p ; p = tmp ;
+  }
+  return res ;
+} // end of [slist_ptr_reverse]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Let us see yet another example.
+List concatenation is a common operation on lists. This time, we first give
+an implementation of list concatenation in C:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3697"
+></A
+><PRE
+CLASS="programlisting"
+>slist_struct*
+slist_ptr_append
+  (slist_struct *p, slist_struct *q) {
+  slist_struct *p1 = p ;
+  if (p1 == NULL) return q ;
+  while (p1-&#62;next != NULL) p1 = p1-&#62;next ; p1-&#62;next = q ;
+  return p ;
+} // end of [slist_ptr_append]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The algorithm is straightforward. If <FONT
+COLOR="RED"
+>p</FONT
+> is null, then
+<FONT
+COLOR="RED"
+>q</FONT
+> is returned. Otherwise, the last node in the list pointed to
+by <FONT
+COLOR="RED"
+>p</FONT
+> is first found and its field of the name <FONT
+COLOR="RED"
+>next</FONT
+>
+then replaced with <FONT
+COLOR="RED"
+>q</FONT
+>.  This implementation of
+<FONT
+COLOR="RED"
+>slist_ptr_append</FONT
+> in C can be translated directly into to
+the following one in ATS:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3705"
+></A
+><PRE
+CLASS="programlisting"
+>fn{a:t@ype}
+slist_ptr_append
+  {l1,l2:addr}{n1,n2:nat}
+(
+  pf1lst: slist_v (a, l1, n1)
+, pf2lst: slist_v (a, l2, n2)
+| p1: ptr l1, p2: ptr l2
+) : [l:addr] (slist_v (a, l, n1+n2) | ptr l) = let
+  fun loop
+    {n1,n2:nat}
+    {l1,l2:addr | l1 &#62; null} .&#60;n1&#62;. (
+    pf1lst: slist_v (a, l1, n1)
+  , pf2lst: slist_v (a, l2, n2)
+  | p1: ptr l1, p2: ptr l2
+  ) : (slist_v (a, l1, n1+n2) | void) = let
+    prval slseg_v_cons (pf1at, pf1lst) = pf1lst
+    val p1_nxt = !p1.1
+  in
+    if p1_nxt &#62; 0 then let
+      val (pflst | ()) = loop (pf1lst, pf2lst | p1_nxt, p2)
+    in
+      (slseg_v_cons (pf1at, pflst) | ())
+    end else let
+      val () = !p1.1 := p2
+      prval slseg_v_nil () = pf1lst
+    in
+      (slseg_v_cons (pf1at, pf2lst) | ())
+    end (* end of [if] *)
+  end // end of [loop]
+in
+  if p1 &#62; 0 then let
+    val (pflst | ()) = loop (pf1lst, pf2lst | p1, p2)
+  in
+    (pflst | p1)
+  end else let
+    prval slseg_v_nil () = pf1lst in (pf2lst | p2)
+  end (* end of [if] *)
+end // end of [slist_ptr_append]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;In the above examples, it is evident that the code in ATS is a lot more
+verbose than its counterpart in C. However, the former is also a lot more
+robust than the latter in the following sense: If a minor change is made to
+the code in ATS (e.g., renaming identifiers, reordering function
+arguments), it is most likely that a type-error is to be reported when the
+changed code is typechecked. On the other hand, the same thing cannot be
+said about the code written in C. For instance, the following erroneous
+implementation of <FONT
+COLOR="RED"
+>slist_ptr_reverse</FONT
+> in C is certainly
+type-correct:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3709"
+></A
+><PRE
+CLASS="programlisting"
+>/*
+** This implementation is *incorrect* but type-correct:
+*/
+slist_struct*
+slist_ptr_reverse
+  (slist_struct *p)
+{
+  slist_struct *tmp, *res = NULL ;
+  while (p != NULL) {
+    tmp = p-&#62;next ; res = p ; p-&#62;next = res ; p = tmp ;
+  }
+  return res ;
+} // end of [slist_ptr_reverse]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;I now point out that the dataview <FONT
+COLOR="RED"
+>slseg_v</FONT
+> is declared here in a
+manner that does not address the issue of allocating and freeing list
+nodes, and it is done so for the sake of a less involved presentation. A
+dataview for singly-linked lists that does handle allocation and
+deallocation of list nodes can also be declared in ATS, but there is really
+little need for it as we can declare a dataviewtype for such lists that is
+far more convenient to use.  However, dataviews are fundamentally more
+general and flexible than dataviewtypes, and there are many common data
+structures (e.g. doubly-linked lists) that can only be properly handled
+with dataviews in ATS.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3655.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3713.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Dataview for Linear Strings</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3531.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Proof Functions for View-Changes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

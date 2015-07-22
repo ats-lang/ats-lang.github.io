@@ -1,0 +1,381 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Evaluating Integer Expressions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Datatypes"
+HREF="c904.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Binary Search Tree"
+HREF="x1072.html"><LINK
+REL="NEXT"
+TITLE="Parametric Polymorphism"
+HREF="c1121.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1072.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Datatypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c1121.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_evaluating_integer_expressions"
+>Example: Evaluating Integer Expressions</A
+></H1
+><P
+>&#13;For representing integer expressions, we declare a datatype
+<FONT
+COLOR="RED"
+>IEXP</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1099"
+></A
+><PRE
+CLASS="programlisting"
+>datatype IEXP =
+  | IEXPcst of int // constants
+  | IEXPneg of (IEXP) // negative
+  | IEXPadd of (IEXP, IEXP) // addition
+  | IEXPsub of (IEXP, IEXP) // subtraction
+  | IEXPmul of (IEXP, IEXP) // multiplication
+  | IEXPdiv of (IEXP, IEXP) // division
+// end of [IEXP]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The meaning of the constructors associated with <FONT
+COLOR="RED"
+>IEXP</FONT
+> should be
+obvious. A value of the type <FONT
+COLOR="RED"
+>IEXP</FONT
+> is often referred to as an
+abstract syntax tree. For instance, the abstract syntax tree for the
+expression (~1+(2-3)*4) is the following one:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1103"
+></A
+><PRE
+CLASS="programlisting"
+>IEXPadd(IEXPneg(IEXPcst(1)), IEXPmul(IEXPsub(IEXPcst(2), IEXPcst(3)), IEXPcst(4)))
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Translating an integer expression written in some string form into an
+abstract syntax tree is called parsing, which we will not do here. The
+following defined function <FONT
+COLOR="RED"
+>eval_iexp</FONT
+> takes the abstract syntax
+tree of an integer expression and returns an integer that is the value of
+the expression:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1106"
+></A
+><PRE
+CLASS="programlisting"
+>fun
+eval_iexp
+  (e0: IEXP): int =
+(
+case+ e0 of
+| IEXPcst (n) =&#62; n
+| IEXPneg (e) =&#62; ~eval_iexp (e)
+| IEXPadd (e1, e2) =&#62; eval_iexp (e1) + eval_iexp (e2)
+| IEXPsub (e1, e2) =&#62; eval_iexp (e1) - eval_iexp (e2)
+| IEXPmul (e1, e2) =&#62; eval_iexp (e1) * eval_iexp (e2)
+| IEXPdiv (e1, e2) =&#62; eval_iexp (e1) / eval_iexp (e1)
+) (* end of [eval_iexp] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+</P
+><P
+>&#13;Suppose we also allow the construct if-then-else to be use in forming
+integer expressions. For instance, we may write an integer expression like
+(if 1+2 &#60;= 3*4 then 5+6 else 7-8). Note that the test (1+2 &#60;= 3*4) is a
+boolean expression rather than an integer expression. This indicates that
+we also need to declare a datatype <FONT
+COLOR="RED"
+>BEXP</FONT
+> for representing
+boolean expressions. Furthermore, <FONT
+COLOR="RED"
+>IEXP</FONT
+> and <FONT
+COLOR="RED"
+>BEXP</FONT
+>
+should be defined mutually recursively as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1112"
+></A
+><PRE
+CLASS="programlisting"
+>datatype IEXP =
+  | IEXPcst of int // integer constants
+  | IEXPneg of (IEXP) // negative
+  | IEXPadd of (IEXP, IEXP) // addition
+  | IEXPsub of (IEXP, IEXP) // subtraction
+  | IEXPmul of (IEXP, IEXP) // multiplication
+  | IEXPdiv of (IEXP, IEXP) // division
+  | IEXPif of (BEXP(*test*), IEXP(*then*), IEXP(*else*))
+// end of [IEXP]
+
+and BEXP = // [and] for combining datatype declarations
+  | BEXPcst of bool // boolean constants
+  | BEXPneg of BEXP // negation
+  | BEXPconj of (BEXP, BEXP) // conjunction
+  | BEXPdisj of (BEXP, BEXP) // disjunction
+  | BEXPeq of (IEXP, IEXP) // equal-to
+  | BEXPneq of (IEXP, IEXP) // not-equal-to
+  | BEXPlt of (IEXP, IEXP) // less-than
+  | BEXPlte of (IEXP, IEXP) // less-than-equal-to
+  | BEXPgt of (IEXP, IEXP) // greater-than
+  | BEXPgte of (IEXP, IEXP) // greater-than-equal-to
+// end of [BEXP]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Evidently, we also need to evaluate boolean expressions when evaluating
+integer expressions. The following two functions <FONT
+COLOR="RED"
+>eval_iexp</FONT
+> and
+<FONT
+COLOR="RED"
+>eval_bexp</FONT
+> for evaluating integer and boolean expressions,
+respectively, are defined mutually recursively as can be expected:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1116"
+></A
+><PRE
+CLASS="programlisting"
+>fun
+eval_iexp
+  (e0: IEXP): int =
+(
+case+ e0 of
+| IEXPcst n =&#62; n
+| IEXPneg (e) =&#62; ~eval_iexp (e)
+| IEXPadd (e1, e2) =&#62; eval_iexp (e1) + eval_iexp (e2)
+| IEXPsub (e1, e2) =&#62; eval_iexp (e1) - eval_iexp (e2)
+| IEXPmul (e1, e2) =&#62; eval_iexp (e1) * eval_iexp (e2)
+| IEXPdiv (e1, e2) =&#62; eval_iexp (e1) / eval_iexp (e1)
+| IEXPif
+  (
+    e_test, e_then, e_else
+  ) =&#62;
+  (
+    eval_iexp (if eval_bexp (e_test) then e_then else e_else)
+  ) // end of [IEXPif]
+) (* end of [eval_iexp] *)
+
+and
+eval_bexp
+  (e0: BEXP): bool =
+(
+case+ e0 of
+| BEXPcst b =&#62; b
+| BEXPneg (e) =&#62; ~eval_bexp (e)
+| BEXPconj (e1, e2) =&#62;
+    if eval_bexp (e1) then eval_bexp (e2) else false
+| BEXPdisj (e1, e2) =&#62;
+    if eval_bexp (e1) then true else eval_bexp (e2)
+| BEXPeq (e1, e2) =&#62; eval_iexp (e1) = eval_iexp (e2)
+| BEXPneq (e1, e2) =&#62; eval_iexp (e1) != eval_iexp (e2)
+| BEXPlt (e1, e2) =&#62; eval_iexp (e1) &#60; eval_iexp (e2)
+| BEXPlte (e1, e2) =&#62; eval_iexp (e1) &#60;= eval_iexp (e2)
+| BEXPgt (e1, e2) =&#62; eval_iexp (e1) &#62; eval_iexp (e2)
+| BEXPgte (e1, e2) =&#62; eval_iexp (e1) &#62;= eval_iexp (e2)
+) (* end of [eval_bexp] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+</P
+><P
+>&#13;The integer and boolean expressions used in this example are all constant
+expressions containing no variables. Therefore, there is no need for an
+environment to evaluate them. I will present a more advanced example
+elsewhere to demonstrate how an evaluator for a simple call-by-value
+functional programming language like the core of ATS can be implemented.
+</P
+><P
+>&#13;Please find
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_DATATYPE/intexp.dats"
+TARGET="_top"
+>on-line</A
+>
+the entirety of the code in this section plus some additional code for
+testing.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1072.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c1121.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Binary Search Tree</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c904.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Parametric Polymorphism</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
