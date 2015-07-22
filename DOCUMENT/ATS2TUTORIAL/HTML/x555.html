@@ -1,0 +1,454 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Functional Maps</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functional Sets and Maps"
+HREF="c517.html"><LINK
+REL="PREVIOUS"
+TITLE="Functional Sets and Maps"
+HREF="c517.html"><LINK
+REL="NEXT"
+TITLE="Exceptions"
+HREF="c604.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c517.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 12. Functional Sets and Maps</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c604.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="funsetmap_map"
+>Functional Maps</A
+></H1
+><P
+>&#13;Suppose that a map is needed for mapping keys of type
+<FONT
+COLOR="RED"
+>key_t</FONT
+> to items of type <FONT
+COLOR="RED"
+>itm_t</FONT
+>. The following code
+essentially sets up an interface for creating and operating on such a map
+based on a balanced-tree implementation in ATSLIB/libats:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN560"
+></A
+><PRE
+CLASS="programlisting"
+>staload
+FM = "libats/ML/SATS/funmap.sats"
+//
+local
+//
+typedef
+key = key_t and itm = itm_t
+//
+implement
+$FS.compare_key_key&#60;key_t&#62;(x, y) = compare(x, y)
+//
+in (* in-of-local *)
+
+#include "libats/ML/HATS/myfunmap.hats"
+
+end // end of [local]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Please find <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/libats/ML/HATS/myfunmap.hats"
+TARGET="_top"
+>on-line</A
+> the
+HATS file mentioned in the code, which is just a convenience wrapper made
+to simplify programming with functional maps. Note that it is assumed here
+that there is a comparison function on values of the type <FONT
+COLOR="RED"
+>key_t</FONT
+>
+that overloads the symbol <FONT
+COLOR="RED"
+>compare</FONT
+>. If this is not the case, one
+needs to implement such a function.
+
+</P
+><P
+>&#13;Assume that <FONT
+COLOR="RED"
+>key_t</FONT
+> is <FONT
+COLOR="RED"
+>string</FONT
+> and <FONT
+COLOR="RED"
+>itm_t</FONT
+>
+is <FONT
+COLOR="RED"
+>int</FONT
+>. The following line of code creates an empty functional map:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN570"
+></A
+><PRE
+CLASS="programlisting"
+>val mymap = myfunmap_nil()
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The following few lines insert some key/item pairs into
+<FONT
+COLOR="RED"
+>mymap</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN573"
+></A
+><PRE
+CLASS="programlisting"
+>//
+var mymap = mymap
+//
+val-~None_vt() = mymap.insert("a", 0)
+val-~Some_vt(0) = mymap.insert("a", 1)
+//
+val-~None_vt() = mymap.insert("b", 1)
+val-~Some_vt(1) = mymap.insert("b", 2)
+//
+val-~None_vt() = mymap.insert("c", 2)
+val-~Some_vt(2) = mymap.insert("c", 3)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.insert</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myfunmap_insert</FONT
+>.  The first line in the above code may
+seem puzzling: Its sole purpose is to create a left-value to be passed as
+the first argument to <FONT
+COLOR="RED"
+>myfunmap_insert</FONT
+>.  Given a key and an
+item, <FONT
+COLOR="RED"
+>mymap.insert</FONT
+> inserts the key/item pair into
+<FONT
+COLOR="RED"
+>mymap</FONT
+>.  If the key is in the domain of the map represented by
+<FONT
+COLOR="RED"
+>mymap</FONT
+> before insertion, then the original item associated with
+the key is returned. Otherwise, no item is returned. As can be expected,
+the size of <FONT
+COLOR="RED"
+>mymap</FONT
+> is 3 at this point:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN582"
+></A
+><PRE
+CLASS="programlisting"
+>val () = assertloc (mymap.size() = 3)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.size</FONT
+> is overloaded with a function of the name
+<FONT
+COLOR="RED"
+>myfunmap_size</FONT
+>, which returns the number of key/item pairs
+stored in a given map.  During the course of debugging, one may want to
+print out the key/item pairs in a given map:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN586"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val () = fprintln! (stdout_ref, "mymap = ", mymap)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the symbol <FONT
+COLOR="RED"
+>fprint</FONT
+> is overloaded with
+<FONT
+COLOR="RED"
+>fprint_mymap</FONT
+>. The next two lines of code show how search with a
+given key operates on a map:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN590"
+></A
+><PRE
+CLASS="programlisting"
+>val-~None_vt() = mymap.search("")
+val-~Some_vt(1) = mymap.search("a")
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.search</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myfunmap_search</FONT
+>, which returns the item associated with a
+given key if it is found. The next few lines of code remove some key/item
+pairs from <FONT
+COLOR="RED"
+>mymap</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN595"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val-true = mymap.remove("a")
+val-false = mymap.remove("a")
+//
+val-~Some_vt(2) = mymap.takeout("b")
+val-~Some_vt(3) = mymap.takeout("c")
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.remove</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myfunmap_remove</FONT
+> for removing a key/item pair of a given
+key. If a key/item pair is removed, then the function returns
+true. Otherwise, it returns false to indicates that no key/item pair of the
+given key is stored in the map being operated on.  The dot-symbol
+<FONT
+COLOR="RED"
+>.takeout</FONT
+> is overloaded with a function of the name
+<FONT
+COLOR="RED"
+>myfunmap_takeout</FONT
+>, which is similar to <FONT
+COLOR="RED"
+>myfunmap_remove</FONT
+>
+excepting for returning the removed item.
+
+</P
+><P
+>&#13;Various common map operations can be found in
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/libats/ML/HATS/myfunmap.hats"
+TARGET="_top"
+>libats/ML/HATS/myfunmap.hats</A
+>.
+By following the types assigned to these operations, one should have no difficulty
+in figuring out how they are supposed to be called.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c517.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c604.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Functional Sets and Maps</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c517.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Exceptions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

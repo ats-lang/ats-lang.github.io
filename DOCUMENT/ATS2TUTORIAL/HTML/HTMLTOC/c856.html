@@ -1,0 +1,439 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Higher-Order Functions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Tutorial Topics"
+HREF="p34.html"><LINK
+REL="PREVIOUS"
+TITLE="Tail-Recursion"
+HREF="c852.html"><LINK
+REL="NEXT"
+TITLE="Stream-Based Lazy Evaluation"
+HREF="c912.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c852.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c912.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="hordfun"
+></A
+>Chapter 21. Higher-Order Functions</H1
+><P
+>&#13;A higher-order function is one that takes another function as its argument.
+
+Let us use BT to range over base types such as <FONT
+COLOR="RED"
+>int</FONT
+>,
+<FONT
+COLOR="RED"
+>bool</FONT
+>, <FONT
+COLOR="RED"
+>char</FONT
+>, <FONT
+COLOR="RED"
+>double</FONT
+> and
+<FONT
+COLOR="RED"
+>string</FONT
+>.  A simple type T is formed according to the following
+inductive definition:
+
+</P
+><P
+></P
+><UL
+><LI
+><P
+>BT is a simple type.</P
+></LI
+><LI
+><P
+>(T<SUB
+>1</SUB
+>, ..., T<SUB
+>n</SUB
+>) -&#62; T<SUB
+>0</SUB
+> is a simple type if
+T<SUB
+>0</SUB
+>, T<SUB
+>1</SUB
+>, ... T<SUB
+>n</SUB
+> are simple types.
+</P
+></LI
+></UL
+><P
+>&#13;Let <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+> be a function from simple types to natural numbers
+defined as follows:
+
+</P
+><P
+></P
+><UL
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+>(BT) = 0
+</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+>((T<SUB
+>1</SUB
+>, ..., T<SUB
+>n</SUB
+>) -&#62; T<SUB
+>0</SUB
+>) = 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>max</I
+></SPAN
+>(<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+>(T<SUB
+>0</SUB
+>), 1 + <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+>(T<SUB
+>1</SUB
+>), ..., 1 + <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+>(T<SUB
+>n</SUB
+>))
+</P
+></LI
+></UL
+><P
+>&#13;Given a function f of some simple type T, let us say that f is a
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n</I
+></SPAN
+>th-order function if <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+>(T) =
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n</I
+></SPAN
+>. For instance, a function of the type (int, int) -&#62; int
+is 1st-order, and a function of the type int -&#62; (int -&#62; int) is also
+1st-order, and a function of the type ((int -&#62; int), int) -&#62; int is
+2nd-order.  In practice, most functions are 1st-order and most higher-order
+functions are 2nd-order.
+
+</P
+><P
+>&#13;As an example, let us implement as follows a 2nd-order function
+<FONT
+COLOR="RED"
+>find_root</FONT
+> that takes as its only argument a function f from
+integers to integers and searches for a root of f by enumeration:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN900"
+></A
+><PRE
+CLASS="programlisting"
+>fn find_root
+(
+  f: int -&#60;cloref1&#62; int
+) : int = let
+//
+fun loop
+(
+  f: int -&#60;cloref1&#62; int, n: int
+) : int =
+  if f (n) = 0 then n else (
+    if n &#60;= 0 then loop (f, ~n + 1) else loop (f, ~n)
+  ) // end of [else] // end of [if]
+in
+  loop (f, 0)
+end // end of [find_root]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The function <FONT
+COLOR="RED"
+>find_root</FONT
+> computes the values of f at 0, 1, -1, 2,
+-2, etc. until it finds the first integer n in this sequence that satisfies
+f(n) = 0.
+
+</P
+><P
+>&#13;As another example, let us implement as follows the famous Newton-Raphson's
+method for finding roots of functions on reals:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN904"
+></A
+><PRE
+CLASS="programlisting"
+>typedef
+fdouble = double -&#60;cloref1&#62; double
+//
+macdef epsilon = 1E-6 (* precision *)
+//
+// [f1] is the derivative of [f]
+//
+fun
+newton_raphson
+(
+  f: fdouble, f1: fdouble, x0: double
+) : double = let
+  fun loop (
+    f: fdouble, f1: fdouble, x0: double
+  ) : double = let
+    val y0 = f x0
+  in
+    if abs (y0 / x0) &#60; epsilon then x0 else
+      let val y1 = f1 x0 in loop (f, f1, x0 - y0 / y1) end
+    // end of [if]
+  end // end of [loop]
+in
+  loop (f, f1, x0)
+end // end of [newton_raphson]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+With <FONT
+COLOR="RED"
+>newton_raphson</FONT
+>, both the square root function and the
+cubic root function can be readily implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN907"
+></A
+><PRE
+CLASS="programlisting"
+>// square root function
+fn sqrt (c: double): double =
+  newton_raphson (lam x =&#62; x * x - c, lam x =&#62; 2.0 * x, 1.0)
+// cubic root function
+fn cbrt (c: double): double =
+  newton_raphson (lam x =&#62; x * x * x - c, lam x =&#62; 3.0 * x * x, 1.0)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Higher-order functions can be of great use in supporting a form of code
+sharing that is both common and flexible. As function arguments are often
+represented as heap-allocated closures that can only be reclaimed through
+garbage collection (GC), higher-order functions are used infrequently, if
+at all, in a setting where GC is not present. In ATS, linear closures,
+which can be freed explictly in a safe manner, are available to support
+higher-order functions in the absence of GC, making it possible to employ
+higher-order functions extensively in systems programming (where GC is
+unavailable or simply disallowed). The details on linear closures are to be
+given elsewhere.
+
+</P
+><P
+>&#13;Please find <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_hordfun.dats"
+TARGET="_top"
+>on-line</A
+> the entirety of the
+code used in this chapter.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c852.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c912.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Tail-Recursion</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p34.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Stream-Based Lazy Evaluation</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2TUTORIAL-BOOK.js"></SCRIPT></BODY
+></HTML
+>

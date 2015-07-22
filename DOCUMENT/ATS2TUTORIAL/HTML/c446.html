@@ -1,0 +1,681 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Functional Lists</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Tutorial Topics"
+HREF="p34.html"><LINK
+REL="PREVIOUS"
+TITLE="Datatypes"
+HREF="c359.html"><LINK
+REL="NEXT"
+TITLE="Functional Sets and Maps"
+HREF="c514.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c359.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c514.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="funlist"
+></A
+>Chapter 11. Functional Lists</H1
+><P
+>&#13;A functional list is just a singly-linked list that is immutable
+after its construction. The following datatype declaration introduces
+a type <FONT
+COLOR="RED"
+>list</FONT
+> for functional lists:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN450"
+></A
+><PRE
+CLASS="programlisting"
+>//
+datatype
+list(a:t@ype, int) =
+| list_nil(a, 0) of ()
+| {n:nat}
+  list_cons(a, n+1) of (a, list(a, n))
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given a type T and an integer N, the type <FONT
+COLOR="RED"
+>list(T,N)</FONT
+> is for a
+list of length N that contains elements of type T.  The interfaces for
+various functions on functional lists can be found in the SATS file
+<A
+HREF="https://github.com/githwxi/ATS-Postiats/blob/master/doc/BOOK/ATS-Postiats/prelude/SATS/list.sats"
+TARGET="_top"
+>prelude/SATS/list.sats</A
+>, which
+is automatically loaded by <B
+CLASS="command"
+>atsopt</B
+>.
+</P
+><P
+>&#13;There are various functions in ATSLIB for list construction. In practice, a
+list is usually built by making direct use of the constructors
+<FONT
+COLOR="RED"
+>list_nil</FONT
+> and <FONT
+COLOR="RED"
+>list_cons</FONT
+>. For instance, the following
+function <FONT
+COLOR="RED"
+>fromto</FONT
+> builds a list of integers between two given ones:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN459"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+fromto
+{m,n:int | m &#60;= n}
+(
+  m: int(m), n: int(n)
+) : list(int, n-m) =
+  if m &#60; n then list_cons(m, fromto(m+1, n)) else list_nil()
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Traversing a list is commonly done by making use of pattern matching.  For
+instance, the following code implements a function for computing the length
+of a given list:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN461"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{a:t@ype}
+list_length
+  {n:nat}
+(
+  xs: list(a, n)
+) : int(n) = let
+//
+fun
+loop
+{i,j:nat}
+(
+  xs: list(a, i), j: int(j)
+) : int(i+j) =
+(
+case+ xs of
+| list_nil () =&#62; j
+| list_cons (_, xs) =&#62; loop(xs, j+1)
+)
+//
+in
+  loop (xs, 0)
+end // end of [list_length]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given a non-empty list xs, <FONT
+COLOR="RED"
+>xs.head()</FONT
+> and <FONT
+COLOR="RED"
+>xs.tail()</FONT
+>
+refer to the head and tail of xs, respectively, where <FONT
+COLOR="RED"
+>.head()</FONT
+> and
+<FONT
+COLOR="RED"
+>.tail()</FONT
+> are overloaded dot-symbols. For instance, the function
+<FONT
+COLOR="RED"
+>list_foldleft</FONT
+> for folding a given list from the left can be
+implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN468"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{a,b:t@ype}
+list_foldleft
+  {n:nat}
+(
+  f: (a, b) -&#62; a, ini: a, xs: list(b, n)
+) : a =
+  if iseqz(xs)
+    then ini else list_foldleft(f, f(ini, xs.head()), xs.tail())
+  // end of [if]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+And the function
+<FONT
+COLOR="RED"
+>list_foldright</FONT
+> for folding a given list from the right can be
+implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN471"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{a,b:t@ype}
+list_foldright
+  {n:nat}
+(
+  f: (a, b) -&#62; b, xs: list(a, n), snk: b
+) : b =
+  if iseqz(xs)
+    then snk else f(xs.head(), list_foldright(f, xs.tail(), snk))
+  // end of [if]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>list_foldleft</FONT
+> is tail-recursive but <FONT
+COLOR="RED"
+>list_foldright</FONT
+>
+is not.
+</P
+><P
+>&#13;As an application of <FONT
+COLOR="RED"
+>list_foldleft</FONT
+>, the following code
+implements a function for reversing a given list:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN477"
+></A
+><PRE
+CLASS="programlisting"
+>fun
+{a:t@ype}
+list_reverse
+(
+  xs: List0(a)
+) : List0(a) =
+(
+list_foldleft&#60;List0(a),a&#62;
+  (lam (xs, x) =&#62; list_cons(x, xs), list_nil, xs)
+)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the type constructor <FONT
+COLOR="RED"
+>List0</FONT
+> is for lists of
+unspecified length:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN480"
+></A
+><PRE
+CLASS="programlisting"
+>typedef List0(a:t@ype) = [n:nat] list (a, n)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, <FONT
+COLOR="RED"
+>list_reverse</FONT
+> is length-preserving, that is, it always
+returns a list of the same length as its input. Unfortunately, this
+invariant is not captured in the above implementation of
+<FONT
+COLOR="RED"
+>list_reverse</FONT
+> based on <FONT
+COLOR="RED"
+>list_foldleft</FONT
+>. For the
+purpose of comparison, another implementation of <FONT
+COLOR="RED"
+>list_reverse</FONT
+> is
+given as follows that captures the invariant of <FONT
+COLOR="RED"
+>list_reverse</FONT
+>
+being length-preserving:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN487"
+></A
+><PRE
+CLASS="programlisting"
+>fun
+{a:t@ype}
+list_reverse
+  {n:nat}
+(
+  xs: list(a, n)
+) : list(a, n) = let
+//
+fun
+loop{i,j:nat}
+(
+  xs: list(a, i), ys: list(a, j)
+) : list(a, i+j) =
+  case+ xs of
+  | list_nil () =&#62; ys
+  | list_cons (x, xs) =&#62; loop (xs, list_cons (x, ys))
+//
+in
+  loop (xs, list_nil)
+end // end of [list_reverse]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;As an application of <FONT
+COLOR="RED"
+>list_foldright</FONT
+>, the following code
+implements a function for concatenating two given lists:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN491"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{a:t@ype}
+list_append
+(
+  xs: List0(a), ys: List0(a)
+) : List0(a) =
+  list_foldright&#60;a, List0(a)&#62;(lam (x, xs) =&#62; list_cons(x, xs), ys, xs)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The type assigned to <FONT
+COLOR="RED"
+>list_append</FONT
+> states that this function
+takes two lists as its arguments and returns one of unspecified length.
+For the purpose of comparison, another implementation of <FONT
+COLOR="RED"
+>list_append</FONT
+>
+is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN495"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{a:t@ype}
+list_append
+  {m,n:nat}
+(
+  xs: list(a,m), ys: list(a,n)
+) : list(a,m+n) =
+(
+case+ xs of
+| list_nil () =&#62; ys
+| list_cons (x, xs) =&#62; list_cons (x, list_append (xs, ys))
+)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the type assigned to <FONT
+COLOR="RED"
+>list_append</FONT
+> states that this
+function takes two lists of length m and n, respectively, and returns
+another list of length m+n.
+
+</P
+><P
+>&#13;One may think of a functional list as a representation for the finite
+mapping that maps each natural number i less than the length of the list to
+element i in the list. The following function <FONT
+COLOR="RED"
+>list_get_at</FONT
+> is
+for accessing a list element at a given position:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN500"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{a:t@ype}
+list_get_at
+  {n:nat}
+(
+  xs: list(a, n), i: natLt(n)
+) : a =
+  if i &#62; 0 then list_get_at(xs.tail(), i-1) else xs.head()
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+This function can be called through the use of the bracket
+notation. In other words, <FONT
+COLOR="RED"
+>xs[i]</FONT
+> is automatically interpreted
+as <FONT
+COLOR="RED"
+>list_get_at(xs, i)</FONT
+> whenever xs and i are a list and an integer,
+respectively. Note that the time-complexity of <FONT
+COLOR="RED"
+>list_get_at(xs,
+i)</FONT
+> is O(i). If one uses <FONT
+COLOR="RED"
+>list_get_at</FONT
+> frequently when handling
+lists, then it is almost always a sure sign of poor programming style.
+
+</P
+><P
+>&#13;There is no destructive update on a functional list as it is immutable.
+The following function <FONT
+COLOR="RED"
+>list_set_at</FONT
+> can be called to construct
+a list that differs from a given one only at a given position:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN508"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{a:t@ype}
+list_set_at
+  {n:nat}
+(
+  xs: list(a, n), i: natLt(n), x0: a
+) : list(a, n) =
+  if i &#62; 0
+    then list_cons(xs.head(), list_set_at(xs.tail(), i-1, x0))
+    else list_cons(x0, xs.tail())
+  // end of [if]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+While it is fine to call <FONT
+COLOR="RED"
+>list_set_at</FONT
+> occasionally, a need to
+do so repeatedly often indicates that another data structure should probably
+be chosen in place of functional list.
+</P
+><P
+>&#13;Functional lists are by far the most widely used data structure
+in functional programming. However, one should not attempt to use a
+functional list like an array as doing so is inefficient both time-wise and
+memory-wise.
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/githwxi/ATS-Postiats/blob/master/doc/BOOK/ATS2TUTORIAL/CODE/chap_list.dats"
+TARGET="_top"
+>on-line</A
+> the entirety of the
+code used in this chapter plus some testing code.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c359.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c514.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Datatypes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p34.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Functional Sets and Maps</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

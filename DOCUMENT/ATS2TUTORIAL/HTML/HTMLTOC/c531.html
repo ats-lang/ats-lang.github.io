@@ -1,0 +1,568 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>References</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Tutorial Topics"
+HREF="p34.html"><LINK
+REL="PREVIOUS"
+TITLE="Exceptions"
+HREF="c496.html"><LINK
+REL="NEXT"
+TITLE="Persistent Arrays"
+HREF="c604.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c496.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c604.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="reference"
+></A
+>Chapter 13. References</H1
+><P
+>&#13;A reference is a singleton array, that is, an array of size 1.  It is
+persistent in the sense that the (heap-allocated) memory for storing the
+content of a reference cannot be freed manually in a type-safe
+manner. Instead, it can only be reclaimed through garbage collection (GC).
+
+</P
+><P
+>&#13;Given a viewtype VT, the type for references to values of viewtype VT is
+<FONT
+COLOR="RED"
+>ref</FONT
+>(VT). For convenience, the type constructor <FONT
+COLOR="RED"
+>ref</FONT
+>
+is declared to be abstract in ATS. However, it can be defined as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN537"
+></A
+><PRE
+CLASS="programlisting"
+>typedef ref (a:vt@ype) = [l:addr] (vbox (a @ l) | ptr l)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The interfaces for various functions on references can be found in
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/prelude/SATS/reference.sats"
+TARGET="_top"
+>prelude/SATS/reference.sats</A
+>.
+</P
+><P
+>For creating a reference, the function template <FONT
+COLOR="RED"
+>ref_make_elt</FONT
+> of
+the following interface can be called:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN542"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a:vt@ype} ref_make_elt (x: a):&#60;!wrt&#62; ref a
+</PRE
+><P
+></P
+></DIV
+>
+
+
+It is also allowed to use the shorthand <FONT
+COLOR="RED"
+>ref</FONT
+> for
+<FONT
+COLOR="RED"
+>ref_make_elt</FONT
+>.  Note that the symbol <FONT
+COLOR="RED"
+>!wrt</FONT
+> indicates
+that the so-called <FONT
+COLOR="RED"
+>wrt</FONT
+>-effect may occur when
+<FONT
+COLOR="RED"
+>ref_make_elt</FONT
+> is called.
+
+</P
+><P
+>&#13;For reading writing through a reference, the function templates
+<FONT
+COLOR="RED"
+>ref_get_elt</FONT
+> and <FONT
+COLOR="RED"
+>ref_set_elt</FONT
+> can be used,
+respectively, which are assigned the following interfaces:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN552"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a:t@ype} ref_get_elt (r: ref a):&#60;!ref&#62; a
+fun{a:t@ype} ref_set_elt (r: ref a, x: a):&#60;!refwrt&#62; void
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the symbol <FONT
+COLOR="RED"
+>!ref</FONT
+> indicates that the so-called
+ref-effect may occur when <FONT
+COLOR="RED"
+>ref_get_elt</FONT
+> is evaluated. Similarly,
+<FONT
+COLOR="RED"
+>!refwrt</FONT
+> means both ref-effect and wrt-effect may occur when
+<FONT
+COLOR="RED"
+>ref_set_elt</FONT
+>.  Given a reference <FONT
+COLOR="RED"
+>r</FONT
+> and a value
+<FONT
+COLOR="RED"
+>v</FONT
+>, <FONT
+COLOR="RED"
+>ref_get_elt(r)</FONT
+> and <FONT
+COLOR="RED"
+>ref_set_elt(r, v)</FONT
+>
+can be written as <FONT
+COLOR="RED"
+>!r</FONT
+> and <FONT
+COLOR="RED"
+>!r := v</FONT
+>, respectively, and
+can also be written as <FONT
+COLOR="RED"
+>r[]</FONT
+> and <FONT
+COLOR="RED"
+>r[] := v</FONT
+>,
+respectively, in terms of bracket-notation.
+</P
+><P
+>&#13;A reference is typically employed to record some form of persistent state.
+For instance, following is such an example:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN567"
+></A
+><PRE
+CLASS="programlisting"
+>local
+//
+#define BUFSZ 128
+//
+val count = ref&#60;int&#62; (0)
+//
+in (* in of [local] *)
+
+fun genNewName
+  (prfx: string): string = let
+  val n = !count
+  val () = !count := n + 1
+  var res = @[byte][BUFSZ]((*void*))
+  val err =
+  $extfcall (
+    int, "snprintf", addr@res, BUFSZ, "%s%i", prfx, n
+  ) (* end of [$extfcall] *)
+in
+  strptr2string(string0_copy($UNSAFE.cast{string}(addr@res)))
+end // end of [genNewName]
+
+end // end of [local]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The function <FONT
+COLOR="RED"
+>genNewName</FONT
+> is called to generate fresh names. As
+the integer content of the reference <FONT
+COLOR="RED"
+>count</FONT
+> is updated whenever
+a call to <FONT
+COLOR="RED"
+>genNewName</FONT
+> is made, each name returned by
+<FONT
+COLOR="RED"
+>genNewName</FONT
+> is guaranteed to have not been generated
+before. Note that the use of <FONT
+COLOR="RED"
+>$extfcall</FONT
+> is for making a direct
+call to the function <FONT
+COLOR="RED"
+>snprintf</FONT
+> in C.
+
+</P
+><P
+>&#13;<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Misuse of References</I
+></SPAN
+>
+References are commonly misused in practice. The following program is often
+written by a beginner of functional programming who has already learned
+(some) imperative programming:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN577"
+></A
+><PRE
+CLASS="programlisting"
+>fun fact
+  (n: int): int = let
+  val res = ref&#60;int&#62; (1)
+  fun loop (n: int):&#60;cloref1&#62; void =
+    if n &#62; 0 then !res := n * !res else ()
+  val () = loop (n)
+in
+  !res
+end // end of [fact]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The function <FONT
+COLOR="RED"
+>fact</FONT
+> is written in such a style as somewhat a direct
+translation of the following C code:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN580"
+></A
+><PRE
+CLASS="programlisting"
+>int fact (int n) {
+  int res = 1 ;
+  while (n &#62; 0) res = n * res ;
+  return res ;
+}
+</PRE
+><P
+></P
+></DIV
+>
+
+
+In the ATS implementation of <FONT
+COLOR="RED"
+>fact</FONT
+>, <FONT
+COLOR="RED"
+>res</FONT
+> is a
+heap-allocated reference and it becomes garbage (waiting to be reclaimed by
+the GC) after a call to <FONT
+COLOR="RED"
+>fact</FONT
+> returns.  On the other hand, the
+variable <FONT
+COLOR="RED"
+>res</FONT
+> in the C implementation of <FONT
+COLOR="RED"
+>fact</FONT
+> is
+stack-allocated (or it can even be mapped to a machine register), and there
+is no generated garbage after a call to <FONT
+COLOR="RED"
+>fact</FONT
+> returns. A proper
+translation of the C implementation in ATS can actually be given as
+follows, which makes no use of references:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN588"
+></A
+><PRE
+CLASS="programlisting"
+>fun fact
+  (n: int): int = let
+  fun loop (n: int, res: int): int =
+    if n &#62; 0 then loop (n, n * res) else res
+  // end of [loop]
+in
+  loop (n, 1)
+end // end of [fact]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Unless strong justification can be given, making extensive use of
+(dynamically created) references is often a sure sign of poor coding style.
+
+</P
+><P
+>&#13;<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Statically Allocated References</I
+></SPAN
+>
+Creating a reference by calling <FONT
+COLOR="RED"
+>ref_make_elt</FONT
+> involves dynamic
+memory allocation. If this is not desirable or even acceptable, it is
+possible to only employ statically allocated memory in a reference creation
+as is shown below:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN594"
+></A
+><PRE
+CLASS="programlisting"
+>var myvar: int = 0
+val myref = ref_make_viewptr (view@(myvar) | addr@(myvar))
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The function <FONT
+COLOR="RED"
+>ref_make_viewptr</FONT
+> takes a pointer and a proof of
+some at-view associated with the pointer and returns a reference after
+consuming the proof. As <FONT
+COLOR="RED"
+>ref_make_viewptr</FONT
+> is a cast-function, it
+causes no run-time overhead. In the above code, <FONT
+COLOR="RED"
+>myvar</FONT
+> is
+statically allocated and it is no longer available after its at-view proof
+is consumed by <FONT
+COLOR="RED"
+>ref_make_viewptr</FONT
+>. It should be interesting to
+observe that both <FONT
+COLOR="RED"
+>myvar</FONT
+> and <FONT
+COLOR="RED"
+>myref</FONT
+> are just the same
+pointer in C but they are the reification of fundamentally different
+concepts in ATS: the former is a linear variable while the latter is a
+non-linear reference.
+
+</P
+><P
+>&#13;Please find <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_reference.dats"
+TARGET="_top"
+>on-line</A
+> the entirety of the
+code used in this chapter.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c496.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c604.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Exceptions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p34.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Persistent Arrays</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2TUTORIAL-BOOK.js"></SCRIPT></BODY
+></HTML
+>

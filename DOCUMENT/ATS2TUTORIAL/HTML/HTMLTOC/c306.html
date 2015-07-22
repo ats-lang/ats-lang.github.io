@@ -1,0 +1,529 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Recursion</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Tutorial Topics"
+HREF="p34.html"><LINK
+REL="PREVIOUS"
+TITLE="Dot-Symbol Overloading"
+HREF="c260.html"><LINK
+REL="NEXT"
+TITLE="Datatypes"
+HREF="c359.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c260.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c359.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="recursion"
+></A
+>Chapter 9. Recursion</H1
+><P
+>&#13;The notion of recursion is ubiquitous in ATS.  For instance, there are
+recursively defined sorts (datasorts) and types (datatypes) in the statics,
+and there are also recursively defined functions in the dynamics.
+Literally, the word <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>recurse</I
+></SPAN
+> means "go back". When an entity is
+defined recursively, it means that the entity being defined can appear in
+its own definition. In the following presentation, I will show several ways
+to define (or implement) recursive functions and non-recursive functions,
+where the latter is just a special case of the former.
+</P
+><P
+>&#13;The keyword <FONT
+COLOR="RED"
+>fun</FONT
+> can be used to initiate the definition of
+a recursive function. For instance, following is the definition of a
+recursive function:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN312"
+></A
+><PRE
+CLASS="programlisting"
+>fun
+fact(x: int): int =
+  if x &#62; 0 then x * fact(x-1) else 1
+(* end of [fact] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+A non-recursive function is a special kind of recursive function that
+does make use of itself in its own definition. So one can certainly use
+<FONT
+COLOR="RED"
+>fun</FONT
+> to initiate the definition of a non-recursive function.
+However, if there is a need to indicate explicitly that a non-recursive is being
+defined, then one can use the keyword <FONT
+COLOR="RED"
+>fn</FONT
+> to do so. For
+instance, the definiton of a non-recursive function is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN316"
+></A
+><PRE
+CLASS="programlisting"
+>fn square(x: int): int = x * x
+</PRE
+><P
+></P
+></DIV
+>
+
+
+which is directly translated by the compiler into the following binding
+between a name and a lambda-expression:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN318"
+></A
+><PRE
+CLASS="programlisting"
+>val square = lam (x: int): int =&#62; x * x
+</PRE
+><P
+></P
+></DIV
+>
+
+
+As another example, please note that the two occurrences of the
+symbol <FONT
+COLOR="RED"
+>fact</FONT
+> in the following code refer to two distinct
+functions:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN321"
+></A
+><PRE
+CLASS="programlisting"
+>fn
+fact(x: int): int =
+  if x &#62; 0 then x * fact(x-1) else 1
+(* end of [fact] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+While the first <FONT
+COLOR="RED"
+>fact</FONT
+> (to the left of the equality symbol)
+refers to the (non-recursive) function being defined, the second one is
+supposed to have been declared previously.
+
+</P
+><P
+>&#13;A recursive function can also be defined as a recursive value. For
+instance, the recursive function <FONT
+COLOR="RED"
+>fact</FONT
+> defined above can
+be defined as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN326"
+></A
+><PRE
+CLASS="programlisting"
+>val
+rec
+fact : int -&#62; int =
+lam (x) =&#62;
+  if x &#62; 0 then x * fact(x-1) else 1
+(* end of [fact] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the keyword <FONT
+COLOR="RED"
+>rec</FONT
+> indicates that <FONT
+COLOR="RED"
+>fact</FONT
+> is
+defined recursively, that is, it is allowed to appear in its own
+definition. In fact, the former definition of <FONT
+COLOR="RED"
+>fact</FONT
+> is directly
+translated into the latter one by the compiler. Of course, one may
+also use a reference to implement recursion:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN331"
+></A
+><PRE
+CLASS="programlisting"
+>val
+fact = ref&#60;int-&#62;int&#62;($UNSAFE.cast(0))
+val () =
+!fact :=
+(
+  lam (x:int):int =&#62; if x &#62; 0 then x * !fact(x-1) else 1
+) (* end of [val] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+But this is definitely not a style I would like to advocate.
+For the sake of completion, I present yet another way to define
+<FONT
+COLOR="RED"
+>fact</FONT
+> as a fixed-point expression:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN334"
+></A
+><PRE
+CLASS="programlisting"
+>val
+fact =
+fix f(x: int): int =&#62;
+  if x &#62; 0 then x * f(x-1) else 1
+(* end of [fact] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Of course, if one wants to, then one can always replace a lambda-expression
+with a fixed-point expression (or simply fix-expression for short). For instance,
+<FONT
+COLOR="RED"
+>lambda(x:int):int =&#62; x+x</FONT
+> can be written as <FONT
+COLOR="RED"
+>fix _(x:int):int =&#62; x+x</FONT
+>.
+
+</P
+><P
+>&#13;For defining mutually recursive functions, one can simply use the
+keyword <FONT
+COLOR="RED"
+>and</FONT
+> to concatenate function definitions. For instance,
+the following code defines two functions <FONT
+COLOR="RED"
+>isevn</FONT
+> and <FONT
+COLOR="RED"
+>isodd</FONT
+>
+mutually recursively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN342"
+></A
+><PRE
+CLASS="programlisting"
+>fun
+isevn(x: int): bool =
+  if x &#62; 0 then isodd(x-1) else true
+and
+isodd(x: int): bool =
+  if x &#62; 0 then isevn(x-1) else false
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The code, as one may have guessed, is translated by the compiler into the
+following form (for defining two mutually recursive values):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN344"
+></A
+><PRE
+CLASS="programlisting"
+>val
+rec
+isevn : int -&#62; bool =
+  lam (x) =&#62; if x &#62; 0 then isodd(x-1) else true
+and
+isodd : int -&#62; bool =
+  lam (x) =&#62; if x &#62; 0 then isevn(x-1) else false
+</PRE
+><P
+></P
+></DIV
+>
+
+
+One can certainly use the keyword <FONT
+COLOR="RED"
+>and</FONT
+> to concatenate
+definitions of non-recursive functions, but doing so is probably just a
+curiosity (instead of a meaningful practice).
+</P
+><P
+>&#13;Even at this point, I have not presented all of the possible ways to define
+functions in ATS. For instance, one can also define stack-allocated
+closure-functions in ATS, which may be either recursive or non-recursive.
+I plan to introduce such functions elsewhere in this tutorial.
+
+</P
+><P
+>&#13;Often, the interface (that is, type) for a function is declared at one
+place and its definition (or implementation) is given at another place.
+For instance, one may first introduce the following declaration:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN349"
+></A
+><PRE
+CLASS="programlisting"
+>extern fun fact (x: int): int
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Later, one can implement <FONT
+COLOR="RED"
+>fact</FONT
+> according to the above declaration:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN352"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+fact (x) =
+  if x &#62; 0 then x * fact(x-1) else 1
+// end of [fact]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+When <FONT
+COLOR="RED"
+>implement</FONT
+> is used to initiate the definition of a
+function, any previously declared symbols (including the one that is
+being defined) can appear in the definition. If it is desirable, one
+may replace <FONT
+COLOR="RED"
+>implement</FONT
+> with <FONT
+COLOR="RED"
+>implmnt</FONT
+>.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/githwxi/ATS-Postiats/blob/master/doc/BOOK/ATS2TUTORIAL/CODE/chap_recursion.dats"
+TARGET="_top"
+>on-line</A
+> the entirety of the
+code used in this chapter.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c260.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c359.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Dot-Symbol Overloading</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p34.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Datatypes</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2TUTORIAL-BOOK.js"></SCRIPT></BODY
+></HTML
+>

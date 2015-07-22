@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>File Inclusion inside ATS Code</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Tutorial Topics"
+HREF="p34.html"><LINK
+REL="PREVIOUS"
+TITLE="Filename Extensions"
+HREF="c58.html"><LINK
+REL="NEXT"
+TITLE="Fixity Declarations"
+HREF="c90.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c58.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c90.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="file-inclusion"
+></A
+>Chapter 3. File Inclusion inside ATS Code</H1
+><P
+>&#13;As is in C, file inclusion inside ATS code is done through the use of the
+directive <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>#include</I
+></SPAN
+>. For instance, the following line
+indicates that a file named <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>foobar</I
+></SPAN
+> is included, that is, this
+line is to be replaced with the content of the file <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>foobar</I
+></SPAN
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN85"
+></A
+><PRE
+CLASS="programlisting"
+>#include "foobar.hats"
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the included file is parsed according to the syntax for statics
+or dynamics depending on whether the file is included in a static or
+dynamic file.  As a convention, the name of an included file often ends
+with the extension <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>.hats</I
+></SPAN
+>.
+</P
+><P
+>&#13;A common use of file inclusion is to keep some constants, flags or
+parameters being defined consistently across a set of files. For instance,
+the file <A
+HREF="https://github.com/githwxi/ATS-Postiats/blob/master/doc/BOOK/ATS-Postiats/prelude/params.hats"
+TARGET="_top"
+>prelude/params.hats</A
+> serves
+such a purpose.  File inclusion can also be used to emulate (in a limited
+but rather useful manner) functors supported in languages such as SML and
+OCaml.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c58.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c90.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Filename Extensions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p34.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Fixity Declarations</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2TUTORIAL-BOOK.js"></SCRIPT></BODY
+></HTML
+>

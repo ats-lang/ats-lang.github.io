@@ -1,0 +1,496 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Fixity Declarations</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Tutorial Topics"
+HREF="p34.html"><LINK
+REL="PREVIOUS"
+TITLE="File Inclusion inside ATS Code"
+HREF="c79.html"><LINK
+REL="NEXT"
+TITLE="Static Load"
+HREF="c156.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c79.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c156.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="fixity"
+></A
+>Chapter 4. Fixity Declarations</H1
+><P
+>&#13;Given a function <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>f</I
+></SPAN
+>, the standard syntax for applying
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>f</I
+></SPAN
+> to an argument <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>v</I
+></SPAN
+> is <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>f(v)</I
+></SPAN
+>; for two
+arguments <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>v1</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>v2</I
+></SPAN
+>, the syntax is
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>f(v1, v2)</I
+></SPAN
+>. Also, it is allowed in ATS to use infix notation
+for a binary function application, and prefix/postifix notation for a unary
+function application.
+</P
+><P
+>&#13;Each identifier in ATS can be assigned one of the following fixities:
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>prefix</I
+></SPAN
+>, <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>infix</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>postfix</I
+></SPAN
+>.  The
+fixity declarations for many commonly used identifiers can be found in
+<A
+HREF="https://github.com/githwxi/ATS-Postiats/blob/master/doc/BOOK/ATS-Postiats/prelude/fixity.ats"
+TARGET="_top"
+>prelude/fixity.ats</A
+>.  Often, the
+name <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>operator</I
+></SPAN
+> is used to refer to an identifier that is
+assigned a fixity. For instance, the following syntax declares that
+<FONT
+COLOR="RED"
+>+</FONT
+> and <FONT
+COLOR="RED"
+>-</FONT
+> are infix operators of a precedence value
+equal to 50:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN108"
+></A
+><PRE
+CLASS="programlisting"
+>infixl 50 + -
+</PRE
+><P
+></P
+></DIV
+>
+
+
+After this declaration, we can write an expression like <FONT
+COLOR="RED"
+>1 + 2 -
+3</FONT
+>, which is parsed into <FONT
+COLOR="RED"
+>-(+(1, 2), 3)</FONT
+> in terms of the
+standard syntax for function application.
+</P
+><P
+>&#13;The keyword <FONT
+COLOR="RED"
+>infixl</FONT
+> indicates that the declared infix operators
+are left-associative. For right-associative and non-associative infix
+operators, please use the keywords <FONT
+COLOR="RED"
+>infixr</FONT
+> and
+<FONT
+COLOR="RED"
+>infix</FONT
+>, respectively. If the precedence value is omitted in a
+fixity declaration, it is assumed to be equal to 0.
+</P
+><P
+>&#13;We can also use the following syntax to declare that <FONT
+COLOR="RED"
+>iadd</FONT
+>,
+<FONT
+COLOR="RED"
+>fadd</FONT
+>, <FONT
+COLOR="RED"
+>padd</FONT
+> and <FONT
+COLOR="RED"
+>uadd</FONT
+> are
+left-associative infix operators with a precedence value equal to that of
+the operator <FONT
+COLOR="RED"
+>+</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN122"
+></A
+><PRE
+CLASS="programlisting"
+>infixl (+) iadd fadd padd uadd
+</PRE
+><P
+></P
+></DIV
+>
+
+
+This is useful as it is difficult in practice to remember the precedence
+values of (a large collection of) declared operators. Sometimes, we may
+need to specify that the precedence value of one operator in relation to
+that of another one. For instance, the following syntax declares that
+<FONT
+COLOR="RED"
+>opr2</FONT
+> is a left-associative infix operator and its precedence
+value is that of <FONT
+COLOR="RED"
+>opr1</FONT
+> plus 10:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN126"
+></A
+><PRE
+CLASS="programlisting"
+>infixl (opr1 + 10) opr2
+</PRE
+><P
+></P
+></DIV
+>
+
+
+If the plus sign (+) is changed to the minus sign (-), then the precedence
+value of <FONT
+COLOR="RED"
+>opr2</FONT
+> is that of <FONT
+COLOR="RED"
+>opr1</FONT
+> minus 10.
+</P
+><P
+>&#13;We can also turn an identifier <FONT
+COLOR="RED"
+>opr</FONT
+> into a non-associative infix
+operator (of precedence value 0) by putting the backslash symbol
+(<FONT
+COLOR="RED"
+>\</FONT
+>) in front of it. For instance, the expression
+<FONT
+COLOR="RED"
+>exp1 \opr exp2</FONT
+> stands for <FONT
+COLOR="RED"
+>opr (exp1, exp2)</FONT
+>,
+where <FONT
+COLOR="RED"
+>exp1</FONT
+> and <FONT
+COLOR="RED"
+>exp2</FONT
+> refer to some expressions,
+either static or dynamic.
+</P
+><P
+>&#13;The syntax for declaring (unary) prefix and postfix operators are
+similar. For instance, the following syntax declares that <FONT
+COLOR="RED"
+>~</FONT
+> and
+<FONT
+COLOR="RED"
+>?</FONT
+> are prefix and postfix operators of precedence values 61 and 69,
+respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN140"
+></A
+><PRE
+CLASS="programlisting"
+>prefix 61 ~
+postfix 69 ?
+</PRE
+><P
+></P
+></DIV
+>
+
+
+As an example, a postfix operator is involved in the following 3-line
+program:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN142"
+></A
+><PRE
+CLASS="programlisting"
+>postfix (imul + 10) !!
+extern fun !! (x: int): int
+implement !! (x) = if x &#62;= 2 then x * (x - 2)!! else 1
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;For a given occurrence of an operator, we can deprive it of its assigned
+fixity status by simply putting the keyword <FONT
+COLOR="RED"
+>op</FONT
+> in front of
+it. For instance <FONT
+COLOR="RED"
+>1 + 2 - 3</FONT
+> can be writen as <FONT
+COLOR="RED"
+>op- (op+
+(1, 2), 3)</FONT
+>.  It is also possible to (permanently) deprive an operator of
+its assigned fixity status.  For instance, the following syntax does so to
+the operators <FONT
+COLOR="RED"
+>iadd</FONT
+>, <FONT
+COLOR="RED"
+>fadd</FONT
+>, <FONT
+COLOR="RED"
+>padd</FONT
+> and
+<FONT
+COLOR="RED"
+>uadd</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN152"
+></A
+><PRE
+CLASS="programlisting"
+>nonfix iadd fadd padd uadd</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>nonfix</FONT
+> is a keyword in ATS.
+
+</P
+><P
+>&#13;Lastly, please note that each fixity declaration is only effective within
+its own legal scope.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c79.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c156.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>File Inclusion inside ATS Code</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p34.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Static Load</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

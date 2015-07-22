@@ -1,0 +1,362 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Static Load</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Tutorial Topics"
+HREF="p34.html"><LINK
+REL="PREVIOUS"
+TITLE="Fixity Declarations"
+HREF="c90.html"><LINK
+REL="NEXT"
+TITLE="Dynamic Load"
+HREF="c191.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c90.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c191.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="staload"
+></A
+>Chapter 5. Static Load</H1
+><P
+>&#13;In ATS, static load (or staload for short) refers to the creation
+of a namespace populated with the declared names in a loaded package.
+</P
+><P
+>&#13;Suppose that a file named <TT
+CLASS="filename"
+>foo.sats</TT
+> contains the
+following code:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN161"
+></A
+><PRE
+CLASS="programlisting"
+>//
+datatype
+aDatatype =
+| A | B of (int, int)
+//
+val aValue: int
+fun aFunction: int -&#62; int
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The following staload-declaration introduces a namespace
+<FONT
+COLOR="RED"
+>FOO</FONT
+> for the names declared in <TT
+CLASS="filename"
+>foo.sats</TT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN165"
+></A
+><PRE
+CLASS="programlisting"
+>staload FOO = "foo.sats"
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The prefix <FONT
+COLOR="RED"
+>$FOO.</FONT
+> needs to be attached to a name in the
+namespace <FONT
+COLOR="RED"
+>FOO</FONT
+> in order for it to be referenced. For instance,
+the names available in the namespace <FONT
+COLOR="RED"
+>FOO</FONT
+> are all referenced in
+the following code:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN170"
+></A
+><PRE
+CLASS="programlisting"
+>val a: $FOO.aDatatype = $FOO.A()
+val b: $FOO.aDatatype = $FOO.B(0, $FOO.aFunction($FOO.aValue))
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;If the file <TT
+CLASS="filename"
+>foo.sats</TT
+> is staloaded as follows for the second
+time:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN174"
+></A
+><PRE
+CLASS="programlisting"
+>staload FOO2 = "foo.sats"
+</PRE
+><P
+></P
+></DIV
+>
+
+
+then <TT
+CLASS="filename"
+>foo.sats</TT
+> is not actually loaded by the compiler. Instead,
+<FONT
+COLOR="RED"
+>FOO2</FONT
+> is simply made to be an alias of <FONT
+COLOR="RED"
+>FOO</FONT
+>.
+
+</P
+><P
+>&#13;It is also allowed for <TT
+CLASS="filename"
+>foo.sats</TT
+> to be staloaded as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN181"
+></A
+><PRE
+CLASS="programlisting"
+>staload "foo.sats"
+</PRE
+><P
+></P
+></DIV
+>
+
+
+In this case, the namespace for the names declared in <TT
+CLASS="filename"
+>foo.sats</TT
+>
+is opened. For instance, the following code shows that these names can now
+be referenced directly:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN184"
+></A
+><PRE
+CLASS="programlisting"
+>val a: aDatatype = A()
+val b: aDatatype = B(0, aFunction(aValue))
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Let us suppose that we have the following sequence of declarations:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN187"
+></A
+><PRE
+CLASS="programlisting"
+>val aValue = 0
+staload "foo.sats"
+val anotheValue = aValue + 1
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Does the second occurrence of <FONT
+COLOR="RED"
+>aValue</FONT
+> refer to the one
+introduced in the first declaration, or it refers to the one declared
+inside <TT
+CLASS="filename"
+>foo.sats</TT
+>? The answer may be a bit surprising: It refers
+to the one introduced in the first declaration as a binding for the
+occurrence of a name is resolved in ATS by searching first through the
+available names delcared in the same file.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c90.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c191.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Fixity Declarations</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p34.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Dynamic Load</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2TUTORIAL-BOOK.js"></SCRIPT></BODY
+></HTML
+>
