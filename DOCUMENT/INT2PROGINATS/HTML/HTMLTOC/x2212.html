@@ -1,0 +1,296 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Constructing a Statically Allocated List</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Interaction with C"
+HREF="c2005.html"><LINK
+REL="PREVIOUS"
+TITLE="Exporting Types in ATS for Use in C"
+HREF="x2168.html"><LINK
+REL="NEXT"
+TITLE="Programming with Dependent Types"
+HREF="p2230.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2168.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Interaction with C</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="p2230.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example-constructing_a_statically_allocated_list"
+>Example: Constructing a Statically Allocated List</A
+></H1
+><P
+>&#13;In embedded programming, static memory allocation is often preferred
+due to dynamic memory allocation being less predictable.  I present as
+follows an example in which a list is constructed with statically allocated
+memory. This example also strongly attests to ATS and C being intimately
+related.
+
+</P
+><P
+>&#13;In order to statically allocate memory for list-nodes, we need to first
+form a type for list-nodes so that we can inform the C compiler how
+much memory is needed for each list-node. In the following code, the type
+<FONT
+COLOR="RED"
+>list_node</FONT
+> in ATS is for boxed list-nodes, and this type is
+exported to C under the same name:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2217"
+></A
+><PRE
+CLASS="programlisting"
+>//
+vtypedef
+list_node = list_cons_pstruct(int,ptr) // [list_node] for boxed nodes
+//
+extern vtypedef "list_node" = list_node // exporting [list_node] to C
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Exporting <FONT
+COLOR="RED"
+>list_node</FONT
+> to C also introduces (implicitly) a
+typedef <FONT
+COLOR="RED"
+>list_node_</FONT
+> in C for unboxed list-nodes. So the
+following type <FONT
+COLOR="RED"
+>list_node_</FONT
+> in ATS is precisely what we want
+(for unboxed list-nodes):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2222"
+></A
+><PRE
+CLASS="programlisting"
+>typedef list_node_ = $extype"list_node_" // [list_node_] for unboxed nodes
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The following code statically allocates an array of list-nodes and then
+initialize these nodes, turning the array into a list:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2225"
+></A
+><PRE
+CLASS="programlisting"
+>local
+
+#define N 10
+
+(*
+** static allocation
+*)
+var nodes = @[list_node_][N]()
+
+fun loop
+(
+  p: ptr, i: int
+) : void = let
+in
+//
+if i &#60; N then let
+  val res =
+  $UN.castvwtp0{list_node}(p)
+  val+list_cons (x, xs) = res
+  val (
+  ) = x := i*i
+  val p = ptr_succ&#60;list_node_&#62; (p)
+  val i = i + 1
+  val () = (
+    if i &#60; N then xs := p else xs := the_null_ptr
+  ) : void // end of [val]
+  val _(*ptr*) = $UN.castvwtp0{ptr}((view@x, view@xs | res))
+in
+  loop (p, i)
+end else ((*void*)) // end of [if]
+//
+end // end of [loop]
+
+in (* in of [local] *)
+
+val () = loop (addr@nodes, 0)
+val xs_static = $UN.castvwtp0{list(int,N)}((view@nodes|addr@nodes))
+val () = println! ("xs_static = ", xs_static) // 0, 1, 4, 9, 16, ...
+
+end // end of [local]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The implementation of <FONT
+COLOR="RED"
+>loop</FONT
+> makes extensive use of
+unsafe C-style programming in ATS. For someone familiar with C, it
+should be straightforward to visualize the C code that corresponds to
+this implementation directly.
+</P
+><P
+>&#13;Please find the entire code for this example
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_CINTERACT/StaticAllocList.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2168.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="p2230.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Exporting Types in ATS for Use in C</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2005.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Programming with Dependent Types</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

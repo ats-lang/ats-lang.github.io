@@ -1,0 +1,542 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Interaction with C</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Support for Practical Programming"
+HREF="p1362.html"><LINK
+REL="PREVIOUS"
+TITLE="
+Example: A Functorial Package for Rationals
+"
+HREF="x1967.html"><LINK
+REL="NEXT"
+TITLE="External Types and Values in ATS"
+HREF="x2059.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1967.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2059.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="Cinteraction"
+></A
+>Chapter 8. Interaction with C</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c1995.html#external_name"
+>External Global Names</A
+></DT
+><DT
+><A
+HREF="x2059.html"
+>External Types and Values in ATS</A
+></DT
+><DT
+><A
+HREF="x2074.html"
+>Inclusion of External Code in ATS</A
+></DT
+><DT
+><A
+HREF="x2095.html"
+>Calling External Functions in ATS</A
+></DT
+><DT
+><A
+HREF="x2107.html"
+>Unsafe C-style Programming in ATS</A
+></DT
+><DT
+><A
+HREF="x2158.html"
+>Exporting Types in ATS for Use in C</A
+></DT
+><DT
+><A
+HREF="x2202.html"
+>Example: Constructing a Statically Allocated List</A
+></DT
+></DL
+></DIV
+><P
+>&#13;ATS and C share precisely the same native/flat/unboxed data representation.
+As a consequence, there is no need for wrapping/unwrapping or
+boxing/unboxing when calling from C a function implemented in ATS or vice
+versa, and there is also no run-time overhead for doing so. To a large
+extent, ATS can be considered a front-end to C that is equipped with a
+highly expressive type system (for specifying program invariants) and a
+highly adaptable template system (for facilitating code reuse). In
+particular, ATS can often be effectively employed to turn a large task into
+subtasks of coherent interfaces, which can be implemented in ATS, C or some
+other langauges and then assembled together to form a solution to the orginal
+task.
+</P
+><P
+>&#13;As can be expected, C code that appears directly in ATS does not go
+through the kind of rigorous typechecking like ATS code should. So it is
+recommended that the programmer be extra cautious when making direct use of
+C code inside ATS code. In practice, my own experience clearly indicates
+that the portion of C code inside my ATS code is highly likely to be the
+culprit for most of encountered bugs.
+
+</P
+><P
+>&#13;The code employed for illustration in this chapter plus some additional
+code for testing is available <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_CINTERACT/"
+TARGET="_top"
+>on-line</A
+>.
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="external_name"
+>External Global Names</A
+></H1
+><P
+>&#13;A function declared in ATS can be given a global name of C-style so as to
+allow the function to appear in both ATS code and C code.  In particular,
+the function can be implemented in ATS and called in C or vice versa.
+</P
+><P
+>&#13;In the following code, we see that two functions are declared:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2005"
+></A
+><PRE
+CLASS="programlisting"
+>extern
+fun fact (n: int): int
+extern
+fun fact2 (n: int, res: int): int = "ext#fact2_in_c"
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The first function <FONT
+COLOR="RED"
+>fact</FONT
+> does not have a global name while the
+second function <FONT
+COLOR="RED"
+>fact2</FONT
+> is assigned a global name
+<FONT
+COLOR="RED"
+>fact2_in_c</FONT
+>.  The symbol <FONT
+COLOR="RED"
+>ext#</FONT
+> indicates that
+<FONT
+COLOR="RED"
+>fact2_in_c</FONT
+> is treated as a global function in C and its
+prototype needs to be declared (via the <FONT
+COLOR="RED"
+>extern</FONT
+> keyword) before
+it can be called. If <FONT
+COLOR="RED"
+>ext#</FONT
+> is written in place of
+<FONT
+COLOR="RED"
+>ext#fact2_in_c</FONT
+> in the above declaration, then the global name
+for the function <FONT
+COLOR="RED"
+>fact2</FONT
+> in ATS is assumed to be same as the name
+of the function in ATS. In other words, writing <FONT
+COLOR="RED"
+>ext#</FONT
+> in the
+above declaration is equivalent to writing <FONT
+COLOR="RED"
+>ext#fact2</FONT
+>.
+
+</P
+><P
+>&#13;Let us assume that <FONT
+COLOR="RED"
+>fact</FONT
+> can be implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2020"
+></A
+><PRE
+CLASS="programlisting"
+>implement fact (n) = fact2 (n, 1)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+When compiling this implementation, the ATS compiler needs to form function
+names in the generated C code to refer to <FONT
+COLOR="RED"
+>fact</FONT
+> and
+<FONT
+COLOR="RED"
+>fact2</FONT
+>.  For the former, the function name in the C code is
+determined by a set of rules (which take into account the issue of
+namespace).  For the latter, the function name is simply chosen to be the
+assigned global name <FONT
+COLOR="RED"
+>fact2_in_c</FONT
+>. As is suggested by the name of
+<FONT
+COLOR="RED"
+>fact2_in_c</FONT
+>, this function can be directly implemented in C as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2026"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;int
+fact2_in_c (int n, int res)
+{
+  while (n &#62; 0) { res *= n ; n -= 1 ; } ; return res ;
+}
+</PRE
+><P
+></P
+></DIV
+>
+
+It is also allowed to implement <FONT
+COLOR="RED"
+>fact2</FONT
+> in ATS
+directly as is shown below:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2029"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+fact2 (n, res) = if n &#62; 0 then fact2 (n-1, n*res) else res
+</PRE
+><P
+></P
+></DIV
+>
+
+
+This implementation of <FONT
+COLOR="RED"
+>fact2</FONT
+> can be called in C
+through the name <FONT
+COLOR="RED"
+>fact2_in_c</FONT
+>.
+</P
+><P
+>&#13;If both <FONT
+COLOR="RED"
+>fact2</FONT
+> and <FONT
+COLOR="RED"
+>fact2_in_c</FONT
+> are implemented (the
+former in ATS and the latter in C), then a link-time error is to be
+issued to indicate that <FONT
+COLOR="RED"
+>fact2_in_c</FONT
+> is implemented repeatedly.
+</P
+><P
+>&#13;One can also declare <FONT
+COLOR="RED"
+>fact2</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2039"
+></A
+><PRE
+CLASS="programlisting"
+>extern
+fun fact2 (n: int, res: int): int = "mac#fact2_in_c"
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The symbol <FONT
+COLOR="RED"
+>mac#</FONT
+> indicates that <FONT
+COLOR="RED"
+>fact2_in_c</FONT
+> is
+treated like a macro in C. In particular, <FONT
+COLOR="RED"
+>fact2_in_c</FONT
+> can be
+called without its prototype being declared first. As a matter of fact, it
+may not even have a prototype. This style of declaration naturally expects
+<FONT
+COLOR="RED"
+>fact2_in_c</FONT
+> to be implemented in C directly.
+</P
+><P
+>&#13;It is also allowed to use <FONT
+COLOR="RED"
+>sta#</FONT
+> in place of <FONT
+COLOR="RED"
+>mac#</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2048"
+></A
+><PRE
+CLASS="programlisting"
+>extern
+fun fact2 (n: int, res: int): int = "sta#fact2_in_c"
+</PRE
+><P
+></P
+></DIV
+>
+
+
+If declared in this style, which only occurs rarely in practice,
+then <FONT
+COLOR="RED"
+>fact2_in_c</FONT
+> is treated like a static function in C.
+</P
+><P
+>&#13;For the sake of completeness, I mention as follows another way of declaring
+a static function:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2052"
+></A
+><PRE
+CLASS="programlisting"
+>static fun fact2 (n: int, res: int): int
+</PRE
+><P
+></P
+></DIV
+>
+
+
+This style of declaration is automatically translated into the following one:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2054"
+></A
+><PRE
+CLASS="programlisting"
+>extern fun fact2 (n: int, res: int): int = "sta#"
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the use of <FONT
+COLOR="RED"
+>sta#</FONT
+> means that the name referring to <FONT
+COLOR="RED"
+>fact2</FONT
+>
+in C is simply <FONT
+COLOR="RED"
+>fact2</FONT
+>.
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1967.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2059.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: A Functorial Package for Rationals</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p1362.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>External Types and Values in ATS</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

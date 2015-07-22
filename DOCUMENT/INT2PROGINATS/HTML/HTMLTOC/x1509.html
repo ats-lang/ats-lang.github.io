@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: A Counter Implementation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Effectful Programming Features"
+HREF="c1374.html"><LINK
+REL="PREVIOUS"
+TITLE="References"
+HREF="x1486.html"><LINK
+REL="NEXT"
+TITLE="Arrays"
+HREF="x1520.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1486.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 6. Effectful Programming Features</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1520.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_counter_implementation"
+>Example: A Counter Implementation</A
+></H1
+><P
+>&#13;Let us see as follows the implementation of a counter-like object in the
+style of object-oriented programming (OOP).  The type <FONT
+COLOR="RED"
+>counter</FONT
+>
+for counters is defined as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1513"
+></A
+><PRE
+CLASS="programlisting"
+>typedef
+counter = '{
+  get= () -&#60;cloref1&#62; int
+, inc= () -&#60;cloref1&#62; void
+, reset= () -&#60;cloref1&#62; void
+} // end of [counter]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The three fields of <FONT
+COLOR="RED"
+>counter</FONT
+> are closure functions that
+correspond to methods associated with an object: getting the count of the
+counter, increasing the count of the counter by 1 and resetting the count
+of the counter to 0. The following defined function <FONT
+COLOR="RED"
+>newCounter</FONT
+>
+is for creating a counter object (represented as a boxed record of closure
+functions):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1517"
+></A
+><PRE
+CLASS="programlisting"
+>fun newCounter
+(
+// argumentless
+) : counter = let
+  val count = ref&#60;int&#62; (0)
+in '{
+  get= lam () =&#62; !count
+, inc= lam () =&#62; !count := !count + 1
+, reset= lam () =&#62; !count := 0
+} end // end of [newCounter]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The state of each created counter object is stored in a reference, which
+can only be accessed by the three closure functions in the record that
+represents the object. This is often referred to as state encapsulation
+in OOP.
+</P
+><P
+>&#13;I myself think that the above counter implementation is of rather
+a poor style.  It is also possible to protect the integrity of a state by
+simply making it abstract.  I will present elsewhere another counter
+implementation based on a linear abstract type (that is, abstract viewtype
+in ATS), where counters can be created and then safely freed.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1486.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1520.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>References</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1374.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Arrays</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

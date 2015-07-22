@@ -1,0 +1,349 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Mutual Tail-Recursion</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="c408.html"><LINK
+REL="PREVIOUS"
+TITLE="Mutually Recursive Functions"
+HREF="x689.html"><LINK
+REL="NEXT"
+TITLE="Envless Functions and Closure-Functions"
+HREF="x741.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x689.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x741.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="mutual-tail-recursion"
+>Mutual Tail-Recursion</A
+></H1
+><P
+>&#13;Suppose that foo and bar are two mutually defined recursive functions.  In
+the body of foo or bar, a tail-call to foo or bar is a mutually recursive
+tail-call. For instance, the following two functions <FONT
+COLOR="RED"
+>isevn</FONT
+> and
+<FONT
+COLOR="RED"
+>isodd</FONT
+> are mutually recursive:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN715"
+></A
+><PRE
+CLASS="programlisting"
+>fun isevn (n: int): bool = if n &#62; 0 then isodd (n-1) else true
+and isodd (n: int): bool = if n &#62; 0 then isevn (n-1) else false
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The mutually recursive call to <FONT
+COLOR="RED"
+>isodd</FONT
+> in the body of
+<FONT
+COLOR="RED"
+>isevn</FONT
+> is a tail-call, and the mutually recursive call to
+<FONT
+COLOR="RED"
+>isevn</FONT
+> in the body of <FONT
+COLOR="RED"
+>isodd</FONT
+> is also a tail-call.  If
+we want that these two tail-calls be compiled into local jumps, we should
+replace the keyword <FONT
+COLOR="RED"
+>fun</FONT
+> with the keyword <FONT
+COLOR="RED"
+>fnx</FONT
+> as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN723"
+></A
+><PRE
+CLASS="programlisting"
+>fnx isevn (n: int): bool = if n &#62; 0 then isodd (n-1) else true
+and isodd (n: int): bool = if n &#62; 0 then isevn (n-1) else false
+</PRE
+><P
+></P
+></DIV
+>
+
+
+What the ATS compiler does in this case is to combine these two functions
+into a single one so that each mutually recursive tail-call in their bodies
+can be turned into a self tail-call in the body of the combined function,
+which is then ready to be compiled into a local jump.
+</P
+><P
+>When writing code corresponding to embedded loops in an imperative
+programming language such as C or Java, we often need to make sure that
+mutually recursive tail-calls are compiled into local jumps. The following
+function <FONT
+COLOR="RED"
+>print_multable</FONT
+> is implemented to print out a standard
+multiplication table for nonzero digits:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN727"
+></A
+><PRE
+CLASS="programlisting"
+>fun
+print_multable
+  ((*void*)) = let
+//
+#define N 9
+//
+fnx
+loop1
+  (i: int): void =
+  if i &#60;= N then loop2 (i, 1) else ()
+//
+and
+loop2
+  (i: int, j: int): void =
+  if j &#60;= i
+    then let
+      val () = if j &#62;= 2 then print " "
+      val () = $extfcall(void, "printf", "%dx%d=%2.2d", j, i, j*i)
+    in
+      loop2 (i, j+1) 
+    end // end of [then]
+    else let
+      val () = print_newline () in loop1 (i+1)
+    end // end of [else]
+  // end of [if]
+//
+in
+  loop1 (1)
+end // end of [print_multable]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The functions <FONT
+COLOR="RED"
+>loop1</FONT
+> and <FONT
+COLOR="RED"
+>loop2</FONT
+> are defined
+mutually recursively, and the mutually recursive calls in their bodies are
+all tail-calls. The keyword <FONT
+COLOR="RED"
+>fnx</FONT
+> indicates to the ATS compiler
+that the functions <FONT
+COLOR="RED"
+>loop1</FONT
+> and <FONT
+COLOR="RED"
+>loop2</FONT
+> should be
+combined so that these tail-calls can be compiled into local jumps. In a
+case where <FONT
+COLOR="RED"
+>N</FONT
+> is a large number (e.g., 1,000,000), calling
+<FONT
+COLOR="RED"
+>loop1</FONT
+> may run the risk of stack overflow if these tail-calls
+are not compiled into local jumps.
+</P
+><P
+>&#13;When called, the function <FONT
+COLOR="RED"
+>print_multable</FONT
+> prints out the
+following multiplication table:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN738"
+></A
+><PRE
+CLASS="programlisting"
+>1x1=01
+1x2=02 2x2=04
+1x3=03 2x3=06 3x3=09
+1x4=04 2x4=08 3x4=12 4x4=16
+1x5=05 2x5=10 3x5=15 4x5=20 5x5=25
+1x6=06 2x6=12 3x6=18 4x6=24 5x6=30 6x6=36
+1x7=07 2x7=14 3x7=21 4x7=28 5x7=35 6x7=42 7x7=49
+1x8=08 2x8=16 3x8=24 4x8=32 5x8=40 6x8=48 7x8=56 8x8=64
+1x9=09 2x9=18 3x9=27 4x9=36 5x9=45 6x9=54 7x9=63 8x9=72 9x9=81
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;In summary, the very ability to turn mutually recursive tail-calls into
+local jumps makes it possible to implement embedded loops as mutually
+tail-recursive functions. This ability is indispensable for advocating the
+practice of replacing loops with recursive functions in ATS.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x689.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x741.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Mutually Recursive Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c408.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Envless Functions and Closure-Functions</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

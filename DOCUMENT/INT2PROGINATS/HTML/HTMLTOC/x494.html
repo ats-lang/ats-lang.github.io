@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Evaluation of Function Calls</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="c408.html"><LINK
+REL="PREVIOUS"
+TITLE="Function Interface"
+HREF="x485.html"><LINK
+REL="NEXT"
+TITLE="Recursive Functions"
+HREF="x514.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x485.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x514.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="evaluation-of-function-calls"
+>Evaluation of Function Calls</A
+></H1
+><P
+>&#13;Evaluating a function call is straightforward. Assume that we are to
+evaluate the function call <FONT
+COLOR="RED"
+>abs(0.0 - 1.0)</FONT
+> under some
+environment ENV0, where the function <FONT
+COLOR="RED"
+>abs</FONT
+> is defined as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN499"
+></A
+><PRE
+CLASS="programlisting"
+>fn abs (x: double): double = if x &#62;= 0.0 then x else ~x
+</PRE
+><P
+></P
+></DIV
+>
+
+
+We first evaluate the argument of the call to <FONT
+COLOR="RED"
+>~1.0</FONT
+> under ENV0;
+we then extend ENV0 to ENV1 with a binding between <FONT
+COLOR="RED"
+>x</FONT
+> and
+<FONT
+COLOR="RED"
+>~1.0</FONT
+> and start to evaluate the body of <FONT
+COLOR="RED"
+>abs</FONT
+> under
+ENV1; we evaluate the test <FONT
+COLOR="RED"
+>x &#62;= 0</FONT
+> to <FONT
+COLOR="RED"
+>~1.0 &#62;= 0</FONT
+> and
+then to <FONT
+COLOR="RED"
+>false</FONT
+>, which indicates that we take the else-branch
+<FONT
+COLOR="RED"
+>~x</FONT
+> to continue; we evaluate <FONT
+COLOR="RED"
+>~x</FONT
+> to
+<FONT
+COLOR="RED"
+>~(~1.0)</FONT
+> and then to <FONT
+COLOR="RED"
+>1.0</FONT
+>; so the evaluation of the
+function call <FONT
+COLOR="RED"
+>abs(0.0 - 1.0)</FONT
+> returns <FONT
+COLOR="RED"
+>1.0</FONT
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x485.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x514.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Function Interface</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c408.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Recursive Functions</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

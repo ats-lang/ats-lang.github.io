@@ -1,0 +1,417 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Higher-Order Functions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="c408.html"><LINK
+REL="PREVIOUS"
+TITLE="Envless Functions and Closure-Functions"
+HREF="x741.html"><LINK
+REL="NEXT"
+TITLE="Example: Binary Search for Fun"
+HREF="x840.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x741.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x840.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="higher-order-functions"
+>Higher-Order Functions</A
+></H1
+><P
+>A higher-order function is a function that take another function as
+its argument. For instance, the following defined function
+<FONT
+COLOR="RED"
+>rtfind</FONT
+> is a higher-order one:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN799"
+></A
+><PRE
+CLASS="programlisting"
+>fun rtfind
+  (f: int -&#62; int): int = let
+  fun loop (
+    f: int -&#62; int, n: int
+  ) : int =
+    if f(n) = 0 then n else loop (f, n+1)
+  // end of [loop]
+in
+  loop (f, 0)
+end // end of [rtfind]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given a function from integers to integers, <FONT
+COLOR="RED"
+>rtfind</FONT
+> searches
+for the first natural number that is a root of the function. For instance,
+calling <FONT
+COLOR="RED"
+>rtfind</FONT
+> on the polynomial function <FONT
+COLOR="RED"
+>lam x =&#62; x * x
+- x - 110</FONT
+> returns <FONT
+COLOR="RED"
+>11</FONT
+>.  Note that <FONT
+COLOR="RED"
+>rtfind</FONT
+>
+loops forever if it is applied to a function that does not have a root.
+</P
+><P
+>Higher-order functions can greatly facilitate code reuse, and I now
+present a simple example to illustrate this point.  The following defined
+functions <FONT
+COLOR="RED"
+>sum</FONT
+> and <FONT
+COLOR="RED"
+>prod</FONT
+> compute the sum and
+product of the integers ranging from 1 to a given natural number,
+respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN809"
+></A
+><PRE
+CLASS="programlisting"
+>fun sum (n: int): int = if n &#62; 0 then sum (n-1) + n else 0
+fun prod (n: int): int = if n &#62; 0 then prod (n-1) * n else 1
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The similarity between the functions <FONT
+COLOR="RED"
+>sum</FONT
+> and <FONT
+COLOR="RED"
+>prod</FONT
+>
+is evident.  We can define a higher-function <FONT
+COLOR="RED"
+>ifold</FONT
+> and then
+implement <FONT
+COLOR="RED"
+>sum</FONT
+> and <FONT
+COLOR="RED"
+>prod</FONT
+> based on
+<FONT
+COLOR="RED"
+>ifold</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN817"
+></A
+><PRE
+CLASS="programlisting"
+>fun ifold
+  (n: int, f: (int, int) -&#62; int, ini: int): int =
+  if n &#62; 0 then f (ifold (n-1, f, ini), n) else ini
+// end of [ifold]
+
+fun sum (n: int): int = ifold (n, lam (res, x) =&#62; res + x, 0)
+fun prod (n: int): int = ifold (n, lam (res, x) =&#62; res * x, 1)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+If we ever want to compute the sum of the squares of the integers ranging
+from 1 to a given natural number n, we can readily do it by defining a
+function based on <FONT
+COLOR="RED"
+>ifold</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN820"
+></A
+><PRE
+CLASS="programlisting"
+>fun sqrsum (n: int): int = ifold (n, lam (res, x) =&#62; res + x * x, 0)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Suppose we generalize <FONT
+COLOR="RED"
+>sqrsum</FONT
+> to the following function
+<FONT
+COLOR="RED"
+>sqrmodsum</FONT
+> in order to compute the sum of the squares of the
+integers ranging from 1 to n that are multiples of a given number d:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN824"
+></A
+><PRE
+CLASS="programlisting"
+>fun sqrmodsum (n: int, d: int): int =
+  ifold (n, lam (res, x) =&#62; if x mod d then res + x * x else res, 0)
+// end of [sqrmodsum]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+For someone unfamilar with the distinction between an envless function and
+a closure-function, it may be a bit suprising to learn that this
+generalization does not actually work. The simple reason is that
+<FONT
+COLOR="RED"
+>ifold</FONT
+> expects its second argument to be an envless function but
+the function passed to <FONT
+COLOR="RED"
+>ifold</FONT
+> in the body of
+<FONT
+COLOR="RED"
+>sqrmodsum</FONT
+> is clearly not envless (due to its use of
+<FONT
+COLOR="RED"
+>d</FONT
+>). To address the issue, we can implement a variant of
+<FONT
+COLOR="RED"
+>ifold</FONT
+> as follows and then implement <FONT
+COLOR="RED"
+>sqrmodsum</FONT
+> based
+on this variant:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN832"
+></A
+><PRE
+CLASS="programlisting"
+>fun ifold2
+(
+  n: int, f: (int, int) -&#60;cloref1&#62; int, ini: int
+) : int =
+  if n &#62; 0 then f (ifold2 (n-1, f, ini), n) else ini
+// end of [ifold2]
+
+fun sqrmodsum (n: int, d: int): int =
+  ifold2 (n, lam (res, x) =&#62; if x mod d then res + x * x else res, 0)
+// end of [sqrmodsum]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+While <FONT
+COLOR="RED"
+>ifold2</FONT
+> is indeed more general than <FONT
+COLOR="RED"
+>ifold</FONT
+>,
+this generality does come with a price. Whenever <FONT
+COLOR="RED"
+>sqrmodsum</FONT
+> is
+called, a closure-function must be created on heap and then passed to
+<FONT
+COLOR="RED"
+>ifold2</FONT
+>; this closure-function is of no further use after the
+call returns and the memory it occupies can only be properly relcaimed
+through garbage collection (GC). Therefore, calling functions like
+<FONT
+COLOR="RED"
+>sqrmodsum</FONT
+> can readily result in memory leaks in a setting where
+GC is not available. Fortunately, there are also linear closure-functions
+in ATS, which do not cause any memory leaks even in the absence of GC as
+they are required to be explicitly freed by the programmer. I will cover
+this interesting programming feature elsewhere.
+</P
+><P
+>&#13;As more features of ATS are introduced, higher-order functions will become
+even more effective in facilitating code reuse.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x741.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x840.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Envless Functions and Closure-Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c408.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Binary Search for Fun</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

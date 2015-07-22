@@ -1,0 +1,435 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Programming with Theorem-Proving</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Programming with Dependent Types"
+HREF="p2230.html"><LINK
+REL="PREVIOUS"
+TITLE="Programmer-Centric Theorem-Proving"
+HREF="x3086.html"><LINK
+REL="NEXT"
+TITLE="Example: Safe Matrix Subscripting"
+HREF="x3184.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3086.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3184.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="programming_with_theorem-proving"
+></A
+>Chapter 12. Programming with Theorem-Proving</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c3142.html#circumventing_nonlinear_constraints"
+>Circumventing Nonlinear Constraints</A
+></DT
+><DT
+><A
+HREF="x3184.html"
+>Example: Safe Matrix Subscripting</A
+></DT
+><DT
+><A
+HREF="x3203.html"
+>Specifying with Enhanced Precision</A
+></DT
+><DT
+><A
+HREF="x3229.html"
+>Example: Another Verified Factorial</A
+></DT
+><DT
+><A
+HREF="x3252.html"
+>Example: Verified Fast Exponentiation</A
+></DT
+></DL
+></DIV
+><P
+>&#13;<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Programming with Theorem-Proving</I
+></SPAN
+> (PwTP) is a rich and broad
+programming paradigm that allows cohesive construction of programs and
+proofs in a syntactically intwined manner. The support for PwTP in ATS is a
+signatory feature of ATS, and the novelty of ATS largely stems from it. For
+people who are familiar with the so-called Curry-Howard isomorphism, I
+emphasize that PwTP as is supported in ATS makes little, if any, essential
+use of this isomorphism (between proofs and programs): The dynamics of ATS
+in which programs are written is certainly not pure and the proofs encoded
+in ATS/LF are not required to be constructive, either. However, that proof
+construction in ATS can be done in a style of (functional) programming is
+fundamentally important in terms of syntax design for ATS, for the need to
+combine programs with proofs would otherwise be greatly more challenging.
+
+</P
+><P
+>In this chapter, I will present some simple but convincing examples to
+illustrate the power and flexibility of PwTP as is supported in
+ATS. However, the real showcase for PwTP will not arrive until after the
+introduction of linear types in ATS, when linear proofs can be combined
+with programs to track and safely manipulate resources such as memory and
+objects (e.g, file handles). In particular, PwTP is to form the cornersone
+of the support for imperative programming in ATS.
+</P
+><P
+>Please find <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_PRGTHMPRV/"
+TARGET="_top"
+>on-line</A
+>
+the code employed for illustration in this chapter plus some additional
+code for testing.</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="circumventing_nonlinear_constraints"
+>Circumventing Nonlinear Constraints</A
+></H1
+><P
+>&#13;The constraint-solver of ATS is of rather diminished power. In particular,
+constraints containing nonlinear integer terms (e.g., those involving the
+use of multiplication (of variables)) are immediately rejected. This
+weakness must be properly addressed for otherwise it would become a
+crippling limitation on practicality of the type system of ATS. I now use
+a simple example to demonstrate how theorem-proving can be employed to
+circumvent the need for handling nonlinear constraints directly.
+</P
+><P
+>&#13;A function template <FONT
+COLOR="RED"
+>list_concat</FONT
+> is implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3154"
+></A
+><PRE
+CLASS="programlisting"
+>//
+// [list_concat] does typecheck in ATS2
+// [list_concat] does not typecheck in ATS1
+//
+fun{
+a:t@ype
+} list_concat{m,n:nat}
+(
+  xss: list (list (a, n), m)
+) : list (a, m * n) =
+  case+ xss of
+  | list_nil () =&#62; list_nil ()
+  | list_cons (xs, xss) =&#62; list_append&#60;a&#62; (xs, list_concat xss)
+// end of [list_concat]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the interface for <FONT
+COLOR="RED"
+>list_append</FONT
+> is given below:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3157"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype
+} list_append {n1,n2:nat}
+  (xs: list (a, n1), ys: list (a, n2)): list (a, n1+n2)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given a list <FONT
+COLOR="RED"
+>xss</FONT
+> of length <FONT
+COLOR="RED"
+>m</FONT
+> in which each element is of
+the type <FONT
+COLOR="RED"
+>list(T,n)</FONT
+> for some type T,
+<FONT
+COLOR="RED"
+>list_concat&#60;T&#62;(xss)</FONT
+> constructs a list of the type
+<FONT
+COLOR="RED"
+>list(T,m*n)</FONT
+>. When the first matching clause in the code for
+<FONT
+COLOR="RED"
+>list_concat</FONT
+> is typechecked, a constraint is generated that is
+essentially like the following one:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3165"
+></A
+><PRE
+CLASS="programlisting"
+>m = m1 + 1 implying n + (m1 * n) = m * n holds for all natural numbers m, m1 and n.
+</PRE
+><P
+></P
+></DIV
+>
+
+
+This contraint may look simple, but it was once rejected by the ATS
+constraint solver as it contains nonlinear integer terms (e.g.,
+<FONT
+COLOR="RED"
+>m1*n</FONT
+> and <FONT
+COLOR="RED"
+>m*n</FONT
+>). In order to overcome (or rather
+circumvent) the limitation, we can make use of theorem-proving. Another
+implementation of <FONT
+COLOR="RED"
+>list_concat</FONT
+> is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3170"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype
+} list_concat{m,n:nat}
+(
+  xss: list(list(a, n), m)
+) : [p:nat] (MUL(m, n, p) | list(a, p)) =
+(
+//
+case+ xss of
+| list_nil () =&#62;
+    (MULbas() | list_nil())
+| list_cons (xs, xss) =&#62; let
+    val (pf | res) = list_concat (xss)
+  in
+    (MULind pf | list_append&#60;a&#62; (xs, res))
+  end // end of [list_cons]
+//
+) (* end of [list_concat] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given a list <FONT
+COLOR="RED"
+>xss</FONT
+> of the type <FONT
+COLOR="RED"
+>list(list(T,n),m)</FONT
+>,
+<FONT
+COLOR="RED"
+>list_concat(xss)</FONT
+> now returns a pair <FONT
+COLOR="RED"
+>(pf | res)</FONT
+> such
+that <FONT
+COLOR="RED"
+>pf</FONT
+> is a proof of the prop-type <FONT
+COLOR="RED"
+>MUL(m,n,p)</FONT
+> for
+some natural number <FONT
+COLOR="RED"
+>p</FONT
+> and <FONT
+COLOR="RED"
+>res</FONT
+> is a list of the type
+<FONT
+COLOR="RED"
+>list(T,p)</FONT
+>, where the symbol bar (|) is used to separate proofs
+from values. In other words, <FONT
+COLOR="RED"
+>pf</FONT
+> acts as a witness to the
+equality <FONT
+COLOR="RED"
+>p=m*n</FONT
+>. After proof erasure is performed, this
+implementation of <FONT
+COLOR="RED"
+>list_concat</FONT
+> is essentially translated into
+the previous one (as far as dynamic semantics is concerned). In particular,
+there is no need for proof construction at run-time.
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3086.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3184.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Programmer-Centric Theorem-Proving</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p2230.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Safe Matrix Subscripting</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

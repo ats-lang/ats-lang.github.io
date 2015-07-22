@@ -1,0 +1,281 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Distributivity of Multiplication</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Theorem-Proving in ATS/LF"
+HREF="c2846.html"><LINK
+REL="PREVIOUS"
+TITLE="Constructing Proofs as Total Functions"
+HREF="x2908.html"><LINK
+REL="NEXT"
+TITLE="Example: Commutativity of Multiplication"
+HREF="x2977.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2908.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 11. Theorem-Proving in ATS/LF</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2977.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_distributivity_of_multiplication"
+>Example: Distributivity of Multiplication</A
+></H1
+><P
+>The distributivity of multiplication over addition means that the following
+equation holds
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2965"
+></A
+><PRE
+CLASS="programlisting"
+>m * (n1 + n2) = m * n1 + m * n2</PRE
+><P
+></P
+></DIV
+>
+
+
+for m, n1 and n2 ranging over integers. A direct encoding of the equation
+is given by the following (proof) function interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2967"
+></A
+><PRE
+CLASS="programlisting"
+>//
+prfun
+mul_distribute
+  {m,n1,n2:int}{p1,p2:int}
+  (MUL(m, n1, p1), MUL(m, n2, p2)): MUL(m, n1+n2, p1+p2)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Plainly speaking, the encoding states that the product of m and (n1+n2) is
+p1+p2 if the product of m and n1 is p1 and the product of m and n2 is p2.
+An implementation of <FONT
+COLOR="RED"
+>mul_distribute</FONT
+> is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2970"
+></A
+><PRE
+CLASS="programlisting"
+>primplement
+mul_distribute
+{m,n1,n2}{p1,p2}
+  (pf1, pf2) = let
+//
+prfun
+auxnat
+{m:nat}{p1,p2:int} .&#60;m&#62;.
+(
+  pf1: MUL(m, n1, p1), pf2: MUL(m, n2, p2)
+) : MUL(m, n1+n2, p1+p2) =
+(
+  case+ (pf1, pf2) of
+  | (MULbas(), MULbas()) =&#62; MULbas()
+  | (MULind pf1, MULind pf2) =&#62; MULind(auxnat (pf1, pf2))
+) (* end of [auxnat] *)
+//
+in
+//
+sif
+m &#62;= 0
+then (
+  auxnat (pf1, pf2)
+) // end of [then]
+else let
+  prval MULneg(pf1) = pf1
+  prval MULneg(pf2) = pf2
+in
+  MULneg(auxnat (pf1, pf2))
+end // end of [else]
+//
+end // end of [mul_distribute]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The inner function <FONT
+COLOR="RED"
+>auxnat</FONT
+> encodes a straighforward
+proof based on mathematical induction that establishes the following
+equation:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2973"
+></A
+><PRE
+CLASS="programlisting"
+>m * (n1 + n2) = m * n1 + m * n2
+</PRE
+><P
+></P
+></DIV
+>
+
+
+for m ranging over natural numbers and n1 and n2 ranging over integers. The
+function <FONT
+COLOR="RED"
+>mul_distribute</FONT
+> can then be implemented immediately
+based on <FONT
+COLOR="RED"
+>auxnat</FONT
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2908.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2977.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Constructing Proofs as Total Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2846.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Commutativity of Multiplication</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

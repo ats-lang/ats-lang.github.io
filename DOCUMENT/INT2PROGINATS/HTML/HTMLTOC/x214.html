@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Environments for Evaluation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Elements of Programming"
+HREF="c96.html"><LINK
+REL="PREVIOUS"
+TITLE="Scopes for Bindings"
+HREF="x187.html"><LINK
+REL="NEXT"
+TITLE="Static Semantics"
+HREF="x230.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x187.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Elements of Programming</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x230.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="environments_for_evaluation"
+>Environments for Evaluation</A
+></H1
+><P
+>Evaluation is the computational process that reduces expressions to
+values.  When performing evaluation, we need not only the expression to be
+evaluated but also a collection of bindings that map names in the
+expression to values. This collection of bindings, which is just a finite
+mapping, is often referred to as an environment (for evaluation). For
+instance, suppose that we want to evaluate the following expression:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN217"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;let
+  val PI = 3.14 and radius2 = 10.0 * 10.0 in PI * radius2
+end
+</PRE
+><P
+></P
+></DIV
+>
+
+We start with the empty environment ENV0; we evaluate <FONT
+COLOR="RED"
+>3.14</FONT
+> to
+itself and <FONT
+COLOR="RED"
+>10.0 * 10.0</FONT
+> to <FONT
+COLOR="RED"
+>100.0</FONT
+> under the
+environment ENV0; we then extend ENV0 to ENV1 with two bindings mapping
+<FONT
+COLOR="RED"
+>PI</FONT
+> to <FONT
+COLOR="RED"
+>3.14</FONT
+> and <FONT
+COLOR="RED"
+>radius2</FONT
+> to
+<FONT
+COLOR="RED"
+>100.0</FONT
+>; we then evaluate <FONT
+COLOR="RED"
+>PI * radius2</FONT
+> under ENV1
+to <FONT
+COLOR="RED"
+>3.14 * radius2</FONT
+>, then to <FONT
+COLOR="RED"
+>3.14 * 100.0</FONT
+>, and
+finally to <FONT
+COLOR="RED"
+>314.0</FONT
+>, which is the value of the let-expression.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x187.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x230.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Scopes for Bindings</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c96.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Static Semantics</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

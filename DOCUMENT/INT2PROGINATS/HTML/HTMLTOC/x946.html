@@ -1,0 +1,227 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Pattern-Matching</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Datatypes"
+HREF="c905.html"><LINK
+REL="PREVIOUS"
+TITLE="Datatypes"
+HREF="c905.html"><LINK
+REL="NEXT"
+TITLE="Matching Clauses and Case-Expressions"
+HREF="x967.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c905.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Datatypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x967.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="pattern-matching"
+>Pattern-Matching</A
+></H1
+><P
+>&#13;Pattern matching means matching values against patterns. In the case where
+a value matches a pattern, a collection of bindings are generated between
+the variables in the pattern and certain components in the
+value. Pattern-matching is performed according to the following set of
+rules:
+
+<P
+></P
+><UL
+><LI
+><P
+>&#13;A value that matches a constant pattern must be the same constant, and this
+matching generates no bindings.
+</P
+></LI
+><LI
+><P
+>&#13;The void-value () only matches the void-pattern (), and this matching
+generates no bindings.
+</P
+></LI
+><LI
+><P
+>Any value can match the wildcard pattern, and this matching generates no bindings.
+</P
+></LI
+><LI
+><P
+>&#13;Any value can match a variable pattern, and this matching generates a
+binding between the variable and the value.
+</P
+></LI
+><LI
+><P
+>&#13;A tuple-value matches a tuple-pattern if they are of the same length and
+each value component in the former matches the corresponding pattern
+component in the latter, and this matching generates a collection of
+bindings that is the union of the bindings generated from matching the
+value components in the tuple-value against the pattern components in the
+tuple-pattern.
+</P
+></LI
+><LI
+><P
+>&#13;A record-value matches a record-pattern if they have the same field names
+and each value component in the former matches the corresponding pattern
+component in the latter, and this matching generates a collection of
+bindings that is the union of the bindings generated from matching the
+value components in the record-value against the pattern components in the
+record-pattern.
+</P
+></LI
+><LI
+><P
+>&#13;Given a pattern formed by applying a constructor C to some pattern
+arguments, a value matches this pattern if the value is formed by applying
+C to some value arguments matching the pattern arguments, and this matching
+generates a collection of bindings that is the union of the bindings
+generated from matching the value arguments against the pattern arguments.
+</P
+></LI
+><LI
+><P
+>&#13;Given a referenced pattern (x <FONT
+COLOR="RED"
+>as</FONT
+> pat), a value matches the
+pattern if it matches pat, and this matching generates a collection of
+bindings that extends the bindings generated from matching the value
+against pat with a binding from x to the value.
+</P
+></LI
+></UL
+>
+
+Suppose we have a tuple-value (0, 1, 2, 3) and a tuple-pattern (0, _, x,
+y). Then the value matches the pattern and this matching yields bindings
+from x and y to 2 and 3, respectively.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c905.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x967.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Datatypes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c905.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Matching Clauses and Case-Expressions</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

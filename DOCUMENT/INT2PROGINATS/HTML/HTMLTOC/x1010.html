@@ -1,0 +1,275 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Recursively Defined Datatypes</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Datatypes"
+HREF="c905.html"><LINK
+REL="PREVIOUS"
+TITLE="Enumerative Datatypes"
+HREF="x974.html"><LINK
+REL="NEXT"
+TITLE="Exhaustiveness of Pattern-Matching"
+HREF="x1027.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x974.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Datatypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1027.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="recursive_datatypes"
+>Recursively Defined Datatypes</A
+></H1
+><P
+>&#13;A recursively defined datatype (or recursive datatype for short) is one
+such that its associated constructors may form values by applying to values
+of the datatype itself. For instance, the following declared datatype
+<FONT
+COLOR="RED"
+>charlst</FONT
+> is recursive:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1014"
+></A
+><PRE
+CLASS="programlisting"
+>datatype charlst =
+  | charlst_nil of () | charlst_cons of (char, charlst)
+// end of [charlst]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+When applied to a character and a value of the type <FONT
+COLOR="RED"
+>charlst</FONT
+>,
+the constructor <FONT
+COLOR="RED"
+>charlst_cons</FONT
+> forms a value of the type
+<FONT
+COLOR="RED"
+>charlst</FONT
+>. As an example, the following value represents a
+character list consisting of 'a', 'b' and 'c':
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1019"
+></A
+><PRE
+CLASS="programlisting"
+>charlst_cons('a', charlst_cons('b', charlst_cons('c', charlst_nil())))
+</PRE
+><P
+></P
+></DIV
+>
+
+
+We can define a function <FONT
+COLOR="RED"
+>charlst_length</FONT
+> as follows to compute
+the length of a given character list:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1022"
+></A
+><PRE
+CLASS="programlisting"
+>fun charlst_length
+  (cs: charlst): int = case cs of
+  | charlst_cons (_, cs) =&#62; 1 + charlst_length (cs)
+  | charlst_nil () =&#62; 0
+// end of [charlst_length]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that this implementation is recursive but not tail-recursive. By
+relying on the commutativity and associativity of integer addition, we can
+give the following implementation of <FONT
+COLOR="RED"
+>charlst_length</FONT
+> that is
+tail-recursive:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1025"
+></A
+><PRE
+CLASS="programlisting"
+>fun charlst_length
+  (cs: charlst): int = let
+//
+fun loop
+  (cs: charlst, n: int): int = case cs of
+  | charlst_cons (_, cs) =&#62; loop (cs, n+1) | charlst_nil () =&#62; n
+// end of [loop]
+//
+in
+  loop (cs, 0)
+end // end of [charlst_length]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the naming convention I follow closely in this book (and
+elsewhere) mandates that only a tail-recursive function be given a name
+indicative of its being a loop. A non-tail-recursive function is not called
+a loop because it cannot be translated directly to a loop in an imperative
+programming language like C.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x974.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1027.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Enumerative Datatypes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c905.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Exhaustiveness of Pattern-Matching</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

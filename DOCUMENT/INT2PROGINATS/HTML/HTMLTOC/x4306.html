@@ -1,0 +1,549 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Locking and Unlocking</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Abstract Views and Viewtypes"
+HREF="c4153.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Array-Based Circular Buffers"
+HREF="x4269.html"><LINK
+REL="NEXT"
+TITLE="Linear Channels for Asynchronous IPC"
+HREF="x4354.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x4269.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 16. Abstract Views and Viewtypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x4354.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="locking-and-unlocking"
+>Locking and Unlocking</A
+></H1
+><P
+>&#13;In concurrent programming, the issue of safely locking and unlocking
+shared resources is both essential and challenging. I am to demonstrate
+in this section concretely and convincingly that linear types can be used
+with great effectiveness to address this issue.
+
+</P
+><P
+>&#13;Let us first introduce a linear abstract type <FONT
+COLOR="RED"
+>shared</FONT
+>
+as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4311"
+></A
+><PRE
+CLASS="programlisting"
+>absvtype shared(a:vtype) = ptr
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given a viewtype VT (for some resources), a value of the type
+<FONT
+COLOR="RED"
+>shared(VT)</FONT
+> is essentially a boxed record containing a resource
+of the type VT plus a lock (or several) of some kind. The following
+function <FONT
+COLOR="RED"
+>shared_make</FONT
+> is called to turn a resource into a shared
+resource:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4315"
+></A
+><PRE
+CLASS="programlisting"
+>fun shared_make{a:vtype}(x: a): shared(a)  
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Notice that the type <FONT
+COLOR="RED"
+>shared(VT)</FONT
+> itself is linear. In terms of
+implementation, there is usually a reference count inside a linear shared
+resource that is protected by a spin-lock. The functions
+<FONT
+COLOR="RED"
+>shared_ref</FONT
+> and <FONT
+COLOR="RED"
+>shared_unref</FONT
+> are for increasing and
+descreasing the reference count inside a shared resource:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4320"
+></A
+><PRE
+CLASS="programlisting"
+>fun shared_ref{a:vtype}(!shared(a)): shared(a)
+fun shared_unref{a:vtype}(shared(a)): Option_vt(a)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+If the reference count of a shared resource is 1, then calling
+<FONT
+COLOR="RED"
+>shared_unref</FONT
+> on the shared resource frees the memory used in
+its representation and then returns the resource stored inside it.
+
+</P
+><P
+>&#13;The function <FONT
+COLOR="RED"
+>shared_lock</FONT
+> acquires the resource from a
+given shared resource and the function <FONT
+COLOR="RED"
+>shared_unlock</FONT
+> does
+the opposite:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4326"
+></A
+><PRE
+CLASS="programlisting"
+>//
+absview locked_v
+//
+fun shared_lock{a:vtype}(!shared(a)): (locked_v | a)
+fun shared_unlock{a:vtype}(locked_v | !shared(a), x: a): void
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the abstract view <FONT
+COLOR="RED"
+>locked_v</FONT
+> is introduced for linear
+proofs that are meant to remind the programmer that a shared resoure needs
+to be released after it is acquired.
+
+</P
+><P
+>&#13;As can be expected, a shared resource can be implemented as a boxed tuple
+consisting of a spin-lock, a reference count and a pointer (referring to
+the stored resource):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4330"
+></A
+><PRE
+CLASS="programlisting"
+>//
+datavtype
+shared_ (a:vtype) =
+  SHARED of (spin1_vt(*lock*), int(*count*), ptr)
+//
+assume shared = shared_
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the type <FONT
+COLOR="RED"
+>spin1_vt</FONT
+> is for linear spin-locks. The
+function <FONT
+COLOR="RED"
+>shared_ref</FONT
+> is implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4334"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+shared_ref
+  {a}(sh) = let
+//
+val+@SHARED
+  (spin, count, _) = sh
+//
+val
+spin = // for temp. use
+  unsafe_spin_vt2t(spin)
+//
+val
+(pf | ()) = spin_lock(spin)
+val c0 = count
+val () = count := c0 + 1
+val ((*void*)) = spin_unlock(pf | spin)
+prval ((*void*)) = fold@sh
+//
+in
+  $UN.castvwtp1{shared(a)}(sh)
+end // end of [shared_ref]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, the implementation makes use of several unsafe casts.  An
+implementation without such casts would be highly involved even if it could
+be done.  The spin-lock must be acquired before the binding between
+<FONT
+COLOR="RED"
+>c0</FONT
+> and the integer stored in <FONT
+COLOR="RED"
+>count</FONT
+> is formed for
+otherwise a race condition can appear. The function <FONT
+COLOR="RED"
+>shared_unref</FONT
+>
+is implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4339"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+shared_unref
+  {a}(sh) = let
+//
+val+@SHARED
+  (spin, count, _) = sh
+//
+val
+spin = // for temp. use
+  unsafe_spin_vt2t(spin)
+//
+val
+(pf | ()) = spin_lock(spin)
+val c0 = count
+val () = count := c0 - 1
+val ((*void*)) = spin_unlock(pf | spin)
+prval ((*void*)) = fold@sh
+//
+in
+//
+if
+c0 &#60;= 1
+then let
+  val+~SHARED(spin, _, x) = sh
+  val ((*freed*)) = spin_vt_destroy(spin)
+in
+  Some_vt($UN.castvwtp0{a}(x))
+end // end of [then]
+else let
+  prval () = $UN.cast2void(sh) in None_vt()
+end // end of [else]
+//
+end // end of [shared_unref]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+In the case where the reference count is 1,
+then the shared resource is freed, the spin-lock in it
+is destroyed, and the resource in it is returned.
+
+</P
+><P
+>&#13;The functions
+<FONT
+COLOR="RED"
+>shared_lock</FONT
+>
+and
+<FONT
+COLOR="RED"
+>shared_unlock</FONT
+>
+are implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4344"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+shared_lock
+  {a}(sh) = let
+//
+val+@SHARED(spin, _, x) = sh
+//
+val
+spin =
+  unsafe_spin_vt2t(spin)
+//
+val
+(pf | ()) = spin_lock(spin)
+//
+val x0 = $UN.castvwtp0{a}(x)
+//
+prval () = fold@sh
+//
+in
+  ($UN.castview0(pf) | x0)
+end // end of [shared_lock]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4346"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+shared_unlock
+  {a}(pf | sh, x0) = let
+//
+val+@SHARED(spin, _, x) = sh
+//
+val
+spin =
+  unsafe_spin_vt2t(spin)
+//
+val () = x := $UN.castvwtp0{ptr}(x0)
+//
+val () =
+  spin_unlock($UN.castview0(pf) | spin)
+//
+prval () = fold@sh
+//
+in
+  // nothing
+end // end of [shared_unlock]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+In the case of <FONT
+COLOR="RED"
+>shared_lock</FONT
+>, please notice that the content
+stored in the variable <FONT
+COLOR="RED"
+>x</FONT
+> is read out after the spin-lock is
+acquired. This is crucial for otherwise a race condition can readily
+appear. In the case of <FONT
+COLOR="RED"
+>shared_unlock</FONT
+>, the content of the
+variable <FONT
+COLOR="RED"
+>x</FONT
+> is updated before the acquired spin-lock is
+released.
+</P
+><P
+>&#13;Please find on-line the file
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_ABSVTYPE/shared_vt.dats"
+TARGET="_top"
+>shared_vt.dats</A
+>
+containing the entirety of the code presented in this section. In addition,
+the file also contains an implementation of three threads that move in
+locked steps: thread 0 moves; thread 1 moves; thread 2 moves; thread 0
+moves; thread 1 moves; thread 2 moves; etc.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x4269.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x4354.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Array-Based Circular Buffers</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c4153.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Linear Channels for Asynchronous IPC</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

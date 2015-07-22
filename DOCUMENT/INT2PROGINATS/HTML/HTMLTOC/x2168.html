@@ -1,0 +1,416 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Exporting Types in ATS for Use in C</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Interaction with C"
+HREF="c2005.html"><LINK
+REL="PREVIOUS"
+TITLE="Unsafe C-style Programming in ATS"
+HREF="x2117.html"><LINK
+REL="NEXT"
+TITLE="Example: Constructing a Statically Allocated List"
+HREF="x2212.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2117.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Interaction with C</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2212.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="exporting_types_and_values"
+>Exporting Types in ATS for Use in C</A
+></H1
+><P
+>&#13;There is also support in ATS for exporting types to make them available for
+use in C directly. In the following example, a typedef of the name
+<FONT
+COLOR="RED"
+>int_and_string</FONT
+> is expected to be declared in the generated C
+code for values that are assigned the type <FONT
+COLOR="RED"
+>(int, string)</FONT
+> in ATS:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2173"
+></A
+><PRE
+CLASS="programlisting"
+>extern
+typedef
+"int_and_string" = (int, string)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Essentially, <FONT
+COLOR="RED"
+>int_and_string</FONT
+> is defined in C as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2176"
+></A
+><PRE
+CLASS="programlisting"
+>typedef
+struct {
+  int atslab__0; void *atslab__1; 
+} int_and_string ;
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Sometimes, we want to construct in C values of a datatype declared in ATS.
+For instance, let us try to construct a value of the form
+<FONT
+COLOR="RED"
+>cons2(i, d)</FONT
+> in C for an integer i and a double d, where
+<FONT
+COLOR="RED"
+>cons2</FONT
+> is a data constructor associated with the following
+declared datatype <FONT
+COLOR="RED"
+>abc</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2182"
+></A
+><PRE
+CLASS="programlisting"
+>datatype abc =
+  | cons1 of int | cons2 of (int, double)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Whenever a data constructor is declared, a corresponding (linear) type
+constructor is created whose name equals the concatenation of the name of
+the data constructor and the string "_pstruct". So in the case of the above
+declared datatype <FONT
+COLOR="RED"
+>abc</FONT
+>, the type constructors
+<FONT
+COLOR="RED"
+>cons1_pstruct</FONT
+> and <FONT
+COLOR="RED"
+>cons2_pstruct</FONT
+> are created, and
+these type constructors can be used to form types for boxed values
+constructed with the data constructors <FONT
+COLOR="RED"
+>cons1</FONT
+> and <FONT
+COLOR="RED"
+>cons2</FONT
+>.
+
+</P
+><P
+>&#13;In the following declaration,
+the type <FONT
+COLOR="RED"
+>cons2_pstruct(int, double)</FONT
+> in ATS
+is exported to C under the name <FONT
+COLOR="RED"
+>cons2_node</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2192"
+></A
+><PRE
+CLASS="programlisting"
+>extern
+vtypedef "cons2_node" = cons2_pstruct(int, double)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Implicitly, a typedef in C of the name <FONT
+COLOR="RED"
+>cons2_node_</FONT
+> is also
+introduced for the unboxed portion of a value constructed with the data
+constructor <FONT
+COLOR="RED"
+>cons2</FONT
+>. Essentially, we have the following generated
+code in C:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2196"
+></A
+><PRE
+CLASS="programlisting"
+>typedef
+struct {
+int contag ; // constructor tag
+int atslab__0; double atslab__1; 
+} cons2_node_ ;
+typedef cons2_node_ *cons2_node ;
+</PRE
+><P
+></P
+></DIV
+>
+
+
+It is now straightforward to create a value of the form <FONT
+COLOR="RED"
+>cons2(i,d)</FONT
+> in C directly:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2199"
+></A
+><PRE
+CLASS="programlisting"
+>cons2_node
+cons2_make
+(
+  int i, double d
+) {
+  cons2_node p ;
+  p = ATS_MALLOC(sizeof(cons2_node_)) ;
+  p-&#62;contag = 1 ;
+  p-&#62;atslab__0 = i ;
+  p-&#62;atslab__1 = d ;
+  return p ;
+} /* end of [cons2_make] */
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the tags for <FONT
+COLOR="RED"
+>cons1</FONT
+> and <FONT
+COLOR="RED"
+>cons2</FONT
+> are 0 and 1,
+respectively, as <FONT
+COLOR="RED"
+>cons1</FONT
+> and <FONT
+COLOR="RED"
+>cons2</FONT
+> are the first and
+second constructors associated with the datatype <FONT
+COLOR="RED"
+>abc</FONT
+>.
+
+</P
+><P
+>&#13;By assigning an interface to <FONT
+COLOR="RED"
+>cons2_make</FONT
+> in ATS, we can readily
+check whether <FONT
+COLOR="RED"
+>cons2_make</FONT
+> behaves as expected:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2209"
+></A
+><PRE
+CLASS="programlisting"
+>extern
+fun cons2_make (int, double): abc = "mac#"
+val-cons2 (1, 2.34) = cons2_make (1, 2.34)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;In general, it is essential for a pragrammer to acquire a solid
+understanding of low-level data representation of a programming language in
+order to use that language in low-level systems programming. The low-level
+data representation of ATS can be readily explained in terms of types in C,
+making it straightforward, when needed, to construct and manipulate
+ATS-values in C directly.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2117.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2212.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Unsafe C-style Programming in ATS</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2005.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Constructing a Statically Allocated List</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

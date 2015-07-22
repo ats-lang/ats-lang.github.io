@@ -1,0 +1,509 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: String Processing</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Introduction to Dependent Types"
+HREF="c2223.html"><LINK
+REL="PREVIOUS"
+TITLE="Constraint-Solving during Typechecking"
+HREF="x2383.html"><LINK
+REL="NEXT"
+TITLE="Example: Binary Search on Arrays"
+HREF="x2455.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2383.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Introduction to Dependent Types</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2455.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_string_processing"
+>Example: String Processing</A
+></H1
+><P
+>&#13;A string in ATS is represented in the same manner as in C: It is a sequence
+of adjacently stored non-null characters followed by the null character,
+and its length is the number of non-null characters in the sequence.
+Conventionally, such strings are often referred to as C-style strings,
+which are notoriously difficult to be processed safely (as is clearly
+indicated by so many bugs and breaches due to misusing such strings). As a
+matter of fact, ATS is the first practical programming language that I know
+can fully support safe processing of C-style strings. In ATS,
+<FONT
+COLOR="RED"
+>string</FONT
+> is a type constructor of the sort <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>(int) -&#62;
+type</I
+></SPAN
+>.
+
+Given a static integer n, <FONT
+COLOR="RED"
+>string(n)</FONT
+> is the type for strings of
+length n. Note that <FONT
+COLOR="RED"
+>string</FONT
+> also refers to a non-dependent type
+for strings of unspecified length, which is basically equivalent to the
+type <FONT
+COLOR="RED"
+>String</FONT
+> defined as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2416"
+></A
+><PRE
+CLASS="programlisting"
+>typedef String = [n:nat] string (n)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The following two functions are commonly used for traversing a given string:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2418"
+></A
+><PRE
+CLASS="programlisting"
+>fun string_is_atend
+  {n:int}{i:nat | i &#60;= n}
+  (str: string (n), i: size_t (i)): bool (i==n)
+// end of [string_is_atend]
+
+fun string_isnot_atend
+  {n:int}{i:nat | i &#60;= n}
+  (str: string (n), i: size_t (i)): bool (i &#60; n)
+// end of [string_isnot_atend]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Obviously, either one of them can be implemented based on the other. As an
+example, the following code implements a function that computes the length
+of a given string:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2420"
+></A
+><PRE
+CLASS="programlisting"
+>fun
+string_length
+  {n:nat} (
+  str: string (n)
+) : size_t (n) = let
+  fun loop {i:nat | i &#60;= n} .&#60;n-i&#62;.
+    (str: string n, i: size_t i): size_t (n) =
+    if string_isnot_atend (str, i) then loop (str, succ(i)) else i
+  // end of [loop]
+in
+  loop (str, i2sz(0))
+end // end of [string_length]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the function <FONT
+COLOR="RED"
+>loop</FONT
+> in the body of
+<FONT
+COLOR="RED"
+>string_length</FONT
+> is defined tail-recursively, which can then be
+translated into a genuine loop in the generated C code.  Although this
+implementation of <FONT
+COLOR="RED"
+>string_length</FONT
+> looks fairly plain right now,
+it was actually an exciting achievement in the pursuit of practical
+programming with dependent types.
+</P
+><P
+>&#13;The following two functions are for accessing and updating characters
+stored in strings:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2426"
+></A
+><PRE
+CLASS="programlisting"
+>typedef charNZ = [c:int | c != '\000'] char (c)
+
+fun
+string_get_at{n:int}
+  {i:nat | i &#60; n} (str: string n, i: size_t i): charNZ
+overload [] with string_get_at
+
+fun
+string_set_char_at{n:int}
+  {i:nat | i &#60; n} (str: string n, i: size_t i, c: charNZ): void
+overload [] with string_set_char_at
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The type constructor <FONT
+COLOR="RED"
+>char</FONT
+> is of the sort
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>(char) -&#62; t@ype</I
+></SPAN
+>, which takes a static
+character c to form a singleton type <FONT
+COLOR="RED"
+>char(c)</FONT
+> for the only
+character equal to c. Thus, the type <FONT
+COLOR="RED"
+>charNZ</FONT
+> is for all non-null
+characters. The following defined function <FONT
+COLOR="RED"
+>string_find</FONT
+>
+traverses a string from left to right to check whether a given character
+occurs in the string:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2433"
+></A
+><PRE
+CLASS="programlisting"
+>//
+typedef
+sizeLt (n:int) = [i:nat | i &#60; n] size_t (i)
+//
+fun
+string_find{n:nat}
+(
+  str: string n, c0: char
+) : Option (sizeLt n) = let
+  typedef res = sizeLt (n)
+  fun loop{i:nat | i &#60;= n}
+  (
+    str: string n, c0: char, i: size_t i
+  ) : Option (res) = let
+    val isnot = string_isnot_atend (str, i)
+  in
+    if isnot then
+      if (c0 = str[i]) then Some{res}(i) else loop (str, c0, succ(i))
+    else None () // end of [if]
+  end (* end of [loop] *)
+in
+  loop (str, c0, i2sz(0))
+end // end of [string_find]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+If the character <FONT
+COLOR="RED"
+>c0</FONT
+> occurs in the string <FONT
+COLOR="RED"
+>str</FONT
+>, then
+a value of the form <FONT
+COLOR="RED"
+>Some(i)</FONT
+> is returned, when i refers to the
+position of the first occurrence of <FONT
+COLOR="RED"
+>c0</FONT
+> (counting from left to
+right). Otherwise, the value <FONT
+COLOR="RED"
+>None()</FONT
+> is returned.
+</P
+><P
+>&#13;There is some inherent inefficiency in the implementation of
+<FONT
+COLOR="RED"
+>string_find</FONT
+>: A given position <FONT
+COLOR="RED"
+>i</FONT
+> is first checked to
+see if it is strictly less than the length of the string <FONT
+COLOR="RED"
+>str</FONT
+> by
+calling <FONT
+COLOR="RED"
+>string_isnot_atend</FONT
+>, and, if it is, the character stored
+at the position in the string is fetched by calling
+<FONT
+COLOR="RED"
+>string_get_at</FONT
+>. These two function calls are merged into one in
+the following implementation:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2446"
+></A
+><PRE
+CLASS="programlisting"
+>//
+// This implementation does the same as [string_find]
+// but should be more efficient.
+//
+fun
+string_find2{n:nat}
+(
+  str: string n, c0: char
+) : Option (sizeLt n) = let
+//
+fun
+loop{i:nat | i &#60;= n}
+(
+  str: string n
+, c0: char, i: size_t i
+) : Option (sizeLt n) = let
+  typedef res = sizeLt (n)
+  val c = string_test_at (str, i)
+in
+  if c != '\000' then
+  (
+    if (c0 = c) then Some{res}(i) else loop (str, c0, succ(i))
+  ) else None ((*void*)) // end of [if]
+end // end of [loop]
+//
+in
+  loop (str, c0, i2sz(0))
+end // end of [string_find2]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The interface for the function <FONT
+COLOR="RED"
+>string_test_at</FONT
+> is given as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2449"
+></A
+><PRE
+CLASS="programlisting"
+>fun
+string_test_at
+  {n:int}{i:nat | i &#60;= n}
+(
+  str: string (n), i: size_t (i)
+) : [c:char | (c != NUL &#38;&#38; i &#60; n) || (c == NUL &#38;&#38; i &#62;= n)] char c
+// end of [string_test_at]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+By checking the return value of a call to <FONT
+COLOR="RED"
+>string_test_at</FONT
+>,
+we can readily tell whether the position <FONT
+COLOR="RED"
+>i</FONT
+> is at the end of
+the string <FONT
+COLOR="RED"
+>str</FONT
+>.
+</P
+><P
+>&#13;Handling strings safely and efficiently is a complicated matter in
+programming language design, and a great deal of information about a
+programming language can often be revealed by simply studying its treatment
+of strings. In ATS, properly processing C-style strings also makes
+essential use of linear types, which I will cover in another part of this
+book.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2383.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2455.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Constraint-Solving during Typechecking</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2223.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Binary Search on Arrays</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

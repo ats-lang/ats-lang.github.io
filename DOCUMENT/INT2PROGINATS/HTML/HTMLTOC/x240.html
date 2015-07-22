@@ -1,0 +1,326 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Primitive Types</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Elements of Programming"
+HREF="c96.html"><LINK
+REL="PREVIOUS"
+TITLE="Static Semantics"
+HREF="x230.html"><LINK
+REL="NEXT"
+TITLE="Tuples and Tuple Types"
+HREF="x298.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x230.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Elements of Programming</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x298.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="primitive_types"
+>Primitive Types</A
+></H1
+><P
+>&#13;The simplest types in ATS are primitive types, which are used to classify
+primitive values. For instance, we have the primitive types <FONT
+COLOR="RED"
+>int</FONT
+>
+and <FONT
+COLOR="RED"
+>double</FONT
+>, which classify integers (in a fixed range) and
+floating point numbers (of double precision), respectively.
+</P
+><P
+>&#13;In the current implementation of ATS (Postiats), a program in ATS is first
+compiled into one in C (conforming to the C99 standard), which can then be
+compiled to object code by a compiler for C such as gcc. In the compilation
+from ATS to C, the type <FONT
+COLOR="RED"
+>int</FONT
+> in ATS is translated to the type of
+the same name in C. Similarly, the type <FONT
+COLOR="RED"
+>double</FONT
+> in ATS is
+translated to the type of the same name in C.
+</P
+><P
+>&#13;There are many other primitive types in ATS, and I will introduce
+them gradually.  Some commonly used primitive types are listed as follows:
+
+<P
+></P
+><UL
+><LI
+><P
+><FONT
+COLOR="RED"
+>bool</FONT
+>:
+This type is for boolean values <FONT
+COLOR="RED"
+>true</FONT
+> and <FONT
+COLOR="RED"
+>false</FONT
+>,
+and it is translated into the int type in C.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>char</FONT
+>:
+This type is translated into the type in C for characters.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>schar</FONT
+>:
+This type is translated into the type in C for signed characters.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>uchar</FONT
+>:
+This type is translated into the type in C for unsigned characters.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>float</FONT
+>:
+This type is translated into the type in C for floating point numbers of
+single precision.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>uint</FONT
+>:
+This type is translated into the type in C for unsigned integers.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>lint</FONT
+>:
+This type is translated into the type in C for long integers.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>ulint</FONT
+>:
+This type is translated into the type in C for unsigned long integers.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>llint</FONT
+>:
+This type is translated into the type in C for long long integers.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>ullint</FONT
+>:
+This type is translated into the type in C for unsigned long long integers.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>size_t</FONT
+>:
+This type is translated into the type in C of the same name, which is for
+unsigned integers of certain precision. Usually, the type <FONT
+COLOR="RED"
+>size_t</FONT
+>
+can be treated as the type <FONT
+COLOR="RED"
+>ulint</FONT
+> and vice versa.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>ssize_t</FONT
+>:
+This type is translated into the type in C of the same name, which is for
+signed integers of certain precision. Usually, the type <FONT
+COLOR="RED"
+>ssize_t</FONT
+>
+can be treated as the type <FONT
+COLOR="RED"
+>lint</FONT
+> and vice versa.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>string</FONT
+>:
+This type is for strings, and its translation in C is the type for
+pointers. I will explain this translation elsewhere.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>void</FONT
+>:
+This type is for the void value, and its translation in C is the type of
+the same name. It should be noted that the void value is unspecified in
+ATS. I often say that a function returns no value if it returns the void
+value, and vice versa.</P
+></LI
+></UL
+>
+
+I will gradually present programming examples involving various primitive types and
+values.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x230.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x298.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Static Semantics</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c96.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Tuples and Tuple Types</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

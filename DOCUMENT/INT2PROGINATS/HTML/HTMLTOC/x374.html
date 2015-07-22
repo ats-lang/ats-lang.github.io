@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Sequence Expressions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Elements of Programming"
+HREF="c96.html"><LINK
+REL="PREVIOUS"
+TITLE="Conditional Expressions"
+HREF="x346.html"><LINK
+REL="NEXT"
+TITLE="Comments in Code"
+HREF="x390.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x346.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Elements of Programming</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x390.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="sequence_expressions"
+>Sequence Expressions</A
+></H1
+><P
+>&#13;Assume that exp1 and exp2 are expressions of types T1 and T2 respectively,
+where T1 is <FONT
+COLOR="RED"
+>void</FONT
+>. Then a sequence expression (exp1; exp2) can
+be formed that is of the type T2.  When evaluating the sequence expression
+(exp1; exp2), we first evaluate exp1 to the void value and then evaluate
+exp2 to some value, which is also the value of the sequence expression.
+When more expressions are sequenced, all of them but the last one need to
+be of the type <FONT
+COLOR="RED"
+>void</FONT
+> and the type of the last expression is also
+the type of the sequence expression being formed.  Evaluating a sequence of
+more expressions is analogous to evaluating a sequence of two. The
+following example is a sequence expression:
+ 
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN379"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;(print 'H'; print 'e'; print 'l'; print 'l'; print 'o')
+</PRE
+><P
+></P
+></DIV
+>
+
+Evaluating this sequence expression prints out (onto the console) the
+5-letter string "Hello". Instead of parentheses, we can also use the
+keywords <FONT
+COLOR="RED"
+>begin</FONT
+> and <FONT
+COLOR="RED"
+>end</FONT
+> to form a sequence
+expression:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN383"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;begin
+  print 'H'; print 'e'; print 'l'; print 'l'; print 'o'
+end // end of [begin]
+</PRE
+><P
+></P
+></DIV
+>
+
+If we like, we may also add a semicolon immediately after the last
+expression in a sequence as long as the last expression is of the type
+<FONT
+COLOR="RED"
+>void</FONT
+>. For instance, the above example can also be written as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN386"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;begin
+  print 'H'; print 'e'; print 'l'; print 'l'; print 'o';
+end // end of [begin]
+</PRE
+><P
+></P
+></DIV
+>
+
+I also want to point out the following style of sequencing:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN388"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;let
+  val () = print 'H'
+  val () = print 'e'
+  val () = print 'l'
+  val () = print 'l'
+  val () = print 'o'
+in
+  // nothing
+end // end of [let]
+</PRE
+><P
+></P
+></DIV
+>
+
+which is quite common in functional programming.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x346.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x390.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Conditional Expressions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c96.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Comments in Code</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

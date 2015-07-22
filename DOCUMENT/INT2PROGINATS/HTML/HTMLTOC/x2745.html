@@ -1,0 +1,341 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Mergesort on Lists (Redux)</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Datatype Refinement"
+HREF="c2563.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Function Templates on Lists (Redux)"
+HREF="x2673.html"><LINK
+REL="NEXT"
+TITLE="Sequentiality of Pattern Matching"
+HREF="x2773.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2673.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 10. Datatype Refinement</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2773.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_mergesort_redux"
+>Example: Mergesort on Lists (Redux)</A
+></H1
+><P
+>&#13;I have previously presented an <A
+HREF="x1328.html"
+>implementation of mergesort on lists</A
+>
+that are formed with the constructors <FONT
+COLOR="RED"
+>list0_nil</FONT
+> and
+<FONT
+COLOR="RED"
+>list0_cons</FONT
+>.  In this section, I give an implementation of
+mergesort on lists formed with the constructors <FONT
+COLOR="RED"
+>list_nil</FONT
+> and
+<FONT
+COLOR="RED"
+>list_cons</FONT
+>. This implementation is based on the same algorithm
+as the previous one but it assigns a type to the implemented sorting
+function that guarantees the function to be length-preserving, that is, the
+function always returns a list of the same length as the list it sorts.
+
+</P
+><P
+>The following defined function <FONT
+COLOR="RED"
+>merge</FONT
+> combines two
+ordered list (according to a given ordering) into a single ordered list:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2755"
+></A
+><PRE
+CLASS="programlisting"
+>//
+typedef lte (a:t@ype) = (a, a) -&#62; bool
+//
+fun{
+a:t@ype
+} merge
+  {m,n:nat} .&#60;m+n&#62;.
+(
+  xs0: list (a, m), ys0: list (a, n), lte: lte a
+) : list (a, m+n) =
+  case+ xs0 of
+  | list_nil () =&#62; ys0
+  | list_cons (x, xs1) =&#62;
+    (
+    case+ ys0 of
+    | list_nil () =&#62; xs0
+    | list_cons (y, ys1) =&#62;
+        if x \lte y
+          then list_cons (x, merge (xs1, ys0, lte))
+          else list_cons (y, merge (xs0, ys1, lte))
+        // end of [if]
+    ) // end of [list_cons]
+// end of [merge]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, the type assigned to <FONT
+COLOR="RED"
+>merge</FONT
+> indicates that the function
+returns a list whose length equals the sum of the lengths of the two input
+lists. Note that a termination metric is present for verifying that
+<FONT
+COLOR="RED"
+>merge</FONT
+> is a terminating function.
+</P
+><P
+>&#13;The following defined function <FONT
+COLOR="RED"
+>mergesort</FONT
+> mergesorts a
+list according to a given ordering:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2761"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype
+} mergesort{n:nat}
+(
+  xs: list (a, n), lte: lte a
+) : list (a, n) = let
+  fun msort
+    {n:nat} .&#60;n,n&#62;.
+  (
+    xs: list (a, n), n: int n, lte: lte a
+  ) : list (a, n) =
+    if n &#62;= 2
+      then split (xs, n, lte, half(n), list_nil) else xs
+    // end of [if]
+  // end of [msort]
+  and split
+    {n:int | n &#62;= 2}{i:nat | i &#60;= n/2} .&#60;n,i&#62;.
+  (
+    xs: list (a, n-n/2+i)
+  , n: int n, lte: lte a, i: int i, xsf: list (a, n/2-i)
+  ) : list (a, n) =
+    if i &#62; 0 then let
+      val+ list_cons (x, xs) = xs
+    in
+      split (xs, n, lte, i-1, list_cons (x, xsf))
+    end else let
+      val n2 = half(n)
+      val xsf = list_reverse&#60;a&#62; (xsf) // make sorting stable!
+      val xsf = list_of_list_vt (xsf) // linear list -&#62; nonlinear list
+      val xsf = msort (xsf, n2, lte) and xs = msort (xs, n-n2, lte)
+    in
+      merge (xsf, xs, lte)
+    end // end of [if]
+  // end of [split]
+  val n = list_length&#60;a&#62; (xs)
+in
+  msort (xs, n, lte)
+end // end of [mergesort]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The type assigned to <FONT
+COLOR="RED"
+>mergesort</FONT
+> indicates that
+<FONT
+COLOR="RED"
+>mergesort</FONT
+> returns a list of the same length as its input list.
+The two inner functions <FONT
+COLOR="RED"
+>msort</FONT
+> and <FONT
+COLOR="RED"
+>split</FONT
+> are
+defined mutually recursively, and the termination metrics for them are
+pairs of natural numbers that are compared according to the standard
+lexicographic ordering on integer sequences. The type assigned to
+<FONT
+COLOR="RED"
+>msort</FONT
+> clearly indicates that its integer argument is required
+to be the length of its list argument, and a mismatch between the two
+surely results in a type-error.  The type assigned to <FONT
+COLOR="RED"
+>split</FONT
+> is
+particularly informative, depicting a relation between the arguments and
+the return value of the function that can be of great help for someone
+trying to understand the code.  The function <FONT
+COLOR="RED"
+>list_reverse</FONT
+>
+returns a linear list that is the reverse of its input, and the cast
+function <FONT
+COLOR="RED"
+>list_of_list_vt</FONT
+> turns a linear list into a nonlinear
+one (while incuring no cost at run-time). I will explain what linear lists
+are elsewhere.
+</P
+><P
+>Please find the entire code in this section plus some additional
+code for testing <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_DEPDTREF/mergesort.dats"
+TARGET="_top"
+>on-line</A
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2673.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2773.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Function Templates on Lists (Redux)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2563.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Sequentiality of Pattern Matching</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

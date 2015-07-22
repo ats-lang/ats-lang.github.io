@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>A Makefile Template</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Preparation for Starting"
+HREF="c44.html"><LINK
+REL="PREVIOUS"
+TITLE="A Template for Single-File Programs"
+HREF="x81.html"><LINK
+REL="NEXT"
+TITLE="Elements of Programming"
+HREF="c96.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x81.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Preparation for Starting</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c96.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="a_makefile_template"
+>A Makefile Template</A
+></H1
+><P
+>&#13;The following Makefile template, which is available
+<A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_START/Makefile_template"
+TARGET="_top"
+>on-line</A
+>, is provided to help
+you construct your own Makefile for compiling ATS programs. If you are not
+familiar with the <B
+CLASS="command"
+>make</B
+> utility, you could readily find plenty
+resources on-line to help yourself learn it.
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN94"
+></A
+><PRE
+CLASS="programlisting"
+>######
+#
+# Note that
+# certain installations require the following changes:
+#
+# atscc -&#62; patscc
+# atsopt -&#62; patsopt
+# ATSHOME -&#62; PATSHOME
+#
+######
+
+ATSHOMEQ="$(ATSHOME)"
+
+######
+
+ATSCC=$(ATSHOMEQ)/bin/atscc
+ATSOPT=$(ATSHOMEQ)/bin/atsopt
+
+######
+
+#
+# HX: Please uncomment the one you want, or skip it entirely
+#
+ATSCCFLAGS=
+#ATSCCFLAGS=-O2
+#
+# '-flto' enables link-time optimization such as inlining lib functions
+#
+#ATSCCFLAGS=-O2 -flto
+#
+
+######
+
+cleanall::
+
+######
+
+#
+# Please uncomment the following three lines and replace the name [foo]
+# with the name of the file you want to compile
+#
+
+# foo: foo.dats ; \
+#   $(ATSCC) $(ATSCCFLAGS) -o $@ $&#60; || echo $@ ": ERROR!!!"
+# cleanall:: ; $(RMF) foo
+
+######
+
+#
+# You may find these rules useful
+#
+
+# %_sats.o: %.sats ; $(ATSCC) $(ATSCCFLAGS) -c $&#60; || echo $@ ": ERROR!!!"
+# %_dats.o: %.dats ; $(ATSCC) $(ATSCCFLAGS) -c $&#60; || echo $@ ": ERROR!!!"
+
+######
+
+RMF=rm -f
+
+######
+
+clean:: ; $(RMF) *~
+clean:: ; $(RMF) *_?ats.o
+clean:: ; $(RMF) *_?ats.c
+
+cleanall:: clean
+
+###### end of [Makefile] ######
+</PRE
+><P
+></P
+></DIV
+>
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x81.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c96.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>A Template for Single-File Programs</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c44.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Elements of Programming</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

@@ -1,0 +1,375 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Polymorphic Functions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Parametric Polymorphism"
+HREF="c1122.html"><LINK
+REL="PREVIOUS"
+TITLE="Parametric Polymorphism"
+HREF="c1122.html"><LINK
+REL="NEXT"
+TITLE="Polymorphic Datatypes"
+HREF="x1212.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c1122.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Parametric Polymorphism</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1212.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="polymorphic_functions"
+>Polymorphic Functions</A
+></H1
+><P
+>&#13;A polymorphic function is rather similar to a function template.
+However, the former is a first-class value in ATS while the latter is not.
+As an example, the following defined function <FONT
+COLOR="RED"
+>swap_boxed</FONT
+> is
+polymorphic:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1176"
+></A
+><PRE
+CLASS="programlisting"
+>fun swap_boxed{a,b:type} (xy: (a, b)): (b, a) = (xy.1, xy.0)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The type variables <FONT
+COLOR="RED"
+>a</FONT
+> and <FONT
+COLOR="RED"
+>b</FONT
+> are often referred as
+static arguments while <FONT
+COLOR="RED"
+>xy</FONT
+> is a dynamic argument. Here is some code
+that makes use of the polymorphic function <FONT
+COLOR="RED"
+>swap_boxed</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1182"
+></A
+><PRE
+CLASS="programlisting"
+>val AB = ("A", "B")
+val BA1 = swap_boxed{string,string} (AB)
+val BA2 = swap_boxed (AB) // omitting type arguments may be fine
+</PRE
+><P
+></P
+></DIV
+>
+
+
+If <FONT
+COLOR="RED"
+>swap_boxed</FONT
+> is called on a pair of the type (T1, T2) for some
+types T1 and T2, both T1 and T2 are required to be boxed. Otherwise, a
+type-error is reported. For instance, calling <FONT
+COLOR="RED"
+>swap_boxed</FONT
+> on
+<FONT
+COLOR="RED"
+>(0, 1)</FONT
+> yields a type-error as the type <FONT
+COLOR="RED"
+>int</FONT
+> is not
+boxed.
+</P
+><P
+>&#13;When calling a polymorphic function, we often omit passing static
+arguments explicitly and expect them to be synthesized by the
+compiler. However, there are also occasions, which are not uncommon, where
+static arguments need to be supplied explicitly as either they cannot be
+successfully synthesized or what is synthesized is not exactly what is
+expected by the programmer.
+</P
+><P
+>&#13;It is also possible to pass static arguments sequentially as is
+shown in the following style of implementation of a polymorphic function:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1190"
+></A
+><PRE
+CLASS="programlisting"
+>fun swap2_boxed{a:type}{b:type} (xy: (a, b)): (b, a) = (xy.1, xy.0)
+
+val AB = ("A", "B")
+val BA1 = swap2_boxed (AB) // both static arguments to be synthesized
+val BA2 = swap2_boxed{...} (AB) // both static arguments to be synthesized
+val BA3 = swap2_boxed{..}{string} (AB) // 1st static argument to be synthesized
+val BA4 = swap2_boxed{string}{..} (AB) // 2nd static argument to be synthesized
+val BA5 = swap2_boxed{..}{..} (AB) // both static arguments to be synthesized
+val BA6 = swap2_boxed{string}{string} (AB) // both static arguments are provided
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The special syntax <FONT
+COLOR="RED"
+>{..}</FONT
+> indicates to the typechecker that the
+static argument (or arguments) involved in the current application should
+be synthesized while the special syntax <FONT
+COLOR="RED"
+>{...}</FONT
+> means that the
+rest of static arguments should all be synthesized.
+</P
+><P
+>&#13;I have seen two kinds of errors involving polymorphic functions that are
+extremely common in practice.
+
+<P
+></P
+><UL
+><LI
+><P
+>The first kind is depicted in the following example:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1198"
+></A
+><PRE
+CLASS="programlisting"
+>fun swap_boxed{a,b:t@ype} (xy: (a, b)): (b, a) = (xy.1, xy.0)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Notice that the sort for type variables <FONT
+COLOR="RED"
+>a</FONT
+> and <FONT
+COLOR="RED"
+>b</FONT
+> is
+<FONT
+COLOR="RED"
+>t@ype</FONT
+> (instead of <FONT
+COLOR="RED"
+>type</FONT
+>). While this example can
+pass typechecking, its compilation results in a compile-time error that may
+seem mysterious to many programmers. The simple reason for this error is
+that the compiler cannot figure out the size of <FONT
+COLOR="RED"
+>a</FONT
+> and
+<FONT
+COLOR="RED"
+>b</FONT
+> when trying to generate code in C as the sort <FONT
+COLOR="RED"
+>t@ype</FONT
+>
+is for types of unspecified size.
+
+</P
+></LI
+><LI
+><P
+>The second kind is depicted in the following example:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1209"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a,b:type} swap_boxed (xy: (a, b)): (b, a) = (xy.1, xy.0)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Strictly speaking, there is really no error in this case. If defined as
+such, <FONT
+COLOR="RED"
+>swap_boxed</FONT
+> is a function template instead of a
+polymorphic function. However, such a function template is severely
+restricted as it cannot be instantiated with types that are not boxed.
+While this could be intended, it is very unlikely.
+</P
+></LI
+></UL
+>
+
+Given the potential confusion, why do we need both function templates and
+polymorphic functions?  At this stage, it is certainly plausible that we
+program only with function templates and make no use of polymorphic
+functions. However, polymorphic functions simply become indispensible in
+the presence dependent types. There will actually be numerous occasions
+where we encounter polymorphic function templates, that is, templates for
+polymorphic functions.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c1122.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1212.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Parametric Polymorphism</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1122.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Polymorphic Datatypes</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

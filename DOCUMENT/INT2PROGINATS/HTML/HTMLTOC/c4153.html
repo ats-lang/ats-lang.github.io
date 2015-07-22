@@ -1,0 +1,659 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Abstract Views and Viewtypes</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Programming with Views and Viewtypes"
+HREF="p3307.html"><LINK
+REL="PREVIOUS"
+TITLE="Transition from Datatypes to Dataviewtypes"
+HREF="x4121.html"><LINK
+REL="NEXT"
+TITLE="Memory Allocation and Deallocation"
+HREF="x4205.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x4121.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x4205.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="abstract_views_viewtypes"
+></A
+>Chapter 16. Abstract Views and Viewtypes</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c4153.html#simple-linear-objects"
+>Simple Linear Objects</A
+></DT
+><DT
+><A
+HREF="x4205.html"
+>Memory Allocation and Deallocation</A
+></DT
+><DT
+><A
+HREF="x4269.html"
+>Example: Array-Based Circular Buffers</A
+></DT
+><DT
+><A
+HREF="x4306.html"
+>Locking and Unlocking</A
+></DT
+><DT
+><A
+HREF="x4354.html"
+>Linear Channels for Asynchronous IPC</A
+></DT
+></DL
+></DIV
+><P
+>&#13;I have so far given a presentation of views that solely focuses on at-views
+and the views built on top of at-views. This is largely due to at-views
+being the form of most widely used views in practice and also being the
+first form of views supported in ATS. However, other forms of views can be
+readily introduced into ATS abstractly. Even in a case where a view can be
+defined based on at-views (or other forms of views), one may still want to
+introduce it as an abstract view (accompanied with certain proof functions
+for performing view-changes). Often what the programmer really needs is to
+figure out <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>conceptually</I
+></SPAN
+> whether abstractly defined views and
+proof functions for manipulating them actually make sense. This is a bit
+like arguing whether a function is computable: There is rarely a need, if
+at all, to actually encode the function as a Turing-machine to prove its
+being computable. IMHO, learning proper use of abstract views and abstract
+viewtypes is a necessary step for one to take in order to employ linear
+types effectively in practice to deal with resource-related programming
+issues.
+
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="simple-linear-objects"
+>Simple Linear Objects</A
+></H1
+><P
+>&#13;Objects in the physical world are conspicuously linear: They cannot be
+created from nothing or simply go vanished by turning into nothing. Thus,
+it is only natural to assign linear types to values that represent physical
+objects. I choose the name <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>simple linear object</I
+></SPAN
+> here to refer
+to a linear value representing an object of some sort that does not contain
+built-in mechanism for supporting inheritance.
+</P
+><P
+>&#13;Let us now take a look at a concrete example of simple linear object.
+The following code presents an interface for a timer (that is, stopwatch):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4162"
+></A
+><PRE
+CLASS="programlisting"
+>//
+absvtype timer_vtype
+vtypedef timer = timer_vtype
+//
+fun timer_new (): timer
+fun timer_free (x: timer): void
+fun timer_start (x: !timer): void
+fun timer_finish (x: !timer): void
+fun timer_pause (x: !timer): void
+fun timer_resume (x: !timer): void
+fun timer_get_ntick (x: !timer): uint
+fun timer_reset (x: !timer): void
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The state of a timer is given the
+record type <FONT
+COLOR="RED"
+>timer_struct</FONT
+> defined as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4165"
+></A
+><PRE
+CLASS="programlisting"
+>//
+typedef
+timer_struct = @{
+  started= bool // the timer has started
+, running= bool // the timer is running
+  // the tick number recorded when the timer
+, ntick_beg= uint // was turned on last time
+, ntick_acc= uint // the number of accumulated ticks
+} (* end of [timer_struct] *)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The following linear datatype <FONT
+COLOR="RED"
+>timer</FONT
+>
+is declared for timers, and the abstract type <FONT
+COLOR="RED"
+>timer_vtype</FONT
+>
+is assumed to equal <FONT
+COLOR="RED"
+>timer</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4170"
+></A
+><PRE
+CLASS="programlisting"
+>//
+datavtype timer =
+  TIMER of (timer_struct)
+//
+assume timer_vtype = timer
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Various functions on timers can now be readily implemented.
+Let us first see the code for creating and freeing timers:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4173"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+timer_new () = let
+//
+val timer = TIMER (_)
+val TIMER (x) = timer
+//
+val () = x.started := false
+val () = x.running := false
+val () = x.ntick_beg := 0u
+val () = x.ntick_acc := 0u
+//
+prval () = fold@ (timer)
+//
+in
+  timer
+end // end of [timer_new]
+
+implement
+timer_free (timer) =
+  let val ~TIMER _ = timer in (*nothing*) end
+// end of [timer_free]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The function for starting a timer can be implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4176"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+timer_start
+  (timer) = let
+  val+@TIMER(x) = timer
+  val () = x.started := true
+  val () = x.running := true
+  val () = x.ntick_beg := the_current_tick_get ()
+  val () = x.ntick_acc := 0u
+  prval () = fold@ (timer)
+in
+  // nothing
+end // end of [timer_start]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>the_current_tick_get</FONT
+> is a function for
+reading the current time (represented as a number of ticks):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4179"
+></A
+><PRE
+CLASS="programlisting"
+>extern fun the_current_tick_get (): uint
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;A timer can be stopped or paused. The function for stopping a timer can be
+implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4182"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+timer_finish
+  (timer) = let
+  val+@TIMER(x) = timer
+  val () = x.started := false
+  val () =
+  if x.running then
+  {
+    val () = x.running := false
+    val () = x.ntick_acc :=
+      x.ntick_acc + the_current_tick_get () - x.ntick_beg
+  } (* end of [val] *)
+  prval () = fold@ (timer)
+in
+  // nothing
+end // end of [timer_finish]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;A timer can be paused and then resumed.
+The following code implements the functions for pausing and resuming a
+timer:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4185"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+timer_pause
+  (timer) = let
+  val+@TIMER(x) = timer
+  val () =
+  if x.running then
+  {
+    val () = x.running := false
+    val () = x.ntick_acc :=
+      x.ntick_acc + the_current_tick_get () - x.ntick_beg
+  } (* end of [val] *)
+  prval () = fold@ (timer)
+in
+  // nothing
+end // end of [timer_pause]
+
+implement
+timer_resume
+  (timer) = let
+  val+@TIMER(x) = timer
+  val () =
+  if x.started &#38;&#38; ~(x.running) then
+  {
+    val () = x.running := true
+    val () = x.ntick_beg := the_current_tick_get ()
+  } (* end of [if] *) // end of [val]
+  prval () = fold@ (timer)
+in
+  // nothing
+end // end of [timer_resume]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+As can be expected, the amount of time between the point
+where a timer is paused and the point where the timer is resumed
+is not counted.
+
+</P
+><P
+>&#13;It is also possible to reset a timer by calling the function
+<FONT
+COLOR="RED"
+>timer_reset</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4189"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+timer_reset
+  (timer) = let
+  val+@TIMER(x) = timer
+  val () = x.started := false
+  val () = x.running := false
+  val () = x.ntick_beg := 0u
+  val () = x.ntick_acc := 0u
+  prval () = fold@ (timer)
+in
+  // nothing
+end // end of [timer_reset]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;In order to read the time accumulated by a timer,
+the function <FONT
+COLOR="RED"
+>timer_get_ntick</FONT
+> can be called:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4193"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+timer_get_ntick
+  (timer) = let
+  val+@TIMER(x) = timer
+  var ntick: uint = x.ntick_acc
+  val () =
+  if x.running then (
+    ntick := ntick + the_current_tick_get () - x.ntick_beg
+  ) (* end of [if] *) // end of [val]
+  prval () = fold@ (timer)
+in
+  ntick
+end // end of [timer_get_ntick]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;A straightforward approach to
+implementing <FONT
+COLOR="RED"
+>the_current_tick_get</FONT
+>
+can be based directly on the function <FONT
+COLOR="RED"
+>clock_gettime</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4198"
+></A
+><PRE
+CLASS="programlisting"
+>local
+
+staload "libc/SATS/time.sats"
+
+in (* in-of-local *)
+
+implement
+the_current_tick_get () = let
+  var tv: timespec // uninitialized
+  val err = clock_gettime (CLOCK_REALTIME, tv)
+  val ((*void*)) = assertloc (err &#62;= 0)
+  prval ((*void*)) = opt_unsome{timespec}(tv)
+in
+  $UNSAFE.cast2uint(tv.tv_sec)
+end // end of [the_current_tick_get]
+
+end // end of [local]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the library flag <FONT
+COLOR="RED"
+>-lrt</FONT
+> may be needed in order to
+have link-time access to <FONT
+COLOR="RED"
+>clock_gettime</FONT
+> as the function is in
+<FONT
+COLOR="RED"
+>librt</FONT
+>.
+
+</P
+><P
+>&#13;Please find <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_ABSVTYPE/timer.dats"
+TARGET="_top"
+>on-line</A
+> the
+entirety of the code presented in this section plus some testing code.
+
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x4121.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x4205.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Transition from Datatypes to Dataviewtypes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p3307.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Memory Allocation and Deallocation</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

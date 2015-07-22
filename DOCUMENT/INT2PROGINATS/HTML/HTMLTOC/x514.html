@@ -1,0 +1,355 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Recursive Functions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="c408.html"><LINK
+REL="PREVIOUS"
+TITLE="Evaluation of Function Calls"
+HREF="x494.html"><LINK
+REL="NEXT"
+TITLE="Evaluation of Recursive Function Calls"
+HREF="x557.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x494.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x557.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="recursive-functions"
+>Recursive Functions</A
+></H1
+><P
+>&#13;A recursive function is one that may make calls to itself in its body. In
+ATS, the keyword <FONT
+COLOR="RED"
+>fun</FONT
+> is used to initiate the definition of a
+recursive function.  Clearly, a non-recursive function is just a special
+kind of recursive function: the kind that does not make any calls to itself
+in its body. If one prefers, one can use <FONT
+COLOR="RED"
+>fun</FONT
+> (instead of
+<FONT
+COLOR="RED"
+>fn</FONT
+>) to initiate the definition of a non-recursive function.
+</P
+><P
+>&#13;I consider recursion the most enabling feature a programming language can
+provide. With recursion, we are enabled to do problem-solving based on a
+strategy of reduction: In order to solve a problem to which a solution is
+difficult to find immediately, we reduce the problem to problems that are
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>similar</I
+></SPAN
+> but <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>simpler</I
+></SPAN
+>, and we repeat this
+reduction process if needed until solutions become apparent. Let us now see
+some concrete examples of problem-solving that make use of this reduction
+strategy.
+</P
+><P
+>Suppose that we want to sum up all the integers ranging from 1 to n,
+where n is a given integer. This can be readily done by implementing the
+following recursive function <FONT
+COLOR="RED"
+>sum1</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN525"
+></A
+><PRE
+CLASS="programlisting"
+>fun sum1 (n: int): int = if n &#62;= 1 then sum1 (n-1) + n else 0
+</PRE
+><P
+></P
+></DIV
+>
+
+
+To find out the sum of all the integers ranging from <FONT
+COLOR="RED"
+>1</FONT
+> to
+<FONT
+COLOR="RED"
+>n</FONT
+>, we call <FONT
+COLOR="RED"
+>sum1 (n)</FONT
+>. The reduction strategy for
+<FONT
+COLOR="RED"
+>sum1 (n)</FONT
+> is straightforward: If <FONT
+COLOR="RED"
+>n</FONT
+> is greater than
+<FONT
+COLOR="RED"
+>1</FONT
+>, then we can readily find the value of <FONT
+COLOR="RED"
+>sum1 (n)</FONT
+>
+by solving a simpler problem, that is, finding the value of <FONT
+COLOR="RED"
+>sum1
+(n-1)</FONT
+>.
+</P
+><P
+>We can also solve the problem by implementing the following
+recursive function <FONT
+COLOR="RED"
+>sum2</FONT
+> that sums up all the integers in a
+given range:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN537"
+></A
+><PRE
+CLASS="programlisting"
+>fun sum2 (m: int, n: int): int = if m &#60;= n then m + sum2 (m+1, n) else 0
+</PRE
+><P
+></P
+></DIV
+>
+
+
+This time, we call <FONT
+COLOR="RED"
+>sum2 (1, n)</FONT
+> in order to find out the sum of
+all the integers ranging from <FONT
+COLOR="RED"
+>1</FONT
+> to <FONT
+COLOR="RED"
+>n</FONT
+>.  The
+reduction strategy for <FONT
+COLOR="RED"
+>sum2 (m, n)</FONT
+> is also straightforward: If
+<FONT
+COLOR="RED"
+>m</FONT
+> is less than <FONT
+COLOR="RED"
+>n</FONT
+>, then we can readily find the
+value of <FONT
+COLOR="RED"
+>sum2 (m, n)</FONT
+> by solving a simpler problem, that is,
+finding the value of <FONT
+COLOR="RED"
+>sum2 (m+1, n)</FONT
+>. The reason for <FONT
+COLOR="RED"
+>sum2
+(m+1, n)</FONT
+> being simpler than <FONT
+COLOR="RED"
+>sum2 (m, n)</FONT
+> is that
+<FONT
+COLOR="RED"
+>m+1</FONT
+> is closer to <FONT
+COLOR="RED"
+>n</FONT
+> than <FONT
+COLOR="RED"
+>m</FONT
+> is.
+</P
+><P
+>Given integers m and n, there is another strategy for summing up all
+the integers from m to n: If m does not exceed n, we can find the sum of
+all the integers from m to (m+n)/2-1 and then the sum of all the integers
+from (m+n)/2+1 to n and then sum up these two sums and (m+n)/2. The
+following recursive function <FONT
+COLOR="RED"
+>sum3</FONT
+> is implemented precisely
+according to this strategy:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN554"
+></A
+><PRE
+CLASS="programlisting"
+>fun sum3
+  (m: int, n: int): int =
+  if m &#60;= n then let
+    val mn2 = (m+n)/2 in sum3 (m, mn2-1) + mn2 + sum3 (mn2+1, n)
+  end else 0 // end of [if]
+// end of [sum3]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+It should be noted that the division involved in the expression
+<FONT
+COLOR="RED"
+>(m+n)/2 </FONT
+> is integer division for which rounding is done by
+truncation.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x494.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x557.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Evaluation of Function Calls</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c408.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Evaluation of Recursive Function Calls</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

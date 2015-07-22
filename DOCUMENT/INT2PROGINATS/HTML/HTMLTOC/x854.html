@@ -1,0 +1,314 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: A Higher-Order Fun Puzzle</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="c408.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Binary Search for Fun"
+HREF="x840.html"><LINK
+REL="NEXT"
+TITLE="Currying and Uncurrying"
+HREF="x887.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x840.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x887.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example-a-higher-order-fun-puzzle"
+>Example: A Higher-Order Fun Puzzle</A
+></H1
+><P
+>&#13;Let us first introduce a type definition as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN857"
+></A
+><PRE
+CLASS="programlisting"
+>typedef I (a:t@ype) = a -&#60;cloref1&#62; a
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given a type T, I(T) is for a closure-function that maps a given input
+value of type T to an output value of the same type T. Given a function f
+of type I(T), we can compose f with itself to form another function, which
+just applies f twice to a given argument. The following function template
+<FONT
+COLOR="RED"
+>twice</FONT
+> does precisely the described function composition:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN860"
+></A
+><PRE
+CLASS="programlisting"
+>fn{a:t0p}
+twice (f: I(a)):&#60;cloref&#62; I(a) = lam (x) =&#62; f (f (x))
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Let us now take a look at some interesting code involving <FONT
+COLOR="RED"
+>twice</FONT
+>
+that is also likely to be puzzling:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN863"
+></A
+><PRE
+CLASS="programlisting"
+>//
+typedef I0 = int
+typedef I1 = I(I0)
+typedef I2 = I(I1)
+typedef I3 = I(I2)
+//
+val Z = 0
+val S = lam (x: int): int =&#60;cloref&#62; x + 1
+val ans0 = twice&#60;I0&#62;(S)(Z)
+val ans1 = twice&#60;I1&#62;(twice&#60;I0&#62;)(S)(Z)
+val ans2 = twice&#60;I2&#62;(twice&#60;I1&#62;)(twice&#60;I0&#62;)(S)(Z)
+val ans3 = twice&#60;I3&#62;(twice&#60;I2&#62;)(twice&#60;I1&#62;)(twice&#60;I0&#62;)(S)(Z)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the type definitions
+<FONT
+COLOR="RED"
+>I0</FONT
+>,
+<FONT
+COLOR="RED"
+>I1</FONT
+>,
+<FONT
+COLOR="RED"
+>I2</FONT
+>, and
+<FONT
+COLOR="RED"
+>I3</FONT
+> are introduced to make the above code more easily
+accessible.
+</P
+><P
+>&#13;Obviously, <FONT
+COLOR="RED"
+>Z</FONT
+> stands for the integer 0 and <FONT
+COLOR="RED"
+>S</FONT
+> for the
+successor function on integers. Also, <FONT
+COLOR="RED"
+>ans0</FONT
+> equals 2 as it is
+the result of applying <FONT
+COLOR="RED"
+>S</FONT
+> to <FONT
+COLOR="RED"
+>Z</FONT
+> twice. Let
+<FONT
+COLOR="RED"
+>S2</FONT
+> be the function that applies <FONT
+COLOR="RED"
+>S</FONT
+> twice.  It is
+clear that <FONT
+COLOR="RED"
+>ans1</FONT
+> is the result of applying <FONT
+COLOR="RED"
+>S2</FONT
+> to
+<FONT
+COLOR="RED"
+>Z</FONT
+> twice and thus equals 4. With a bit more effort, one should
+be able to figure out that the value of <FONT
+COLOR="RED"
+>ans2</FONT
+> is 16. What is the
+value of <FONT
+COLOR="RED"
+>ans3</FONT
+>? In general, what is the nth value in the
+sequence of <FONT
+COLOR="RED"
+>ans0</FONT
+>, <FONT
+COLOR="RED"
+>ans1</FONT
+>, <FONT
+COLOR="RED"
+>ans2</FONT
+>, etc.?
+I leave these questions as exercises for the interested reader.
+
+</P
+><P
+>Please find <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_FUNCTION/twice.dats"
+TARGET="_top"
+>on-line</A
+>
+the entire code in this section plus some additional code for testing.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x840.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x887.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Binary Search for Fun</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c408.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Currying and Uncurrying</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

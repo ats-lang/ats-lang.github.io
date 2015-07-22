@@ -1,0 +1,353 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Preparation for Starting</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Functional Programming"
+HREF="p42.html"><LINK
+REL="PREVIOUS"
+TITLE="Basic Functional Programming"
+HREF="p42.html"><LINK
+REL="NEXT"
+TITLE="A Template for Single-File Programs"
+HREF="x81.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="p42.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x81.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="preparation_for_starting"
+></A
+>Chapter 1. Preparation for Starting</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c44.html#a_running_program"
+>A Running Program</A
+></DT
+><DT
+><A
+HREF="x81.html"
+>A Template for Single-File Programs</A
+></DT
+><DT
+><A
+HREF="x89.html"
+>A Makefile Template</A
+></DT
+></DL
+></DIV
+><P
+>&#13;It is likely that you want to write programs in the programming language
+you are learning.  You may also want to try some of the examples included
+in this book and see what really happens. So I will first show you how to
+write in ATS a single-file program, that is, a program contained in a
+single file, and compile it and then execute it.
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="a_running_program"
+>A Running Program</A
+></H1
+><P
+>The following example is a program in ATS that prints out (onto the
+console) the string "Hello, world!" plus a newline before it terminates:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN50"
+></A
+><PRE
+CLASS="programlisting"
+>val _ = print ("Hello, world!\n")
+
+implement main0 () = () // a dummy for [main]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The keyword <FONT
+COLOR="RED"
+>val</FONT
+> initiates a binding between the variable
+<FONT
+COLOR="RED"
+>_</FONT
+> (underscore) and the function call <FONT
+COLOR="RED"
+>print ("Hello,
+world!\n")</FONT
+>.  However, this binding is never used after it is
+introduced; its sole purpose is for the call to the <FONT
+COLOR="RED"
+>print</FONT
+>
+function to get evaluated.  </P
+><P
+>&#13;The function <FONT
+COLOR="RED"
+>main0</FONT
+> is a slight variant of another function
+named <FONT
+COLOR="RED"
+>main</FONT
+>, which is of certain special meaning in ATS. For a
+programmer who knows the C or Java programming language, I simply point out
+that the role of <FONT
+COLOR="RED"
+>main</FONT
+> is essentially the same as its
+counterpart of the same name in C or Java.  The keyword
+<FONT
+COLOR="RED"
+>implement</FONT
+> initiates the implementation of a function whose
+interface has already been declared elsewhere. Following is the declared
+interface for <FONT
+COLOR="RED"
+>main0</FONT
+> in ATS:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN62"
+></A
+><PRE
+CLASS="programlisting"
+>fun main0 (): void
+</PRE
+><P
+></P
+></DIV
+>
+
+
+which indicates that <FONT
+COLOR="RED"
+>main0</FONT
+> is a nullary function, that is, a
+function taking no arguments, and it returns no value (or it returns the
+void value). The double slash symbol (<FONT
+COLOR="RED"
+>//</FONT
+>) initiates a comment
+that terminates at the end of the current line.
+</P
+><P
+>Suppose that you have already installed the ATS programming language
+system. You can issue the following command-line to generate an executable
+named <TT
+CLASS="filename"
+>hello</TT
+> in the current working directory:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN68"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;<B
+CLASS="command"
+>atscc</B
+> -o hello hello.dats
+</PRE
+><P
+></P
+></DIV
+>
+
+where <TT
+CLASS="filename"
+>hello.dats</TT
+> refers to a file containing the above
+program.  The command <B
+CLASS="command"
+>atscc</B
+> is essentially a convenience
+wrapper around the command <B
+CLASS="command"
+>atsopt</B
+>, which triggers the process
+of typechecking and compiling ATS programs. Note that <B
+CLASS="command"
+>atscc</B
+> and
+<B
+CLASS="command"
+>atsopt</B
+> may actually be given the names <B
+CLASS="command"
+>patscc</B
+> and
+<B
+CLASS="command"
+>patsopt</B
+>, respectively, in certain installations of ATS.  The filename
+extension <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>.dats</I
+></SPAN
+> should not be altered as it has already been
+assigned a special meaning that the compilation command <B
+CLASS="command"
+>atscc</B
+>
+recognizes. Another special filename extension is <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>.sats</I
+></SPAN
+>, which
+we will soon encounter.
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="p42.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x81.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Basic Functional Programming</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p42.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>A Template for Single-File Programs</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

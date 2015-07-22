@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Records and Record Types</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Elements of Programming"
+HREF="c96.html"><LINK
+REL="PREVIOUS"
+TITLE="Tuples and Tuple Types"
+HREF="x298.html"><LINK
+REL="NEXT"
+TITLE="Conditional Expressions"
+HREF="x346.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x298.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Elements of Programming</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x346.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="records_and_record_types"
+>Records and Record Types</A
+></H1
+><P
+>A record is just like a tuple except that each field name of the
+record is chosen by the programmer (instead of being fixed). Similarly, a
+record type is just like a tuple type.  For instance, a record type
+<FONT
+COLOR="RED"
+>point2D</FONT
+> is defined as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN322"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;typedef point2D = @{ x= double, y= double }
+</PRE
+><P
+></P
+></DIV
+>
+
+where <FONT
+COLOR="RED"
+>x</FONT
+> and <FONT
+COLOR="RED"
+>y</FONT
+> are the names of the two fields in
+a record value of this type. We also refer to a field in a record as a
+component. The special symbol <FONT
+COLOR="RED"
+>@{</FONT
+> indicates that the formed
+type is for flat/native/unboxed records. A value of the type
+<FONT
+COLOR="RED"
+>point2D</FONT
+> is constructed as follows and given the name
+<FONT
+COLOR="RED"
+>theOrigin</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN329"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;val theOrigin = @{ x= 0.0, y= 0.0 } : point2D
+</PRE
+><P
+></P
+></DIV
+>
+</P
+><P
+>We can use the standard dot notation to extract out a selected component in
+a record, and this is shown in the next line of code:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN332"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;val theOrigin_x = theOrigin.x and theOrigin_y = theOrigin.y
+</PRE
+><P
+></P
+></DIV
+>
+
+Alternatively, we can use pattern matching for doing component extraction
+as is done in the next line of code:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN334"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;val @{ x= theOrigin_x, y= theOrigin_y } = theOrigin
+</PRE
+><P
+></P
+></DIV
+>
+
+In this case, the names <FONT
+COLOR="RED"
+>theOrigin_x</FONT
+> and
+<FONT
+COLOR="RED"
+>theOrigin_y</FONT
+> are bound to the components in
+<FONT
+COLOR="RED"
+>theOrgin</FONT
+> that are named <FONT
+COLOR="RED"
+>x</FONT
+> and <FONT
+COLOR="RED"
+>y</FONT
+>,
+respectively. If we only need to extract out a selected few of components
+(instead of all the available ones), we can make use of the following
+kind of patterns:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN341"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;val @{ x= theOrigin_x, ... } = theOrigin // the x-component only 
+val @{ y= theOrigin_y, ... } = theOrigin // the y-component only 
+</PRE
+><P
+></P
+></DIV
+>
+
+If you find all this syntax for component extraction to be confusing, then
+I suggest that you stick to the dot notation. I myself rarely use pattern
+matching on record values.
+</P
+><P
+>Compared with handling native/flat/unboxed records, the only change
+needed for handling boxed records is to replace the special symbol
+<FONT
+COLOR="RED"
+>@{</FONT
+> with another one: <FONT
+COLOR="RED"
+>'{</FONT
+>, which is a quote
+followed immediately by a left curly brace.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x298.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x346.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Tuples and Tuple Types</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c96.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Conditional Expressions</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

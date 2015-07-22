@@ -1,0 +1,499 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Functional Red-Black Trees</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Datatype Refinement"
+HREF="c2563.html"><LINK
+REL="PREVIOUS"
+TITLE="Sequentiality of Pattern Matching"
+HREF="x2773.html"><LINK
+REL="NEXT"
+TITLE="Theorem-Proving in ATS/LF"
+HREF="c2845.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2773.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 10. Datatype Refinement</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c2845.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_fun_red-black_trees"
+>Example: Functional Red-Black Trees</A
+></H1
+><P
+>&#13;A red-black tree is defined as a binary tree such that each node in it is
+colored red or black and every path from the root to a leaf has the same
+number of black nodes while containing no occurrences of two red nodes in a
+row.  Clearly, the length of a longest path in each red-black tree is
+bounded by 2 times the length of a shortest path in it. Therefore,
+red-black trees are a family of balanced trees. The number of black nodes
+occurring on each path in a red-black tree is often referred to as the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>black height</I
+></SPAN
+> of the tree.
+
+</P
+><P
+>&#13;Formally, a datatype precisely for red-black trees can be declared in ATS
+as follows:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2807"
+></A
+><PRE
+CLASS="programlisting"
+>#define BLK 0
+#define RED 1
+sortdef clr = {c:nat | c &#60;= 1}
+
+datatype rbtree
+  (a:t@ype+, int(*clr*), int(*bh*)) =
+  | rbtree_nil (a, BLK, 0)
+  | {c,cl,cr:clr | cl &#60;= 1-c; cr &#60;= 1-c} {bh:nat}
+    rbtree_cons (a, c, bh+1-c) of (int c, rbtree (a, cl, bh), a, rbtree (a, cr, bh))
+// end of [rbtree]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;The color of a tree is the color of its root node or is black if the tree
+is empty.  Given a type T, a color C (represented by a integer) and an
+integer BH, the type <FONT
+COLOR="RED"
+>rbtree(T, C, BH)</FONT
+> is for red-black trees
+carrying elements of the type T that is of the color C and the black height
+BH.
+
+</P
+><P
+>&#13;When implementing various operations (such as insertion and deletion) on a
+red-black tree, we often need to first construct intermediate trees that
+contain color violations caused by a red node being followed by another red
+node and then employ tree rotations to fix such violations. This need makes
+the above datatype <FONT
+COLOR="RED"
+>rbtree</FONT
+> too rigid as it cannot be assigned to
+any intermediate trees containing color violations. To address this issue,
+we can declare <FONT
+COLOR="RED"
+>rbtree</FONT
+> as follows:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2814"
+></A
+><PRE
+CLASS="programlisting"
+>datatype rbtree
+(
+  a:t@ype+
+, int // color
+, int // black height
+, int // violations
+) =
+  | rbtree_nil (a, BLK, 0, 0) of ()
+  | {c,cl,cr:clr}{bh:nat}{v:int}
+      {c==BLK &#38;&#38; v==0 || c == RED &#38;&#38; v==cl+cr}
+    rbtree_cons (a, c, bh+1-c, v) of
+    (
+      int c, rbtree0 (a, cl, bh), a, rbtree0 (a, cr, bh)
+    ) (* end of [rbtree_cons] *)
+// end of [rbtree]
+
+where rbtree0 (a:t@ype, c:int, bh:int) = rbtree (a, c, bh, 0)
+
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;We count each occurrence of two red nodes in a row as one color violation.
+Given a type T, a color C (represented by a integer), an integer BH and an
+integer V, the type <FONT
+COLOR="RED"
+>rbtree(T, C, BH, V)</FONT
+> is for trees carrying
+elements of the type T that is of the color C and the black height BH and
+contains exactly V color violations. Therefore, the type
+<FONT
+COLOR="RED"
+>rbtree(T, C, BH, 0)</FONT
+> is for valid red-black trees (containing no
+color violations).
+
+</P
+><P
+>&#13;Given a tree containing at most one color violation, an element and another
+tree containing no violations, the following operation constructs a valid
+red-black tree:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2820"
+></A
+><PRE
+CLASS="programlisting"
+>fn{
+a:t@ype
+} insfix_l // right rotation for fixing left insertion
+  {cl,cr:clr} {bh:nat} {v:nat} (
+  tl: rbtree (a, cl, bh, v), x0: a, tr: rbtree (a, cr, bh, 0)
+) : [c:clr] rbtree0 (a, c, bh+1) = let
+  #define B BLK; #define R RED; #define cons rbtree_cons
+in
+  case+ (tl, x0, tr) of
+  | (cons (R, cons (R, a, x, b), y, c), z, d) =&#62;
+      cons (R, cons (B, a, x, b), y, cons (B, c, z, d)) // shallow rot
+  | (cons (R, a, x, cons (R, b, y, c)), z, d) =&#62;
+      cons (R, cons (B, a, x, b), y, cons (B, c, z, d)) // deep rotation
+  | (a, x, b) =&#62;&#62; cons (B, a, x, b)
+end // end of [insfix_l]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;By simply reading the interface of <FONT
+COLOR="RED"
+>insfix_l</FONT
+>, we can see that the
+two tree arguments are required to be of the same black height bh for some
+natural number bh and the returned tree is of the black height bh+1.
+
+</P
+><P
+>&#13;The following operation <FONT
+COLOR="RED"
+>insfix_r</FONT
+> is just the mirror image of
+<FONT
+COLOR="RED"
+>insfix_l</FONT
+>:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2827"
+></A
+><PRE
+CLASS="programlisting"
+>fn{
+a:t@ype
+} insfix_r // left rotation for fixing right insertion
+  {cl,cr:clr} {bh:nat} {v:nat} (
+  tl: rbtree (a, cl, bh, 0), x0: a, tr: rbtree (a, cr, bh, v)
+) : [c:clr] rbtree0 (a, c, bh+1) = let
+  #define B BLK; #define R RED; #define cons rbtree_cons
+in
+  case+ (tl, x0, tr) of
+  | (a, x, cons (R, b, y, cons (R, c, z, d))) =&#62;
+      cons (R, cons (B, a, x, b), y, cons (B, c, z, d)) // shallow rot
+  | (a, x, cons (R, cons (R, b, y, c), z, d)) =&#62;
+      cons (R, cons (B, a, x, b), y, cons (B, c, z, d)) // deep rotation
+  | (a, x, b) =&#62;&#62; cons (B, a, x, b)
+end // end of [insfix_r]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;The preparation for implementing insertion on a red-black tree is all done
+by now, and we are ready to see an implementation of insertion guaranteeing
+that the tree obtained from inserting an element into a given red-black
+tree is always a valid red-black tree itself. This guarantee is precisely
+captured in the following interface for insertion:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2830"
+></A
+><PRE
+CLASS="programlisting"
+>extern
+fun{
+a:t@ype
+} rbtree_insert
+  {c:clr} {bh:nat}
+(
+  t: rbtree0 (a, c, bh), x0: a, cmp: cmp a
+) : [bh1:nat] rbtree0 (a, BLK, bh1)
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;Interestingly, this interface also implies that the tree returned by a call
+to <FONT
+COLOR="RED"
+>rbtree_insert</FONT
+> is always black. The code presented below
+gives an implementation of <FONT
+COLOR="RED"
+>rbtree_insert</FONT
+>:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2835"
+></A
+><PRE
+CLASS="programlisting"
+>implement{a}
+rbtree_insert
+  (t, x0, cmp) = let
+//
+#define B BLK
+#define R RED
+#define nil rbtree_nil
+#define cons rbtree_cons
+//
+fun ins
+  {c:clr}{bh:nat} .&#60;bh,c&#62;.
+(
+  t: rbtree0 (a, c, bh), x0: a
+) :
+[
+  cl:clr;v:nat | v &#60;= c
+] rbtree (a, cl, bh, v) =
+(
+  case+ t of
+  | nil ((*void*)) =&#62;
+      cons{..}{..}{..}{0} (R, nil, x0, nil)
+  | cons (c, tl, x, tr) =&#62; let
+      val sgn = compare (x0, x, cmp)
+    in
+      if sgn &#60; 0 then let
+        val [cl,v:int] tl = ins (tl, x0)
+      in
+        if c = B then insfix_l (tl, x, tr)
+          else cons{..}{..}{..}{cl} (R, tl, x, tr)
+        // end of [if]
+      end else if sgn &#62; 0 then let
+        val [cr,v:int] tr = ins (tr, x0)
+      in
+        if c = B then insfix_r (tl, x, tr)
+          else cons{..}{..}{..}{cr} (R, tl, x, tr)
+        // end of [if]
+      end else t // end of [if]
+    end // end of [cons]
+) (* end of [ins] *)
+//
+val t = ins (t, x0)
+//
+in
+  case+ t of cons (R, tl, x, tr) =&#62; cons (B, tl, x, tr) | _ =&#62;&#62; t
+end // end of [rbtree_insert]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;Note that the type assigned to the inner function <FONT
+COLOR="RED"
+>ins</FONT
+> is so
+informative that it literally gives an formal explanation about the way in
+which insertion works on a red-black tree. Many a programmer implements
+red-black trees by simply following an algorithm written in some format of
+pseudo code while having little understanding about the innerworkings of
+the algorithm. For instance, if the above inner function <FONT
+COLOR="RED"
+>ins</FONT
+> is
+implemented in C, few programmers are likely to see that the function
+always maintain the black height of a given red-black tree after insertion
+but may introduce one color violation if the root of the tree is red. On
+the other hand, knowing this invariant is essential to gaining a thorough
+understanding of the insertion algorithm on red-black trees.
+
+</P
+><P
+>&#13;The insertion operation implemented above does not insert an element if it
+is already in the given red-black tree. It may be desirable to require that
+the operation inform the caller if such a case occurs. For instance, an
+exception can be raised for this purpose. An alternative is to give
+<FONT
+COLOR="RED"
+>rbtree_insert</FONT
+> a call-by-reference argument so that a flag can be
+returned in it to indicate whether the element to be inserted is actually
+inserted. I will explain elsewhere what call-by-reference is and how it is
+supported in ATS.
+
+</P
+><P
+>&#13;Often deleting an element from a binary search tree is significantly more
+difficult to implement than inserting one.  This is especially so in the
+case of a red-black tree.  I refer the interested reader to the libats
+library of ATS for some code implementing a deletion operation on red-black
+trees that can guarantee based on types each tree returned by the operation
+being a valid red-black tree (containing no color violations).
+
+</P
+><P
+>&#13;Please find the entire code in this section plus some additional code for
+testing <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_DEPDTREF/rbtree.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2773.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c2845.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Sequentiality of Pattern Matching</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2563.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Theorem-Proving in ATS/LF</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

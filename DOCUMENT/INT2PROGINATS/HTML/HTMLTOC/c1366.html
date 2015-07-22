@@ -1,0 +1,637 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Effectful Programming Features</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Support for Practical Programming"
+HREF="p1364.html"><LINK
+REL="PREVIOUS"
+TITLE="Support for Practical Programming"
+HREF="p1364.html"><LINK
+REL="NEXT"
+TITLE="Example: Testing for Braun Trees"
+HREF="x1443.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="p1364.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1443.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="effecftul_programming_features"
+></A
+>Chapter 6. Effectful Programming Features</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c1366.html#exceptions"
+>Exceptions</A
+></DT
+><DT
+><A
+HREF="x1443.html"
+>Example: Testing for Braun Trees</A
+></DT
+><DT
+><A
+HREF="x1478.html"
+>References</A
+></DT
+><DT
+><A
+HREF="x1501.html"
+>Example: A Counter Implementation</A
+></DT
+><DT
+><A
+HREF="x1512.html"
+>Arrays</A
+></DT
+><DT
+><A
+HREF="x1552.html"
+>Example: Ordering Permutations</A
+></DT
+><DT
+><A
+HREF="x1588.html"
+>Matrices</A
+></DT
+><DT
+><A
+HREF="x1629.html"
+>Example: Estimating the Constant Pi</A
+></DT
+><DT
+><A
+HREF="x1637.html"
+>Simple Input and Output</A
+></DT
+></DL
+></DIV
+><P
+>&#13;Effectful programming features are those that can generate effects at
+run-time. But what is really an effect? The answer to this question is
+rather complex as it depends on the model of evaluation. I will gradually
+introduce various kinds of effects in this book. In sequential programming,
+that is, constructing programs to be evaluated sequentially (in contrast to
+concurrently), an expression is effectless if there exists a value such
+that the expression and the value cannot be distinguished as far as
+evaluation is concerned. For instance, the expression <FONT
+COLOR="RED"
+>1+2</FONT
+> is
+effectless as it cannot be distinguished from the value <FONT
+COLOR="RED"
+>3</FONT
+>. An
+effectless expression is also said to be pure.  On the other hand, an
+effectful expression is one that can be distinguished from any given
+values. For instance, the expression <FONT
+COLOR="RED"
+>print("Hello")</FONT
+> is
+effectful as its evaluation results in an observable behavior that
+distinguishes the expression from any values.  In this case,
+<FONT
+COLOR="RED"
+>print("Hello")</FONT
+> is said to certain I/O effect.  If the
+evaluation of an expression never terminates, then the expression is also
+effectul. For instance, let us define a function <FONT
+COLOR="RED"
+>loop</FONT
+> as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1374"
+></A
+><PRE
+CLASS="programlisting"
+>fun loop (): void = loop ()
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Then the expression <FONT
+COLOR="RED"
+>loop()</FONT
+> can be distinguished from
+any values in the following context:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1377"
+></A
+><PRE
+CLASS="programlisting"
+>let val _ = [] in print ("Terminated") end
+</PRE
+><P
+></P
+></DIV
+>
+
+
+If the hole <FONT
+COLOR="RED"
+>[]</FONT
+> in the context is replaced with
+<FONT
+COLOR="RED"
+>loop()</FONT
+>, then the evaluation of the resulting expression
+continues forever.  If the hole <FONT
+COLOR="RED"
+>[]</FONT
+> is replaced with any value,
+then the evaluation leads to the string "Terminated" being printed out.
+The expression <FONT
+COLOR="RED"
+>loop</FONT
+> is said to contain non-termination effect.
+</P
+><P
+>&#13;I will cover programming features related to exceptional control-flow,
+persistent memory storage and simple I/O in this chapter, which are all of
+common use in practical programming.
+</P
+><P
+>&#13;The code employed for illustration in this chapter plus some additional
+code for testing is available <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_EFFECTFUL/"
+TARGET="_top"
+>on-line</A
+>.
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="exceptions"
+>Exceptions</A
+></H1
+><P
+>&#13;The exception mechanism provides an efficient means for reporting a special
+condition encountered during program evaluation. Often such a special
+condition indicates an error, but it is not uncommon to employ exceptions
+to address issues that are not related to errors.
+</P
+><P
+>&#13;The type <FONT
+COLOR="RED"
+>exn</FONT
+> is predefined in ATS. One may think of
+<FONT
+COLOR="RED"
+>exn</FONT
+> as an extensible datatype for which new constructors can
+always be declared. For instance, two exception constructors are declared
+as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1392"
+></A
+><PRE
+CLASS="programlisting"
+>exception FatalError0 of ()
+exception FatalError1 of (string)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The constructor <FONT
+COLOR="RED"
+>FatalError0</FONT
+> is nullary while the constructor
+<FONT
+COLOR="RED"
+>FatalError1</FONT
+> is unary.  Exception values, that is, values of
+the type <FONT
+COLOR="RED"
+>exn</FONT
+> can be formed by applying exception constructors
+to proper arguments. For instance, <FONT
+COLOR="RED"
+>FatalError0()</FONT
+> and
+<FONT
+COLOR="RED"
+>FatalError1("division-by-zero")</FONT
+> are two exception values (or
+simply exceptions). In the following program, a function for integer
+division is implemented:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1399"
+></A
+><PRE
+CLASS="programlisting"
+>exception DivisionByZero of ()
+fun divexn (x: int, y: int): int =
+  if y != 0 then then x / y else $raise DivisionByZero()
+// end of [divexn]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+When the function call <FONT
+COLOR="RED"
+>divexn(1, 0)</FONT
+> is evaluated, the exception
+<FONT
+COLOR="RED"
+>DivisionByZero()</FONT
+> is raised. The keyword <FONT
+COLOR="RED"
+>$raise</FONT
+> in ATS
+is solely for raising exceptions.
+</P
+><P
+>&#13;A raise-expression is of the form (<FONT
+COLOR="RED"
+>$raise</FONT
+> exp) for some
+expression exp.  Clearly, if the evaluation of exp returns a value, then
+the evaluation of (<FONT
+COLOR="RED"
+>$raise</FONT
+> exp) leads to a raised
+exception. Therefore, the evaluation of a raise-expression can never return
+a value, and this justifies that a raise-expression can be given any type.
+</P
+><P
+>&#13;A raised exception can be captured. If it is not captured, the raised
+exception aborts the program evaluation that issued it in the first
+place. In ATS, a try-expression (or try-with-expression) is of the form
+(<FONT
+COLOR="RED"
+>try</FONT
+> exp <FONT
+COLOR="RED"
+>with</FONT
+> clseq), where <FONT
+COLOR="RED"
+>try</FONT
+> is a
+keyword, exp is an expression, <FONT
+COLOR="RED"
+>with</FONT
+> is also a keyword, and
+clseq is a sequence of matching clauses. When evaluating such a
+try-expression, we first evaluate exp. If the evaluation of exp leads to a
+value, then the value is also the value of the try-expression. If the
+evaluation of exp leads to a raised exception, then we match the exception
+against the guards of the matching clauses in clseq. If there is a match,
+the raised exception is caught and we continue to evaluate the body of the
+first clause whose guard is matched. If there is no match, the raised
+exception is uncaught. In a try-expression, the with-part is often referred
+to as an exception-handler.
+</P
+><P
+>Let us now see an example that involves raising and capturing an
+exception. In the following program, three functions are defined to compute
+the product of the integers in a given list:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1413"
+></A
+><PRE
+CLASS="programlisting"
+>fun listprod1
+(
+  xs: list0 (int)
+): int =
+(
+  case+ xs of
+  | list0_nil () =&#62; 1
+  | list0_cons (x, xs) =&#62; x * listprod1 (xs)
+) (* end of [listprod1] *)
+
+fun listprod2
+(
+  xs: list0 (int)
+) : int =
+(
+  case+ xs of
+  | list0_nil () =&#62; 1
+  | list0_cons (x, xs) =&#62;
+      if x = 0 then 0 else x * listprod2 (xs)
+    // end of [list0_cons]
+) (* end of [listprod2] *)
+
+fun listprod3
+(
+  xs: list0 (int)
+) : int = let
+  exception ZERO of ()
+  fun aux (xs: list0 (int)): int =
+    case+ xs of
+    | list0_cons (x, xs) =&#62;
+        if x = 0 then $raise ZERO() else x * aux (xs)
+    | list0_nil () =&#62; 1
+  // end of [aux]
+in
+  try aux (xs) with ~ZERO () =&#62; 0
+end // end of [listprod3]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+While these functions can all be defined tail-recursively, they are not so
+as to make a point that should be clear shortly. Undoubtedly, we all know the
+following simple fact:
+
+<P
+></P
+><UL
+><LI
+><P
+>If the integer 0 occurs in a given list, then the product
+of the integers in the list is 0 regardless what other integers are.
+</P
+></LI
+></UL
+>
+
+The function <FONT
+COLOR="RED"
+>listprod1</FONT
+> is defined in a standard manner, and it
+does not make any use of the stated fact.  The function
+<FONT
+COLOR="RED"
+>listprod2</FONT
+> is defined in a manner that makes only partial use of
+the stated fact. To see the reason, let us evaluate a call to
+<FONT
+COLOR="RED"
+>listprod2</FONT
+> on <FONT
+COLOR="RED"
+>[1, 2, 3, 0, 4, 5, 6]</FONT
+>, which denotes a
+list consisting of the 7 mentioned integers. The evaluation of this call
+eventually leads to the evaluation of
+<FONT
+COLOR="RED"
+>1*(2*(3*(listprod([0,4,5,6]))))</FONT
+>, which then leads to
+<FONT
+COLOR="RED"
+>1*(2*(3*0))</FONT
+>, and then to <FONT
+COLOR="RED"
+>1*(2*0)</FONT
+>, and then to
+<FONT
+COLOR="RED"
+>1*0</FONT
+>, and finally to <FONT
+COLOR="RED"
+>0</FONT
+>. However, what we really want
+is for the evaluation to return 0 immediately once the integer 0 is
+encountered in the list, and this is accomplished by the function
+<FONT
+COLOR="RED"
+>listprod3</FONT
+>. When evaluating a call to <FONT
+COLOR="RED"
+>listprod3</FONT
+> on
+<FONT
+COLOR="RED"
+>[1, 2, 3, 0, 4, 5, 6]</FONT
+>, we eventually reach the evaluation of
+the following expression:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1430"
+></A
+><PRE
+CLASS="programlisting"
+>try 1*(2*(3*(aux([0,4,5,6])))) with ~ZERO() =&#62; 0
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Evaluating <FONT
+COLOR="RED"
+>aux([0,4,5,6])</FONT
+> leads to the exception
+<FONT
+COLOR="RED"
+>ZERO()</FONT
+> being raised, and this raised exception is caught and
+<FONT
+COLOR="RED"
+>0</FONT
+> is returned as the value of the call to
+<FONT
+COLOR="RED"
+>listprod3</FONT
+>.  Note that the pattern guard of the matching clause
+following the keyword <FONT
+COLOR="RED"
+>with</FONT
+> is <FONT
+COLOR="RED"
+>~ZERO()</FONT
+>.  I will
+explain the need for the tilde symbol <FONT
+COLOR="RED"
+>~</FONT
+> elsewhere. For now, it
+suffices to say that <FONT
+COLOR="RED"
+>exn</FONT
+> is a linear type and each exception
+value is a linear value, which must be consumed or re-raised. The tilde
+symbol <FONT
+COLOR="RED"
+>~</FONT
+> indicates that the value matching the pattern
+following <FONT
+COLOR="RED"
+>~</FONT
+> is consumed (and the memory for holding the value
+is freed).
+</P
+><P
+>&#13;Exceptions are not a programming feature that is easy to master, and
+misusing exceptions is abundant in practice. So please be patient when
+learning the feature and be cautious when using it.
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="p1364.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1443.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Support for Practical Programming</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p1364.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Testing for Braun Trees</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

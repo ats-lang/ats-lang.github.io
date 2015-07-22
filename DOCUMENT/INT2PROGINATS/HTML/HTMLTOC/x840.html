@@ -1,0 +1,245 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Binary Search for Fun</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="c408.html"><LINK
+REL="PREVIOUS"
+TITLE="Higher-Order Functions"
+HREF="x795.html"><LINK
+REL="NEXT"
+TITLE="Example: A Higher-Order Fun Puzzle"
+HREF="x854.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x795.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x854.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example-binary-search-for-fun"
+>Example: Binary Search for Fun</A
+></H1
+><P
+>&#13;While binary search is often performed on an ordered array to check whether
+a given element is stored in that array, it can also be employed to compute
+the inverse of an increasing or decreasing function on integers. In the
+following code, the defined function <FONT
+COLOR="RED"
+>bsearch_fun</FONT
+> returns an
+integer i0 such that f(i) &#60;= x0 holds for i ranging from lb to i0,
+inclusive, and x0 &#60; f(i) holds for i ranging from i0+1 to ub, inclusive:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN844"
+></A
+><PRE
+CLASS="programlisting"
+>//
+// The type [uint] is for unsigned integers
+//
+fun bsearch_fun
+(
+  f: int -&#60;cloref1&#62; uint
+, x0: uint, lb: int, ub: int
+) : int =
+  if lb &#60;= ub then let
+    val mid = lb + (ub - lb) / 2
+  in
+    if x0 &#60; f (mid) then
+      bsearch_fun (f, x0, lb, mid-1)
+    else
+      bsearch_fun (f, x0, mid+1, ub)
+    // end of [if]
+  end else ub // end of [if]
+// end of [bsearch_fun]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+As an example, the following function <FONT
+COLOR="RED"
+>isqrt</FONT
+> is defined based
+on <FONT
+COLOR="RED"
+>bsearch_fun</FONT
+> to compute the integer square root of a given
+natural number, that is, the largest integer whose square is less than or
+equal to the given natural number:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN848"
+></A
+><PRE
+CLASS="programlisting"
+>//
+// Assuming that [uint] is of 32 bits
+//
+val ISQRT_MAX = (1 &#60;&#60; 16) - 1 // = 65535
+fun isqrt
+  (x: uint): int =
+  bsearch_fun (lam i =&#62; square ((g0i2u)i), x, 0, ISQRT_MAX)
+// end of [isqrt]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the function <FONT
+COLOR="RED"
+>g0i2u</FONT
+> is for casting a signed integer
+into an unsigned one and the function <FONT
+COLOR="RED"
+>square</FONT
+> returns the square
+of its argument.
+</P
+><P
+>Please find <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_FUNCTION/bsearch.dats"
+TARGET="_top"
+>on-line</A
+>
+the entire code in this section plus some additional code for testing.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x795.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x854.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Higher-Order Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c408.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: A Higher-Order Fun Puzzle</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

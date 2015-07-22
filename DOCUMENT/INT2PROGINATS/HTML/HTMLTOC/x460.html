@@ -1,0 +1,267 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Function Arity</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="c408.html"><LINK
+REL="PREVIOUS"
+TITLE="Functions"
+HREF="c408.html"><LINK
+REL="NEXT"
+TITLE="Function Interface"
+HREF="x485.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c408.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x485.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="function-arity"
+>Function Arity</A
+></H1
+><P
+>&#13;The arity of a function is the number of arguments the function
+takes.  Functions of arity 0, 1, 2 and 3 are often called nullary, unary,
+binary and ternary functions, respectively. For example, the following
+function <FONT
+COLOR="RED"
+>sqrsum1</FONT
+> is a binary function such that its two
+arguments are of the type <FONT
+COLOR="RED"
+>int</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN465"
+></A
+><PRE
+CLASS="programlisting"
+>fn sqrsum1 (x: int, y: int): int = x * x + y * y
+</PRE
+><P
+></P
+></DIV
+>
+
+
+We can define a unary function <FONT
+COLOR="RED"
+>sqrsum2</FONT
+> as follows:
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN468"
+></A
+><PRE
+CLASS="programlisting"
+>//
+typedef int2 = (int, int)
+//
+fn sqrsum2
+  (xy: int2): int =
+  let val x = xy.0 and y = xy.1 in x * x + y * y end
+// end of [sqrsum2]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The keyword <FONT
+COLOR="RED"
+>typedef</FONT
+> introduces a binding between the name
+<FONT
+COLOR="RED"
+>int2</FONT
+> and the tuple type <FONT
+COLOR="RED"
+>(int, int)</FONT
+>. In other words,
+<FONT
+COLOR="RED"
+>int2</FONT
+> is treated as an abbreviation or alias for <FONT
+COLOR="RED"
+>(int,
+int)</FONT
+>. The function <FONT
+COLOR="RED"
+>sqrsum2</FONT
+> is unary as it takes only one
+argument, which is a tuple of the type <FONT
+COLOR="RED"
+>int2</FONT
+>.  When applying
+<FONT
+COLOR="RED"
+>sqrsum2</FONT
+> to a tuple consisting of <FONT
+COLOR="RED"
+>1</FONT
+> and
+<FONT
+COLOR="RED"
+>~1</FONT
+>, we need to write <FONT
+COLOR="RED"
+>sqrsum2 @(1, ~1)</FONT
+>. If we simply
+write <FONT
+COLOR="RED"
+>sqrsum2 (1, ~1)</FONT
+>, then the typechecker is to report an
+error of function arity mismatch as it assumes that <FONT
+COLOR="RED"
+>sqrsum2</FONT
+> is
+applied to two arguments (instead of one representing a pair).
+</P
+><P
+>&#13;Many functional languages (e.g., Haskell and ML) only allow unary
+functions. A function of multiple arguments is encoded in these languages
+as a unary function taking a tuple as its only argument or it is curried
+into a function that takes these arguments sequentially. ATS, however,
+provides direct support for functions of multiple arguments. There is even
+some limited support in ATS for variadic functions, that is, functions of
+indefinite number of arguments (e.g., the famous <FONT
+COLOR="RED"
+>printf</FONT
+>
+function in C). This is a topic I will cover elsewhere.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c408.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x485.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c408.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Function Interface</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

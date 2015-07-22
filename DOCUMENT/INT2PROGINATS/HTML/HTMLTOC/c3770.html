@@ -1,0 +1,372 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Dataviewtypes as Linear Datatypes</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Programming with Views and Viewtypes"
+HREF="p3299.html"><LINK
+REL="PREVIOUS"
+TITLE="Proof Functions for View-Changes"
+HREF="x3715.html"><LINK
+REL="NEXT"
+TITLE="Linear Lists"
+HREF="x3799.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3715.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3799.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="dataviewtypes"
+></A
+>Chapter 15. Dataviewtypes as Linear Datatypes</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c3770.html#linear_optional_values"
+>Linear Optional Values</A
+></DT
+><DT
+><A
+HREF="x3799.html"
+>Linear Lists</A
+></DT
+><DT
+><A
+HREF="x3952.html"
+>Example: Merge-Sort on Linear Lists</A
+></DT
+><DT
+><A
+HREF="x3989.html"
+>Example: Insertion Sort on Linear Lists</A
+></DT
+><DT
+><A
+HREF="x4022.html"
+>Example: Quick-Sort on Linear Lists</A
+></DT
+><DT
+><A
+HREF="x4059.html"
+>Linear Binary Search Trees</A
+></DT
+><DT
+><A
+HREF="x4113.html"
+>Transition from Datatypes to Dataviewtypes</A
+></DT
+></DL
+></DIV
+><P
+>&#13;A dataviewtype can be thought of as a linear version of datatype. To a
+large extent, it is a combination of a datatype and a dataview. This
+programming feature is primarily introduced into ATS for the purpose of
+providing in the setting of manual memory management the kind of
+convenience brought by pattern matching. In a situation where GC must be
+reduced or even completely eliminated, dataviewtypes can often be chosen as
+a replacement for datatypes.  I now present in this chapter some commonly
+encountered dataviewtypes and their uses.
+
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="linear_optional_values"
+>Linear Optional Values</A
+></H1
+><P
+>&#13;When an optional value is created, the value is most likely to be used
+immediately and then discarded. If such a value is assigned a linear type,
+then the memory allocated for storing it can be efficiently reclaimed.  The
+dataviewtype <FONT
+COLOR="RED"
+>option_vt</FONT
+> for linear optional values is declared as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3777"
+></A
+><PRE
+CLASS="programlisting"
+>datavtype
+option_vt (a:t@ype+, bool) =
+  | Some_vt (a, true) of a | None_vt (a, false) of ()
+// end of [option_vt]
+
+vtypedef Option_vt (a:t@ype) = [b:bool] option_vt (a, b)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>datavtype</FONT
+> is just the short version of
+<FONT
+COLOR="RED"
+>dataviewtype</FONT
+>.  The introduced dataviewtype
+<FONT
+COLOR="RED"
+>option_vt</FONT
+> is covariant in its first argument and there are two
+data constructors <FONT
+COLOR="RED"
+>Some_vt</FONT
+> and <FONT
+COLOR="RED"
+>None_vt</FONT
+> associated
+with it. In the following example, <FONT
+COLOR="RED"
+>find_rightmost</FONT
+> tries to find
+the rightmost element in a list that satisfies a given predicate:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3785"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a:t@ype}
+find_rightmost
+  {n:nat} .&#60;n&#62;.
+(
+  xs: list (a, n), P: (a) -&#60;cloref1&#62; bool
+) : Option_vt (a) =
+(
+  case+ xs of
+  | list_cons (x, xs) =&#62; let
+      val opt = find_rightmost (xs, P)
+    in
+      case opt of
+      | ~None_vt () =&#62; if P (x) then Some_vt (x) else None_vt ()
+      | _ (*Some_vt*) =&#62; opt
+    end // end of [list_cons]
+  | list_nil () =&#62; None_vt ()
+) (* end of [find_rightmost] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the tilde symbol (<FONT
+COLOR="RED"
+>~</FONT
+>) in front of the pattern
+<FONT
+COLOR="RED"
+>None_vt()</FONT
+> indicates that the memory for the node that matches
+the pattern is freed before the body of the matched clause is evaluated.
+In this case, no memory is actually freed as <FONT
+COLOR="RED"
+>None_vt</FONT
+> is mapped
+to the null pointer.  I will soon give more detailed explanation about
+freeing memory allocated for constructors associated with dataviewtypes.
+
+</P
+><P
+>&#13;As another example, the following function template
+<FONT
+COLOR="RED"
+>list_optcons</FONT
+> tries to construct a new list with its head
+element extracted from a given optional value:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3792"
+></A
+><PRE
+CLASS="programlisting"
+>fn{a:t@ype}
+list_optcons
+  {b:bool}{n:nat}
+(
+  opt: option_vt (a, b), xs: list (a, n)
+) : list (a, n+bool2int(b)) =
+  case+ opt of
+  | ~Some_vt (x) =&#62; list_cons (x, xs) | ~None_vt () =&#62; xs
+// end of [list_optcons]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The symbol <FONT
+COLOR="RED"
+>bool2int</FONT
+> stands for a built-in static function in
+ATS that maps <FONT
+COLOR="RED"
+>true</FONT
+> and <FONT
+COLOR="RED"
+>false</FONT
+> to 1 and 0,
+respectively. What is special here is that the first argument of
+<FONT
+COLOR="RED"
+>list_optcons</FONT
+>, which is linear, is consumed after a call to
+<FONT
+COLOR="RED"
+>list_optcons</FONT
+> returns and the memory it occupies is reclaimed.
+
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3715.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3799.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Proof Functions for View-Changes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p3299.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Linear Lists</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

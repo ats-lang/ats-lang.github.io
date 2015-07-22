@@ -1,0 +1,409 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Ordering Permutations</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Effectful Programming Features"
+HREF="c1374.html"><LINK
+REL="PREVIOUS"
+TITLE="Arrays"
+HREF="x1520.html"><LINK
+REL="NEXT"
+TITLE="Matrices"
+HREF="x1596.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1520.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 6. Effectful Programming Features</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1596.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_ordering_permutations"
+>Example: Ordering Permutations</A
+></H1
+><P
+>Given a natural number n, we want to print out all the permutations
+consisting of integers ranging from 1 to n, inclusive. In addition, we
+want to print them out according to the lexicographic ordering on integer
+sequences. For instance, we want the following output to be generated when
+n is 3:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1563"
+></A
+><PRE
+CLASS="programlisting"
+>1, 2, 3
+1, 3, 2
+2, 1, 3
+2, 3, 1
+3, 1, 2
+3, 2, 1
+</PRE
+><P
+></P
+></DIV
+>
+
+</P
+><P
+>Let us first define a function as follows for printing out an array
+of integers:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1566"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;fun print_intarray
+  (A: arrszref (int)): void = let
+  val asz = g0uint2int_size_int(A.size())
+//
+// The integers are to be separated by the string [sep]
+//
+  fun loop (i: int, sep: string): void =
+    if i &#60; asz then
+      (if i &#62; 0 then print sep; print A[i]; loop (i+1, sep))
+    // end of [if]
+in
+  loop (0, ", ")
+end // end of [print_intarray]
+</PRE
+><P
+></P
+></DIV
+>
+
+</P
+><P
+>&#13;We next implement two functions <FONT
+COLOR="RED"
+>lrotate</FONT
+> and <FONT
+COLOR="RED"
+>rrotate</FONT
+>
+for rearranging the elements in a given integer array:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1571"
+></A
+><PRE
+CLASS="programlisting"
+>fun lrotate (
+  A: arrszref int, i: int, j: int
+) : void = let
+  fun lshift (
+    A: arrszref int, i: int, j: int
+  ) : void =
+  if i &#60; j then (A[i] := A[i+1]; lshift (A, i+1, j))
+in
+  if i &#60; j then let
+    val tmp = A[i] in lshift (A, i, j); A[j] := tmp
+  end // end of [if]
+end // end of [lrotate]
+
+fun rrotate (
+  A: arrszref int, i: int, j: int
+) : void = let
+  fun rshift (
+    A: arrszref int, i: int, j: int
+  ) : void =
+  if i &#60; j then (A[j] := A[j-1]; rshift (A, i, j-1))
+in
+  if i &#60; j then let
+    val tmp = A[j] in rshift (A, i, j); A[i] := tmp
+  end // end of [if]
+end // end of [rrotate]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+When applied to an array and two valid indexes i and j for the array such
+that i is less than or equal to j, <FONT
+COLOR="RED"
+>lrotate</FONT
+> moves simultaneously
+the content of cell i into cell j and the content of cell k to cell k-1 for
+k ranging from i+1 to j, inclusive. The function <FONT
+COLOR="RED"
+>rrotate</FONT
+> is
+similar to <FONT
+COLOR="RED"
+>lrotate</FONT
+> but shuffles elements in the opposite
+direction.
+</P
+><P
+>Given a natural number n, the following defined function
+<FONT
+COLOR="RED"
+>permute</FONT
+> prints out all the permutations consisting of integers
+ranging from 1 to n, inclusive while arranging the output according to
+the lexicographic ordering on integer sequences.
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1578"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;fun permute
+  (n: int): void = let
+//
+  #define i2sz g0int2uint_int_size
+//
+// Creating array A of size n
+//
+  val A = arrszref_make_elt&#60;int&#62; (i2sz(n), 0)
+//
+// Initializing A with integers from 1 to n, inclusive
+//
+  val () = init(0) where
+  {
+    fun init (i: int): void =
+      if i &#60; n then (A[i] := i+1; init (i+1))
+  } // end of [where] // end of [val]
+//
+  fun aux
+    (i: int): void =
+  (
+    if i &#60;= n
+      then aux2 (i, i)
+      else (
+        print_intarray (A); print_newline ()
+      ) (* end of [else] *)
+  ) (* end of [aux] *)
+//
+  and aux2
+    (i: int, j: int): void =
+  (
+    if j &#60;= n then let
+      val () = (
+        rrotate (A, i-1, j-1); aux (i+1); lrotate (A, i-1, j-1)
+      ) // end of [val]
+    in
+      aux2 (i, j+1)
+    end // end of [if]
+  ) (* end of [aux2] *)
+//
+in
+  aux (1)
+end // end of [permute]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>where</FONT
+> is a keyword, and the expression
+(exp <FONT
+COLOR="RED"
+>where</FONT
+> <FONT
+COLOR="RED"
+>{</FONT
+> decseq <FONT
+COLOR="RED"
+>}</FONT
+>)
+for some expression exp and declaration sequence decseq is equivalent to
+the let-expression of the form (<FONT
+COLOR="RED"
+>let</FONT
+> decseq <FONT
+COLOR="RED"
+>in</FONT
+> exp
+<FONT
+COLOR="RED"
+>end</FONT
+>). To understand the behavior of the function
+<FONT
+COLOR="RED"
+>aux</FONT
+>, let us evaluate <FONT
+COLOR="RED"
+>aux(1)</FONT
+> while assuming that
+<FONT
+COLOR="RED"
+>n</FONT
+> is 4 and the 4 elements of the array <FONT
+COLOR="RED"
+>A</FONT
+> are 1, 2,
+3, and 4. It should be fairly straightforward to see that this evaluation
+leads to the evaluation of <FONT
+COLOR="RED"
+>aux(2)</FONT
+> for 4 times: the array
+<FONT
+COLOR="RED"
+>A</FONT
+> contains (1, 2, 3, 4) for the first time, and (2, 1, 3, 4)
+for the second time, and (3, 1, 2, 4) for the third time, and (4, 1, 2, 3)
+for the fourth time. With some inductive reasoning, it should not be
+difficult to see that evaluating <FONT
+COLOR="RED"
+>aux(1)</FONT
+> indeed leads to all the
+permutations being output according to the lexicographic ordering on
+integer sequences.
+</P
+><P
+>&#13;Please find the entire code in this section plus some additional
+code for testing <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_EFFECTFUL/permord.dats"
+TARGET="_top"
+>on-line</A
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1520.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1596.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Arrays</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1374.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Matrices</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

@@ -1,0 +1,460 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Programmer-Centric Theorem-Proving</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Theorem-Proving in ATS/LF"
+HREF="c2848.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Establishing Properties on Braun Trees"
+HREF="x3039.html"><LINK
+REL="NEXT"
+TITLE="Programming with Theorem-Proving"
+HREF="c3135.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3039.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 11. Theorem-Proving in ATS/LF</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c3135.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="programmer_centric_theorem_proving"
+>Programmer-Centric Theorem-Proving</A
+></H1
+><P
+>&#13;I have so far presented several formal proofs in ATS.  However,
+constructing such formal proofs is at most a secondary issue in ATS. If I
+compare ATS with theorem-proving systems such as Isabelle and Coq, I would
+like to state emphatically that the design for theorem-proving in ATS takes
+a fundamentally different view of theorem-proving. In particular,
+theorem-proving in ATS does not take a foundational approach that
+establishes the validity of a theorem by reducing it to the validity of a
+minimal set of axioms and rules. Instead, theorem-proving in ATS is mostly
+done in a semi-formal manner and its primary purpose is to greatly diminish
+the chance of a programmer making use of incorrect assumptions or
+claims. In this regard, theorem-proving in ATS is rather similar to
+contructing informal paper-and-pencil proofs (in mathematics and
+elsewhere). I refer to this style of theorem-proving in ATS as being
+programmer-centric.  In order to allow the reader to obtain a more concrete
+feel as to what this style of theorem-proving is like, I present in the
+rest of this section a simple but telling example of programmer-centric
+theorem-proving.
+</P
+><P
+>&#13;Suppose we are to prove that the square of any rational number cannot equal
+2. Note that this statement is a bit weaker than the one stating that the
+square root of 2 is irrational as the latter assumes the very existence of the
+square root of 2. Let us first sketch an informal proof as follows.
+</P
+><P
+>&#13;Suppose (m/n)<SUP
+>2</SUP
+>=2 for some positive numbers m and n. Clearly,
+this means (m)<SUP
+>2</SUP
+>=2(n)<SUP
+>2</SUP
+>, implying m being an even number.
+Let m=2m<SUB
+>2</SUB
+>. We have (2m<SUB
+>2</SUB
+>)<SUP
+>2</SUP
+>=2(n)<SUP
+>2</SUP
+>, implying
+(n/m<SUB
+>2</SUB
+>)<SUP
+>2</SUP
+>=2. Clearly, m &#62; n &#62; m<SUB
+>2</SUB
+> holds. If we
+assume that m is the least positive number satisfying (m/n)<SUP
+>2</SUP
+>=2 for
+some n, then a contradiction is reached as n satisfies the same property.
+Therefore, there is no rational number whose square equals 2. Clearly,
+this proof still holds if the number 2 is replaced with another prime number.
+
+</P
+><P
+>&#13;The primary argument in the above informal proof can be encoded in
+ATS as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3096"
+></A
+><PRE
+CLASS="programlisting"
+>//
+extern
+prfun
+mylemma_main
+{m,n,p:int | m*m==p*n*n}(PRIME(p)): [m2:nat | n*n==p*m2*m2] void
+//
+primplmnt
+mylemma_main
+{m,n,p}(pfprm) = let
+  prval pfeq_mm_pnn =
+    eqint_make{m*m,p*n*n}()
+  prval () = square_is_nat{m}()
+  prval () = square_is_nat{n}()
+  prval () = lemma_PRIME_param(pfprm)
+  prval
+  pfmod1 =
+    lemma_MOD0_intr{m*m,p,n*n}()
+  prval
+  pfmod2 = mylemma1{m,p}(pfmod1, pfprm)
+  prval
+  [m2:int]
+  EQINT() =
+    lemma_MOD0_elim(pfmod2)
+  prval EQINT() = pfeq_mm_pnn
+  prval () =
+  __assert{p}{p*m2*m2,n*n}() where
+  {
+    extern prfun __assert{p:pos}{x,y:int | p*x==p*y}(): [x==y] void
+  } (* end of [where] *) // end of [prval]
+in
+  #[m2 | ()]
+end // end of [mylemma_main]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The interface for <FONT
+COLOR="RED"
+>mylemma_main</FONT
+> states that
+(m)<SUP
+>2</SUP
+>=p(n)<SUP
+>2</SUP
+> implies (n)<SUP
+>2</SUP
+>=p(m<SUB
+>2</SUB
+>)<SUP
+>2</SUP
+> for
+some natural number m<SUB
+>2</SUB
+>.
+
+</P
+><P
+>&#13;Given two integers m and p, <FONT
+COLOR="RED"
+>MOD0(m,p)</FONT
+> means that m equals the
+product of p and q for some natural number q. This meaning is encoded into
+the following two proof functions:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3107"
+></A
+><PRE
+CLASS="programlisting"
+>//
+prfun
+lemma_MOD0_intr{m,p,q:nat | m==p*q}(): MOD0(m, p)
+//
+prfun
+lemma_MOD0_elim{m,p:int}(MOD0(m, p)): [q:nat] EQINT(m, p*q)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>EQINT</FONT
+> is a dataprop declared as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3110"
+></A
+><PRE
+CLASS="programlisting"
+>dataprop EQINT(int, int) = {x:int} EQINT(x, x)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given two integers x and y, <FONT
+COLOR="RED"
+>EQINT(x, y)</FONT
+> simply means that
+x equals y.  Also, the function <FONT
+COLOR="RED"
+>eqint_make</FONT
+> is assgined the
+interface below:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3114"
+></A
+><PRE
+CLASS="programlisting"
+>prfun eqint_make{x,y:int | x == y}((*void*)): EQINT (x, y)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given an integer p, <FONT
+COLOR="RED"
+>PRIME(p)</FONT
+> means that p is a prime number.
+The following two proof functions are called in the above implementation
+of <FONT
+COLOR="RED"
+>mylemma_main</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3118"
+></A
+><PRE
+CLASS="programlisting"
+>//
+prfun lemma_PRIME_param{p:int}(PRIME(p)): [p &#62;= 2] void
+//
+prfun mylemma1{n,p:int}(MOD0(n*n, p), PRIME(p)): MOD0(n, p)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The proof function <FONT
+COLOR="RED"
+>mylemma1</FONT
+> encodes a proposition stating that
+p divides n if p divides the square of n and p is also a prime number.
+I give no implementation of <FONT
+COLOR="RED"
+>mylemma1</FONT
+> as I see the encoded
+proposition to be obviously true. Certainly, this is a kind of programmer-centric
+judgment. 
+</P
+><P
+>&#13;One may find that
+the following declaration in the implementation of <FONT
+COLOR="RED"
+>mylemma_main</FONT
+>
+looks mysterious:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3124"
+></A
+><PRE
+CLASS="programlisting"
+>  prval EQINT() = pfeq_mm_pnn
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>pfeq_mm_pnn</FONT
+>
+is of the prop <FONT
+COLOR="RED"
+>EQINT(m*m, p*(n*n))</FONT
+>.
+Also, m equaling p*m<SUB
+>2</SUB
+> for some natural number m<SUB
+>2</SUB
+> is
+available when the above declaration is typechecked.
+This means that the equality between
+(p*m<SUB
+>2</SUB
+>)<SUP
+>2</SUP
+> and p*(n)<SUP
+>2</SUP
+> is added into the current store
+of (static) assumptions after the above declaration is typechecked.
+
+</P
+><P
+>&#13;Please find <A
+HREF="http://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/CODE/CHAP_THMPRVING/sqrt2_irrat.dats"
+TARGET="_top"
+>on-line</A
+> the
+entirety of an encoded proof showing that there exists no rational number whose
+square equals 2.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3039.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c3135.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Establishing Properties on Braun Trees</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2848.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Programming with Theorem-Proving</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

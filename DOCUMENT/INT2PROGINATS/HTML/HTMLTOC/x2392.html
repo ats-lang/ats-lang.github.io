@@ -1,0 +1,268 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Constraint-Solving during Typechecking</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Introduction to Dependent Types"
+HREF="c2232.html"><LINK
+REL="PREVIOUS"
+TITLE="Introduction to Dependent Types"
+HREF="c2232.html"><LINK
+REL="NEXT"
+TITLE="Example: String Processing"
+HREF="x2417.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c2232.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Introduction to Dependent Types</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2417.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="constraint-solving_during_typechecking"
+>Constraint-Solving during Typechecking</A
+></H1
+><P
+>&#13;Typechecking in ATS involves generating and solving constraints.
+As an example, the code below implements the well-known factorial
+function:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2395"
+></A
+><PRE
+CLASS="programlisting"
+>fun
+fact{n:nat}
+  (x: int n): [r:nat] int r = if x &#62; 0 then x * fact (x-1) else 1
+// end of [fact]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+In this implementation, the function <FONT
+COLOR="RED"
+>fact</FONT
+> is assigned the
+following type:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2398"
+></A
+><PRE
+CLASS="programlisting"
+>{n:nat} int(n) -&#62; [r:nat] int(r)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+which means that <FONT
+COLOR="RED"
+>fact</FONT
+> returns a natural number r when applied
+to a natural number n. When the code is typechecked, the following
+constraints need to be solved:
+
+<P
+></P
+><UL
+><LI
+><P
+>&#13;For each natural number n, n &#62; 0 implies n - 1 &#62;= 0
+</P
+></LI
+><LI
+><P
+>For each natural number n and each natural number r<SUB
+>1</SUB
+>, n &#62; 0 implies n * r<SUB
+>1</SUB
+>&#62;= 0
+</P
+></LI
+><LI
+><P
+>&#13;For each natural number n, 1 &#62;= 0 holds.
+</P
+></LI
+></UL
+>
+
+The first constraint is generated due to the call <FONT
+COLOR="RED"
+>fact(x-1)</FONT
+>,
+which requires that <FONT
+COLOR="RED"
+>x-1</FONT
+> be a natural number. The second
+constraint is generated in order to verify that <FONT
+COLOR="RED"
+>x * fact(x-1)</FONT
+>
+is a natural number under the assumption that <FONT
+COLOR="RED"
+>fact(x-1)</FONT
+> is a
+natural number.  The third constraint is generated in order to verify that
+<FONT
+COLOR="RED"
+>1</FONT
+> is a natural number.  The first and the third constraints can
+be readily solved by the constraint solver in ATS, which is based on the
+Fourier-Motzkin variable elimination method. However, the second constraint
+cannot be handled by the constraint solver as it is nonlinear: The
+constraint cannot be turned into a linear integer programming problem due
+to the occurrence of the nonlinear term (n*r<SUB
+>1</SUB
+>).  While nonlinear
+constraints cannot be handled automatically by the constraint solver in
+ATS, the programmer can verify them by constructing proofs in ATS
+explicitly. I will cover the issue of explicit proof construction in an
+elaborated manner elsewhere.
+</P
+><P
+>&#13;By default, the constraint-solver implemented for ATS/Postiats makes use of
+the standard arithmetic of infinite precision.  For the sake of efficiency,
+one may also choose to use machine-level arithmetic for solving integer
+constraints. Due to potential arithmetic overflow, results returned by the
+constraint-solver that uses machine-level arithmetic can be incorrect (but
+I have so far not knowingly encountered such a situation in practice).
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c2232.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2417.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Introduction to Dependent Types</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2232.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: String Processing</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>
