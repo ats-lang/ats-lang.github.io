@@ -1,0 +1,222 @@
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>EFFECTIVATS-DiningPhil2</title>
+<style type="text/css">
+  .patsyntax {color:#808080;background-color:#E0E0E0;}
+  .patsyntax span.keyword {color:#000000;font-weight:bold;}
+  .patsyntax span.comment {color:#787878;font-style:italic;}
+  .patsyntax span.extcode {color:#A52A2A;}
+  .patsyntax span.neuexp  {color:#800080;}
+  .patsyntax span.staexp  {color:#0000F0;}
+  .patsyntax span.prfexp  {color:#603030;}
+  .patsyntax span.dynexp  {color:#F00000;}
+  .patsyntax span.stalab  {color:#0000F0;font-style:italic}
+  .patsyntax span.dynlab  {color:#F00000;font-style:italic}
+  .patsyntax span.dynstr  {color:#008000;font-style:normal}
+  .patsyntax span.stacstdec  {text-decoration:none;}
+  .patsyntax span.stacstuse  {color:#0000CF;text-decoration:underline;}
+  .patsyntax span.dyncstdec  {text-decoration:none;}
+  .patsyntax span.dyncstuse  {color:#B80000;text-decoration:underline;}
+  .patsyntax span.dyncst_implement  {color:#B80000;text-decoration:underline;}
+</style>
+
+</head>
+
+<body>
+
+<h1>
+Effective ATS: Dining Philosophers
+</h1>
+
+In this article, I present an implementation of a slight variant of the
+famous problem of 5-Dining-Philosophers by Dijkstra that makes simple but
+convincing use of linear types.
+
+<h2>
+The Original Problem 
+</h2>
+
+There are five philosophers sitting around a table and there are also 5
+forks placed on the table such that each fork is located between the left
+hand of a philosopher and the right hand of another philosopher. Each
+philosopher does the following routine repeatedly: thinking and dining.  In
+order to dine, a philosopher needs to first acquire two forks: one located
+on his left-hand side and the other on his right-hand side. After
+finishing dining, a philosopher puts the two acquired forks onto the table:
+one on his left-hand side and the other on his right-hand side.
+
+<h2>
+A Variant of the Original Problem 
+</h2>
+
+The following twist is added to the original version:
+
+<p>
+
+After a fork is used, it becomes a "dirty" fork and needs to be put in a
+tray for dirty forks. There is a cleaner who cleans dirty forks and then
+puts them back on the table.
+
+<h2>
+Channels for Communication
+</h2>
+
+A channel is just a shared queue of fixed capacity. The following two
+functions are for inserting an element into and taking an element out of a
+given channel:
+
+<pre
+class="patsyntax">
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> channel_insert <span class="keyword">(</span><span class="staexp">channel</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> channel_takeout <span class="keyword">(</span>chan<span class="keyword">:</span> <span class="staexp">channel</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span> 
+</pre>
+
+If [channel_insert] is called on a channel that is full, then the caller is
+blocked until an element is taken out of the channel.  If [channel_takeout]
+is called on a channel that is empty, then the caller is blocked until an
+element is inserted into the channel.
+
+<h2>
+A Channel for Each Fork
+</h2>
+
+Forks are resources given a linear type. Each fork is initially stored in a
+channel, which can be obtained by calling the following function:
+
+<pre
+class="patsyntax">
+<span class="dynexp"><span class="keyword">fun</span> fork_changet <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">nphil</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">channel</span><span class="keyword">(</span><span class="staexp">fork</span><span class="keyword">)</span></span>
+</pre>
+
+where the type [nphil] is defined to be [natLt(5)] (for natural numbers
+less than 5). The channels for storing forks are chosen to be of capacity
+2. The reason that channels of capacity 2 are chosen to store at most one
+element (in each of them) is to guarantee that these channels can never be
+full (so that there is no attempt made to send signals to awake callers
+supposedly being blocked due to channels being full).
+
+
+<h2>
+A Channel for the Fork Tray
+</h2>
+
+A tray for storing "dirty" forks is also a channel, which can be obtained
+by calling the following function:
+
+<pre
+class="patsyntax">
+<span class="dynexp"><span class="keyword">fun</span> forktray_changet <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">channel</span><span class="keyword">(</span><span class="staexp">fork</span><span class="keyword">)</span></span>
+</pre>
+
+The capacity chosen for the channel is 6 (instead of 5) so that it can
+never become full (as there are only 5 forks in total).
+
+<h2>
+Philosopher Loop
+</h2>
+
+Each philosopher is implemented as a loop:
+
+<pre
+class="patsyntax">
+<span class="prfexp"><span class="keyword">implement</span>
+phil_loop <span class="keyword">(</span>n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> phil_think <span class="keyword">(</span>n<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> nl <span class="keyword">=</span> phil_left <span class="keyword">(</span>n<span class="keyword">)</span></span> <span class="comment">// = n</span>
+<span class="dynexp"><span class="keyword">val</span> nr <span class="keyword">=</span> phil_right <span class="keyword">(</span>n<span class="keyword">)</span></span> <span class="comment">// = (n+1) % 5</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> ch_lfork <span class="keyword">=</span> fork_changet <span class="keyword">(</span>nl<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> ch_rfork <span class="keyword">=</span> fork_changet <span class="keyword">(</span>nr<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> lf <span class="keyword">=</span> channel_takeout <span class="keyword">(</span>ch_lfork<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynstr">"phil_loop("</span><span class="keyword">,</span> n<span class="keyword">,</span> <span class="dynstr">") picks left fork"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> randsleep <span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span></span> <span class="comment">// sleep up to 2 seconds</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> rf <span class="keyword">=</span> channel_takeout <span class="keyword">(</span>ch_rfork<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynstr">"phil_loop("</span><span class="keyword">,</span> n<span class="keyword">,</span> <span class="dynstr">") picks right fork"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> phil_dine <span class="keyword">(</span>n<span class="keyword">,</span> lf<span class="keyword">,</span> rf<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> ch_forktray <span class="keyword">=</span> forktray_changet <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> channel_insert <span class="keyword">(</span>ch_forktray<span class="keyword">,</span> lf<span class="keyword">)</span></span> <span class="comment">// left fork to dirty tray</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> channel_insert <span class="keyword">(</span>ch_forktray<span class="keyword">,</span> rf<span class="keyword">)</span></span> <span class="comment">// right fork to dirty tray</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  phil_loop <span class="keyword">(</span>n<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [phil_loop]</span>
+</pre>
+
+It should be straighforward to follow the code for [phil_loop].
+
+<h2>
+Fork Cleaner Loop
+</h2>
+
+A cleaner is implemented as a loop:
+
+<pre
+class="patsyntax">
+<span class="prfexp"><span class="keyword">implement</span>
+cleaner_loop <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> ch <span class="keyword">=</span> forktray_changet <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> f0 <span class="keyword">=</span> channel_takeout <span class="keyword">(</span>ch<span class="keyword">)</span></span> <span class="comment">// [f0] is dirty</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> cleaner_wash <span class="keyword">(</span>f0<span class="keyword">)</span></span> <span class="comment">// washes dirty [f0]</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> cleaner_return <span class="keyword">(</span>f0<span class="keyword">)</span></span> <span class="comment">// puts back cleaned [f0]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  cleaner_loop <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [cleaner_loop]</span>
+</pre>
+
+The function [cleaner_return] first finds out the number of a given fork
+and then uses the number to locate the channel for storing the fork. Its
+actual implementation is given as follows:
+
+<pre
+class="patsyntax">
+<span class="prfexp"><span class="keyword">implement</span>
+cleaner_return <span class="keyword">(</span>f<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">{</span>
+  <span class="dynexp"><span class="keyword">val</span> n <span class="keyword">=</span> fork_get_num <span class="keyword">(</span>f<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> ch <span class="keyword">=</span> fork_changet <span class="keyword">(</span>n<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> channel_insert <span class="keyword">(</span>ch<span class="keyword">,</span> f<span class="keyword">)</span></span>
+<span class="keyword">}</span></span>
+</pre>
+
+It should now be straighforward to follow the code for [cleaner_loop].
+
+<h2>
+Testing
+</h2>
+
+The entire code of this implementation is stored in the following files:
+
+<pre>
+DiningPhil2.sats
+DiningPhil2.dats
+DiningPhil2_fork.dats
+DiningPhil2_mylib.dats
+</pre>
+
+There is also a Makefile available for compiling the ATS source code into
+an excutable for testing. One should be able to encounter a deadlock after
+running the simulation for a while.
+
+<hr size="2">
+
+This article is written by <a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>.
+
+</body>
+</html>
+
+
