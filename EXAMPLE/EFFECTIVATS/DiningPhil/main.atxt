@@ -14,7 +14,8 @@
 <body>
 
 <h1>
-Effective ATS: Dining Philosophers
+Effective ATS:<br>
+Dining Philosophers
 </h1>
 
 The three most distinguished features of ATS are dependent types, linear

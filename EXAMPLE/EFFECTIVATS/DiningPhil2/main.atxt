@@ -14,7 +14,8 @@
 <body>
 
 <h1>
-Effective ATS: Dining Philosophers
+Effective ATS:<br>
+Dining Philosophers (2)
 </h1>
 
 In this article, I present an implementation of a slight variant of the
