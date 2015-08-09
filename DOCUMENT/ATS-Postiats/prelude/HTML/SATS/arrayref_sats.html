@@ -1,0 +1,546 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/arrayref.atxt
+** Time of generation: Sat Jun 27 21:39:13 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: hwxi AT cs DOT bu DOT edu *)</span>
+<span class="comment">(* Start time: February, 2012 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">#define</span> NSH <span class="keyword">(</span>x<span class="keyword">)</span> x</span> <span class="comment">// for commenting: no sharing</span>
+<span class="neuexp"><span class="keyword">#define</span> SHR <span class="keyword">(</span>x<span class="keyword">)</span> x</span> <span class="comment">// for commenting: it is shared</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">sortdef</span> tk <span class="keyword">=</span> tkind</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">sortdef</span> t0p <span class="keyword">=</span> <span class="keyword">t@ype</span> <span class="keyword">and</span> vt0p <span class="keyword">=</span> <span class="keyword">viewt@ype</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// arrayref: a reference to an array with no size information attached</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">#if</span><span class="neuexp"><span class="keyword">(</span>0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">// HX-2013-06:</span>
+<span class="comment">// it is declared in [basic_dyn.sats]</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abstype</span>
+arrayref_vt0ype_int_type
+  <span class="keyword">(</span>a<span class="keyword">:</span> <span class="keyword">vt@ype</span><span class="comment">(*elt*)</span><span class="keyword">,</span> n<span class="keyword">:</span> int<span class="comment">(*size*)</span><span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">stadef</span> <span class="staexp">arrayref <span class="keyword">=</span> <span class="staexp">arrayref_vt0ype_int_type</span></span>
+<span class="keyword">#endif</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">praxi</span>
+lemma_arrayref_param
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>n &gt;= 0<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">// end of [lemma_arrayref_param]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">castfn</span>
+arrayref2ptr<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrayref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">Ptr0</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** HX-2012-06:
+** this function essentially passes the proof of array-view
+** to GC (leaks it if GC is unavailable)
+*)</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+arrayptr_refize
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayptr</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span> <span class="comment">// end of [arrayptr_refize]</span>
+
+<span class="dynexp"><span class="keyword">castfn</span>
+arrayref_get_viewptr
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">vbox</span> <span class="keyword">(</span><span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> arrayref</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+arrayref_make_arrpsz
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>psz<span class="keyword">:</span> <span class="staexp">arrpsz</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> arrayref <span class="keyword">with</span> arrayref_make_arrpsz</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+arrayref_make_elt
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>asz<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="staexp">n</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">// end of [arrayref_make_elt]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+<span class="keyword">}</span></span> arrayref_make_intrange
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">,</span>r<span class="keyword">:</span>int <span class="keyword">|</span> l &lt;= r<span class="keyword">}</span></span> <span class="keyword">(</span>l<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">l</span><span class="keyword">,</span> r<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">r</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">r</span><span class="staexp">-</span><span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="comment">// end of [arrayref_make_intrange]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+arrayref_make_list<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>asz<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">,</span> xs<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">// end of [arrayref_make_list]</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+arrayref_make_rlist<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>asz<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">,</span> xs<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">// end of [arrayref_make_rlist]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2014-02:</span>
+<span class="comment">// [A] must survive [arrayref_tail(A)]</span>
+<span class="comment">// in order to support proper garbage-collection</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+arrayref_head
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>pos<span class="keyword">}</span></span> <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">ref</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span> <span class="comment">// A[0]</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+arrayref_tail
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>pos<span class="keyword">}</span></span> <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">ref</span><span class="keyword">&gt;</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">-</span><span class="staexp">1</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> arrayref_get_at_gint
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i <span class="keyword">&lt;</span> n<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">ref</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span> <span class="comment">// end of [arrayref_get_at_gint]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> arrayref_get_at_guint
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i <span class="keyword">&lt;</span> n<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">ref</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span> <span class="comment">// end of [arrayref_get_at_guint]</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> arrayref_get_at</span>
+<span class="dynexp"><span class="keyword">overload</span> arrayref_get_at <span class="keyword">with</span> arrayref_get_at_gint <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> arrayref_get_at <span class="keyword">with</span> arrayref_get_at_guint <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> arrayref_set_at_gint
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i <span class="keyword">&lt;</span> n<span class="keyword">}</span></span> <span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">refwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// end of [arrayref_set_at_gint]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> arrayref_set_at_guint
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i <span class="keyword">&lt;</span> n<span class="keyword">}</span></span> <span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">refwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// end of [arrayref_set_at_guint]</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> arrayref_set_at</span>
+<span class="dynexp"><span class="keyword">overload</span> arrayref_set_at <span class="keyword">with</span> arrayref_set_at_gint <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> arrayref_set_at <span class="keyword">with</span> arrayref_set_at_guint <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> arrayref_exch_at_gint
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i <span class="keyword">&lt;</span> n<span class="keyword">}</span></span> <span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">a</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">refwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// end of [arrayref_exch_at_gint]</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> arrayref_exch_at_guint
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i <span class="keyword">&lt;</span> n<span class="keyword">}</span></span> <span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">a</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">refwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// end of [arrayref_exch_at_guint]</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> arrayref_exch_at</span>
+<span class="dynexp"><span class="keyword">overload</span> arrayref_exch_at <span class="keyword">with</span> arrayref_exch_at_gint <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> arrayref_exch_at <span class="keyword">with</span> arrayref_exch_at_guint <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+arrayref_interchange
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">sizeLt</span> <span class="staexp">n</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">sizeLt</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">refwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">// end of [arrayref_interchange]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+arrayref_subcirculate
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">sizeLt</span> <span class="staexp">n</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">sizeLt</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">refwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">// end of [arrayref_subcirculate]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+fun{}
+fprint_array$sep (out: FILEref): void
+*)</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+fprint_arrayref
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>
+  out<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">,</span> A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="staexp">n</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span></span> <span class="comment">// end of [fprint_arrayref]</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+fprint_arrayref_sep
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>
+  out<span class="keyword">:</span> <span class="staexp">FILEref</span>
+<span class="keyword">,</span> A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> asz<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="staexp">n</span><span class="keyword">,</span> sep<span class="keyword">:</span> <span class="staexp">NSH</span><span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span></span> <span class="comment">// end of [fprint_arrayref_sep]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+arrayref_copy<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">arrayptr</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">// end of [arrayref_copy]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">(*
+fun{a:vt0p}
+array_tabulate$fopr (index: size_t): (a)
+*)</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+arrayref_tabulate
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>asz<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+arrayref_tabulate_cloref
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span><span class="staexp">size_t</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="keyword">(</span><span class="staexp">sizeLt</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref</span><span class="keyword">&gt;</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+fun{a:vt0p}{env:vt0p}
+array_foreach$cont (x: &amp;a, env: &amp;env): void
+fun{a:vt0p}{env:vt0p}
+array_foreach$fwork (x: &amp;a &gt;&gt; a, env: &amp;(env) &gt;&gt; _): void
+*)</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>vt0p
+<span class="keyword">}</span></span> arrayref_foreach<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> asz<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">sizeLte</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span> <span class="comment">// end of [arrayref_foreach]</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>env<span class="keyword">:</span>vt0p
+<span class="keyword">}</span></span> arrayref_foreach_env<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> asz<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> env<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="keyword">(</span><span class="staexp">env</span><span class="keyword">)</span><span class="staexp">&gt;&gt;</span><span class="staexp">env</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">sizeLte</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span> <span class="comment">// end of [arrayref_foreach_env]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+fun{a:vt0p}{env:vt0p}
+array_iforeach$cont (i: size_t, x: &amp;a, env: &amp;env): void
+fun{a:vt0p}{env:vt0p}
+array_iforeach$fwork (i: size_t, x: &amp;a &gt;&gt; a, env: &amp;(env) &gt;&gt; _): void
+*)</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>vt0p
+<span class="keyword">}</span></span> arrayref_iforeach<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> asz<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">sizeLte</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span> <span class="comment">// end of [arrayref_iforeach]</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>env<span class="keyword">:</span>vt0p
+<span class="keyword">}</span></span> arrayref_iforeach_env<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> asz<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> env<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="keyword">(</span><span class="staexp">env</span><span class="keyword">)</span><span class="staexp">&gt;&gt;</span><span class="staexp">env</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">sizeLte</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span> <span class="comment">// end of [arrayref_iforeach_env]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+fun{a:vt0p}{env:vt0p}
+array_rforeach$cont (x: &amp;a, env: &amp;env): void
+fun{a:vt0p}{env:vt0p}
+array_rforeach$fwork (x: &amp;a &gt;&gt; a, env: &amp;(env) &gt;&gt; _): void
+*)</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>vt0p
+<span class="keyword">}</span></span> arrayref_rforeach<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> asz<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">sizeLte</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span> <span class="comment">// end of [arrayref_rforeach]</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>env<span class="keyword">:</span>vt0p
+<span class="keyword">}</span></span> arrayref_rforeach_env<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> asz<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> env<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="keyword">(</span><span class="staexp">env</span><span class="keyword">)</span><span class="staexp">&gt;&gt;</span><span class="staexp">env</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">sizeLte</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span> <span class="comment">// end of [arrayref_rforeach_env]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+arrayref_quicksort
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrayref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> asz<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// arrszref: a reference to an array with size information attached</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">#if</span><span class="neuexp"><span class="keyword">(</span>0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">// HX-2013-06:</span>
+<span class="comment">// it is declared in [basic_dyn.sats]</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abstype</span>
+arrszref_vt0ype_type <span class="keyword">(</span>a<span class="keyword">:</span> <span class="keyword">vt@ype</span><span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">stadef</span> <span class="staexp">arrszref <span class="keyword">=</span> <span class="staexp">arrszref_vt0ype_type</span></span>
+<span class="comment">//</span>
+<span class="keyword">#endif</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> arrszref</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+arrszref_make_arrpsz
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span><span class="staexp">arrpsz</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">arrszref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> arrszref <span class="keyword">with</span> arrszref_make_arrpsz</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+arrszref_make_arrayref
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">SHR</span><span class="keyword">(</span><span class="staexp">arrayref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [arrszref_make_arrayref]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+<span class="keyword">}</span></span> arrszref_get_ref<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">Ptr1</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+<span class="keyword">}</span></span> arrszref_get_size<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">size_t</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+arrszref_get_refsize<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> asz<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">size_t</span><span class="staexp">?</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">size_t</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">#[</span>n<span class="keyword">:</span>nat<span class="keyword">]</span></span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">// end of [arrszref_get_refsize]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+arrszref_make_elt <span class="keyword">(</span>asz<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [arrszref_make_elt]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+arrszref_make_list <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">List</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [arrszref_make_list]</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+arrszref_make_rlist <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">List</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [arrszref_make_rlist]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+fun{}
+fprint_array$sep (out: FILEref): void
+*)</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+fprint_arrszref
+  <span class="keyword">(</span>out<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">,</span> A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">// end of [fprint_arrszref]</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+fprint_arrszref_sep <span class="keyword">(</span>
+  out<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">,</span> A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> sep<span class="keyword">:</span> <span class="staexp">NSH</span><span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span></span> <span class="comment">// end of [fprint_arrszref_sep]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+arrszref_get_at_size
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnref</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> arrszref_get_at_gint
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnref</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> arrszref_get_at_guint
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnref</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> arrszref_get_at</span>
+<span class="dynexp"><span class="keyword">overload</span> arrszref_get_at <span class="keyword">with</span> arrszref_get_at_gint <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> arrszref_get_at <span class="keyword">with</span> arrszref_get_at_guint <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+arrszref_set_at_size
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnrefwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> arrszref_set_at_gint
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnrefwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> arrszref_set_at_guint
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnrefwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> arrszref_set_at</span>
+<span class="dynexp"><span class="keyword">overload</span> arrszref_set_at <span class="keyword">with</span> arrszref_set_at_gint <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> arrszref_set_at <span class="keyword">with</span> arrszref_set_at_guint <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+arrszref_exch_at_size
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">a</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnrefwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">// end of [arrszref_exch_at_size]</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> arrszref_exch_at_gint
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">a</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnrefwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">// end of [arrszref_exch_at_gint]</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> arrszref_exch_at_guint
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">a</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnrefwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">// end of [arrszref_exch_at_guint]</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> arrszref_exch_at</span>
+<span class="dynexp"><span class="keyword">overload</span> arrszref_exch_at <span class="keyword">with</span> arrszref_exch_at_gint <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> arrszref_exch_at <span class="keyword">with</span> arrszref_exch_at_guint <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+arrszref_interchange
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnrefwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">// end of [arrszref_interchange]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+arrszref_subcirculate
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnrefwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">// end of [arrszref_subcirculate]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">(*
+fun{a:vt0p}
+array_tabulate$fopr (index: size_t): (a)
+*)</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+arrszref_tabulate <span class="keyword">(</span>asz<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+arrszref_tabulate_cloref
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span><span class="staexp">size_t</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="keyword">(</span><span class="staexp">sizeLt</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref</span><span class="keyword">&gt;</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// overloading for certain symbols</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> arrayref_get_at_gint <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> arrayref_get_at_guint <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> arrayref_set_at_gint <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> arrayref_set_at_guint <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> arrszref_get_at_gint <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> arrszref_get_at_guint <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> arrszref_set_at_gint <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> arrszref_set_at_guint <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>head <span class="keyword">with</span> arrayref_head</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>tail <span class="keyword">with</span> arrayref_tail</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>size <span class="keyword">with</span> arrszref_get_size</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">overload</span> fprint <span class="keyword">with</span> fprint_arrayref</span>
+<span class="dynexp"><span class="keyword">overload</span> fprint <span class="keyword">with</span> fprint_arrayref_sep</span>
+<span class="dynexp"><span class="keyword">overload</span> fprint <span class="keyword">with</span> fprint_arrszref</span>
+<span class="dynexp"><span class="keyword">overload</span> fprint <span class="keyword">with</span> fprint_arrszref_sep</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">overload</span> ptrcast <span class="keyword">with</span> arrayref2ptr</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [arrayref.sats] *)</span>
+</pre>

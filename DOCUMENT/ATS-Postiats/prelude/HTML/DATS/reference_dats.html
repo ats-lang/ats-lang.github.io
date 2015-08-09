@@ -1,0 +1,123 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/DATS/CODEGEN/reference.atxt
+** Time of generation: Sat Jun 27 21:39:25 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: hwxi AT cs DOT bu DOT edu *)</span>
+<span class="comment">(* Start time: May, 2012 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+ref <span class="keyword">=</span> ref_make_elt&lt;<span class="staexp">a</span><span class="keyword">&gt;</span></span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+ref_make_elt <span class="keyword">(</span>x0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pfat</span><span class="keyword">,</span> <span class="prfexp">pfgc</span> <span class="keyword">|</span> p<span class="keyword">)</span> <span class="keyword">=</span> ptr_alloc&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mfree_gc_v_elim <span class="keyword">(</span>pfgc<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p := x0</span> <span class="comment">// initialization</span>
+<span class="keyword">in</span>
+  ref_make_viewptr <span class="keyword">(</span><span class="prfexp">pfat</span> <span class="keyword">|</span> p<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [ref_make_elt]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+ref_get_elt
+  <span class="keyword">(</span>r<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p <span class="keyword">where</span> <span class="keyword">{</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">vbox _</span> <span class="keyword">|</span> p<span class="keyword">)</span> <span class="keyword">=</span> ref_get_viewptr <span class="keyword">(</span>r<span class="keyword">)</span></span>
+<span class="keyword">}</span></span> <span class="comment">// end of [ref_get_elt]</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+ref_set_elt
+  <span class="keyword">(</span>r<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">vbox _</span> <span class="keyword">|</span> p<span class="keyword">)</span> <span class="keyword">=</span> ref_get_viewptr <span class="keyword">(</span>r<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">!</span>p := x <span class="comment">// assignment</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [ref_set_elt]</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+ref_exch_elt
+  <span class="keyword">(</span>r<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">vbox _</span> <span class="keyword">|</span> p<span class="keyword">)</span> <span class="keyword">=</span> ref_get_viewptr <span class="keyword">(</span>r<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">!</span>p :=: x <span class="comment">// exchanging</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [ref_exch_elt]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+ref_app_fun<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span> <span class="keyword">(</span>r<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">vbox _</span> <span class="keyword">|</span> p<span class="keyword">)</span> <span class="keyword">=</span> ref_get_viewptr <span class="keyword">(</span>r<span class="keyword">)</span></span> <span class="keyword">in</span> f <span class="keyword">(</span><span class="keyword">!</span>p<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [ref_app_fun]</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+ref_app_funenv<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span>
+  <span class="keyword">(</span><span class="prfexp">pfv</span> <span class="keyword">|</span> r<span class="keyword">,</span> f<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">vbox _</span> <span class="keyword">|</span> p<span class="keyword">)</span> <span class="keyword">=</span> ref_get_viewptr <span class="keyword">(</span>r<span class="keyword">)</span></span> <span class="keyword">in</span> f <span class="keyword">(</span><span class="prfexp">pfv</span> <span class="keyword">|</span> <span class="keyword">!</span>p<span class="keyword">,</span> env<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [ref_app_funenv]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+ref_vtakeout<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span> <span class="keyword">(</span>r<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span>
+  <span class="prfexp">vbox pf</span> <span class="keyword">|</span> p
+<span class="keyword">)</span> <span class="keyword">=</span> ref_get_viewptr <span class="keyword">(</span>r<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span>pf<span class="keyword">,</span> fpf<span class="keyword">)</span> <span class="keyword">=</span> __copy <span class="keyword">(</span>pf<span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+  <span class="keyword">extern</span> <span class="prfexp"><span class="keyword">praxi</span> __copy <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span> <span class="keyword">-&lt;</span><span class="staexp">lin</span><span class="keyword">,</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span><span class="keyword">)</span></span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [prval] *)</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">(</span><span class="prfexp">pf</span><span class="keyword">,</span> <span class="prfexp">fpf</span> <span class="keyword">|</span> p<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [ref_vtakeout]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [reference.dats] *)</span>
+</pre>

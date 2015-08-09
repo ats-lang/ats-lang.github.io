@@ -1,0 +1,508 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/char.atxt
+** Time of generation: Sat Jun 27 21:39:00 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: hwxi AT cs DOT bu DOT edu *)</span>
+<span class="comment">(* Start time: September, 2011 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+lemma_char_size
+<span class="keyword">(</span>
+<span class="comment">// argumentless</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>sizeof<span class="keyword">(</span>char<span class="keyword">)</span>==sizeof<span class="keyword">(</span>byte<span class="keyword">)</span><span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="prfexp"><span class="keyword">praxi</span>
+lemma_schar_size
+<span class="keyword">(</span>
+<span class="comment">// argumentless</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>sizeof<span class="keyword">(</span>schar<span class="keyword">)</span>==sizeof<span class="keyword">(</span>byte<span class="keyword">)</span><span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="prfexp"><span class="keyword">praxi</span>
+lemma_uchar_size
+<span class="keyword">(</span>
+<span class="comment">// argumentless</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>sizeof<span class="keyword">(</span>uchar<span class="keyword">)</span>==sizeof<span class="keyword">(</span>byte<span class="keyword">)</span><span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span> char2schar0 <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">schar</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> schar2char0 <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">schar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">char</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span> char2uchar0 <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">uchar</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> uchar2char0 <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">char</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> int2char0 <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">char</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> int2schar0 <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">schar</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> int2uchar0 <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">uchar</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> uint2uchar0 <span class="keyword">(</span>u<span class="keyword">:</span> <span class="staexp">uint</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">uchar</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> char2int0 <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> schar2int0 <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">schar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> uchar2int0 <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> char2uint0 <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">uint</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> schar2uint0 <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">schar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">uint</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> uchar2uint0 <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">uint</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> char2u2int0 <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> char2u2uint0 <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">uint</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> char0_iseqz <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> char0_isneqz <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> iseqz <span class="keyword">with</span> char0_iseqz <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> isneqz <span class="keyword">with</span> char0_isneqz <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> add_char0_int0
+  <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">char</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> sub_char0_int0
+  <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">char</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> sub_char0_char0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> + <span class="keyword">with</span> add_char0_int0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> - <span class="keyword">with</span> sub_char0_int0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> - <span class="keyword">with</span> sub_char0_char0 <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> lt_char0_char0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">&lt;</span> <span class="keyword">with</span> lt_char0_char0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> lte_char0_char0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> &lt;= <span class="keyword">with</span> lte_char0_char0 <span class="keyword">of</span> 0</span>
+
+<span class="dynexp"><span class="keyword">fun</span> gt_char0_char0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">&gt;</span> <span class="keyword">with</span> gt_char0_char0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> gte_char0_char0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> &gt;= <span class="keyword">with</span> gte_char0_char0 <span class="keyword">of</span> 0</span>
+
+<span class="dynexp"><span class="keyword">fun</span> eq_char0_char0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">=</span> <span class="keyword">with</span> eq_char0_char0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> neq_char0_char0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> != <span class="keyword">with</span> neq_char0_char0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> &lt;&gt; <span class="keyword">with</span> neq_char0_char0 <span class="keyword">of</span> 0</span>
+
+<span class="dynexp"><span class="keyword">fun</span> compare_char0_char0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> compare <span class="keyword">with</span> compare_char0_char0 <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span> g0ofg1_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">Char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">char</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> g1ofg0_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">Char</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> g0ofg1 <span class="keyword">with</span> g0ofg1_char</span> <span class="comment">// index-erasing</span>
+<span class="dynexp"><span class="keyword">overload</span> g1ofg0 <span class="keyword">with</span> g1ofg0_char</span> <span class="comment">// index-inducing</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+char2schar1 <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">schar</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">castfn</span>
+schar2char1 <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">schar</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+char2uchar1 <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">i2u8</span><span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">castfn</span>
+uchar2char1 <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">u2i8</span><span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> char1_iseqz
+  <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span><span class="keyword">(</span><span class="staexp">c</span> <span class="staexp">==</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> char1_isneqz
+  <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span><span class="keyword">(</span><span class="staexp">c</span> <span class="staexp">!=</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> iseqz <span class="keyword">with</span> char1_iseqz <span class="keyword">of</span> 10</span>
+<span class="dynexp"><span class="keyword">overload</span> isneqz <span class="keyword">with</span> char1_isneqz <span class="keyword">of</span> 10</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span>
+lt_char1_char1 <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="keyword">)</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c2</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">c1</span> <span class="staexp"><span class="keyword">&lt;</span></span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">&lt;</span> <span class="keyword">with</span> lt_char1_char1 <span class="keyword">of</span> 20</span>
+<span class="dynexp"><span class="keyword">fun</span>
+lte_char1_char1 <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="keyword">)</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c2</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">c1</span> <span class="staexp">&lt;=</span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> &lt;= <span class="keyword">with</span> lte_char1_char1 <span class="keyword">of</span> 20</span>
+
+<span class="dynexp"><span class="keyword">fun</span>
+gt_char1_char1 <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="keyword">)</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c2</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">c1</span> <span class="staexp"><span class="keyword">&gt;</span></span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">&gt;</span> <span class="keyword">with</span> gt_char1_char1 <span class="keyword">of</span> 20</span>
+<span class="dynexp"><span class="keyword">fun</span>
+gte_char1_char1 <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="keyword">)</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c2</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">c1</span> <span class="staexp">&gt;=</span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> &gt;= <span class="keyword">with</span> gte_char1_char1 <span class="keyword">of</span> 20</span>
+
+<span class="dynexp"><span class="keyword">fun</span>
+eq_char1_char1 <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="keyword">)</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c2</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">c1</span> <span class="staexp">==</span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">=</span> <span class="keyword">with</span> eq_char1_char1 <span class="keyword">of</span> 20</span>
+<span class="dynexp"><span class="keyword">fun</span>
+neq_char1_char1 <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="keyword">)</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c2</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">c1</span> <span class="staexp">!=</span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> != <span class="keyword">with</span> neq_char1_char1 <span class="keyword">of</span> 20</span>
+<span class="dynexp"><span class="keyword">overload</span> &lt;&gt; <span class="keyword">with</span> neq_char1_char1 <span class="keyword">of</span> 20</span>
+
+<span class="dynexp"><span class="keyword">fun</span> compare_char1_char1
+  <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">char</span> <span class="staexp">c1</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">char</span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="staexp">-</span><span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> compare <span class="keyword">with</span> compare_char1_char1 <span class="keyword">of</span> 20</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> eq_char0_int0 <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">char</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">fun0</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> eq_int0_char0 <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">char</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">fun0</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">=</span> <span class="keyword">with</span> eq_char0_int0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">=</span> <span class="keyword">with</span> eq_int0_char0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> neq_char0_int0 <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">char</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">fun0</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> neq_int0_char0 <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">char</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">fun0</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> != <span class="keyword">with</span> neq_char0_int0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> &lt;&gt; <span class="keyword">with</span> neq_char0_int0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> != <span class="keyword">with</span> neq_int0_char0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> &lt;&gt; <span class="keyword">with</span> neq_int0_char0 <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> compare_char0_int0 <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">char</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">fun0</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> compare_int0_char0 <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">char</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">fun0</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> compare <span class="keyword">with</span> compare_char0_int0</span>
+<span class="dynexp"><span class="keyword">overload</span> compare <span class="keyword">with</span> compare_int0_char0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// unsigned characters</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> lt_uchar0_uchar0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">&lt;</span> <span class="keyword">with</span> lt_uchar0_uchar0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> lte_uchar0_uchar0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> &lt;= <span class="keyword">with</span> lte_uchar0_uchar0 <span class="keyword">of</span> 0</span>
+
+<span class="dynexp"><span class="keyword">fun</span> gt_uchar0_uchar0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">&gt;</span> <span class="keyword">with</span> gt_uchar0_uchar0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> gte_uchar0_uchar0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> &gt;= <span class="keyword">with</span> gte_uchar0_uchar0 <span class="keyword">of</span> 0</span>
+
+<span class="dynexp"><span class="keyword">fun</span> eq_uchar0_uchar0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">=</span> <span class="keyword">with</span> eq_uchar0_uchar0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> neq_uchar0_uchar0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> != <span class="keyword">with</span> neq_uchar0_uchar0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> &lt;&gt; <span class="keyword">with</span> neq_uchar0_uchar0 <span class="keyword">of</span> 0</span>
+
+<span class="dynexp"><span class="keyword">fun</span> compare_uchar0_uchar0
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> compare <span class="keyword">with</span> compare_uchar0_uchar0 <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span>
+lt_uchar1_uchar1 <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="keyword">)</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c2</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">c1</span> <span class="staexp"><span class="keyword">&lt;</span></span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">&lt;</span> <span class="keyword">with</span> lt_uchar1_uchar1 <span class="keyword">of</span> 20</span>
+<span class="dynexp"><span class="keyword">fun</span>
+lte_uchar1_uchar1 <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="keyword">)</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c2</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">c1</span> <span class="staexp">&lt;=</span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> &lt;= <span class="keyword">with</span> lte_uchar1_uchar1 <span class="keyword">of</span> 20</span>
+
+<span class="dynexp"><span class="keyword">fun</span>
+gt_uchar1_uchar1 <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="keyword">)</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c2</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">c1</span> <span class="staexp"><span class="keyword">&gt;</span></span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">&gt;</span> <span class="keyword">with</span> gt_uchar1_uchar1 <span class="keyword">of</span> 20</span>
+<span class="dynexp"><span class="keyword">fun</span>
+gte_uchar1_uchar1 <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="keyword">)</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c2</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">c1</span> <span class="staexp">&gt;=</span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> &gt;= <span class="keyword">with</span> gte_uchar1_uchar1 <span class="keyword">of</span> 20</span>
+
+<span class="dynexp"><span class="keyword">fun</span>
+eq_uchar1_uchar1 <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="keyword">)</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c2</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">c1</span> <span class="staexp">==</span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">=</span> <span class="keyword">with</span> eq_uchar1_uchar1 <span class="keyword">of</span> 20</span>
+<span class="dynexp"><span class="keyword">fun</span>
+neq_uchar1_uchar1 <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="keyword">)</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c2</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">c1</span> <span class="staexp">!=</span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> != <span class="keyword">with</span> neq_uchar1_uchar1 <span class="keyword">of</span> 20</span>
+<span class="dynexp"><span class="keyword">overload</span> &lt;&gt; <span class="keyword">with</span> neq_uchar1_uchar1 <span class="keyword">of</span> 20</span>
+
+<span class="dynexp"><span class="keyword">fun</span> compare_uchar1_uchar1
+  <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>c1<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="staexp">c1</span><span class="keyword">,</span> c2<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">(</span><span class="staexp">c1</span><span class="staexp">-</span><span class="staexp">c2</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> compare <span class="keyword">with</span> compare_uchar1_uchar1 <span class="keyword">of</span> 20</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">sortdef</span> tk <span class="keyword">=</span> tkind</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0int_of_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0int_of_schar <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">schar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0int_of_uchar <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0uint_of_uchar <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g1int_of_char1 <span class="comment">// c:int8</span>
+  <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">)</span></span>
+<span class="comment">// end of [g1int_of_char1]</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g1int_of_schar1 <span class="comment">// c:int8</span>
+  <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">schar</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">)</span></span>
+<span class="comment">// end of [g1int_of_schar1]</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g1int_of_uchar1 <span class="comment">// c:uint8</span>
+  <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">)</span></span>
+<span class="comment">// end of [g1int_of_uchar1]</span>
+
+<span class="comment">(*
+** HX: g1uint_of_schar1: schar -&gt; int -&gt; uint
+*)</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g1uint_of_uchar1
+  <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">)</span></span>
+<span class="comment">// end of [g1uint_of_uchar1]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX:</span>
+<span class="comment">// return is dynamically allocated</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+char2string<span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">string</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+char2strptr<span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">Strptr1</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> print_char <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> prerr_char <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> print <span class="keyword">with</span> print_char</span>
+<span class="dynexp"><span class="keyword">overload</span> prerr <span class="keyword">with</span> prerr_char</span>
+<span class="dynexp"><span class="keyword">fun</span> fprint_char <span class="keyword">:</span> <span class="staexp">fprint_type</span> <span class="keyword">(</span><span class="staexp">char</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> fprint <span class="keyword">with</span> fprint_char</span>
+<span class="dynexp"><span class="keyword">fun</span> print_schar <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">schar</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> prerr_schar <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">schar</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> print <span class="keyword">with</span> print_schar</span>
+<span class="dynexp"><span class="keyword">overload</span> prerr <span class="keyword">with</span> prerr_schar</span>
+<span class="dynexp"><span class="keyword">fun</span> fprint_schar <span class="keyword">:</span> <span class="staexp">fprint_type</span> <span class="keyword">(</span><span class="staexp">schar</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> fprint <span class="keyword">with</span> fprint_schar</span>
+<span class="dynexp"><span class="keyword">fun</span> print_uchar <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> prerr_uchar <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> print <span class="keyword">with</span> print_uchar</span>
+<span class="dynexp"><span class="keyword">overload</span> prerr <span class="keyword">with</span> prerr_uchar</span>
+<span class="dynexp"><span class="keyword">fun</span> fprint_uchar <span class="keyword">:</span> <span class="staexp">fprint_type</span> <span class="keyword">(</span><span class="staexp">uchar</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> fprint <span class="keyword">with</span> fprint_uchar</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> isalpha</span>
+<span class="dynexp"><span class="keyword">fun</span> isalpha_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isalpha <span class="keyword">with</span> isalpha_int <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> isalpha_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isalpha <span class="keyword">with</span> isalpha_char <span class="keyword">of</span> 0</span>
+<span class="neuexp"><span class="keyword">symintr</span> isalnum</span>
+<span class="dynexp"><span class="keyword">fun</span> isalnum_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isalnum <span class="keyword">with</span> isalnum_int <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> isalnum_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isalnum <span class="keyword">with</span> isalnum_char <span class="keyword">of</span> 0</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> isascii</span>
+<span class="dynexp"><span class="keyword">fun</span> isascii_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isascii <span class="keyword">with</span> isascii_int <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> isascii_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isascii <span class="keyword">with</span> isascii_char <span class="keyword">of</span> 0</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> isblank</span>
+<span class="dynexp"><span class="keyword">fun</span> isblank_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isblank <span class="keyword">with</span> isblank_int <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> isblank_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isblank <span class="keyword">with</span> isblank_char <span class="keyword">of</span> 0</span>
+<span class="neuexp"><span class="keyword">symintr</span> isspace</span>
+<span class="dynexp"><span class="keyword">fun</span> isspace_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isspace <span class="keyword">with</span> isspace_int <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> isspace_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isspace <span class="keyword">with</span> isspace_char <span class="keyword">of</span> 0</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> iscntrl</span>
+<span class="dynexp"><span class="keyword">fun</span> iscntrl_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> iscntrl <span class="keyword">with</span> iscntrl_int <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> iscntrl_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> iscntrl <span class="keyword">with</span> iscntrl_char <span class="keyword">of</span> 0</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> isdigit</span>
+<span class="dynexp"><span class="keyword">fun</span> isdigit_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isdigit <span class="keyword">with</span> isdigit_int <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> isdigit_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isdigit <span class="keyword">with</span> isdigit_char <span class="keyword">of</span> 0</span>
+<span class="neuexp"><span class="keyword">symintr</span> isxdigit</span>
+<span class="dynexp"><span class="keyword">fun</span> isxdigit_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isxdigit <span class="keyword">with</span> isxdigit_int <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> isxdigit_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isxdigit <span class="keyword">with</span> isxdigit_char <span class="keyword">of</span> 0</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> isgraph</span>
+<span class="dynexp"><span class="keyword">fun</span> isgraph_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isgraph <span class="keyword">with</span> isgraph_int <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> isgraph_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isgraph <span class="keyword">with</span> isgraph_char <span class="keyword">of</span> 0</span>
+<span class="neuexp"><span class="keyword">symintr</span> isprint</span>
+<span class="dynexp"><span class="keyword">fun</span> isprint_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isprint <span class="keyword">with</span> isprint_int <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> isprint_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isprint <span class="keyword">with</span> isprint_char <span class="keyword">of</span> 0</span>
+<span class="neuexp"><span class="keyword">symintr</span> ispunct</span>
+<span class="dynexp"><span class="keyword">fun</span> ispunct_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> ispunct <span class="keyword">with</span> ispunct_int <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> ispunct_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> ispunct <span class="keyword">with</span> ispunct_char <span class="keyword">of</span> 0</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> islower</span>
+<span class="dynexp"><span class="keyword">fun</span> islower_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> islower <span class="keyword">with</span> islower_int <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> islower_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> islower <span class="keyword">with</span> islower_char <span class="keyword">of</span> 0</span>
+<span class="neuexp"><span class="keyword">symintr</span> isupper</span>
+<span class="dynexp"><span class="keyword">fun</span> isupper_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isupper <span class="keyword">with</span> isupper_int <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span> isupper_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> isupper <span class="keyword">with</span> isupper_char <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> toascii <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> tolower</span>
+<span class="dynexp"><span class="keyword">fun</span> tolower_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> tolower_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">char</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> tolower <span class="keyword">with</span> tolower_int</span>
+<span class="dynexp"><span class="keyword">overload</span> tolower <span class="keyword">with</span> tolower_char</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> toupper</span>
+<span class="dynexp"><span class="keyword">fun</span> toupper_int <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> toupper_char <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">char</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> toupper <span class="keyword">with</span> toupper_int</span>
+<span class="dynexp"><span class="keyword">overload</span> toupper <span class="keyword">with</span> toupper_char</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> int2digit <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">intBtw</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">10</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> int2xdigit <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">intBtw</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">16</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> int2xxdigit <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">intBtw</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">16</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">char</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> c2uc</span>
+<span class="dynexp"><span class="keyword">overload</span> c2uc <span class="keyword">with</span> char2uchar0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> c2uc <span class="keyword">with</span> char2uchar1 <span class="keyword">of</span> 10</span>
+<span class="neuexp"><span class="keyword">symintr</span> uc2c</span>
+<span class="dynexp"><span class="keyword">overload</span> uc2c <span class="keyword">with</span> uchar2char0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> uc2c <span class="keyword">with</span> uchar2char1 <span class="keyword">of</span> 10</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> char2i</span>
+<span class="dynexp"><span class="keyword">overload</span> char2i <span class="keyword">with</span> char2int0 <span class="keyword">of</span> 0</span>
+<span class="neuexp"><span class="keyword">symintr</span> char2ui</span>
+<span class="dynexp"><span class="keyword">overload</span> char2ui <span class="keyword">with</span> char2uint0 <span class="keyword">of</span> 0</span>
+<span class="neuexp"><span class="keyword">symintr</span> uchar2i</span>
+<span class="dynexp"><span class="keyword">overload</span> uchar2i <span class="keyword">with</span> uchar2int0 <span class="keyword">of</span> 0</span>
+<span class="neuexp"><span class="keyword">symintr</span> uchar2ui</span>
+<span class="dynexp"><span class="keyword">overload</span> uchar2ui <span class="keyword">with</span> uchar2uint0 <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">symintr</span> char2u2i</span>
+<span class="dynexp"><span class="keyword">overload</span> char2u2i <span class="keyword">with</span> char2u2int0 <span class="keyword">of</span> 0</span>
+<span class="neuexp"><span class="keyword">symintr</span> char2u2ui</span>
+<span class="dynexp"><span class="keyword">overload</span> char2u2ui <span class="keyword">with</span> char2u2uint0 <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> int2byte0 <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">byte</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> byte2int0 <span class="keyword">(</span>b<span class="keyword">:</span> <span class="staexp">byte</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> uint2byte0 <span class="keyword">(</span>u<span class="keyword">:</span> <span class="staexp">uint</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">byte</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> byte2uint0 <span class="keyword">(</span>b<span class="keyword">:</span> <span class="staexp">byte</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">uint</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> byte2i</span>
+<span class="dynexp"><span class="keyword">overload</span> byte2i <span class="keyword">with</span> byte2int0 <span class="keyword">of</span> 0</span>
+<span class="neuexp"><span class="keyword">symintr</span> i2byte</span>
+<span class="dynexp"><span class="keyword">overload</span> i2byte <span class="keyword">with</span> int2byte0 <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> byte2ui</span>
+<span class="dynexp"><span class="keyword">overload</span> byte2i <span class="keyword">with</span> byte2uint0 <span class="keyword">of</span> 0</span>
+<span class="neuexp"><span class="keyword">symintr</span> ui2byte</span>
+<span class="dynexp"><span class="keyword">overload</span> i2byte <span class="keyword">with</span> uint2byte0 <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [char.sats] *)</span>
+</pre>

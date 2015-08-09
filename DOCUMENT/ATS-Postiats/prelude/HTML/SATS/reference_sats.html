@@ -1,0 +1,124 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/reference.atxt
+** Time of generation: Sat Jun 27 21:39:02 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: hwxi AT cs DOT bu DOT edu *)</span>
+<span class="comment">(* Start time: March, 2012 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">sortdef</span> t0p <span class="keyword">=</span> <span class="keyword">t@ype</span> <span class="keyword">and</span> vt0p <span class="keyword">=</span> <span class="keyword">viewt@ype</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">castfn</span> ref_get_ptr
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>agz<span class="keyword">]</span></span> <span class="staexp">ptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> ref_get_viewptr
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>agz<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">vbox</span> <span class="keyword">(</span><span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="comment">// end of [ref_get_viewptr]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+macdef ptr_of_ref = ref_get_ptr
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> ref <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">ref</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> ref_make_elt <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">ref</span> <span class="staexp">a</span></span>
+
+<span class="dynexp"><span class="keyword">castfn</span> ref_make_viewptr
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">(</span><span class="prfexp">pf<span class="keyword">:</span> <span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span></span> <span class="keyword">|</span> p<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">ref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [ref_make_viewptr]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> ref_get_elt <span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">ref</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> ref_set_elt <span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span> <span class="staexp">a</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">refwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> ref_exch_elt <span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span> <span class="staexp">a</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">a</span><span class="staexp">&gt;&gt;</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">refwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** HX-2012-05:
+** this is not particularly useful except for the purpose
+** of avoiding using the [vbox] pattern
+*)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+ref_app_fun<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  r<span class="keyword">:</span> <span class="staexp">ref</span> <span class="staexp">a</span><span class="keyword">,</span> f<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">&amp;</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="staexp">&gt;&gt;</span><span class="staexp">_</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">0</span><span class="keyword">,</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">refwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// end of [ref_app_fun]</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+ref_app_funenv<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>v<span class="keyword">:</span>view<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>vt<span class="keyword">:</span>viewtype<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="prfexp">pfv<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">v</span></span>
+<span class="keyword">|</span> r<span class="keyword">:</span> <span class="staexp">ref</span> <span class="staexp">a</span><span class="keyword">,</span> f<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp"><span class="keyword">!</span></span><span class="staexp">v</span> <span class="keyword">|</span> <span class="staexp">&amp;</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="staexp">&gt;&gt;</span><span class="staexp">_</span><span class="keyword">,</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">vt</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">0</span><span class="keyword">,</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span><span class="keyword">,</span> env<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">vt</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">refwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// end of [ref_app_funenv]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2013-10: unsafe but convenient</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+ref_vtakeout
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  ref<span class="keyword">:</span> <span class="staexp">ref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">ref</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="keyword">,</span> <span class="keyword">(</span><span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">lin</span><span class="keyword">,</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">|</span> <span class="staexp">ptr</span><span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// overloading for certain symbols</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> ref_get_elt</span> <span class="comment">// ref[]</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> ref_set_elt</span> <span class="comment">// ref[] := (val)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [reference.sats] *)</span>
+</pre>

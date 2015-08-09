@@ -1,0 +1,917 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/DATS/CODEGEN/filebas.atxt
+** Time of generation: Sat Jun 27 21:39:27 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: hwxi AT cs DOT bu DOT edu *)</span>
+<span class="comment">(* Start time: Feburary, 2012 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">#define</span> ATS_DYNLOADFLAG 0</span> <span class="comment">// no dynloading at run-time</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">staload</span> UN <span class="keyword">=</span> "prelude/SATS/unsafe.sats"
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">staload</span> _<span class="comment">(*anon*)</span> <span class="keyword">=</span> "prelude/DATS/integer.dats"
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">staload</span> STDIO <span class="keyword">=</span> "libc/SATS/stdio.sats"
+<span class="keyword">vtypedef</span> <span class="staexp">FILEptr1 <span class="keyword">=</span> <span class="staexp">$STDIO<span class="keyword">.</span>FILEptr1</span></span> <span class="comment">(*linear/nonnull*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">staload</span> STAT <span class="keyword">=</span> "libc/sys/SATS/stat.sats"
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">#define</span> c2i char2int0</span>
+<span class="neuexp"><span class="keyword">#define</span> i2c int2char0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2013-06:</span>
+<span class="comment">// this is just Unix convention</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> dirsep_get <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">'/'</span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> dirname_self <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">"."</span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> dirname_parent <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">".."</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+filename_get_ext <span class="keyword">(</span>name<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span> NUL '\000'</span>
+<span class="dynexp"><span class="keyword">overload</span> + <span class="keyword">with</span> add_ptr_bsz</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+<span class="keyword">(</span>
+  p1<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> p2<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> c0<span class="keyword">:</span> <span class="staexp">char</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">ptr</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> c <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_get&lt;<span class="staexp">char</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p1<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> c != NUL <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> p1 <span class="keyword">=</span> p1 + i2sz<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">if</span> c != c0 <span class="keyword">then</span> loop <span class="keyword">(</span>p1<span class="keyword">,</span> p2<span class="keyword">,</span> c0<span class="keyword">)</span> <span class="keyword">else</span> loop <span class="keyword">(</span>p1<span class="keyword">,</span> p1<span class="keyword">,</span> c0<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> p2 <span class="comment">// end of [if]</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [loop]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> p1 <span class="keyword">=</span> string2ptr<span class="keyword">(</span>name<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> p2 <span class="keyword">=</span> <span class="keyword">$effmask_all</span> <span class="keyword">(</span>loop <span class="keyword">(</span>p1<span class="keyword">,</span> the_null_ptr<span class="keyword">,</span> <span class="dynexp">'.'</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>vStrptr0<span class="keyword">}</span></span><span class="keyword">(</span>p2<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [filename_get_ext]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+filename_test_ext
+  <span class="keyword">(</span>name<span class="keyword">,</span> ext0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">fpf</span> <span class="keyword">|</span> ext<span class="keyword">)</span> <span class="keyword">=</span> filename_get_ext <span class="keyword">(</span>name<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> ans <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">if</span> strptr2ptr<span class="keyword">(</span>ext<span class="keyword">)</span> <span class="keyword">&gt;</span> <span class="dynexp">0</span>
+    <span class="keyword">then</span> eq_string_string <span class="keyword">(</span>ext0<span class="keyword">,</span> $UN<span class="keyword">.</span>strptr2string<span class="keyword">(</span>ext<span class="keyword">)</span><span class="keyword">)</span>
+    <span class="keyword">else</span> false
+  <span class="comment">// end of [if]</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bool</span></span> <span class="comment">// end of [val]</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fpf <span class="keyword">(</span>ext<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  ans
+<span class="keyword">end</span></span> <span class="comment">// end of [filename_test_ext]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+filename_get_base <span class="keyword">(</span>name<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span> NUL '\000'</span>
+<span class="dynexp"><span class="keyword">overload</span> + <span class="keyword">with</span> add_ptr_bsz</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+<span class="keyword">(</span>
+  p1<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> p2<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> c0<span class="keyword">:</span> <span class="staexp">char</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">ptr</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> c <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_get&lt;<span class="staexp">char</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p1<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> c != NUL <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> p1 <span class="keyword">=</span> p1 + i2sz<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">if</span> c != c0 <span class="keyword">then</span> loop <span class="keyword">(</span>p1<span class="keyword">,</span> p2<span class="keyword">,</span> c0<span class="keyword">)</span> <span class="keyword">else</span> loop <span class="keyword">(</span>p1<span class="keyword">,</span> p1<span class="keyword">,</span> c0<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> p2 <span class="comment">// end of [if]</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [loop]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> c0 <span class="keyword">=</span> dirsep_get&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> p1 <span class="keyword">=</span> string2ptr<span class="keyword">(</span>name<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> p2 <span class="keyword">=</span> <span class="keyword">$effmask_all</span> <span class="keyword">(</span>loop <span class="keyword">(</span>p1<span class="keyword">,</span> p1<span class="keyword">,</span> c0<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>vStrptr1<span class="keyword">}</span></span><span class="keyword">(</span>p2<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [filename_get_base]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+filename_test_base
+  <span class="keyword">(</span>name<span class="keyword">,</span> base0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">fpf</span> <span class="keyword">|</span> base<span class="keyword">)</span> <span class="keyword">=</span> filename_get_base <span class="keyword">(</span>name<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> ans <span class="keyword">=</span> eq_string_string <span class="keyword">(</span>base0<span class="keyword">,</span> $UN<span class="keyword">.</span>strptr2string<span class="keyword">(</span>base<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fpf <span class="keyword">(</span>base<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  ans
+<span class="keyword">end</span></span> <span class="comment">// end of [filename_test_base]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+//
+// HX-2013-04:
+// this is now implemented in [filebas.cats].
+//
+local
+
+extern
+castfn file_mode
+  {fm:file_mode} (x: string):&lt;&gt; file_mode (fm)
+// end of [extern]
+
+in (* in of [local] *)
+
+implement file_mode_r = file_mode ("r")
+implement file_mode_rr = file_mode ("r+")
+implement file_mode_w = file_mode ("w")
+implement file_mode_ww = file_mode ("w+")
+implement file_mode_a = file_mode ("a")
+implement file_mode_aa = file_mode ("a+")
+
+end // end of [local]
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+__cast_filp <span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">FILEptr1</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+test_file_mode
+  <span class="keyword">(</span>path<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">stat <span class="keyword">=</span> <span class="staexp">$STAT<span class="keyword">.</span>stat</span></span>
+<span class="comment">//</span>
+<span class="keyword">var</span> st<span class="keyword">:</span> <span class="staexp">stat</span><span class="staexp">?</span>
+<span class="dynexp"><span class="keyword">val</span> err <span class="keyword">=</span> $STAT<span class="keyword">.</span>stat <span class="keyword">(</span>path<span class="keyword">,</span> st<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> err &gt;= <span class="dynexp">0</span>
+<span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> opt_unsome<span class="staexp"><span class="keyword">{</span>stat<span class="keyword">}</span></span><span class="keyword">(</span>st<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> test <span class="keyword">=</span>
+  test_file_mode$pred&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>uint<span class="keyword">}</span></span><span class="keyword">(</span>st<span class="dynexp"><span class="keyword">.</span>st_mode</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> test <span class="keyword">then</span> <span class="dynexp">1</span><span class="comment">(*true*)</span> <span class="keyword">else</span> <span class="dynexp">0</span><span class="comment">(*false*)</span>
+<span class="keyword">end</span> <span class="comment">// end of [then]</span>
+<span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> opt_unnone<span class="staexp"><span class="keyword">{</span>stat<span class="keyword">}</span></span><span class="keyword">(</span>st<span class="keyword">)</span></span> <span class="keyword">in</span> <span class="keyword">~</span><span class="dynexp">1</span><span class="comment">(*failure*)</span>
+<span class="keyword">end</span> <span class="comment">// end of [else]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [test_file_mode]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+fileref_open_opt
+  <span class="keyword">(</span>path<span class="keyword">,</span> fm<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+filp <span class="keyword">=</span> $STDIO<span class="keyword">.</span>fopen <span class="keyword">(</span>path<span class="keyword">,</span> fm<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span>
+isnot <span class="keyword">=</span> $STDIO<span class="keyword">.</span>FILEptr2ptr<span class="keyword">(</span>filp<span class="keyword">)</span> <span class="keyword">&gt;</span> <span class="dynexp">0</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span>
+isnot
+<span class="keyword">then</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> filr <span class="keyword">=</span>
+  $STDIO<span class="keyword">.</span>FILEptr_refize<span class="keyword">(</span>filp<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  Some_vt<span class="staexp"><span class="keyword">{</span>FILEref<span class="keyword">}</span></span><span class="keyword">(</span>filr<span class="keyword">)</span> <span class="comment">// success</span>
+<span class="keyword">end</span> <span class="comment">// end of [then]</span>
+<span class="keyword">else</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  $STDIO<span class="keyword">.</span>FILEptr_free_null<span class="keyword">(</span>filp<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  None_vt<span class="staexp"><span class="keyword">{</span>FILEref<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="comment">// failure</span>
+<span class="keyword">end</span> <span class="comment">// end of [else]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fileref_open_opt]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+//
+// HX: atspre_fileref_close
+//
+implement
+fileref_close (fil) = $STDIO.fclose0_exn (fil)
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+//
+// HX: atspre_fileref_flush
+//
+implement
+fileref_flush (fil) = $STDIO.fflush0_exn (fil)
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+//
+// HX: atspre_fileref_getc
+//
+implement fileref_getc (inp) = $STDIO.fgetc0 (inp)
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+//
+// HX: atspre_fileref_putc_int
+// HX: atspre_fileref_putc_char
+//
+implement
+fileref_putc_int (out, c) = let
+  val _(*ignored*) = $STDIO.fputc0 (c, out) in (*nothing*)
+end // end of [fileref_putc_int]
+implement
+fileref_putc_char (out, c) = fileref_putc_int (out, (c2i)c)
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+//
+// HX: atspre_fileref_puts
+//
+implement
+fileref_puts (out, s) = let
+  val _(*ignored*) = $STDIO.fputs0 (s, out) in (*nothing*)
+end // end of [fileref_puts]
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+//
+// HX: atspre_fileref_is_eof
+//
+implement
+fileref_is_eof (fil) =
+  if $STDIO.feof0 (fil) != 0 true else false
+// end of [fileref_is_eof]
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span> fileref_load&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fileref_load_int</span>
+<span class="prfexp"><span class="keyword">implement</span> fileref_load&lt;<span class="staexp">lint</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fileref_load_lint</span>
+<span class="prfexp"><span class="keyword">implement</span> fileref_load&lt;<span class="staexp">uint</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fileref_load_uint</span>
+<span class="prfexp"><span class="keyword">implement</span> fileref_load&lt;<span class="staexp">ulint</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fileref_load_ulint</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span> fileref_load&lt;<span class="staexp">float</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fileref_load_float</span>
+<span class="prfexp"><span class="keyword">implement</span> fileref_load&lt;<span class="staexp">double</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fileref_load_double</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+fileref_get_optval <span class="keyword">(</span>r<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">var</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="staexp">?</span>
+  <span class="dynexp"><span class="keyword">val</span> yn <span class="keyword">=</span> fileref_load&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>r<span class="keyword">,</span> x<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  option_vt_make_opt&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>yn<span class="keyword">,</span> x<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fileref_get_optval]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+fileref_get_exnmsg
+  <span class="keyword">(</span>r<span class="keyword">,</span> msg<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">var</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="staexp">?</span>
+  <span class="dynexp"><span class="keyword">val</span> yn <span class="keyword">=</span> fileref_load&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>r<span class="keyword">,</span> x<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> yn <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> opt_unsome <span class="keyword">(</span>x<span class="keyword">)</span></span> <span class="keyword">in</span> x
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+    <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> opt_unnone <span class="keyword">(</span>x<span class="keyword">)</span></span> <span class="keyword">in</span> exit_errmsg <span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">,</span> msg<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="comment">(* end of [if] *)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fileref_get_exnmsg]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+fileref_get_line_charlst
+  <span class="keyword">(</span>inp<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> EOL <span class="keyword">=</span> <span class="dynexp">'\n'</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+<span class="keyword">(</span>
+  inp<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">ptr</span><span class="staexp">?</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">charlst_vt</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> i <span class="keyword">=</span> fileref_getc <span class="keyword">(</span>inp<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> i &gt;= <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> c <span class="keyword">=</span> int2char0<span class="keyword">(</span>i<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> <span class="keyword">(</span>c != EOL<span class="keyword">)</span> <span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">(</span>
+    res :=
+    list_vt_cons<span class="staexp"><span class="keyword">{</span>char<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>0<span class="keyword">}</span></span><span class="keyword">(</span>c<span class="keyword">,</span> _<span class="keyword">)</span>
+  <span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val+</span>list_vt_cons <span class="keyword">(</span>_<span class="keyword">,</span> res1<span class="keyword">)</span> <span class="keyword">=</span> res</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span>inp<span class="keyword">,</span> res1<span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>res<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span> <span class="keyword">else</span> <span class="keyword">(</span>res := list_vt_nil<span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">(</span>res := list_vt_nil<span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [loop]</span>
+<span class="comment">//</span>
+<span class="keyword">var</span> res<span class="keyword">:</span> <span class="staexp">ptr</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span>inp<span class="keyword">,</span> res<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  res
+<span class="keyword">end</span></span> <span class="comment">// end of [fileref_get_line_charlst]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+fileref_get_lines_charlstlst
+  <span class="keyword">(</span>inp<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">vtypedef</span> <span class="staexp">line <span class="keyword">=</span> <span class="staexp">charlst_vt</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">lines <span class="keyword">=</span> <span class="staexp">List0_vt</span> <span class="keyword">(</span><span class="staexp">line</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+<span class="keyword">(</span>
+  inp<span class="keyword">:</span> <span class="staexp">FILEref</span>
+<span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">lines</span><span class="staexp">?</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">lines</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> iseof <span class="keyword">=</span> fileref_is_eof <span class="keyword">(</span>inp<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> iseof <span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>res := list_vt_nil <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span> <span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> line <span class="keyword">=</span>
+    fileref_get_line_charlst <span class="keyword">(</span>inp<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">(</span>
+    res := list_vt_cons<span class="staexp"><span class="keyword">{</span>line<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>0<span class="keyword">}</span></span><span class="keyword">(</span>line<span class="keyword">,</span> _<span class="keyword">)</span>
+  <span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val+</span>list_vt_cons <span class="keyword">(</span>_<span class="keyword">,</span> res1<span class="keyword">)</span> <span class="keyword">=</span> res</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span>inp<span class="keyword">,</span> res1<span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>res<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [loop]</span>
+<span class="comment">//</span>
+<span class="keyword">var</span> res<span class="keyword">:</span> <span class="staexp">lines</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span>inp<span class="keyword">,</span> res<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  res
+<span class="keyword">end</span></span> <span class="comment">// end of [fileref_get_lines_charlstlst]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+fileref_get_file_charlst
+  <span class="keyword">(</span>inp<span class="keyword">)</span> <span class="keyword">=</span> fileref_get2_file_charlst <span class="keyword">(</span>inp<span class="keyword">,</span> <span class="keyword">~</span><span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">local</span>
+
+<span class="dynexp"><span class="keyword">fun</span> loop
+<span class="keyword">(</span>
+  inp<span class="keyword">:</span> <span class="staexp">FILEref</span>
+<span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">ptr</span><span class="staexp">?</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">charlst_vt</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> n != <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> i <span class="keyword">=</span> fileref_getc <span class="keyword">(</span>inp<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> i &gt;= <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+    <span class="keyword">(</span>
+      res :=
+      list_vt_cons<span class="staexp"><span class="keyword">{</span>char<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>0<span class="keyword">}</span></span><span class="keyword">(</span>i2c<span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">,</span> _<span class="keyword">)</span>
+    <span class="keyword">)</span></span>
+    <span class="dynexp"><span class="keyword">val+</span>list_vt_cons <span class="keyword">(</span>_<span class="keyword">,</span> res1<span class="keyword">)</span> <span class="keyword">=</span> res</span>
+    <span class="dynexp"><span class="keyword">val</span> n <span class="keyword">=</span> loop <span class="keyword">(</span>inp<span class="keyword">,</span> pred<span class="keyword">(</span>n<span class="keyword">)</span><span class="keyword">,</span> res1<span class="keyword">)</span></span>
+    <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>res<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    n
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> res := list_vt_nil <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">in</span> <span class="keyword">(</span>n<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="comment">// end of [if]</span>
+<span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> res := list_vt_nil <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">in</span> n<span class="comment">(*=0*)</span>
+<span class="keyword">end</span> <span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [loop]</span>
+
+<span class="keyword">in</span> <span class="comment">(* in of [local] *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+fileref_get2_file_charlst
+  <span class="keyword">(</span>inp<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> res <span class="keyword">where</span>
+<span class="keyword">{</span>
+  <span class="keyword">var</span> res<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">;</span> <span class="dynexp"><span class="keyword">val</span> _<span class="comment">(*nleft*)</span> <span class="keyword">=</span> loop <span class="keyword">(</span>inp<span class="keyword">,</span> n<span class="keyword">,</span> res<span class="keyword">)</span></span>
+<span class="keyword">}</span></span> <span class="comment">// end of [fileref_nget_file_charlst]</span>
+
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+fileref_put_charlst
+  <span class="keyword">(</span>out<span class="keyword">,</span> cs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+<span class="keyword">(</span>
+  out<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">,</span> cs<span class="keyword">:</span> <span class="staexp">List</span><span class="keyword">(</span><span class="staexp">char</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> cs <span class="keyword">of</span>
+<span class="keyword">|</span> list_cons <span class="keyword">(</span>c<span class="keyword">,</span> cs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fileref_putc <span class="keyword">(</span>out<span class="keyword">,</span> c<span class="keyword">)</span></span> <span class="keyword">in</span> loop <span class="keyword">(</span>out<span class="keyword">,</span> cs<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="comment">// end of [list_cons]</span>
+<span class="keyword">|</span> list_nil <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [loop]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span>out<span class="keyword">,</span> cs<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fileref_put_charlst]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+fileref_get_line_string$bufsize <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">64</span></span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+fileref_get_file_string$bufsize <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">1024</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+fileref_get_line_string
+  <span class="keyword">(</span>inp<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">var</span> nlen<span class="keyword">:</span> <span class="staexp">int</span> <span class="comment">// uninitialized</span>
+<span class="dynexp"><span class="keyword">val</span> line <span class="keyword">=</span> fileref_get_line_string_main <span class="keyword">(</span>inp<span class="keyword">,</span> nlen<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> lemma_strnptr_param <span class="keyword">(</span>line<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  strnptr2strptr <span class="keyword">(</span>line<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fileref_get_line_string]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+fileref_get_line_string_main
+  <span class="keyword">(</span>inp<span class="keyword">,</span> nlen<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> bsz <span class="keyword">=</span>
+fileref_get_line_string$bufsize <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">[</span><span class="staexp">l<span class="keyword">:</span>addr</span><span class="keyword">,</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">]</span> str <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$extfcall</span>
+<span class="keyword">(</span>
+Strnptr0<span class="keyword">,</span> "atspre_fileref_get_line_string_main2"<span class="keyword">,</span> bsz<span class="keyword">,</span> inp<span class="keyword">,</span> <span class="keyword">addr@</span><span class="keyword">(</span>nlen<span class="keyword">)</span>
+<span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> lemma_strnptr_param <span class="keyword">(</span>str<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+__assert <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">int</span><span class="staexp">?</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">int</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> __assert <span class="keyword">(</span><span class="dynexp"><span class="keyword">view@</span></span><span class="keyword">(</span>nlen<span class="keyword">)</span><span class="keyword">)</span></span> 
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> isnot <span class="keyword">=</span> strnptr_isnot_null <span class="keyword">(</span>str<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> isnot <span class="keyword">then</span> str <span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span>
+  <span class="keyword">)</span> <span class="keyword">=</span> exit_errmsg_void <span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">"[fileref_get_line_string] failed."</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assert <span class="keyword">(</span>nlen &gt;= <span class="dynexp">0</span><span class="keyword">)</span></span> <span class="comment">// HX: for TC // deadcode at run-time</span>
+<span class="keyword">in</span>
+  str <span class="comment">// HX: [str]=null is not returned</span>
+<span class="keyword">end</span> <span class="comment">(* end of [if] *)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fileref_get_line_string_main]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+fileref_get_lines_stringlst
+  <span class="keyword">(</span>inp<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">vtypedef</span> <span class="staexp">line <span class="keyword">=</span> <span class="staexp">Strptr1</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">lines <span class="keyword">=</span> <span class="staexp">List0_vt</span> <span class="keyword">(</span><span class="staexp">line</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+<span class="keyword">(</span>
+  inp<span class="keyword">:</span> <span class="staexp">FILEref</span>
+<span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">lines</span><span class="staexp">?</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">lines</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> iseof <span class="keyword">=</span> fileref_is_eof <span class="keyword">(</span>inp<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> iseof <span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>res := list_vt_nil <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span> <span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> line <span class="keyword">=</span>
+    fileref_get_line_string <span class="keyword">(</span>inp<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">(</span>
+    res := list_vt_cons<span class="staexp"><span class="keyword">{</span>line<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>0<span class="keyword">}</span></span><span class="keyword">(</span>line<span class="keyword">,</span> _<span class="keyword">)</span>
+  <span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val+</span>list_vt_cons <span class="keyword">(</span>_<span class="keyword">,</span> res1<span class="keyword">)</span> <span class="keyword">=</span> res</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span>inp<span class="keyword">,</span> res1<span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>res<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [loop]</span>
+<span class="comment">//</span>
+<span class="keyword">var</span> res<span class="keyword">:</span> <span class="staexp">lines</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span>inp<span class="keyword">,</span> res<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  res
+<span class="keyword">end</span></span> <span class="comment">// end of [fileref_get_lines_stringlst]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+fileref_get_file_string <span class="keyword">(</span>inp<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span> CNUL '\000'</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+<span class="keyword">(</span>
+  inp<span class="keyword">:</span> <span class="staexp">FILEref</span>
+<span class="keyword">,</span> p0<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> n0<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> p1<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> n1<span class="keyword">:</span> <span class="staexp">size_t</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">Strptr1</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> nw <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$extfcall</span> <span class="keyword">(</span>size_t<span class="keyword">,</span> "atslib_fread"<span class="keyword">,</span> p1<span class="keyword">,</span> 1<span class="keyword">,</span> n1<span class="keyword">,</span> inp<span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> nw <span class="keyword">&gt;</span> <span class="dynexp">0</span>
+<span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> n1 <span class="keyword">=</span> n1 - nw</span>
+  <span class="dynexp"><span class="keyword">val</span> p1 <span class="keyword">=</span> add_ptr_bsz <span class="keyword">(</span>p1<span class="keyword">,</span> nw<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> n1 <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span>
+    loop <span class="keyword">(</span>inp<span class="keyword">,</span> p0<span class="keyword">,</span> n0<span class="keyword">,</span> p1<span class="keyword">,</span> n1<span class="keyword">)</span> <span class="keyword">else</span> loop2 <span class="keyword">(</span>inp<span class="keyword">,</span> p0<span class="keyword">,</span> n0<span class="keyword">)</span>
+  <span class="comment">// end of [if]</span>
+<span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_set&lt;<span class="staexp">char</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p1<span class="keyword">,</span> CNUL<span class="keyword">)</span></span> <span class="keyword">in</span> $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>Strptr1<span class="keyword">}</span></span><span class="keyword">(</span>p0<span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span> <span class="comment">// end of [loop]</span>
+<span class="comment">//</span>
+<span class="keyword">and</span> loop2
+<span class="keyword">(</span>
+  inp<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">,</span> p0<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> n0<span class="keyword">:</span> <span class="staexp">size_t</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">Strptr1</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> bsz <span class="keyword">=</span> succ<span class="keyword">(</span>n0<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> bsz2 <span class="keyword">=</span> g1ofg0<span class="keyword">(</span>bsz + bsz<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pf</span><span class="keyword">,</span> <span class="prfexp">pfgc</span> <span class="keyword">|</span> p0_<span class="keyword">)</span> <span class="keyword">=</span> malloc_gc <span class="keyword">(</span>bsz2<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> p0_ <span class="keyword">=</span> $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">}</span></span><span class="keyword">(</span><span class="keyword">(</span><span class="prfexp">pf</span><span class="keyword">,</span> <span class="prfexp">pfgc</span> <span class="keyword">|</span> p0_<span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> _<span class="comment">(*ptr*)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$extfcall</span> <span class="keyword">(</span>ptr<span class="keyword">,</span> "atslib_memcpy"<span class="keyword">,</span> p0_<span class="keyword">,</span> p0<span class="keyword">,</span> n0<span class="keyword">)</span></span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> strptr_free <span class="keyword">(</span>$UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>Strptr1<span class="keyword">}</span></span><span class="keyword">(</span>p0<span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> n0_ <span class="keyword">=</span> pred<span class="keyword">(</span>g0ofg1<span class="keyword">(</span>bsz2<span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> p1_ <span class="keyword">=</span> add_ptr_bsz <span class="keyword">(</span>p0_<span class="keyword">,</span> n0<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span>inp<span class="keyword">,</span> p0_<span class="keyword">,</span> n0_<span class="keyword">,</span> p1_<span class="keyword">,</span> bsz<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [loop2]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> bsz <span class="keyword">=</span>
+  fileref_get_file_string$bufsize <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> bsz <span class="keyword">=</span> i2sz<span class="keyword">(</span>bsz<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pf</span><span class="keyword">,</span> <span class="prfexp">pfgc</span> <span class="keyword">|</span> p0_<span class="keyword">)</span> <span class="keyword">=</span> malloc_gc <span class="keyword">(</span>bsz<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> p0_ <span class="keyword">=</span> $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">}</span></span><span class="keyword">(</span><span class="keyword">(</span><span class="prfexp">pf</span><span class="keyword">,</span> <span class="prfexp">pfgc</span> <span class="keyword">|</span> p0_<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> n0_ <span class="keyword">=</span> pred<span class="keyword">(</span>bsz<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span>inp<span class="keyword">,</span> p0_<span class="keyword">,</span> n0_<span class="keyword">,</span> p0_<span class="keyword">,</span> n0_<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fileref_get_file_string]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="extcode"><span class="extcode">%{
+extern
+atstype_ptr
+atspre_fileref_get_line_string_main2
+(
+  atstype_int bsz0
+, atstype_ptr filp0
+, atstype_ref nlen // int *nlen
+)
+{
+//
+  int bsz = bsz0 ;
+  FILE *filp = (FILE*)filp0 ;
+  int ofs = 0, ofs2 ;
+  char *buf, *buf2, *pres ;
+  buf = atspre_malloc_gc(bsz) ;
+//
+  while (1) {
+    buf2 = buf+ofs ;
+    pres = fgets(buf2, bsz-ofs, filp) ;
+    if (!pres)
+    {
+      if (feof(filp))
+      {
+        *buf2 = '\000' ;
+        *(int*)nlen = ofs ; return buf ;
+      } else {
+        atspre_mfree_gc(buf) ;
+        *(int*)nlen = -1 ; return (char*)0 ;
+      } // end of [if]
+    }
+    ofs2 = strlen(buf2) ;
+    if (ofs2==0) return buf ;
+    ofs += ofs2 ; // HX: ofs &gt; 0
+//
+// HX: the newline symbol needs to be trimmed:
+//
+    if (buf[ofs-1]=='\n')
+    {
+      buf[ofs-1] = '\0'; *(int*)nlen = ofs-1 ; return buf ;
+    }
+//
+// HX: there is room // so there are no more chars:
+//
+    if (ofs+1 &lt; bsz) { *(int*)nlen = ofs ; return buf ; }
+//
+// HX: there is no room // so another call to [fgets] is needed:
+//
+    bsz *= 2 ;
+    buf2 = buf ; buf = atspre_malloc_gc(bsz) ; memcpy(buf, buf2, ofs) ;
+    atspre_mfree_gc(buf2) ;
+  } // end of [while]
+//
+  return buf ; // HX: deadcode
+//
+} // end of [atspre_fileref_get_line_string_main2]
+%}</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+fileref_get_word <span class="keyword">(</span>inp<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">vtypedef</span>
+<span class="staexp">res <span class="keyword">=</span> <span class="staexp">List0_vt</span><span class="keyword">(</span><span class="staexp">charNZ</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+loop1 <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">res</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> c <span class="keyword">=</span> $STDIO<span class="keyword">.</span>fgetc0 <span class="keyword">(</span>inp<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span>
+<span class="keyword">(</span>c <span class="keyword">&gt;</span> <span class="dynexp">0</span><span class="keyword">)</span>
+<span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> c <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>charNZ<span class="keyword">}</span></span><span class="keyword">(</span>c<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> test <span class="keyword">=</span> fileref_get_word$isalpha&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>c<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> test <span class="keyword">then</span> loop2 <span class="keyword">(</span>c<span class="keyword">,</span> list_vt_nil<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> loop1 <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [then]</span>
+<span class="keyword">else</span> list_vt_nil <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span> <span class="comment">// end of [loop1]</span>
+
+<span class="keyword">and</span> loop2
+<span class="keyword">(</span>
+  c<span class="keyword">:</span> <span class="staexp">charNZ</span><span class="keyword">,</span> cs<span class="keyword">:</span> <span class="staexp">res</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">res</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> c2 <span class="keyword">=</span> $STDIO<span class="keyword">.</span>fgetc0 <span class="keyword">(</span>inp<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span>
+<span class="keyword">(</span>c2 <span class="keyword">&gt;</span> <span class="dynexp">0</span><span class="keyword">)</span>
+<span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> c2 <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>charNZ<span class="keyword">}</span></span><span class="keyword">(</span>c2<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> test <span class="keyword">=</span> fileref_get_word$isalpha&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>c2<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> test <span class="keyword">then</span> loop2 <span class="keyword">(</span>c2<span class="keyword">,</span> list_vt_cons<span class="keyword">(</span>c<span class="keyword">,</span> cs<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> list_vt_cons<span class="keyword">(</span>c<span class="keyword">,</span> cs<span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [then]</span>
+<span class="keyword">else</span> list_vt_cons<span class="keyword">(</span>c<span class="keyword">,</span> cs<span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [loop2]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> cs <span class="keyword">=</span> loop1 <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">case+</span> cs <span class="keyword">of</span>
+  <span class="keyword">|</span> list_vt_cons _ <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> str <span class="keyword">=</span>
+        string_make_rlist <span class="keyword">(</span>$UN<span class="keyword">.</span>list_vt2t<span class="keyword">(</span>cs<span class="keyword">)</span><span class="keyword">)</span></span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> list_vt_free <span class="keyword">(</span>cs<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      strnptr2strptr <span class="keyword">(</span>str<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [list_vt_cons]</span>
+  <span class="keyword">|</span> <span class="keyword">~</span>list_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> strptr_null <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fileref_get_word]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+fileref_get_word$isalpha <span class="keyword">(</span>charNZ<span class="keyword">)</span> <span class="keyword">=</span> isalpha <span class="keyword">(</span>charNZ<span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+fileref_foreach
+  <span class="keyword">(</span>inp<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">var</span> env<span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">in</span>
+  fileref_foreach_env <span class="keyword">(</span>inp<span class="keyword">,</span> env<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fileref_foreach]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">local</span>
+<span class="comment">//</span>
+<span class="keyword">staload</span> "libc/SATS/stdio.sats"
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span> fread
+  <span class="keyword">(</span><span class="staexp">ptr</span><span class="keyword">,</span> <span class="staexp">size_t</span><span class="keyword">,</span> <span class="staexp">size_t</span><span class="keyword">,</span> <span class="staexp">FILEref</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">Size</span> <span class="keyword">=</span> "mac#atslib_fread"</span>
+<span class="comment">//</span>
+<span class="keyword">in</span> <span class="comment">(* in of [local] *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+fileref_foreach_env
+   <span class="keyword">(</span>inp<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="prfexp">pf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">b0ytes</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span></span>
+<span class="keyword">|</span> inp<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">,</span> bufp<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span><span class="keyword">,</span> bsz<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> env<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">env</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> bsz2 <span class="keyword">=</span> fread <span class="keyword">(</span>bufp<span class="keyword">,</span> i2sz<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">,</span> bsz<span class="keyword">,</span> inp<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">[</span><span class="staexp">n2<span class="keyword">:</span>int</span><span class="keyword">]</span> EQINT<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> g1uint_get_index <span class="keyword">(</span>bsz2<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> bsz2 <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span>
+<span class="keyword">{</span>
+  <span class="dynexp"><span class="keyword">val</span> A <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>arrayref<span class="keyword">(</span>char<span class="keyword">,</span>n2<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>bufp<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fileref_foreach$fworkv&lt;<span class="staexp">env</span><span class="keyword">&gt;</span> <span class="keyword">(</span>A<span class="keyword">,</span> bsz2<span class="keyword">,</span> env<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> inp<span class="keyword">,</span> bufp<span class="keyword">,</span> bsz<span class="keyword">,</span> env<span class="keyword">)</span></span>
+<span class="keyword">}</span> <span class="comment">(* end of [if] *)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [loop]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> bsz <span class="keyword">=</span> fileref_foreach$bufsize&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pf1</span><span class="keyword">,</span> <span class="prfexp">pf2</span> <span class="keyword">|</span> bufp<span class="keyword">)</span> <span class="keyword">=</span> memory$alloc&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>bsz<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span><span class="prfexp">pf1</span> <span class="keyword">|</span> inp<span class="keyword">,</span> bufp<span class="keyword">,</span> bsz<span class="keyword">,</span> env<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> memory$free&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span><span class="prfexp">pf1</span><span class="keyword">,</span> <span class="prfexp">pf2</span> <span class="keyword">|</span> bufp<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [fileref_foreach_env]</span>
+
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+fileref_foreach$bufsize <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> i2sz<span class="keyword">(</span><span class="dynexp">4</span> * <span class="dynexp">1024</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+fileref_foreach$fworkv
+  <span class="keyword">(</span>A<span class="keyword">,</span> n<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
+array_foreach$cont <span class="keyword">(</span>x<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> true</span>
+<span class="prfexp"><span class="keyword">implement</span>
+array_foreach$fwork&lt;<span class="staexp">char</span><span class="keyword">&gt;&lt;</span><span class="staexp">env</span><span class="keyword">&gt;</span>
+  <span class="keyword">(</span>x<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> fileref_foreach$fwork&lt;<span class="staexp">env</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> env<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  ignoret <span class="keyword">(</span>arrayref_foreach_env&lt;<span class="staexp">char</span><span class="keyword">&gt;&lt;</span><span class="staexp">env</span><span class="keyword">&gt;</span> <span class="keyword">(</span>A<span class="keyword">,</span> n<span class="keyword">,</span> env<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fileref_foreach$fworkv]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [filebas.dats] *)</span>
+</pre>

@@ -1,0 +1,272 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/stream.atxt
+** Time of generation: Sat Jun 27 21:39:14 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">sortdef</span> t0p <span class="keyword">=</span> <span class="keyword">t@ype</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: lazy streams</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">datatype</span>
+stream_con <span class="staexp"><span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype+</span><span class="keyword">)</span></span> <span class="keyword">=</span>
+  <span class="keyword">|</span> stream_nil <span class="keyword">of</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">|</span> stream_cons <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">where</span> <span class="staexp">stream <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">lazy <span class="keyword">(</span><span class="staexp">stream_con<span class="keyword">(</span><span class="staexp">a<span class="keyword">)</span><span class="keyword">)</span></span></span></span></span></span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">exception</span> <span class="dynexp">StreamSubscriptExn <span class="keyword">of</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(*
+fun StreamSubscriptExn ():&lt;&gt; exn = "mac#StreamSubscriptExn_make"
+fun isStreamSubscriptExn (x: !exn):&lt;&gt; bool = "mac#isStreamSubscriptExn"
+*)</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream2list
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">List0_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [stream2list]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_nth_exn
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">intGte</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="comment">// end of [stream_nth_exn]</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_nth_opt
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">intGte</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">Option_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [stream_nth_opt]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_take_exn<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">// end of [stream_take_lte]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_drop_exn
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">intGte</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [stream_drop_exn]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_append
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_concat <span class="keyword">(</span>xss<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_filter$pred <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_filter <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_filter_fun
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> pred<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp"><span class="keyword">fun</span></span><span class="keyword">&gt;</span> <span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [stream_filter_fun]</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_filter_cloref
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> pred<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref</span><span class="keyword">&gt;</span> <span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [stream_filter_cloref]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_map
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_map$fopr <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="comment">(*none*)</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_map_fun
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> f<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp"><span class="keyword">fun</span></span><span class="keyword">&gt;</span> <span class="staexp">b</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_map_cloref
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> f<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref</span><span class="keyword">&gt;</span> <span class="staexp">b</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_imap<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_imap$fopr <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">intGte</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_imap_fun
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> f<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">intGte</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp"><span class="keyword">fun</span></span><span class="keyword">&gt;</span> <span class="staexp">b</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span> <span class="comment">// end-of-fun</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_imap_cloref
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> f<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">intGte</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref</span><span class="keyword">&gt;</span> <span class="staexp">b</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span> <span class="comment">// end-of-fun</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a1<span class="keyword">,</span>a2<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_map2
+<span class="keyword">(</span>
+  xs1<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a1</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a2</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span> <span class="comment">// end-of-fun</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a1<span class="keyword">,</span>a2<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_map2$fopr <span class="keyword">(</span>x1<span class="keyword">:</span> <span class="staexp">a1</span><span class="keyword">,</span> x2<span class="keyword">:</span> <span class="staexp">a2</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">b</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a1<span class="keyword">,</span>a2<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_map2_fun
+<span class="keyword">(</span>
+  xs1<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a1</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a2</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> f<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a1</span><span class="keyword">,</span> <span class="staexp">a2</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp"><span class="keyword">fun</span></span><span class="keyword">&gt;</span> <span class="staexp">b</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span> <span class="comment">// end-of-fun</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a1<span class="keyword">,</span>a2<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_map2_cloref
+<span class="keyword">(</span>
+  xs1<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a1</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a2</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> f<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a1</span><span class="keyword">,</span> <span class="staexp">a2</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref</span><span class="keyword">&gt;</span> <span class="staexp">b</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span> <span class="comment">// end-of-fun</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_merge$cmp <span class="keyword">(</span>x1<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> x2<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_merge
+  <span class="keyword">(</span>xs1<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_merge_fun
+<span class="keyword">(</span>
+  xs1<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp"><span class="keyword">fun</span></span><span class="keyword">&gt;</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span> <span class="comment">// end of [stream_merge_fun]</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_merge_cloref
+<span class="keyword">(</span>
+  xs1<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref</span><span class="keyword">&gt;</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span> <span class="comment">// end of [stream_merge_cloref]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_mergeq$cmp <span class="keyword">(</span>x1<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> x2<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_mergeq
+  <span class="keyword">(</span>xs1<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_mergeq_fun
+<span class="keyword">(</span>
+  xs1<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp"><span class="keyword">fun</span></span><span class="keyword">&gt;</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span> <span class="comment">// end of [stream_mergeq_fun]</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_mergeq_cloref
+<span class="keyword">(</span>
+  xs1<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref</span><span class="keyword">&gt;</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span> <span class="comment">// end of [stream_mergeq_cloref]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_tabulate <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_tabulate$fopr <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">intGte</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_tabulate_fun <span class="keyword">(</span>f<span class="keyword">:</span> <span class="staexp">intGte</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_tabulate_cloref <span class="keyword">(</span>f<span class="keyword">:</span> <span class="staexp">intGte</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>env<span class="keyword">:</span>vt0p
+<span class="keyword">}</span></span> stream_foreach$cont <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> env<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">env</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>env<span class="keyword">:</span>vt0p
+<span class="keyword">}</span></span> stream_foreach$fwork <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> env<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">env</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_foreach <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>env<span class="keyword">:</span>vt0p
+<span class="keyword">}</span></span> stream_foreach_env <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">&amp;</span><span class="staexp">env</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_stream$sep <span class="keyword">(</span>out<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+fprint_stream
+  <span class="keyword">(</span>out<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">,</span> xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// overloading for certain symbols</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> stream_nth_exn</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [stream.sats] *)</span>
+</pre>

@@ -1,0 +1,111 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/checkast.atxt
+** Time of generation: Sat Jun 27 21:39:07 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: gmhwxiATgmailDOTcom *)</span>
+<span class="comment">(* Start time: December, 2013 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">#define</span>
+ATS_PACKNAME "ATSLIB.prelude.checkast"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">sortdef</span> t0p <span class="keyword">=</span> <span class="keyword">t@ype</span> <span class="keyword">and</span> vt0p <span class="keyword">=</span> <span class="keyword">viewt@ype</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+checkast_gintLt<span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0int</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">i</span><span class="keyword">,</span> msg<span class="keyword">:</span> <span class="staexp">RD</span><span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">g1intLt</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+checkast_gintLte<span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0int</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">i</span><span class="keyword">,</span> msg<span class="keyword">:</span> <span class="staexp">RD</span><span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">g1intLte</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+checkast_gintGt<span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0int</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">i</span><span class="keyword">,</span> msg<span class="keyword">:</span> <span class="staexp">RD</span><span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">g1intGt</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+checkast_gintGte<span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0int</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">i</span><span class="keyword">,</span> msg<span class="keyword">:</span> <span class="staexp">RD</span><span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">g1intGte</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+checkast_gintBtw<span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0int</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">i</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">j</span><span class="keyword">,</span> msg<span class="keyword">:</span> <span class="staexp">RD</span><span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">g1intBtw</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">,</span> <span class="staexp">j</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+checkast_gintBtwe<span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0int</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">i</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">j</span><span class="keyword">,</span> msg<span class="keyword">:</span> <span class="staexp">RD</span><span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">g1intBtwe</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">,</span> <span class="staexp">j</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">macdef</span>
+ckastloc_gintLt <span class="dynexp"><span class="keyword">(</span>x<span class="keyword">,</span> i<span class="keyword">)</span></span> <span class="keyword">=</span> checkast_gintLt <span class="keyword">(</span><span class="dynexp"><span class="keyword">,(</span>x<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>i<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">$mylocation</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">macdef</span>
+ckastloc_gintLte <span class="dynexp"><span class="keyword">(</span>x<span class="keyword">,</span> i<span class="keyword">)</span></span> <span class="keyword">=</span> checkast_gintLte <span class="keyword">(</span><span class="dynexp"><span class="keyword">,(</span>x<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>i<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">$mylocation</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">macdef</span>
+ckastloc_gintGt <span class="dynexp"><span class="keyword">(</span>x<span class="keyword">,</span> i<span class="keyword">)</span></span> <span class="keyword">=</span> checkast_gintGt <span class="keyword">(</span><span class="dynexp"><span class="keyword">,(</span>x<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>i<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">$mylocation</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">macdef</span>
+ckastloc_gintGte <span class="dynexp"><span class="keyword">(</span>x<span class="keyword">,</span> i<span class="keyword">)</span></span> <span class="keyword">=</span> checkast_gintGte <span class="keyword">(</span><span class="dynexp"><span class="keyword">,(</span>x<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>i<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">$mylocation</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">macdef</span>
+ckastloc_gintBtw <span class="dynexp"><span class="keyword">(</span>x<span class="keyword">,</span> i<span class="keyword">,</span> j<span class="keyword">)</span></span> <span class="keyword">=</span> checkast_gintBtw <span class="keyword">(</span><span class="dynexp"><span class="keyword">,(</span>x<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>i<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>j<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">$mylocation</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">macdef</span>
+ckastloc_gintBtwe <span class="dynexp"><span class="keyword">(</span>x<span class="keyword">,</span> i<span class="keyword">,</span> j<span class="keyword">)</span></span> <span class="keyword">=</span> checkast_gintBtwe <span class="keyword">(</span><span class="dynexp"><span class="keyword">,(</span>x<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>i<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>j<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">$mylocation</span></span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+checkast_Ptr1 <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> msg<span class="keyword">:</span> <span class="staexp">RD</span><span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">Ptr1</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">macdef</span>
+ckastloc_Ptr1 <span class="dynexp"><span class="keyword">(</span>x<span class="keyword">)</span></span> <span class="keyword">=</span> checkast_Ptr1 <span class="keyword">(</span><span class="dynexp"><span class="keyword">,(</span>x<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">$mylocation</span></span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+checkast_Strptr1 <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">Strptr0</span><span class="keyword">,</span> msg<span class="keyword">:</span> <span class="staexp">RD</span><span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">Strptr1</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">macdef</span>
+ckastloc_Strptr1 <span class="dynexp"><span class="keyword">(</span>x<span class="keyword">)</span></span> <span class="keyword">=</span> checkast_Strptr1 <span class="keyword">(</span><span class="dynexp"><span class="keyword">,(</span>x<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">$mylocation</span></span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [checkast.sats] *)</span>
+</pre>

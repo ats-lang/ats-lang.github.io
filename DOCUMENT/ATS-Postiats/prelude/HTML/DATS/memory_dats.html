@@ -1,0 +1,73 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/DATS/CODEGEN/memory.atxt
+** Time of generation: Sat Jun 27 21:39:20 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">staload</span>
+UN <span class="keyword">=</span> "prelude/SATS/unsafe.sats"
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+memory$free<span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span>
+  <span class="keyword">(</span><span class="prfexp">pfat</span><span class="keyword">,</span> <span class="prfexp">pfmf</span> <span class="keyword">|</span> p<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span> pfgc <span class="keyword">=</span> $UN<span class="keyword">.</span>castview0<span class="staexp"><span class="keyword">{</span>mfree_gc_v<span class="keyword">(</span>l<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>pfmf<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  mfree_gc <span class="keyword">(</span><span class="prfexp">pfat</span><span class="keyword">,</span> <span class="prfexp">pfgc</span> <span class="keyword">|</span> p<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [memory$free]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+memory$alloc
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>bsz<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">[</span><span class="staexp">l<span class="keyword">:</span>addr</span><span class="keyword">]</span>
+  <span class="keyword">(</span><span class="prfexp">pfat</span><span class="keyword">,</span> <span class="prfexp">pfgc</span> <span class="keyword">|</span> p<span class="keyword">)</span> <span class="keyword">=</span> malloc_gc <span class="keyword">(</span>bsz<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">prval</span> pfmf <span class="keyword">=</span> $UN<span class="keyword">.</span>castview0<span class="staexp"><span class="keyword">{</span>memory$free_v<span class="keyword">(</span>l<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>pfgc<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">(</span><span class="prfexp">pfat</span><span class="keyword">,</span> <span class="prfexp">pfmf</span> <span class="keyword">|</span> p<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [memory$alloc]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [memory.dats] *)</span>
+</pre>

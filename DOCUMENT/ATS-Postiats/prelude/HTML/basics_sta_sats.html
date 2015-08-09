@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <style type="text/css">
+    .patsyntax {color:#808080;background-color:#E0E0E0;}
+    .patsyntax span.keyword {color:#000000;font-weight:bold;}
+    .patsyntax span.comment {color:#787878;font-style:italic;}
+    .patsyntax span.extcode {color:#A52A2A;}
+    .patsyntax span.neuexp  {color:#800080;}
+    .patsyntax span.staexp  {color:#0000F0;}
+    .patsyntax span.prfexp  {color:#603030;}
+    .patsyntax span.dynexp  {color:#F00000;}
+    .patsyntax span.stalab  {color:#0000F0;font-style:italic}
+    .patsyntax span.dynlab  {color:#F00000;font-style:italic}
+    .patsyntax span.dynstr  {color:#008000;font-style:normal}
+    .patsyntax span.stacstdec  {text-decoration:none;}
+    .patsyntax span.stacstuse  {color:#0000CF;text-decoration:underline;}
+    .patsyntax span.dyncstdec  {text-decoration:none;}
+    .patsyntax span.dyncstuse  {color:#B80000;text-decoration:underline;}
+    .patsyntax span.dyncst_implement  {color:#B80000;text-decoration:underline;}
+  </style>
+</head>
+<body class="patsyntax">
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// Author of the file:</span>
+<span class="comment">// Hongwei Xi (gmhwxiATgmailDOTcom)</span>
+<span class="comment">// Start Time: September, 2011</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">#include</span> "prelude/params.hats"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">#if</span> <span class="neuexp">VERBOSE_PRELUDE</span> <span class="keyword">#then</span>
+<span class="neuexp"><span class="keyword">#print</span> "Loading [basics_sta.sats] starts!\n"</span>
+<span class="keyword">#endif</span> <span class="comment">// end of [VERBOSE_PRELUDE]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">#define</span> RD<span class="keyword">(</span>x<span class="keyword">)</span> x</span> <span class="comment">// for commenting: read-only</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">(*
+//
+// HX-2012-05-24:
+// the following two styles are equivalent:
+//
+stadef
+bool_kind = $extkind"atstype_bool"
+tkindef bool_kind = "atstype_bool"
+*)</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span> bool_kind <span class="keyword">=</span> "atstype_bool"</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+bool_t0ype <span class="keyword">=</span> tkind_t0ype <span class="keyword">(</span>bool_kind<span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">bool <span class="keyword">=</span> <span class="staexp">bool_t0ype</span></span> <span class="comment">// shorthand</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+bool_bool_t0ype <span class="keyword">(</span>b<span class="keyword">:</span> bool<span class="keyword">)</span> <span class="keyword">=</span> bool_t0ype</span>
+<span class="keyword">stadef</span> <span class="staexp">bool <span class="keyword">=</span> <span class="staexp">bool_bool_t0ype</span></span> <span class="comment">// shorthand</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">Bool <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>b<span class="keyword">:</span>bool<span class="keyword">]</span></span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">boolLte
+  <span class="keyword">(</span><span class="staexp">b1<span class="keyword">:</span>bool</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>b2<span class="keyword">:</span>bool<span class="keyword">]</span></span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">b2</span> <span class="staexp">&lt;=</span> <span class="staexp">b1</span><span class="keyword">)</span></span> <span class="comment">// b2 -&gt; b1</span>
+<span class="keyword">typedef</span> <span class="staexp">boolGte
+  <span class="keyword">(</span><span class="staexp">b1<span class="keyword">:</span>bool</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>b2<span class="keyword">:</span>bool<span class="keyword">]</span></span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">b2</span> <span class="staexp">&gt;=</span> <span class="staexp">b1</span><span class="keyword">)</span></span> <span class="comment">// b1 -&gt; b2</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abst@ype</span> atstype_bool</span> <span class="comment">// HX-2013-09: for internal use</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">tkindef</span>
+byte_kind <span class="keyword">=</span> "atstype_byte"</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+byte_t0ype <span class="keyword">=</span> tkind_t0ype <span class="keyword">(</span>byte_kind<span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">byte <span class="keyword">=</span> <span class="staexp">byte_t0ype</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// char is signed</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">sortdef</span> int8 <span class="keyword">=</span> <span class="keyword">{</span>
+  i<span class="keyword">:</span>int <span class="keyword">|</span> <span class="keyword">~</span>128 &lt;= i<span class="keyword">;</span> i <span class="keyword">&lt;</span> 128
+<span class="keyword">}</span></span> <span class="comment">// end of [int8]</span>
+<span class="staexp"><span class="keyword">sortdef</span> uint8 <span class="keyword">=</span>
+  <span class="keyword">{</span> i<span class="keyword">:</span>int <span class="keyword">|</span> 0 &lt;= i<span class="keyword">;</span> i <span class="keyword">&lt;</span> 256 <span class="keyword">}</span></span>
+<span class="comment">// end of [uint8]</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span> char_kind <span class="keyword">=</span> "atstype_char"</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+char_t0ype <span class="keyword">=</span> tkind_t0ype <span class="keyword">(</span>char_kind<span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">char <span class="keyword">=</span> <span class="staexp">char_t0ype</span></span> <span class="comment">// shorthand</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+char_int_t0ype <span class="keyword">(</span>c<span class="keyword">:</span>int<span class="keyword">)</span> <span class="keyword">=</span> char_t0ype</span>
+<span class="keyword">stadef</span> <span class="staexp">char <span class="keyword">=</span> <span class="staexp">char_int_t0ype</span></span> <span class="comment">// shorthand</span>
+<span class="keyword">typedef</span> <span class="staexp">Char <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>c<span class="keyword">:</span>int8<span class="keyword">]</span></span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">charNZ <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>c<span class="keyword">:</span>int8 <span class="keyword">|</span> c != 0<span class="keyword">]</span></span> <span class="staexp">char</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">// signed characters</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span> schar_kind <span class="keyword">=</span> "atstype_schar"</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+schar_t0ype <span class="keyword">=</span> tkind_t0ype <span class="keyword">(</span>schar_kind<span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">schar <span class="keyword">=</span> <span class="staexp">schar_t0ype</span></span> <span class="comment">// shorthand</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+schar_int_t0ype <span class="keyword">(</span>c<span class="keyword">:</span>int<span class="keyword">)</span> <span class="keyword">=</span> schar_t0ype</span>
+<span class="keyword">stadef</span> <span class="staexp">schar <span class="keyword">=</span> <span class="staexp">schar_int_t0ype</span></span> <span class="comment">// shorthand</span>
+<span class="keyword">typedef</span> <span class="staexp">sChar <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>c<span class="keyword">:</span>int8<span class="keyword">]</span></span> <span class="staexp">schar</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">// unsigned characters</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span> uchar_kind <span class="keyword">=</span> "atstype_uchar"</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+uchar_t0ype <span class="keyword">=</span> tkind_t0ype <span class="keyword">(</span>uchar_kind<span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">uchar <span class="keyword">=</span> <span class="staexp">uchar_t0ype</span></span> <span class="comment">// shorthand</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+uchar_int_t0ype <span class="keyword">(</span>c<span class="keyword">:</span>int<span class="keyword">)</span> <span class="keyword">=</span> uchar_t0ype</span>
+<span class="keyword">stadef</span> <span class="staexp">uchar <span class="keyword">=</span> <span class="staexp">uchar_int_t0ype</span></span> <span class="comment">// shorthand</span>
+<span class="keyword">typedef</span> <span class="staexp">uChar <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>c<span class="keyword">:</span>uint8<span class="keyword">]</span></span> <span class="staexp">uchar</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">sortdef</span> tk <span class="keyword">=</span> tkind</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+g0int_t0ype <span class="keyword">(</span>tk<span class="keyword">:</span>tk<span class="keyword">)</span> <span class="keyword">=</span> tkind_t0ype <span class="keyword">(</span>tk<span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">g0int <span class="keyword">=</span> <span class="staexp">g0int_t0ype</span></span> <span class="comment">// shorthand</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+g1int_int_t0ype <span class="keyword">(</span>tk<span class="keyword">:</span>tkind<span class="keyword">,</span> int<span class="keyword">)</span> <span class="keyword">=</span> g0int <span class="keyword">(</span>tk<span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">g1int <span class="keyword">=</span> <span class="staexp">g1int_int_t0ype</span></span> <span class="comment">// shorthand</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">g1int <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tkind</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1int0 <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tkind</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int <span class="keyword">|</span> i &gt;= 0<span class="keyword">]</span></span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1int1 <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tkind</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int <span class="keyword">|</span> i &gt;= 1<span class="keyword">]</span></span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">g1intLt
+  <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int <span class="keyword">|</span> i <span class="keyword">&lt;</span> n<span class="keyword">]</span></span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1intLte
+  <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int <span class="keyword">|</span> i &lt;= n<span class="keyword">]</span></span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1intGt
+  <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int <span class="keyword">|</span> i <span class="keyword">&gt;</span> n<span class="keyword">]</span></span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1intGte
+  <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int <span class="keyword">|</span> i &gt;= n<span class="keyword">]</span></span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1intBtw
+  <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">,</span> <span class="staexp">lb<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">ub<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span> int <span class="keyword">|</span> lb &lt;= i<span class="keyword">;</span> i <span class="keyword">&lt;</span> ub<span class="keyword">]</span></span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1intBtwe
+  <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">,</span> <span class="staexp">lb<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">ub<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span> int <span class="keyword">|</span> lb &lt;= i<span class="keyword">;</span> i &lt;= ub<span class="keyword">]</span></span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+g0uint_t0ype <span class="keyword">(</span>tk<span class="keyword">:</span>tkind<span class="keyword">)</span> <span class="keyword">=</span> tkind_t0ype <span class="keyword">(</span>tk<span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">g0uint <span class="keyword">=</span> <span class="staexp">g0uint_t0ype</span></span> <span class="comment">// shorthand</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+g1uint_int_t0ype <span class="keyword">(</span>tk<span class="keyword">:</span>tkind<span class="keyword">,</span> int<span class="keyword">)</span> <span class="keyword">=</span> g0uint <span class="keyword">(</span>tk<span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">g1uint <span class="keyword">=</span> <span class="staexp">g1uint_int_t0ype</span></span> <span class="comment">// shorthand</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">g1uint <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1uint0 <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int <span class="keyword">|</span> i &gt;= 0<span class="keyword">]</span></span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1uint1 <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int <span class="keyword">|</span> i &gt;= 1<span class="keyword">]</span></span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">g1uintLt
+  <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i <span class="keyword">&lt;</span> n<span class="keyword">]</span></span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1uintLte
+  <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i &lt;= n<span class="keyword">]</span></span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1uintGt
+  <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int <span class="keyword">|</span> i <span class="keyword">&gt;</span> n<span class="keyword">]</span></span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1uintGte
+  <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int <span class="keyword">|</span> i &gt;= n<span class="keyword">]</span></span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1uintBtw
+  <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">,</span> <span class="staexp">lb<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">ub<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span> int <span class="keyword">|</span> lb &lt;= i<span class="keyword">;</span> i <span class="keyword">&lt;</span> ub<span class="keyword">]</span></span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">g1uintBtwe
+  <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">,</span> <span class="staexp">lb<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">ub<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span> int <span class="keyword">|</span> lb &lt;= i<span class="keyword">;</span> i &lt;= ub<span class="keyword">]</span></span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span> int_kind <span class="keyword">=</span> "atstype_int"</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">int0 <span class="keyword">=</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">int_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">int1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">int_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">stadef</span> <span class="staexp">int <span class="keyword">=</span> <span class="staexp">int1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">int <span class="keyword">=</span> <span class="staexp">int0</span></span> <span class="comment">// 1st-select</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">Int <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">int1</span> <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">Nat <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int <span class="keyword">|</span> i &gt;= 0<span class="keyword">]</span></span> <span class="staexp">int1</span> <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">intLt <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1intLt</span> <span class="keyword">(</span><span class="staexp">int_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">intLte <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1intLte</span> <span class="keyword">(</span><span class="staexp">int_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">intGt <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1intGt</span> <span class="keyword">(</span><span class="staexp">int_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">intGte <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1intGte</span> <span class="keyword">(</span><span class="staexp">int_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">intBtw <span class="keyword">(</span><span class="staexp">lb<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">ub<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1intBtw</span> <span class="keyword">(</span><span class="staexp">int_kind</span><span class="keyword">,</span> <span class="staexp">lb</span><span class="keyword">,</span> <span class="staexp">ub</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">intBtwe <span class="keyword">(</span><span class="staexp">lb<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">ub<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1intBtwe</span> <span class="keyword">(</span><span class="staexp">int_kind</span><span class="keyword">,</span> <span class="staexp">lb</span><span class="keyword">,</span> <span class="staexp">ub</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">Two <span class="keyword">=</span> <span class="staexp">intBtw</span> <span class="keyword">(</span><span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">2</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">Sgn <span class="keyword">=</span> <span class="staexp">intBtwe</span> <span class="keyword">(</span><span class="staexp"><span class="keyword">~</span></span><span class="staexp">1</span><span class="keyword">,</span> <span class="staexp">1</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">natLt <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">intBtw</span> <span class="keyword">(</span><span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">natLte <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">intBtwe</span> <span class="keyword">(</span><span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span> uint_kind <span class="keyword">=</span> "atstype_uint"</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">uint0 <span class="keyword">=</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">uint_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">uint1 <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">uint_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">stadef</span> <span class="staexp">uint <span class="keyword">=</span> <span class="staexp">uint1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">uint <span class="keyword">=</span> <span class="staexp">uint0</span></span> <span class="comment">// 1st-select</span>
+<span class="comment">//</span>
+<span class="keyword">stadef</span> <span class="staexp">uInt <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>n<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">uint1</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">uintLt <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uintLt</span> <span class="keyword">(</span><span class="staexp">uint_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">uintLte <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uintLte</span> <span class="keyword">(</span><span class="staexp">uint_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">uintGt <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uintGt</span> <span class="keyword">(</span><span class="staexp">uint_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">uintGte <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uintGte</span> <span class="keyword">(</span><span class="staexp">uint_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">uintBtw <span class="keyword">(</span><span class="staexp">lb<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">ub<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uintBtw</span> <span class="keyword">(</span><span class="staexp">uint_kind</span><span class="keyword">,</span> <span class="staexp">lb</span><span class="keyword">,</span> <span class="staexp">ub</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">uintBtwe <span class="keyword">(</span><span class="staexp">lb<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">ub<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uintBtwe</span> <span class="keyword">(</span><span class="staexp">uint_kind</span><span class="keyword">,</span> <span class="staexp">lb</span><span class="keyword">,</span> <span class="staexp">ub</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abst@ype</span> atstype_int</span> <span class="comment">// HX-2013-09: for internal use</span>
+<span class="staexp"><span class="keyword">abst@ype</span> atstype_uint</span> <span class="comment">// HX-2013-09: for internal use</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+lint_kind <span class="keyword">=</span> "atstype_lint"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">lint0 <span class="keyword">=</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">lint_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">lint1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">lint_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">lint <span class="keyword">=</span> <span class="staexp">lint1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">lint <span class="keyword">=</span> <span class="staexp">lint0</span></span> <span class="comment">// 1st-select</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+ulint_kind <span class="keyword">=</span> "atstype_ulint"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">ulint0 <span class="keyword">=</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">ulint_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">ulint1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">ulint_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">ulint <span class="keyword">=</span> <span class="staexp">ulint1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">ulint <span class="keyword">=</span> <span class="staexp">ulint0</span></span> <span class="comment">// 1st-select</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+llint_kind <span class="keyword">=</span> "atstype_llint"</span>
+<span class="keyword">typedef</span> <span class="staexp">llint0 <span class="keyword">=</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">llint_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">llint1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">llint_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">llint <span class="keyword">=</span> <span class="staexp">llint1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">llint <span class="keyword">=</span> <span class="staexp">llint0</span></span> <span class="comment">// 1st-select</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+ullint_kind <span class="keyword">=</span> "atstype_ullint"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">ullint0 <span class="keyword">=</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">ullint_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">ullint1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">ullint_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">ullint <span class="keyword">=</span> <span class="staexp">ullint1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">ullint <span class="keyword">=</span> <span class="staexp">ullint0</span></span> <span class="comment">// 1st-select</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+intptr_kind <span class="keyword">=</span> "atstype_intptr"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">intptr0 <span class="keyword">=</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">intptr_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">intptr1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">intptr_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">intptr <span class="keyword">=</span> <span class="staexp">intptr1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">intptr <span class="keyword">=</span> <span class="staexp">intptr0</span></span> <span class="comment">// 1st-select</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+uintptr_kind <span class="keyword">=</span> "atstype_uintptr"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">uintptr0 <span class="keyword">=</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">uintptr_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">uintptr1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">uintptr_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">uintptr <span class="keyword">=</span> <span class="staexp">uintptr1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">uintptr <span class="keyword">=</span> <span class="staexp">uintptr0</span></span> <span class="comment">// 1st-select</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+sint_kind <span class="keyword">=</span> "atstype_sint"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">sint0 <span class="keyword">=</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">sint_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">sint1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">sint_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">sint <span class="keyword">=</span> <span class="staexp">sint1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">sint <span class="keyword">=</span> <span class="staexp">sint0</span></span> <span class="comment">// 1st-select</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+usint_kind <span class="keyword">=</span> "atstype_usint"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">usint0 <span class="keyword">=</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">usint_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">usint1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">usint_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">usint <span class="keyword">=</span> <span class="staexp">usint1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">usint <span class="keyword">=</span> <span class="staexp">usint0</span></span> <span class="comment">// 1st-select</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+size_kind <span class="keyword">=</span> "atstype_size"</span>
+<span class="keyword">typedef</span> <span class="staexp">size0_t <span class="keyword">=</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">size_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">size1_t <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">size_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">stadef</span> <span class="staexp">size_t <span class="keyword">=</span> <span class="staexp">size1_t</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">size_t <span class="keyword">=</span> <span class="staexp">size0_t</span></span> <span class="comment">// 1st-select</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">Size <span class="keyword">=</span>
+  <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int <span class="keyword">|</span> i &gt;= 0<span class="keyword">]</span></span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">size_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">Size_t <span class="keyword">=</span> <span class="staexp">Size</span></span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">sizeLt <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uintLt</span> <span class="keyword">(</span><span class="staexp">size_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">sizeLte <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uintLte</span> <span class="keyword">(</span><span class="staexp">size_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">sizeGt <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uintGt</span> <span class="keyword">(</span><span class="staexp">size_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">sizeGte <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uintGte</span> <span class="keyword">(</span><span class="staexp">size_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">sizeBtw <span class="keyword">(</span><span class="staexp">lb<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">ub<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uintBtw</span> <span class="keyword">(</span><span class="staexp">size_kind</span><span class="keyword">,</span> <span class="staexp">lb</span><span class="keyword">,</span> <span class="staexp">ub</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">sizeBtwe <span class="keyword">(</span><span class="staexp">lb<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">ub<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uintBtwe</span> <span class="keyword">(</span><span class="staexp">size_kind</span><span class="keyword">,</span> <span class="staexp">lb</span><span class="keyword">,</span> <span class="staexp">ub</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span> ssize_kind <span class="keyword">=</span> "atstype_ssize"</span>
+<span class="keyword">typedef</span> <span class="staexp">ssize0_t <span class="keyword">=</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">ssize_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">ssize1_t <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">ssize_kind</span> <span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span> 
+<span class="comment">//</span>
+<span class="keyword">stadef</span> <span class="staexp">ssize_t <span class="keyword">=</span> <span class="staexp">ssize1_t</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">ssize_t <span class="keyword">=</span> <span class="staexp">ssize0_t</span></span> <span class="comment">// 1st-select</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">SSize <span class="keyword">=</span>
+  <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">ssize_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">SSize_t <span class="keyword">=</span> <span class="staexp">SSize</span></span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">ssizeLt <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1intLt</span> <span class="keyword">(</span><span class="staexp">ssize_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">ssizeLte <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1intLte</span> <span class="keyword">(</span><span class="staexp">ssize_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">ssizeGt <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1intGt</span> <span class="keyword">(</span><span class="staexp">ssize_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">ssizeGte <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1intGte</span> <span class="keyword">(</span><span class="staexp">ssize_kind</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">ssizeBtw <span class="keyword">(</span><span class="staexp">lb<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">ub<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1intBtw</span> <span class="keyword">(</span><span class="staexp">ssize_kind</span><span class="keyword">,</span> <span class="staexp">lb</span><span class="keyword">,</span> <span class="staexp">ub</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">ssizeBtwe <span class="keyword">(</span><span class="staexp">lb<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">ub<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1intBtwe</span> <span class="keyword">(</span><span class="staexp">ssize_kind</span><span class="keyword">,</span> <span class="staexp">lb</span><span class="keyword">,</span> <span class="staexp">ub</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abst@ype</span> atstype_size</span> <span class="comment">// HX-2013-09: for internal use</span>
+<span class="staexp"><span class="keyword">abst@ype</span> atstype_ssize</span> <span class="comment">// HX-2013-09: for internal use</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">typedef</span> <span class="staexp">sizeof_t <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">vt@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">size_t</span> <span class="keyword">(</span><span class="staexp">sizeof</span><span class="keyword">(</span><span class="staexp">a</span><span class="staexp">?</span><span class="keyword">)</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+int8_kind <span class="keyword">=</span> "atstype_int8"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">int8_0 <span class="keyword">=</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">int8_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">int8_1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">int8_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">int8 <span class="keyword">=</span> <span class="staexp">int8_1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">int8 <span class="keyword">=</span> <span class="staexp">int8_0</span></span> <span class="comment">// 1st-select</span>
+<span class="keyword">stadef</span> <span class="staexp">Int8 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">int8_1</span> <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+uint8_kind <span class="keyword">=</span> "atstype_uint8"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">uint8_0 <span class="keyword">=</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">uint8_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">uint8_1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">uint8_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">uint8 <span class="keyword">=</span> <span class="staexp">uint8_1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">uint8 <span class="keyword">=</span> <span class="staexp">uint8_0</span></span> <span class="comment">// 1st-select</span>
+<span class="keyword">stadef</span> <span class="staexp">uInt8 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>nat<span class="keyword">]</span></span> <span class="staexp">uint8_1</span> <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+int16_kind <span class="keyword">=</span> "atstype_int16"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">int16_0 <span class="keyword">=</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">int16_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">int16_1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">int16_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">int16 <span class="keyword">=</span> <span class="staexp">int16_1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">int16 <span class="keyword">=</span> <span class="staexp">int16_0</span></span> <span class="comment">// 1st-select</span>
+<span class="keyword">stadef</span> <span class="staexp">Int16 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">int16_1</span> <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+uint16_kind <span class="keyword">=</span> "atstype_uint16"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">uint16_0 <span class="keyword">=</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">uint16_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">uint16_1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">uint16_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">uint16 <span class="keyword">=</span> <span class="staexp">uint16_1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">uint16 <span class="keyword">=</span> <span class="staexp">uint16_0</span></span> <span class="comment">// 1st-select</span>
+<span class="keyword">stadef</span> <span class="staexp">uInt16 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>nat<span class="keyword">]</span></span> <span class="staexp">uint16_1</span> <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+int32_kind <span class="keyword">=</span> "atstype_int32"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">int32_0 <span class="keyword">=</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">int32_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">int32_1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">int32_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">int32 <span class="keyword">=</span> <span class="staexp">int32_1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">int32 <span class="keyword">=</span> <span class="staexp">int32_0</span></span> <span class="comment">// 1st-select</span>
+<span class="keyword">stadef</span> <span class="staexp">Int32 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">int32_1</span> <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+uint32_kind <span class="keyword">=</span> "atstype_uint32"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">uint32_0 <span class="keyword">=</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">uint32_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">uint32_1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">uint32_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">uint32 <span class="keyword">=</span> <span class="staexp">uint32_1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">uint32 <span class="keyword">=</span> <span class="staexp">uint32_0</span></span> <span class="comment">// 1st-select</span>
+<span class="keyword">stadef</span> <span class="staexp">uInt32 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>nat<span class="keyword">]</span></span> <span class="staexp">uint32_1</span> <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+int64_kind <span class="keyword">=</span> "atstype_int64"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">int64_0 <span class="keyword">=</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">int64_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">int64_1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">int64_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">int64 <span class="keyword">=</span> <span class="staexp">int64_1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">int64 <span class="keyword">=</span> <span class="staexp">int64_0</span></span> <span class="comment">// 1st-select</span>
+<span class="keyword">stadef</span> <span class="staexp">Int64 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">int64_1</span> <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span>
+uint64_kind <span class="keyword">=</span> "atstype_uint64"</span>
+<span class="keyword">typedef</span>
+<span class="staexp">uint64_0 <span class="keyword">=</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">uint64_kind</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">uint64_1 <span class="keyword">(</span><span class="staexp">i<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">uint64_kind</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">uint64 <span class="keyword">=</span> <span class="staexp">uint64_1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">uint64 <span class="keyword">=</span> <span class="staexp">uint64_0</span></span> <span class="comment">// 1st-select</span>
+<span class="keyword">stadef</span> <span class="staexp">uInt64 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>nat<span class="keyword">]</span></span> <span class="staexp">uint64_1</span> <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+g0float_t0ype <span class="keyword">(</span>tk<span class="keyword">:</span>tk<span class="keyword">)</span> <span class="keyword">=</span> tkind_t0ype <span class="keyword">(</span>tk<span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">g0float <span class="keyword">=</span> <span class="staexp">g0float_t0ype</span></span> <span class="comment">// shorthand</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span> float_kind <span class="keyword">=</span> "atstype_float"</span>
+<span class="keyword">typedef</span> <span class="staexp">float <span class="keyword">=</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">float_kind</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span> double_kind <span class="keyword">=</span> "atstype_double"</span>
+<span class="keyword">typedef</span> <span class="staexp">double <span class="keyword">=</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">double_kind</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span> ldouble_kind <span class="keyword">=</span> "atstype_ldouble"</span>
+<span class="keyword">typedef</span> <span class="staexp">ldouble <span class="keyword">=</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">ldouble_kind</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: unindexed type for pointers</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">tkindef</span> ptr_kind <span class="keyword">=</span> "atstype_ptrk"</span>
+<span class="staexp"><span class="keyword">abstype</span> ptr_type <span class="keyword">=</span> tkind_type <span class="keyword">(</span>ptr_kind<span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">ptr <span class="keyword">=</span> <span class="staexp">ptr_type</span></span> <span class="comment">// a shorthand</span>
+<span class="staexp"><span class="keyword">abstype</span> ptr_addr_type <span class="keyword">(</span>l<span class="keyword">:</span>addr<span class="keyword">)</span> <span class="keyword">=</span> ptr_type</span>
+<span class="keyword">stadef</span> <span class="staexp">ptr <span class="keyword">=</span> <span class="staexp">ptr_addr_type</span></span> <span class="comment">// a shorthand</span>
+<span class="keyword">typedef</span> <span class="staexp">Ptr <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="staexp">ptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">Ptr0 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr <span class="keyword">|</span> l &gt;= null<span class="keyword">]</span></span> <span class="staexp">ptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">Ptr1 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr <span class="keyword">|</span> l <span class="keyword">&gt;</span>  null<span class="keyword">]</span></span> <span class="staexp">ptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">Ptrnull <span class="keyword">(</span><span class="staexp">l<span class="keyword">:</span>addr</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="staexp"><span class="keyword">[</span>l1<span class="keyword">:</span>addr <span class="keyword">|</span> l1 == null || l1 == l<span class="keyword">]</span></span> <span class="staexp">ptr</span> <span class="keyword">(</span><span class="staexp">l1</span><span class="keyword">)</span></span>
+<span class="comment">// end of [Ptrnull]</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2012-02-14: it is an expriment for now:</span>
+<span class="comment">//</span>
+<span class="keyword">stadef</span> <span class="staexp">ptr <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">ptr_addr_type</span> <span class="keyword">(</span><span class="staexp">addr_of_int</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** HX: persistent read-only strings
+*)</span>
+<span class="comment">(*
+//
+// HX-2013-04: this confuses type-erasure
+//
+abstype
+string_type = $extype"atstype_string"
+*)</span>
+<span class="staexp"><span class="keyword">abstype</span>
+string_type <span class="keyword">=</span> ptr</span> <span class="comment">// = char* in C</span>
+<span class="staexp"><span class="keyword">abstype</span>
+string_int_type <span class="keyword">(</span>n<span class="keyword">:</span> int<span class="keyword">)</span> <span class="keyword">=</span> string_type</span>
+<span class="comment">//</span>
+<span class="keyword">stadef</span> <span class="staexp">string0 <span class="keyword">=</span> <span class="staexp">string_type</span></span>
+<span class="keyword">stadef</span> <span class="staexp">string1 <span class="keyword">=</span> <span class="staexp">string_int_type</span></span>
+<span class="keyword">stadef</span> <span class="staexp">string <span class="keyword">=</span> <span class="staexp">string1</span></span> <span class="comment">// 2nd-select</span>
+<span class="keyword">stadef</span> <span class="staexp">string <span class="keyword">=</span> <span class="staexp">string0</span></span> <span class="comment">// 1st-select</span>
+<span class="keyword">typedef</span> <span class="staexp">String <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>n<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">string_int_type</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">String0 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n &gt;= 0<span class="keyword">]</span></span> <span class="staexp">string_int_type</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">String1 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n &gt;= 1<span class="keyword">]</span></span> <span class="staexp">string_int_type</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">abstype</span>
+stropt_int_type <span class="keyword">(</span>n<span class="keyword">:</span>int<span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">stadef</span> <span class="staexp">stropt <span class="keyword">=</span> <span class="staexp">stropt_int_type</span></span>
+<span class="keyword">typedef</span> <span class="staexp">Stropt <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>n<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">stropt_int_type</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">Stropt0 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>n<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">stropt_int_type</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">Stropt1 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n &gt;= 0<span class="keyword">]</span></span> <span class="staexp">stropt_int_type</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">stropt <span class="keyword">=</span> <span class="staexp">Stropt</span></span> <span class="comment">// HX: this may be a bit confusing :)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** HX: linear mutable strings
+*)</span>
+<span class="staexp"><span class="keyword">absvtype</span>
+strptr_addr_vtype <span class="keyword">(</span>l<span class="keyword">:</span>addr<span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">stadef</span> <span class="staexp">strptr <span class="keyword">=</span> <span class="staexp">strptr_addr_vtype</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">Strptr0 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="staexp">strptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">Strptr1 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr <span class="keyword">|</span> l <span class="keyword">&gt;</span> null<span class="keyword">]</span></span> <span class="staexp">strptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">strptr <span class="keyword">=</span> <span class="staexp">Strptr0</span></span>
+
+<span class="staexp"><span class="keyword">absvtype</span>
+strnptr_addr_int_vtype <span class="keyword">(</span>l<span class="keyword">:</span>addr<span class="keyword">,</span> n<span class="keyword">:</span>int<span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">stadef</span> <span class="staexp">strnptr <span class="keyword">=</span> <span class="staexp">strnptr_addr_int_vtype</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">strnptr <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="staexp">strnptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">Strnptr0 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">;</span>n<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">strnptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">Strnptr1 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">;</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n &gt;= 0<span class="keyword">]</span></span> <span class="staexp">strnptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** HX: persistent mutable strings
+*)</span>
+<span class="staexp"><span class="keyword">abstype</span>
+strref_addr_type <span class="keyword">(</span>l<span class="keyword">:</span>addr<span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">stadef</span> <span class="staexp">strref <span class="keyword">=</span> <span class="staexp">strref_addr_type</span></span>
+<span class="keyword">typedef</span> <span class="staexp">Strref0 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="staexp">strref</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">Strref1 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr <span class="keyword">|</span> l <span class="keyword">&gt;</span> null<span class="keyword">]</span></span> <span class="staexp">strref</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">abst@ype</span>
+atsvoid_t0ype</span>
+<span class="comment">(*
+= $extype"atsvoid_t0ype"
+*)</span>
+<span class="keyword">typedef</span> <span class="staexp">void <span class="keyword">=</span> <span class="staexp">atsvoid_t0ype</span></span> <span class="comment">// = C-void</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">absvtype</span>
+exception_vtype <span class="keyword">=</span> <span class="keyword">$extype</span>"atstype_exnconptr"</span>
+<span class="comment">//</span>
+<span class="keyword">vtypedef</span> <span class="staexp">exn <span class="keyword">=</span> <span class="staexp">exception_vtype</span></span> <span class="comment">// boxed vtype</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">absvt@ype</span> <span class="comment">// covariance</span>
+opt_vt0ype_bool_vt0ype <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype+</span><span class="keyword">,</span> opt<span class="keyword">:</span>bool<span class="keyword">)</span> <span class="keyword">=</span> a</span>
+<span class="keyword">stadef</span> <span class="staexp">opt <span class="keyword">=</span> <span class="staexp">opt_vt0ype_bool_vt0ype</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">typedef</span> <span class="staexp">bytes <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">@[</span><span class="staexp">byte</span><span class="keyword">]</span><span class="keyword">[</span><span class="staexp">n</span><span class="keyword">]</span></span>
+<span class="keyword">viewdef</span> <span class="staexp">bytes_v <span class="keyword">(</span><span class="staexp">l<span class="keyword">:</span>addr</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">bytes</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span></span>
+<span class="keyword">typedef</span> <span class="staexp">b0ytes <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">@[</span><span class="staexp">byte</span><span class="staexp">?</span><span class="keyword">]</span><span class="keyword">[</span><span class="staexp">n</span><span class="keyword">]</span></span>
+<span class="keyword">viewdef</span> <span class="staexp">b0ytes_v <span class="keyword">(</span><span class="staexp">l<span class="keyword">:</span>addr</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">b0ytes</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abstype</span>
+cloref_t0ype_type <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">stadef</span> <span class="staexp">cloref <span class="keyword">=</span> <span class="staexp">cloref_t0ype_type</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">absvtype</span>
+cloptr_vt0ype_vtype <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">stadef</span> <span class="staexp">cloptr <span class="keyword">=</span> <span class="staexp">cloptr_vt0ype_vtype</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">cloptr0 <span class="keyword">=</span> <span class="staexp">cloptr_vt0ype_vtype</span> <span class="keyword">(</span><span class="staexp">void</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span>
+<span class="staexp">stamped_t<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>x<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">stamped_t</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span>
+<span class="staexp">stamped_vt<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">vt@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>x<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">stamped_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: for memory deallocation (with/without GC)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">absview</span>
+mfree_gc_addr_view <span class="keyword">(</span>addr<span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">mfree_gc_v <span class="keyword">=</span> <span class="staexp">mfree_gc_addr_view</span></span>
+<span class="staexp"><span class="keyword">absview</span>
+mfree_ngc_addr_view <span class="keyword">(</span>addr<span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">mfree_ngc_v <span class="keyword">=</span> <span class="staexp">mfree_ngc_addr_view</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">absview</span>
+mfree_libc_addr_view <span class="keyword">(</span>addr<span class="keyword">)</span></span> <span class="comment">// libc-mfree</span>
+<span class="keyword">stadef</span> <span class="staexp">mfree_libc_v <span class="keyword">=</span> <span class="staexp">mfree_libc_addr_view</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">absvt@ype</span>
+arrpsz_vt0ype_int_vt0ype
+  <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype+</span><span class="keyword">,</span> n<span class="keyword">:</span>int<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">$extype</span>"atstype_arrpsz"</span>
+<span class="keyword">stadef</span> <span class="staexp">arrpsz <span class="keyword">=</span> <span class="staexp">arrpsz_vt0ype_int_vt0ype</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">absprop</span> <span class="comment">// invariance</span>
+vbox_view_prop <span class="keyword">(</span>v<span class="keyword">:</span>view<span class="keyword">)</span></span>
+<span class="keyword">propdef</span> <span class="staexp">vbox <span class="keyword">(</span><span class="staexp">v<span class="keyword">:</span>view</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">vbox_view_prop</span> <span class="keyword">(</span><span class="staexp">v</span><span class="keyword">)</span></span>
+
+<span class="staexp"><span class="keyword">abstype</span> <span class="comment">// invariance</span>
+ref_vt0ype_type <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">typedef</span> <span class="staexp">ref <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">vt@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">ref_vt0ype_type</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">viewdef</span> <span class="staexp">vtakeout
+  <span class="keyword">(</span><span class="staexp">v1<span class="keyword">:</span> view</span><span class="keyword">,</span> <span class="staexp">v2<span class="keyword">:</span> view</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">v2</span><span class="keyword">,</span> <span class="staexp">v2</span> <span class="keyword">-&lt;</span><span class="staexp">lin</span><span class="keyword">,</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">v1</span><span class="keyword">)</span></span>
+<span class="keyword">viewdef</span> <span class="staexp">vtakeout0 <span class="keyword">(</span><span class="staexp">v<span class="keyword">:</span>view</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">vtakeout</span> <span class="keyword">(</span><span class="staexp">void</span><span class="keyword">,</span> <span class="staexp">v</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">vtypedef</span> <span class="staexp">vttakeout
+  <span class="keyword">(</span><span class="staexp">vt1<span class="keyword">:</span> <span class="keyword">vt@ype</span></span><span class="keyword">,</span> <span class="staexp">vt2<span class="keyword">:</span> <span class="keyword">vt@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">vt2</span> <span class="keyword">-&lt;</span><span class="staexp">lin</span><span class="keyword">,</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">vt1</span> <span class="keyword">|</span> <span class="staexp">vt2</span><span class="keyword">)</span></span>
+<span class="keyword">viewdef</span> <span class="staexp">vttakeout0 <span class="keyword">(</span><span class="staexp">vt<span class="keyword">:</span><span class="keyword">vt@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">vttakeout</span> <span class="keyword">(</span><span class="staexp">void</span><span class="keyword">,</span> <span class="staexp">vt</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">vtypedef</span>
+<span class="staexp">vtakeoutptr
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">vt@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">a</span><span class="staexp"><span class="keyword">@</span></span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">a</span><span class="staexp"><span class="keyword">@</span></span><span class="staexp">l</span> <span class="keyword">-&lt;</span><span class="staexp">lin</span><span class="keyword">,</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">vtypedef</span>
+<span class="staexp">vstrptr <span class="keyword">(</span><span class="staexp">l<span class="keyword">:</span>addr</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">vttakeout0</span> <span class="keyword">(</span><span class="staexp">strptr</span> <span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">vtypedef</span> <span class="staexp">vStrptr0 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="staexp">vstrptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">vStrptr1 <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr <span class="keyword">|</span> l <span class="keyword">&gt;</span> null<span class="keyword">]</span></span> <span class="staexp">vstrptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">typedef</span>
+<span class="staexp">bottom_t0ype_uni <span class="keyword">=</span> <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">bottom_t0ype_exi <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>a<span class="keyword">:</span><span class="keyword">t@ype</span> <span class="keyword">|</span> false<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+
+<span class="keyword">vtypedef</span>
+<span class="staexp">bottom_vt0ype_uni <span class="keyword">=</span> <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">}</span></span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span>
+<span class="staexp">bottom_vt0ype_exi <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span> <span class="keyword">|</span> false<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">typedef</span>
+<span class="staexp">cmpval_fun
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span> <span class="keyword">t@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp"><span class="keyword">fun</span></span><span class="keyword">&gt;</span> <span class="staexp">int</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">cmpval_funenv
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span> <span class="keyword">t@ype</span></span><span class="keyword">,</span> <span class="staexp">vt<span class="keyword">:</span> <span class="keyword">t@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">vt</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp"><span class="keyword">fun</span></span><span class="keyword">&gt;</span> <span class="staexp">int</span></span>
+<span class="keyword">stadef</span> <span class="staexp">cmpval <span class="keyword">=</span> <span class="staexp">cmpval_fun</span></span>
+<span class="keyword">stadef</span> <span class="staexp">cmpval <span class="keyword">=</span> <span class="staexp">cmpval_funenv</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">typedef</span>
+<span class="staexp">cmpref_fun
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span> <span class="keyword">vt@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">&amp;</span><span class="staexp">RD</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">&amp;</span><span class="staexp">RD</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp"><span class="keyword">fun</span></span><span class="keyword">&gt;</span> <span class="staexp">int</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">cmpref_funenv
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span> <span class="keyword">vt@ype</span></span><span class="keyword">,</span> <span class="staexp">vt<span class="keyword">:</span> <span class="keyword">vt@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">&amp;</span><span class="staexp">RD</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">&amp;</span><span class="staexp">RD</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">vt</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp"><span class="keyword">fun</span></span><span class="keyword">&gt;</span> <span class="staexp">int</span></span>
+<span class="keyword">stadef</span> <span class="staexp">cmpref <span class="keyword">=</span> <span class="staexp">cmpref_fun</span></span>
+<span class="keyword">stadef</span> <span class="staexp">cmpref <span class="keyword">=</span> <span class="staexp">cmpref_funenv</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: [lazy(T)] :</span>
+<span class="comment">// suspended evaluation of type T</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abstype</span>
+lazy_t0ype_type <span class="keyword">(</span><span class="keyword">t@ype+</span><span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">typedef</span> <span class="staexp">lazy <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">lazy_t0ype_type</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: [lazy_vt(VT)] :</span>
+<span class="comment">// suspended computation of viewtype VT</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">absvtype</span>
+lazy_vt0ype_vtype <span class="keyword">(</span><span class="keyword">vt@ype+</span><span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">vtypedef</span> <span class="staexp">lazy_vt <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span> <span class="keyword">vt@ype</span></span><span class="keyword">)</span><span class="keyword">=</span> <span class="staexp">lazy_vt0ype_vtype</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">(*
+abst@ype
+literal_int(intlit) = $extype"atsliteral_int"
+*)</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+literal_float<span class="keyword">(</span>float<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">$extype</span>"atsliteral_float"</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+literal_string<span class="keyword">(</span>string<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">$extype</span>"atsliteral_string"</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abst@ype</span>
+undefined_t0ype <span class="keyword">=</span> <span class="keyword">$extype</span>"atstype_undefined"</span>
+<span class="staexp"><span class="keyword">absvt@ype</span>
+undefined_vt0ype <span class="keyword">=</span> <span class="keyword">$extype</span>"atstype_undefined"</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">#if</span> <span class="neuexp">VERBOSE_PRELUDE</span> <span class="keyword">#then</span>
+<span class="neuexp"><span class="keyword">#print</span> "Loading [basics_sta.sats] finishes!\n"</span>
+<span class="keyword">#endif</span> <span class="comment">// end of [VERBOSE_PRELUDE]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [basics_sta.sats] *)</span>
+</pre>
+</body>
+</html>

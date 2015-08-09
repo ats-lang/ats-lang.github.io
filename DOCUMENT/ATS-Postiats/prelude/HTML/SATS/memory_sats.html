@@ -1,0 +1,138 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/memory.atxt
+** Time of generation: Sat Jun 27 21:39:00 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">typedef</span> <span class="staexp">bytes <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">@[</span><span class="staexp">byte</span><span class="keyword">]</span><span class="keyword">[</span><span class="staexp">n</span><span class="keyword">]</span></span>
+<span class="keyword">typedef</span> <span class="staexp">b0ytes <span class="keyword">(</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">@[</span><span class="staexp">byte</span><span class="staexp">?</span><span class="keyword">]</span><span class="keyword">[</span><span class="staexp">n</span><span class="keyword">]</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">viewdef</span> <span class="staexp">bytes_v <span class="keyword">(</span><span class="staexp">l<span class="keyword">:</span>addr</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">bytes</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span></span>
+<span class="keyword">viewdef</span> <span class="staexp">b0ytes_v <span class="keyword">(</span><span class="staexp">l<span class="keyword">:</span>addr</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">b0ytes</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">praxi</span>
+b0ytes2bytes
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span><span class="staexp">&amp;</span><span class="staexp">b0ytes</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">bytes</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">// end of [b0ytes2bytes]</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+b0ytes2bytes_v
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp">b0ytes_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bytes_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">// end of [b0ytes2bytes_v]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">prfun</span>
+bytes_v_split
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i &lt;= n<span class="keyword">}</span></span>
+  <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp">bytes_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">bytes_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">bytes_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="staexp">+</span><span class="staexp">i</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">-</span><span class="staexp">i</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">// end of [bytes_v_split]</span>
+
+<span class="prfexp"><span class="keyword">prfun</span>
+bytes_v_split_at
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i &lt;= n<span class="keyword">}</span></span>
+  <span class="keyword">(</span><span class="prfexp">pf<span class="keyword">:</span> <span class="staexp">bytes_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span> <span class="keyword">|</span> i<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">bytes_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">bytes_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="staexp">+</span><span class="staexp">i</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">-</span><span class="staexp">i</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">// end of [bytes_v_split_at]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">prfun</span>
+bytes_v_unsplit
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>pf1<span class="keyword">:</span> <span class="staexp">bytes_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="keyword">)</span><span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">bytes_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="staexp">+</span><span class="staexp">n1</span><span class="keyword">,</span> <span class="staexp">n2</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bytes_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="staexp">+</span><span class="staexp">n2</span><span class="keyword">)</span></span>
+<span class="comment">// end of [bytes_v_unsplit]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2013-08:</span>
+<span class="comment">// for memory initialization</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> minit_gc <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span>
+mfree_gc
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="prfexp">pfat<span class="keyword">:</span> <span class="staexp">b0ytes</span> <span class="staexp">n</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span></span>
+<span class="keyword">,</span> <span class="prfexp">pfgc<span class="keyword">:</span> <span class="staexp">mfree_gc_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span>
+malloc_gc
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  bsz<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span>
+  <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>agz<span class="keyword">]</span></span>
+<span class="keyword">(</span>
+  <span class="staexp">b0ytes</span> <span class="staexp">n</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">mfree_gc_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span>
+<span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span> <span class="comment">// endfun</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">absview</span> memory$free_v <span class="keyword">(</span>l<span class="keyword">:</span>addr<span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+<span class="keyword">}</span></span> memory$free
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="prfexp">pfat<span class="keyword">:</span> <span class="staexp">b0ytes</span> <span class="staexp">n</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span></span>
+<span class="keyword">,</span> <span class="prfexp">pfmf<span class="keyword">:</span> <span class="staexp">memory$free_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// end-of-fun</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+<span class="keyword">}</span></span> memory$alloc
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  bsz<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span>
+  <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>agz<span class="keyword">]</span></span>
+<span class="keyword">(</span>
+  <span class="staexp">b0ytes</span> <span class="staexp">n</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">memory$free_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [memory$alloc] *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [memory.sats] *)</span>
+</pre>

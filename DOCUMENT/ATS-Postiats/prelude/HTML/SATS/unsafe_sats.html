@@ -1,0 +1,250 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/unsafe.atxt
+** Time of generation: Sat Jun 27 21:39:07 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: hwxi AT cs DOT bu DOT edu *)</span>
+<span class="comment">(* Start time: April, 2012 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">#define</span>
+ATS_PACKNAME "ATSLIB.prelude.unsafe"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">sortdef</span> t0p <span class="keyword">=</span> <span class="keyword">t@ype</span> <span class="keyword">and</span> vt0p <span class="keyword">=</span> <span class="keyword">viewt@ype</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+prop_assert<span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>bool<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>b<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+eqint_assert<span class="staexp"><span class="keyword">{</span>i1<span class="keyword">,</span>i2<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">EQINT</span><span class="keyword">(</span><span class="staexp">i1</span><span class="keyword">,</span><span class="staexp">i2</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">praxi</span>
+eqaddr_assert<span class="staexp"><span class="keyword">{</span>l1<span class="keyword">,</span>l2<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">EQADDR</span><span class="keyword">(</span><span class="staexp">l1</span><span class="keyword">,</span><span class="staexp">l2</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">praxi</span>
+eqbool_assert<span class="staexp"><span class="keyword">{</span>b1<span class="keyword">,</span>b2<span class="keyword">:</span>bool<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">EQBOOL</span><span class="keyword">(</span><span class="staexp">b1</span><span class="keyword">,</span><span class="staexp">b2</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+cast<span class="staexp"><span class="keyword">{</span>to<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>from<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">from</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">to</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+castvwtp0
+  <span class="staexp"><span class="keyword">{</span>to<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>from<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">from</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">to</span></span>
+<span class="comment">//</span>
+<span class="comment">// HX:</span>
+<span class="comment">// [castvwtp1] is mostly used in a situation</span>
+<span class="comment">// where a linear value is passed as a read-only value;</span>
+<span class="comment">// for instance, casting [strptr] to [string] is often</span>
+<span class="comment">// done for treating a linear string as a nonlinear one</span>
+<span class="comment">// temporarily.</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+castvwtp1
+  <span class="staexp"><span class="keyword">{</span>to<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>from<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">from</span><span class="keyword">)</span><span class="staexp">&gt;&gt;</span><span class="staexp">from</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">to</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2ptr <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>type<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">ptr</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2Ptr0 <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>type<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">Ptr0</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2Ptr1 <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>type<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">Ptr1</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2int <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2uint <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">uint</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2lint <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">lint</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2ulint <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">ulint</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2llint <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">llint</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2ullint <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">ullint</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2size <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">size_t</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2ssize <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">ssize_t</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2sint <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">sint</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2usint <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">usint</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2intptr <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">intptr</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> cast2uintptr <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">uintptr</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">praxi</span> cast2void <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span> castview0 <span class="staexp"><span class="keyword">{</span>to<span class="keyword">:</span>view<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>from<span class="keyword">:</span>view<span class="keyword">}</span></span> <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp">from</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">to</span></span>
+<span class="prfexp"><span class="keyword">praxi</span> castview1 <span class="staexp"><span class="keyword">{</span>to<span class="keyword">:</span>view<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>from<span class="keyword">:</span>view<span class="keyword">}</span></span> <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">from</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">to</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span> castview2void <span class="staexp"><span class="keyword">{</span>to<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>from<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">from</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">to</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span> int2ptr <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">ptr</span> <span class="keyword">and</span> ptr2int <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: these are popular ones:</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span> list_vt2t
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">// end of [list_vt2t]</span>
+
+<span class="dynexp"><span class="keyword">castfn</span> arrayptr2ref
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">arrayptr</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">// end of [arrayptr2ref]</span>
+
+<span class="dynexp"><span class="keyword">castfn</span> strptr2string <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>agz<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">strptr</span> <span class="staexp">l</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">String0</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> strptr2stropt <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">strptr</span> <span class="staexp">l</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">Stropt0</span></span>
+<span class="dynexp"><span class="keyword">castfn</span> strnptr2string <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">strnptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">string</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: only if you know what you are doing ...</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> ptr_vtake</span>
+
+<span class="dynexp"><span class="keyword">castfn</span> ptr0_vtake
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span><span class="staexp">ptr</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">a</span><span class="staexp"><span class="keyword">@</span></span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">a</span><span class="staexp"><span class="keyword">@</span></span><span class="staexp">l</span> <span class="keyword">-&lt;</span><span class="staexp">lin</span><span class="keyword">,</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> ptr_vtake <span class="keyword">with</span> ptr0_vtake <span class="keyword">of</span> 0</span>
+
+<span class="dynexp"><span class="keyword">castfn</span> ptr1_vtake
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">(</span><span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="staexp">a</span><span class="staexp"><span class="keyword">@</span></span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">a</span><span class="staexp"><span class="keyword">@</span></span><span class="staexp">l</span> <span class="keyword">-&lt;</span><span class="staexp">lin</span><span class="keyword">,</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span></span> 
+<span class="dynexp"><span class="keyword">overload</span> ptr_vtake <span class="keyword">with</span> ptr1_vtake <span class="keyword">of</span> 10</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">castfn</span>
+ref_vtake<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">a</span><span class="staexp"><span class="keyword">@</span></span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">a</span><span class="staexp"><span class="keyword">@</span></span><span class="staexp">l</span> <span class="keyword">-&lt;</span><span class="staexp">lin</span><span class="keyword">,</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="comment">// end of [ref_vtake]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">praxi</span>
+vtakeout_void <span class="staexp"><span class="keyword">{</span>v<span class="keyword">:</span>view<span class="keyword">}</span></span> <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">v</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">vtakeout0</span> <span class="keyword">(</span><span class="staexp">v</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">castfn</span>
+vttakeout_void <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">vttakeout0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: only if you know what you are doing ...</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> ptr0_get <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> ptr1_get <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">Ptr1</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> ptr0_set <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> ptr1_set <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">Ptr1</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> ptr0_exch <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> ptr1_exch <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">Ptr1</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> ptr0_intch <span class="keyword">(</span>p1<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> p2<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> ptr1_intch <span class="keyword">(</span>p1<span class="keyword">:</span> <span class="staexp">Ptr1</span><span class="keyword">,</span> p2<span class="keyword">:</span> <span class="staexp">Ptr1</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+ptr0_get_at_int <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+ptr0_set_at_int <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+ptr0_get_at_size <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+ptr0_set_at_size <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> ptr0_get_at</span>
+<span class="neuexp"><span class="keyword">symintr</span> ptr0_set_at</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> ptr0_get_at <span class="keyword">with</span> ptr0_get_at_int</span>
+<span class="dynexp"><span class="keyword">overload</span> ptr0_get_at <span class="keyword">with</span> ptr0_get_at_size</span>
+<span class="dynexp"><span class="keyword">overload</span> ptr0_set_at <span class="keyword">with</span> ptr0_set_at_int</span>
+<span class="dynexp"><span class="keyword">overload</span> ptr0_set_at <span class="keyword">with</span> ptr0_set_at_size</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2012-06:</span>
+<span class="comment">// generic ops on numbers: +=, -=, *=, /=, %=</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> ptr0_addby <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// !p += x</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> ptr1_addby <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">Ptr1</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// !p += x</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> ptr0_subby <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// !p -= x</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> ptr1_subby <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">Ptr1</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// !p -= x</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> ptr0_mulby <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// !p *= x</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> ptr1_mulby <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">Ptr1</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// !p *= x</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> ptr0_divby <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// !p /= x</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> ptr1_divby <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">Ptr1</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// !p /= x</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> ptr0_modby <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// !p %= x</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> ptr1_modby <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">Ptr1</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exnwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// !p %= x</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> ptr1_list_next <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">Ptr1</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">Ptr0</span></span> <span class="comment">// HX: &amp;(p-&gt;next)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: only if you know what you are doing ...</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+ptr2cptr<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">cptr</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+cptr_vtake
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>agz<span class="keyword">}</span></span>
+  <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">cptr</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="staexp">a</span><span class="staexp"><span class="keyword">@</span></span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">a</span><span class="staexp"><span class="keyword">@</span></span><span class="staexp">l</span> <span class="keyword">-&lt;</span><span class="staexp">lin</span><span class="keyword">,</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="comment">// end of [cptr_vtake]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> cptr_get <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">cPtr1</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> cptr_set <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">cPtr1</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> cptr_exch <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">cPtr1</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">a</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [unsafe.sats] *)</span>
+</pre>

@@ -1,0 +1,465 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/float.atxt
+** Time of generation: Sat Jun 27 21:39:01 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: hwxi AT cs DOT bu DOT edu *)</span>
+<span class="comment">(* Start time: September, 2011 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">stadef</span> <span class="staexp">fltknd <span class="keyword">=</span> <span class="staexp">float_kind</span></span>
+<span class="keyword">stadef</span> <span class="staexp">dblknd <span class="keyword">=</span> <span class="staexp">double_kind</span></span>
+<span class="keyword">stadef</span> <span class="staexp">ldblknd <span class="keyword">=</span> <span class="staexp">ldouble_kind</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+tk1<span class="keyword">,</span>tk2<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> g0int2float <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">tk1</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk2</span><span class="keyword">)</span></span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0int2float_int_float <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">float</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0int2float_int_double <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">double</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0int2float_lint_double <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">lint</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">double</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+tk1<span class="keyword">,</span>tk2<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> g0float2int <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk1</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">tk2</span><span class="keyword">)</span></span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float2int_float_int <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float2int_float_lint <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">lint</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float2int_double_int <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float2int_double_lint <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">lint</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float2int_double_llint <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">llint</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+tk1<span class="keyword">,</span>tk2<span class="keyword">:</span>tk
+<span class="keyword">}</span></span> g0float2float <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk1</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk2</span><span class="keyword">)</span></span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float2float_float_float <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">float</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float2float_float_double <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">double</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float2float_double_float <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">float</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float2float_double_double <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">double</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0string2float <span class="keyword">(</span>str<span class="keyword">:</span> <span class="staexp">NSH</span><span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> g0string2float_double <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">NSH</span><span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">double</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span>
+<span class="staexp">g0float_uop_type
+  <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">fun0</span><span class="keyword">&gt;</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_neg <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">~</span> <span class="keyword">with</span> g0float_neg <span class="keyword">of</span> 0</span> <span class="comment">// ~ for uminus</span>
+<span class="dynexp"><span class="keyword">overload</span> neg <span class="keyword">with</span> g0float_neg <span class="keyword">of</span> 0</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_abs <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> abs <span class="keyword">with</span> g0float_abs <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_succ <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> succ <span class="keyword">with</span> g0float_succ <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_pred <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> pred <span class="keyword">with</span> g0float_pred <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">typedef</span>
+<span class="staexp">g0float_aop_type <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">(</span><span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">fun0</span><span class="keyword">&gt;</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="comment">// end of [g0float_aop_type]</span>
+
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_add <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> + <span class="keyword">with</span> g0float_add <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_sub <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> - <span class="keyword">with</span> g0float_sub <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_mul <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> * <span class="keyword">with</span> g0float_mul <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_div <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> / <span class="keyword">with</span> g0float_div <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_mod <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> % <span class="keyword">with</span> g0float_mod <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> mod <span class="keyword">with</span> g0float_mod <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_isltz <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span></span>
+<span class="dynexp"><span class="keyword">overload</span> isltz <span class="keyword">with</span> g0float_isltz <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_isltez <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span></span>
+<span class="dynexp"><span class="keyword">overload</span> isltez <span class="keyword">with</span> g0float_isltez <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_isgtz <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span></span>
+<span class="dynexp"><span class="keyword">overload</span> isgtz <span class="keyword">with</span> g0float_isgtz <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_isgtez <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span></span>
+<span class="dynexp"><span class="keyword">overload</span> isgtez <span class="keyword">with</span> g0float_isgtez <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_iseqz <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span></span>
+<span class="dynexp"><span class="keyword">overload</span> iseqz <span class="keyword">with</span> g0float_iseqz <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_isneqz <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">bool</span></span>
+<span class="dynexp"><span class="keyword">overload</span> isneqz <span class="keyword">with</span> g0float_isneqz <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">typedef</span>
+<span class="staexp">g0float_cmp_type <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">(</span><span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">fun0</span><span class="keyword">&gt;</span> <span class="staexp">bool</span></span>
+<span class="comment">// end of [g0float_cmp_type]</span>
+
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_lt <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">&lt;</span> <span class="keyword">with</span> g0float_lt <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_lte <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> &lt;= <span class="keyword">with</span> g0float_lte <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_gt <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">&gt;</span> <span class="keyword">with</span> g0float_gt <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_gte <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> &gt;= <span class="keyword">with</span> g0float_gte <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_eq <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">=</span> <span class="keyword">with</span> g0float_eq <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_neq <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> != <span class="keyword">with</span> g0float_neq <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> &lt;&gt; <span class="keyword">with</span> g0float_neq <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">typedef</span>
+<span class="staexp">g0float_compare_type <span class="keyword">(</span><span class="staexp">tk<span class="keyword">:</span>tk</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">(</span><span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">g0float</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">fun0</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span></span>
+<span class="comment">// end of [g0float_compare_type]</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_compare <span class="keyword">:</span> <span class="staexp">g0float_compare_type</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> compare <span class="keyword">with</span> g0float_compare <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_max <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> max <span class="keyword">with</span> g0float_max <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span>
+g0float_min <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> min <span class="keyword">with</span> g0float_min <span class="keyword">of</span> 0</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_neg_float
+  <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_abs_float
+  <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_succ_float
+  <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_pred_float
+  <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_add_float
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_sub_float
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_mul_float
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_div_float
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_mod_float
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_lt_float
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_lte_float
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_gt_float
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_gte_float
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_eq_float
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_neq_float
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_compare_float
+  <span class="keyword">:</span> <span class="staexp">g0float_compare_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_max_float
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_min_float
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">fltknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_neg_double
+  <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_abs_double
+  <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_succ_double
+  <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_pred_double
+  <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_add_double
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_sub_double
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_mul_double
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_div_double
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_mod_double
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_lt_double
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_lte_double
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_gt_double
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_gte_double
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_eq_double
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_neq_double
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_compare_double
+  <span class="keyword">:</span> <span class="staexp">g0float_compare_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_max_double
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_min_double
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">dblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_neg_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_abs_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_succ_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_pred_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_uop_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_add_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_sub_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_mul_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_div_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_mod_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_lt_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_lte_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_gt_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_gte_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_eq_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_neq_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_cmp_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_compare_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_compare_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="dynexp"><span class="keyword">fun</span> g0float_max_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> g0float_min_ldouble
+  <span class="keyword">:</span> <span class="staexp">g0float_aop_type</span><span class="keyword">(</span><span class="staexp">ldblknd</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> fprint_float
+  <span class="keyword">:</span> <span class="staexp">fprint_type</span> <span class="keyword">(</span><span class="staexp">float</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> fprint <span class="keyword">with</span> fprint_float</span>
+<span class="dynexp"><span class="keyword">fun</span> print_float <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> prerr_float <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> print <span class="keyword">with</span> print_float</span>
+<span class="dynexp"><span class="keyword">overload</span> prerr <span class="keyword">with</span> prerr_float</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> fprint_double
+  <span class="keyword">:</span> <span class="staexp">fprint_type</span> <span class="keyword">(</span><span class="staexp">double</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> fprint <span class="keyword">with</span> fprint_double</span>
+<span class="dynexp"><span class="keyword">fun</span> print_double <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> prerr_double <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> print <span class="keyword">with</span> print_double</span>
+<span class="dynexp"><span class="keyword">overload</span> prerr <span class="keyword">with</span> prerr_double</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> fprint_ldouble
+  <span class="keyword">:</span> <span class="staexp">fprint_type</span> <span class="keyword">(</span><span class="staexp">ldouble</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> fprint <span class="keyword">with</span> fprint_ldouble</span>
+<span class="dynexp"><span class="keyword">fun</span> print_ldouble <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">ldouble</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> prerr_ldouble <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">ldouble</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> print <span class="keyword">with</span> print_ldouble</span>
+<span class="dynexp"><span class="keyword">overload</span> prerr <span class="keyword">with</span> prerr_ldouble</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+add_int_float
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">float</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span>
+add_float_int
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">float</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> + <span class="keyword">with</span> add_int_float <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> + <span class="keyword">with</span> add_float_int <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+add_int_double
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span>
+add_double_int
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> + <span class="keyword">with</span> add_int_double <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> + <span class="keyword">with</span> add_double_int <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+sub_int_float
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">float</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span>
+sub_float_int
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">float</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> - <span class="keyword">with</span> sub_int_float <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> - <span class="keyword">with</span> sub_float_int <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+sub_int_double
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span>
+sub_double_int
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> - <span class="keyword">with</span> sub_int_double <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> - <span class="keyword">with</span> sub_double_int <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+mul_int_float
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">float</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span>
+mul_float_int
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">float</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> * <span class="keyword">with</span> mul_int_float <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> * <span class="keyword">with</span> mul_float_int <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+mul_int_double
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span>
+mul_double_int
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> * <span class="keyword">with</span> mul_int_double <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> * <span class="keyword">with</span> mul_double_int <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+div_int_float
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">float</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span>
+div_float_int
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">float</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">float</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> / <span class="keyword">with</span> div_int_float <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> / <span class="keyword">with</span> div_float_int <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+div_int_double
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span>
+div_double_int
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> / <span class="keyword">with</span> div_int_double <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> / <span class="keyword">with</span> div_double_int <span class="keyword">of</span> 0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">macdef</span> g0i2f <span class="dynexp"><span class="keyword">(</span>x<span class="keyword">)</span></span> <span class="keyword">=</span> g0int2float <span class="keyword">(</span><span class="dynexp"><span class="keyword">,(</span>x<span class="keyword">)</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">macdef</span> g0f2i <span class="dynexp"><span class="keyword">(</span>x<span class="keyword">)</span></span> <span class="keyword">=</span> g0float2int <span class="keyword">(</span><span class="dynexp"><span class="keyword">,(</span>x<span class="keyword">)</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">macdef</span> g0f2f <span class="dynexp"><span class="keyword">(</span>x<span class="keyword">)</span></span> <span class="keyword">=</span> g0float2float <span class="keyword">(</span><span class="dynexp"><span class="keyword">,(</span>x<span class="keyword">)</span></span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [float.sats] *)</span>
+</pre>

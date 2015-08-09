@@ -1,0 +1,76 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/DATS/CODEGEN/bool.atxt
+** Time of generation: Sat Jun 27 21:39:20 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: hwxi AT cs DOT bu DOT edu *)</span>
+<span class="comment">(* Start time: Feburary, 2012 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">#define</span> ATS_DYNLOADFLAG 0</span> <span class="comment">// no dynloading at run-time</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+//
+// HX: see CATS/bool.cats
+//
+implement
+bool2string
+  (b) = if b then "true" else "false"
+// end of [bool2string]
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+//
+// HX: see CATS/bool.cats
+//
+implement
+fprint_bool (out, x) =
+  fprint_string (out, bool2string (x))
+// end of [fprint_bool]
+*)</span>
+
+<span class="prfexp"><span class="keyword">implement</span> fprint_val&lt;<span class="staexp">bool</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fprint_bool</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [bool.dats] *)</span>
+</pre>

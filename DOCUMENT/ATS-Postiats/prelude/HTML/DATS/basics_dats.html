@@ -1,0 +1,242 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/DATS/CODEGEN/basics.atxt
+** Time of generation: Tue Jul 21 21:16:36 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: hwxi AT cs DOT bu DOT edu *)</span>
+<span class="comment">(* Start time: March, 2012 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">staload</span>
+UN <span class="keyword">=</span> "prelude/SATS/unsafe.sats"
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">primplmnt</span>
+false_elim<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">case+</span> <span class="dynexp">0</span> <span class="keyword">of</span> _ <span class="keyword">=/=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span> prop_verify <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">primplmnt</span> prop_verify_and_add <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span> pridentity_v <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">primplmnt</span> pridentity_vt <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span> eqint_make <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> EQINT <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">primplmnt</span> eqint_make_gint <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> EQINT <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">primplmnt</span> eqint_make_guint <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> EQINT <span class="keyword">(</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span> eqaddr_make <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> EQADDR <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">primplmnt</span> eqaddr_make_ptr <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> EQADDR <span class="keyword">(</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span> eqbool_make <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> EQBOOL <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">primplmnt</span> eqbool_make_bool <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> EQBOOL <span class="keyword">(</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+lazy_force <span class="keyword">(</span>lazyval<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>lazyval</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+lazy_vt_force <span class="keyword">(</span>lazyval<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>lazyval</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stamped_vt2t_ref<span class="staexp"><span class="keyword">{</span>x<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span>
+  $UN<span class="keyword">.</span>ptr0_get&lt;<span class="staexp">stamped_t</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span><span class="staexp">x</span><span class="keyword">)</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp"><span class="keyword">addr@</span></span>x<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span>
+unit_v_elim <span class="keyword">(</span>pf<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prval</span> unit_v <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf</span> <span class="dynexp"><span class="keyword">in</span> <span class="comment">(*nothing*)</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [unit_v_elim]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> box<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> unbox<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> box_vt<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>castvwtp0<span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> unbox_vt<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>castvwtp0<span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX:</span>
+<span class="comment">// See prelude/basics_dyn.sats</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+opt_unsome_get <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> opt_unsome <span class="keyword">(</span>x<span class="keyword">)</span></span> <span class="keyword">in</span> x <span class="keyword">end</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+//
+// HX: [atspre_argv_at_at] in basics.cats
+//
+implement
+argv_get_at
+  (argv, i) = x where {
+  val (pf, fpf | p) =
+    argv_takeout_strarr (argv)
+  val x = !p.[i]
+  prval () = minus_addback (fpf, pf | argv)
+} // end of [argv_get_at]
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+assertexn_bool0 <span class="keyword">(</span>b<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">if</span> not<span class="keyword">(</span>b<span class="keyword">)</span> <span class="keyword">then</span> <span class="dynexp"><span class="keyword">$raise</span> AssertExn<span class="keyword">(</span><span class="keyword">)</span></span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+assertexn_bool1 <span class="keyword">(</span>b<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">if</span> not<span class="keyword">(</span>b<span class="keyword">)</span> <span class="keyword">then</span> <span class="dynexp"><span class="keyword">$raise</span> AssertExn<span class="keyword">(</span><span class="keyword">)</span></span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> gidentity <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> x</span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> gidentity_vt <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> x</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+gcopy_val <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span>
+gcopy_ref&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>x<span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+gequal_val_val&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>x <span class="keyword">=</span> y<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span>
+gequal_val_val&lt;<span class="staexp">bool</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>x <span class="keyword">=</span> y<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span>
+gequal_val_val&lt;<span class="staexp">char</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>x <span class="keyword">=</span> y<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span>
+gequal_val_val&lt;<span class="staexp">double</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>x <span class="keyword">=</span> y<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span>
+gequal_val_val&lt;<span class="staexp">string</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>x <span class="keyword">=</span> y<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span>
+gequal_ref_ref&lt;<span class="staexp">a</span><span class="keyword">&gt;</span>
+  <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> gequal_val_val&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+tostring_val<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> str <span class="keyword">=</span>
+  <span class="keyword">$effmask_wrt</span><span class="keyword">(</span>tostrptr_val&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  strptr2string<span class="keyword">(</span>str<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [tostring_val]</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+tostring_ref<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> str <span class="keyword">=</span>
+  <span class="keyword">$effmask_wrt</span><span class="keyword">(</span>tostrptr_ref&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  strptr2string<span class="keyword">(</span>str<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [tostring_ref]</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span>
+tostrptr_ref&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> tostrptr_val&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+fprint_val <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> str <span class="keyword">=</span> tostrptr_val&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_strptr <span class="keyword">(</span>out<span class="keyword">,</span> str<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> strptr_free <span class="keyword">(</span>str<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [fprint_val]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span>
+fprint_ref&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> fprint_val&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+//
+// HX-2014-02-25: commented out
+//
+implement{a}
+print_val (x) = fprint_val&lt;a&gt; (stdout_ref, x)
+implement{a}
+prerr_val (x) = fprint_val&lt;a&gt; (stderr_ref, x)
+implement{a}
+print_ref (x) = fprint_ref&lt;a&gt; (stdout_ref, x)
+implement{a}
+prerr_ref (x) = fprint_ref&lt;a&gt; (stderr_ref, x)
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [basics.dats] *)</span>
+</pre>

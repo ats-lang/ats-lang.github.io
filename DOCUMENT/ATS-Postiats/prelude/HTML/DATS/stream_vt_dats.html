@@ -1,0 +1,567 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/DATS/CODEGEN/list.atxt
+** Time of generation: Sat Jun 27 21:39:37 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: gmhwxiATgmailDOTcom *)</span>
+<span class="comment">(* Start time: July, 2012 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">staload</span> UN <span class="keyword">=</span> "prelude/SATS/unsafe.sats"
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2014-04-07:</span>
+<span class="comment">// This is a wild implementation!</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt2t <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> aux <span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="staexp">a</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">stream</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> xs <span class="keyword">=</span> $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">}</span></span><span class="keyword">(</span>xs<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">$delay</span>
+<span class="keyword">(</span>
+<span class="keyword">let</span>
+  <span class="keyword">val</span> xs <span class="keyword">=</span>
+    $UN<span class="keyword">.</span>castvwtp0<span class="keyword">{</span>stream_vt<span class="keyword">(</span>a<span class="keyword">)</span><span class="keyword">}</span><span class="keyword">(</span>xs<span class="keyword">)</span>
+  <span class="keyword">val</span> xs_con <span class="keyword">=</span> <span class="keyword">!</span>xs
+<span class="keyword">in</span>
+  <span class="keyword">case+</span> xs_con <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>stream_vt_cons
+      <span class="keyword">(</span>x<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="keyword">val</span> xs1_val <span class="keyword">=</span> xs1
+      <span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> xs1 := aux <span class="keyword">(</span>xs1_val<span class="keyword">)</span>
+    <span class="keyword">in</span>
+      $UN<span class="keyword">.</span>castvwtp0<span class="keyword">{</span>stream_con<span class="keyword">(</span>a<span class="keyword">)</span><span class="keyword">}</span><span class="keyword">(</span><span class="keyword">(</span><span class="keyword">view@</span>x<span class="keyword">,</span> <span class="keyword">view@</span>xs1 <span class="keyword">|</span> xs_con<span class="keyword">)</span><span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [stream_cons]</span>
+  <span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> stream_nil <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">end</span>
+<span class="keyword">)</span></span>
+<span class="keyword">end</span></span> <span class="comment">// end of [aux]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  aux <span class="keyword">(</span>xs<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [stream_vt2t]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">local</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2012: casting stream_vt_cons to list_cons</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+stream2list_vt_cons
+  <span class="staexp"><span class="keyword">{</span>l0<span class="keyword">,</span>l1<span class="keyword">,</span>l2<span class="keyword">:</span>addr<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="staexp">stream_vt_cons_unfold</span> <span class="keyword">(</span><span class="staexp">l0</span><span class="keyword">,</span> <span class="staexp">l1</span><span class="keyword">,</span> <span class="staexp">l2</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">list_vt_cons_unfold</span> <span class="keyword">(</span><span class="staexp">l0</span><span class="keyword">,</span> <span class="staexp">l1</span><span class="keyword">,</span> <span class="staexp">l2</span><span class="keyword">)</span></span>
+
+<span class="keyword">in</span> <span class="comment">(* in-of-local *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream2list_vt <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop <span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="staexp">a</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">List0_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> xs_con <span class="keyword">=</span> <span class="keyword">!</span>xs</span>
+<span class="keyword">in</span>
+  <span class="keyword">case+</span> xs_con <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>stream_vt_cons
+      <span class="keyword">(</span>x<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> xs1_val <span class="keyword">=</span> xs1</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> xs1 := loop <span class="keyword">(</span>xs1_val<span class="keyword">)</span></span>
+      <span class="dynexp"><span class="keyword">val</span> xs_con <span class="keyword">=</span> stream2list_vt_cons <span class="keyword">(</span>xs_con<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">fold@</span> <span class="keyword">(</span>xs_con<span class="keyword">)</span><span class="keyword">;</span> xs_con
+    <span class="keyword">end</span> <span class="comment">// end of [stream_cons]</span>
+  <span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> list_vt_nil <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [loop]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span>xs<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [stream2list_vt]</span>
+
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_free <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">~</span><span class="keyword">(</span>xs<span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_drop_exn
+  <span class="keyword">(</span>xs<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span>
+  <span class="keyword">then</span> <span class="keyword">(</span>
+  <span class="keyword">case+</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp"><span class="keyword">$raise</span> StreamSubscriptExn<span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="keyword">~</span>stream_vt_cons <span class="keyword">(</span>_<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> stream_vt_drop_exn <span class="keyword">(</span>xs<span class="keyword">,</span> n-<span class="dynexp">1</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="comment">(* end of [then] *)</span>
+  <span class="keyword">else</span> <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="comment">// end of [else]</span>
+<span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [stream_vt_drop_exn]</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_drop_opt
+  <span class="keyword">(</span>xs<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span>
+  <span class="keyword">then</span> <span class="keyword">(</span>
+  <span class="keyword">case+</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> None_vt <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span>
+  <span class="keyword">|</span> <span class="keyword">~</span>stream_vt_cons <span class="keyword">(</span>_<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> stream_vt_drop_opt <span class="keyword">(</span>xs<span class="keyword">,</span> n-<span class="dynexp">1</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="comment">(* end of [then] *)</span>
+  <span class="keyword">else</span> Some_vt<span class="staexp"><span class="keyword">{</span>stream_vt<span class="keyword">(</span>a<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>xs<span class="keyword">)</span> <span class="comment">// end of [else]</span>
+<span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [stream_vt_drop_opt]</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_head <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+    <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> stream_vt_free <span class="keyword">(</span>xs<span class="keyword">)</span></span> <span class="keyword">in</span> x <span class="keyword">end</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp"><span class="keyword">$raise</span> StreamSubscriptExn<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [stream_vt_head] *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_tail <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp"><span class="keyword">$raise</span> StreamSubscriptExn<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [stream_vt_tail] *)</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_uncons <span class="keyword">(</span>xs0<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> <span class="keyword">!</span>xs0 <span class="keyword">of</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_cons
+    <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span>xs0 := xs<span class="keyword">;</span> x<span class="keyword">)</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+      xs0 := <span class="dynexp"><span class="keyword">$ldelay</span> <span class="keyword">(</span>stream_vt_nil<span class="keyword">)</span></span></span>
+    <span class="comment">// end of [val]</span>
+  <span class="keyword">in</span>
+    <span class="dynexp"><span class="keyword">$raise</span> StreamSubscriptExn<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+  <span class="keyword">end</span> <span class="comment">// end of [stream_vt_nil]</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [stream_vt_uncons] *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_foreach
+  <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">var</span> env<span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">in</span>
+  stream_vt_foreach_env&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">void</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> env<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [stream_vt_foreach]</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
+stream_vt_foreach_env
+  <span class="keyword">(</span>xs<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> xs_con <span class="keyword">=</span> <span class="keyword">!</span>xs</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> xs_con <span class="keyword">of</span>
+<span class="keyword">|</span> <span class="keyword">@</span>stream_vt_cons
+    <span class="keyword">(</span>x<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> xs1 <span class="keyword">=</span> xs1</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> stream_vt_foreach$fwork&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> env<span class="keyword">)</span></span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">free@</span> <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span> <span class="keyword">(</span>xs_con<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    stream_vt_foreach&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs1<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="comment">// end of [stream_vt_cons]</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [stream_vt_foreach_env]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">local</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_vt_filter_con
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">stream_vt_con</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> xs <span class="keyword">=</span> <span class="keyword">!</span>xs</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> <span class="keyword">@</span>stream_vt_cons
+    <span class="keyword">(</span>x<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> test <span class="keyword">=</span>
+      stream_vt_filter$pred&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span></span>
+    <span class="comment">// end of [val]</span>
+  <span class="keyword">in</span>
+    <span class="keyword">if</span> test <span class="keyword">then</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+      xs1 := stream_vt_filter <span class="keyword">(</span>xs1<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">fold@</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">;</span> xs
+    <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> xs1 <span class="keyword">=</span> xs1</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">free@</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>xs<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      stream_vt_filter_con&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs1<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [if]</span>
+  <span class="keyword">end</span> <span class="comment">// end of [cons]</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> stream_vt_nil<span class="keyword">(</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [stream_vt_filter_con] *)</span>
+
+<span class="keyword">in</span> <span class="comment">(* in of [local] *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_filter <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="dynexp"><span class="keyword">$ldelay</span> <span class="keyword">(</span>stream_vt_filter_con&lt;a<span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">~</span>xs<span class="keyword">)</span></span></span>
+<span class="comment">// end of [stream_vt_filter]</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_filter_fun
+  <span class="keyword">(</span>xs<span class="keyword">,</span> pred<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span>
+stream_vt_filter$pred <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> p <span class="keyword">=</span> <span class="dynexp"><span class="keyword">addr@</span></span><span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pf</span><span class="keyword">,</span> <span class="prfexp">fpf</span> <span class="keyword">|</span> p<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_vtake<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>p<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> test <span class="keyword">=</span> pred <span class="keyword">(</span><span class="keyword">!</span>p<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> fpf <span class="keyword">(</span>pf<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  test
+<span class="keyword">end</span></span> <span class="comment">// end of [stream_vt_filter$pred]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  stream_vt_filter <span class="keyword">(</span>xs<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [stream_vt_filter_fun]</span>
+
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">local</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+auxfree<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>
+  pred<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">&amp;</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloptr</span><span class="keyword">&gt;</span> <span class="staexp">bool</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> cloptr_free <span class="keyword">(</span>$UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>cloptr0<span class="keyword">}</span></span><span class="keyword">(</span>pred<span class="keyword">)</span><span class="keyword">)</span></span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_vt_filter_cloptr_con
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> pred<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">&amp;</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloptr</span><span class="keyword">&gt;</span> <span class="staexp">bool</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">stream_vt_con</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> xs <span class="keyword">=</span> <span class="keyword">!</span>xs</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> <span class="keyword">@</span>stream_vt_cons
+    <span class="keyword">(</span>x<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> test <span class="keyword">=</span> pred <span class="keyword">(</span>x<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">if</span> test <span class="keyword">then</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> xs1 :=
+      stream_vt_filter_cloptr <span class="keyword">(</span>xs1<span class="keyword">,</span> pred<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">fold@</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">;</span> xs
+    <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> xs1 <span class="keyword">=</span> xs1</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">free@</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>xs<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      stream_vt_filter_cloptr_con&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs1<span class="keyword">,</span> pred<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [if]</span>
+  <span class="keyword">end</span> <span class="comment">// end of [cons]</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+    <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> auxfree<span class="keyword">(</span>pred<span class="keyword">)</span></span> <span class="keyword">in</span> stream_vt_nil<span class="comment">(*void*)</span> <span class="keyword">end</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [stream_vt_filter_cloptr_con] *)</span>
+
+<span class="keyword">in</span> <span class="comment">(* in of [local] *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_filter_cloptr
+  <span class="keyword">(</span>xs<span class="keyword">,</span> pred<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$ldelay</span>
+<span class="keyword">(</span>
+  stream_vt_filter_cloptr_con&lt;a<span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> pred<span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">(</span><span class="keyword">~</span>xs<span class="keyword">;</span> auxfree<span class="keyword">(</span>pred<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span></span> <span class="comment">(* end of [stream_vt_filter_cloptr] *)</span>
+
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">local</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>vt0p
+<span class="keyword">}</span></span> stream_vt_map_con
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">stream_vt_con</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> xs_con <span class="keyword">=</span> <span class="keyword">!</span>xs</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> xs_con <span class="keyword">of</span>
+<span class="keyword">|</span> <span class="keyword">@</span>stream_vt_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> y <span class="keyword">=</span> stream_vt_map$fopr&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span></span>
+    <span class="dynexp"><span class="keyword">val</span> xs <span class="keyword">=</span> xs</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">free@</span> <span class="keyword">(</span>xs_con<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    stream_vt_cons<span class="staexp"><span class="keyword">{</span>b<span class="keyword">}</span></span><span class="keyword">(</span>y<span class="keyword">,</span> stream_vt_map&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="comment">(* end of [stream_vt_con] *)</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> stream_vt_nil <span class="keyword">(</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [stream_vt_map_con]</span>
+
+<span class="keyword">in</span> <span class="comment">(* in of [local] *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_map <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$ldelay</span> <span class="keyword">(</span>stream_vt_map_con&lt;a<span class="keyword">&gt;&lt;</span>b<span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">~</span>xs<span class="keyword">)</span></span></span>
+
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_map_fun
+  <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b2</span><span class="keyword">}</span>
+stream_vt_map$fopr <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> __assert <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">where</span>
+  <span class="keyword">{</span>
+    <span class="keyword">extern</span> <span class="prfexp"><span class="keyword">praxi</span> __assert <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">a2</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">a2</span><span class="staexp">?!</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+  <span class="keyword">}</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span>
+    <span class="prfexp">pf</span><span class="keyword">,</span> <span class="prfexp">fpf</span> <span class="keyword">|</span> p_x
+  <span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_vtake<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span><span class="dynexp"><span class="keyword">addr@</span></span>x<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>b2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span><span class="keyword">!</span>p_x<span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>castview0<span class="staexp"><span class="keyword">{</span>void<span class="keyword">}</span></span><span class="keyword">(</span><span class="keyword">@(</span>fpf<span class="keyword">,</span> pf<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  res
+<span class="keyword">end</span></span> <span class="comment">(* end of [stream_vt_map$fopr] *)</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  stream_vt_map&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [stream_vt_map_fun]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">local</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a1<span class="keyword">,</span>a2<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>vt0p
+<span class="keyword">}</span></span> stream_vt_map2_con
+<span class="keyword">(</span>
+  xs1<span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="keyword">(</span><span class="staexp">a1</span><span class="keyword">)</span>
+<span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="keyword">(</span><span class="staexp">a2</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">stream_vt_con</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> xs1_con <span class="keyword">=</span> <span class="keyword">!</span>xs1</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> xs1_con <span class="keyword">of</span>
+<span class="keyword">|</span> <span class="keyword">@</span>stream_vt_cons
+    <span class="keyword">(</span>x1<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> xs2_con <span class="keyword">=</span> <span class="keyword">!</span>xs2</span>
+  <span class="keyword">in</span>
+    <span class="keyword">case+</span> xs2_con <span class="keyword">of</span>
+    <span class="keyword">|</span> <span class="keyword">@</span>stream_vt_cons
+        <span class="keyword">(</span>x2<span class="keyword">,</span> xs2<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> y <span class="keyword">=</span> stream_vt_map2$fopr&lt;<span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span></span>
+        <span class="dynexp"><span class="keyword">val</span> xs1 <span class="keyword">=</span> xs1
+        <span class="keyword">and</span> xs2 <span class="keyword">=</span> xs2</span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">free@</span> <span class="keyword">(</span>xs1_con<span class="keyword">)</span>
+        <span class="keyword">and</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">free@</span> <span class="keyword">(</span>xs2_con<span class="keyword">)</span></span>
+      <span class="keyword">in</span>
+        stream_vt_cons<span class="staexp"><span class="keyword">{</span>b<span class="keyword">}</span></span><span class="keyword">(</span>y<span class="keyword">,</span> stream_vt_map2&lt;<span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">)</span><span class="keyword">)</span>
+      <span class="keyword">end</span> <span class="comment">// end of [stream_vt_cons]</span>
+    <span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> xs1 <span class="keyword">=</span> xs1</span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">free@</span> <span class="keyword">(</span>xs1_con<span class="keyword">)</span></span>
+      <span class="keyword">in</span>
+        <span class="keyword">~</span>xs1<span class="keyword">;</span> stream_vt_nil <span class="keyword">(</span><span class="keyword">)</span>
+      <span class="keyword">end</span> <span class="comment">// end of [stream_vt_nil]</span>
+  <span class="keyword">end</span> <span class="comment">// end of [stream_vt_cons]</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">~</span>xs2<span class="keyword">;</span> stream_vt_nil <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [stream_vt_map_con]</span>
+
+<span class="keyword">in</span> <span class="comment">(* in of [local] *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a1<span class="keyword">,</span>a2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
+stream_vt_map2
+  <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$ldelay</span>
+  <span class="keyword">(</span>stream_vt_map2_con&lt;a1<span class="keyword">,</span>a2<span class="keyword">&gt;&lt;</span>b<span class="keyword">&gt;</span> <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">(</span><span class="keyword">~</span>xs1<span class="keyword">;</span> <span class="keyword">~</span>xs2<span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [stream_vt_map2]</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a1<span class="keyword">,</span>a2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
+stream_vt_map2_fun
+  <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a12<span class="keyword">,</span>a22</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b2</span><span class="keyword">}</span>
+stream_vt_map2$fopr
+  <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span>
+    <span class="prfexp">pf1</span><span class="keyword">,</span> <span class="prfexp">fpf1</span> <span class="keyword">|</span> p_x1
+  <span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_vtake<span class="staexp"><span class="keyword">{</span>a1<span class="keyword">}</span></span><span class="keyword">(</span><span class="dynexp"><span class="keyword">addr@</span></span>x1<span class="keyword">)</span>
+  <span class="keyword">and</span> <span class="keyword">(</span>
+    <span class="prfexp">pf2</span><span class="keyword">,</span> <span class="prfexp">fpf2</span> <span class="keyword">|</span> p_x2
+  <span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_vtake<span class="staexp"><span class="keyword">{</span>a2<span class="keyword">}</span></span><span class="keyword">(</span><span class="dynexp"><span class="keyword">addr@</span></span>x2<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span>
+    $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>b2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span><span class="keyword">!</span>p_x1<span class="keyword">,</span> <span class="keyword">!</span>p_x2<span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fpf1 <span class="keyword">(</span>pf1<span class="keyword">)</span> <span class="keyword">and</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fpf2 <span class="keyword">(</span>pf2<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  res
+<span class="keyword">end</span></span> <span class="comment">(* end of [stream_vt_map2$fopr] *)</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  stream_vt_map2&lt;<span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [stream_vt_map2_fun]</span>
+
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_tabulate
+<span class="keyword">(</span>
+<span class="comment">// argumentless</span>
+<span class="keyword">)</span> <span class="keyword">=</span> aux <span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> aux <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">intGte</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="dynexp"><span class="keyword">$ldelay</span> <span class="keyword">(</span>stream_vt_cons<span class="keyword">{</span>a<span class="keyword">}</span><span class="keyword">(</span>stream_vt_tabulate$fopr&lt;a<span class="keyword">&gt;</span> <span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">,</span> aux <span class="keyword">(</span>i+1<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [stream_vt_tabulate] *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">local</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">datavtype</span> streamer
+  <span class="staexp"><span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype+</span><span class="keyword">)</span></span> <span class="keyword">=</span> STREAMER <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">assume</span> streamer_vtype <span class="keyword">(</span>a<span class="keyword">:</span>vt0p<span class="keyword">)</span> <span class="keyword">=</span> streamer <span class="keyword">(</span>a<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span> <span class="comment">(* in-of-local *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+streamer_vt_make <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> STREAMER <span class="keyword">(</span>xs<span class="keyword">)</span></span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+streamer_vt_free
+  <span class="keyword">(</span>xser<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val+</span><span class="keyword">~</span>STREAMER<span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> xser</span> <span class="keyword">in</span> <span class="keyword">~</span>xs <span class="keyword">end</span></span>
+<span class="comment">// end of [streamer_free]</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+streamer_vt_eval_exn
+  <span class="keyword">(</span>xser<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>STREAMER<span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> xser</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_cons
+    <span class="keyword">(</span>x<span class="keyword">,</span> xs2<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="keyword">(</span>
+    xs := xs2<span class="keyword">;</span> <span class="keyword">fold@</span><span class="keyword">(</span>xser<span class="keyword">)</span><span class="keyword">;</span> x
+  <span class="keyword">)</span> <span class="comment">(* end of [stream_vt_cons] *)</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil
+    <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+     __assert <span class="keyword">(</span><span class="dynexp"><span class="keyword">view@</span></span>xs<span class="keyword">)</span> <span class="keyword">where</span>
+    <span class="keyword">{</span>
+      <span class="keyword">extern</span>
+      <span class="prfexp"><span class="keyword">praxi</span> __assert<span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="keyword">(</span><span class="staexp"><span class="keyword">!</span></span><span class="staexp">ptr</span><span class="staexp"><span class="keyword">@</span></span><span class="staexp">l</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="staexp"><span class="keyword">@</span></span><span class="staexp">l</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+    <span class="keyword">}</span></span> <span class="comment">(* end of [prval] *)</span>
+    <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span><span class="keyword">(</span>xser<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="dynexp"><span class="keyword">$raise</span> StreamSubscriptExn<span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">end</span> <span class="comment">(* end of [stream_vt_nil] *)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [stream_eval_exn]</span>
+
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [stream_vt.dats] *)</span>
+</pre>

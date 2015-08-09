@@ -1,0 +1,115 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/DATS/CODEGEN/option.atxt
+** Time of generation: Sat Jun 27 21:39:36 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: hwxi AT cs DOT bu DOT edu *)</span>
+<span class="comment">(* Start time: Feburary, 2012 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> option_some <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> Some <span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> option_none <span class="keyword">(</span> <span class="keyword">)</span> <span class="keyword">=</span> None <span class="keyword">(</span> <span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+option_is_some <span class="keyword">(</span>opt<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> opt <span class="keyword">of</span> Some _ <span class="keyword">=&gt;</span> true <span class="keyword">|</span> None _ <span class="keyword">=&gt;</span> false</span>
+<span class="comment">// end of [option_is_some]</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+option_is_none <span class="keyword">(</span>opt<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> opt <span class="keyword">of</span> Some _ <span class="keyword">=&gt;</span> false <span class="keyword">|</span> None _ <span class="keyword">=&gt;</span> true</span>
+<span class="comment">// end of [option_is_none]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+option_unsome
+  <span class="keyword">(</span>opt<span class="keyword">)</span> <span class="keyword">=</span> x <span class="keyword">where</span> <span class="keyword">{</span> <span class="dynexp"><span class="keyword">val+</span>Some <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> opt</span> <span class="keyword">}</span></span>
+<span class="comment">// end of [option_unsome]</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+option_unsome_exn
+  <span class="keyword">(</span>opt<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>
+  <span class="keyword">case+</span> opt <span class="keyword">of</span>
+  <span class="keyword">|</span> Some x <span class="keyword">=&gt;</span> x <span class="keyword">|</span> None _ <span class="keyword">=&gt;</span> <span class="dynexp"><span class="keyword">$raise</span> NotSomeExn<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="keyword">)</span></span> <span class="comment">// end of [option_unsome_exn]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+option_equal
+  <span class="keyword">(</span>opt1<span class="keyword">,</span> opt2<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> opt1 <span class="keyword">of</span>
+<span class="keyword">|</span> None <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="keyword">(</span>
+    <span class="keyword">case+</span> opt1 <span class="keyword">of</span> None <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> true <span class="keyword">|</span> Some _ <span class="keyword">=&gt;</span> false
+  <span class="keyword">)</span>
+<span class="keyword">|</span> Some x1 <span class="keyword">=&gt;</span>
+  <span class="keyword">(</span>
+    <span class="keyword">case+</span> opt2 <span class="keyword">of</span> None <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> false <span class="keyword">|</span> Some x2 <span class="keyword">=&gt;</span> option_equal$eqfn<span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span>
+  <span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [option_equal] *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+fprint_option
+  <span class="keyword">(</span>out<span class="keyword">,</span> opt<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> opt <span class="keyword">of</span>
+<span class="keyword">|</span> Some <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">{</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span>
+    <span class="keyword">)</span> <span class="keyword">=</span> fprint_string <span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"Some("</span><span class="keyword">)</span></span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_val&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span></span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_string <span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">")"</span><span class="keyword">)</span></span>
+  <span class="keyword">}</span> <span class="comment">(* end of [Some] *)</span>
+<span class="keyword">|</span> None <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> fprint_string <span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"None()"</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fprint_option]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [option.dats] *)</span>
+</pre>

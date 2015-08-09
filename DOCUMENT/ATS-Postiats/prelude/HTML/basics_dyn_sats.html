@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <style type="text/css">
+    .patsyntax {color:#808080;background-color:#E0E0E0;}
+    .patsyntax span.keyword {color:#000000;font-weight:bold;}
+    .patsyntax span.comment {color:#787878;font-style:italic;}
+    .patsyntax span.extcode {color:#A52A2A;}
+    .patsyntax span.neuexp  {color:#800080;}
+    .patsyntax span.staexp  {color:#0000F0;}
+    .patsyntax span.prfexp  {color:#603030;}
+    .patsyntax span.dynexp  {color:#F00000;}
+    .patsyntax span.stalab  {color:#0000F0;font-style:italic}
+    .patsyntax span.dynlab  {color:#F00000;font-style:italic}
+    .patsyntax span.dynstr  {color:#008000;font-style:normal}
+    .patsyntax span.stacstdec  {text-decoration:none;}
+    .patsyntax span.stacstuse  {color:#0000CF;text-decoration:underline;}
+    .patsyntax span.dyncstdec  {text-decoration:none;}
+    .patsyntax span.dyncstuse  {color:#B80000;text-decoration:underline;}
+    .patsyntax span.dyncst_implement  {color:#B80000;text-decoration:underline;}
+  </style>
+</head>
+<body class="patsyntax">
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// Author of the file:</span>
+<span class="comment">// Hongwei Xi (gmhwxiATgmailDOTcom)</span>
+<span class="comment">// Start Time: September, 2011</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="neuexp"><span class="keyword">#include</span> "prelude/params.hats"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">#if</span> <span class="neuexp">VERBOSE_PRELUDE</span> <span class="keyword">#then</span>
+<span class="neuexp"><span class="keyword">#print</span> "Loading [basics_dyn.sats] starts!\n"</span>
+<span class="keyword">#endif</span> <span class="comment">// end of [VERBOSE_PRELUDE]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">sortdef</span> t0p <span class="keyword">=</span> <span class="keyword">t@ype</span> <span class="keyword">and</span> vt0p <span class="keyword">=</span> <span class="keyword">vt@ype</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">datatype</span> TYPE<span class="staexp"><span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">)</span></span> <span class="keyword">=</span> TYPE<span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2012: In $ATSHOME/ccomp/runtime:</span>
+<span class="comment">// atsbool_true/atsbool_false are mapped to 1/0</span>
+<span class="comment">// this mapping is fixed and should never be changed!</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span> true true_bool</span> <span class="comment">// shorthand</span>
+<span class="dynexp"><span class="keyword">val</span> true_bool <span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">true</span><span class="keyword">)</span>  <span class="keyword">=</span> "mac#atsbool_true"</span> <span class="comment">// = 1</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span> false false_bool</span> <span class="comment">// shorthand</span>
+<span class="dynexp"><span class="keyword">val</span> false_bool <span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">false</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#atsbool_false"</span> <span class="comment">// = 0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: [false] implies all</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span> false_elim<span class="staexp"><span class="keyword">{</span>X<span class="keyword">:</span>prop <span class="keyword">|</span> false<span class="keyword">}</span></span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">X</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+lemma_subcls_reflexive<span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>cls<span class="keyword">}</span></span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>c &lt;= c<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="prfexp"><span class="keyword">praxi</span>
+lemma_subcls_transitive
+  <span class="staexp"><span class="keyword">{</span>c1<span class="keyword">,</span>c2<span class="keyword">,</span>c3<span class="keyword">:</span>cls <span class="keyword">|</span> c1 &lt;= c2<span class="keyword">;</span> c2 &lt;= c3<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>c1 &lt;= c3<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">praxi</span> praxi_int<span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">praxi</span> praxi_bool<span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>bool<span class="keyword">}</span></span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">praxi</span> praxi_ptr<span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">ptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">dataprop</span>
+EQINT <span class="staexp"><span class="keyword">(</span>int<span class="keyword">,</span> int<span class="keyword">)</span></span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>int<span class="keyword">}</span></span> EQINT <span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span> eqint_make <span class="staexp"><span class="keyword">{</span>x<span class="keyword">,</span>y<span class="keyword">:</span>int <span class="keyword">|</span> x == y<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">EQINT</span> <span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+eqint_make_gint
+  <span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>y<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">EQINT</span> <span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">prfun</span>
+eqint_make_guint
+  <span class="staexp"><span class="keyword">{</span>tk<span class="keyword">:</span>tk<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>y<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">EQINT</span> <span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">dataprop</span>
+EQADDR <span class="staexp"><span class="keyword">(</span>addr<span class="keyword">,</span> addr<span class="keyword">)</span></span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>addr<span class="keyword">}</span></span> EQADDR <span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+eqaddr_make <span class="staexp"><span class="keyword">{</span>x<span class="keyword">,</span>y<span class="keyword">:</span>addr <span class="keyword">|</span> x == y<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">EQADDR</span> <span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+eqaddr_make_ptr <span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="keyword">(</span><span class="staexp">x</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>y<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="staexp">EQADDR</span> <span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">dataprop</span>
+EQBOOL <span class="staexp"><span class="keyword">(</span>bool<span class="keyword">,</span> bool<span class="keyword">)</span></span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>bool<span class="keyword">}</span></span> EQBOOL <span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span> eqbool_make <span class="staexp"><span class="keyword">{</span>x<span class="keyword">,</span>y<span class="keyword">:</span>bool <span class="keyword">|</span> x == y<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">EQBOOL</span> <span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span> eqbool_make_bool <span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>bool<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">x</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>y<span class="keyword">:</span>bool<span class="keyword">]</span></span> <span class="staexp">EQBOOL</span> <span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">prfun</span> prop_verify<span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>bool <span class="keyword">|</span> b<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="prfexp"><span class="keyword">prfun</span> prop_verify_and_add<span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>bool <span class="keyword">|</span> b<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>b<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">prfun</span> pridentity_v<span class="staexp"><span class="keyword">{</span>v<span class="keyword">:</span>view<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">v</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="prfexp"><span class="keyword">prfun</span> pridentity_vt<span class="staexp"><span class="keyword">{</span>vt<span class="keyword">:</span><span class="keyword">viewt@ype</span><span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">vt</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">dataprop</span>
+EQTYPE <span class="staexp"><span class="keyword">(</span><span class="keyword">vt@ype</span><span class="keyword">,</span> <span class="keyword">vt@ype</span><span class="keyword">)</span></span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">}</span></span> EQTYPE <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">castfn</span>
+viewptr_match
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l1<span class="keyword">,</span>l2<span class="keyword">:</span>addr <span class="keyword">|</span> l1==l2<span class="keyword">}</span></span>
+  <span class="keyword">(</span><span class="prfexp">pf<span class="keyword">:</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l1</span></span> <span class="keyword">|</span> p<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l2</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr <span class="keyword">|</span> l==l1<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="comment">// end of [viewptr_match]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">}</span></span> sizeof <span class="keyword">:</span> <span class="staexp">size_t</span> <span class="keyword">(</span><span class="staexp">sizeof</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+lemma_sizeof<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>sizeof<span class="keyword">(</span>a<span class="keyword">)</span> &gt;= 0<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">praxi</span> topize <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">a</span><span class="staexp">?</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">castfn</span> dataget <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span><span class="staexp">?!</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: returning the pf to GC</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+mfree_gc_v_elim
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp">mfree_gc_v</span> <span class="staexp">l</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">// end of [mfree_gc_v_elim]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">praxi</span>
+mfree_gcngc_v_nullify
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">(</span>
+  pf1<span class="keyword">:</span> <span class="staexp">mfree_gc_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span><span class="keyword">,</span> pf1<span class="keyword">:</span> <span class="staexp">mfree_ngc_v</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span></span> <span class="comment">// end of [mfree_gcngc_nullify_v]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+cloptr_free
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> <span class="keyword">(</span>pclo<span class="keyword">:</span> <span class="staexp">cloptr</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+lazy_force <span class="keyword">(</span>lazyval<span class="keyword">:</span> <span class="staexp">lazy</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+lazy_vt_force <span class="keyword">(</span>lazyval<span class="keyword">:</span> <span class="staexp">lazy_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2013:</span>
+<span class="comment">// macro implemented in [pats_ccomp_instrset]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+lazy_vt_free
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span>lazyval<span class="keyword">:</span> <span class="staexp">lazy_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">~</span> <span class="keyword">with</span> lazy_vt_free</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2014:</span>
+<span class="comment">// macro implemented in [pats_ccomp_instrset]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+lazy2cloref
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="keyword">(</span><span class="staexp">lazy</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+// HX-2012-05-23: this seems TOO complicated!
+(*
+** HX-2012-03: handling read-only views and vtypes
+*)
+castfn
+read_getval // copy out a non-linear value
+  {a:t@ype}{s:int}{n:int} (x: !READ (a, s, n)):&lt;&gt; a
+// end of [read_getval]
+
+praxi
+read_takeout{v:view}
+  (pf: !v &gt;&gt; READOUT (v, s)): #[s:int] READ (v, s, 0)
+// end of [read_takeout]
+praxi
+read_addback // HX: there is no need to check
+  {v1:view}{v2:view}{s:int} // if v1 and v2 match
+  (pf1: !READOUT (v1, s) &gt;&gt; v1, pf2: READ (v2, s, 0)): void
+// end of [read0_addback]
+
+praxi
+read_split
+  {v:view}{s:int}{n:int}
+  (pf: !READ (v, s, n) &gt;&gt; READ (v, s, n+1)): READ (v, s, 0)
+// end of [read_split]
+praxi
+read_unsplit // HX: there is no need to check
+  {v1:view}{v2:view}{s:int}{n1,n2:int} // if v1 and v2 match
+  (pf1: READ (v1, s, n1), pf2: READ (v2, s, n2)): READ (v1, s, n1+n2-1)
+// end of [read_unsplit]
+*)</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+stamp_t<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">stamped_t</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">castfn</span>
+stamp_vt<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">stamped_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">castfn</span>
+unstamp_t
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">stamped_t</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="comment">// end of [unstamp_t]</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+unstamp_vt
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">stamped_vt</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="comment">// end of [unstamp_vt]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+stamped_t2vt
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">stamped_t</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">stamped_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span></span>
+<span class="comment">// end of [stamped_t2vt]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">castfn</span>
+stamped_vt2t
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">stamped_vt</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">stamped_t</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span></span>
+<span class="comment">// end of [stamped_vt2t]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+stamped_vt2t_ref<span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">stamped_vt</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">stamped_t</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+vcopyenv_v_decode<span class="staexp"><span class="keyword">{</span>v<span class="keyword">:</span>view<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">vcopyenv_v</span> <span class="keyword">(</span><span class="staexp">v</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">vtakeout0</span> <span class="keyword">(</span><span class="staexp">v</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">castfn</span>
+vcopyenv_vt_decode<span class="staexp"><span class="keyword">{</span>vt<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">vcopyenv_vt</span> <span class="keyword">(</span><span class="staexp">vt</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">vttakeout0</span> <span class="keyword">(</span><span class="staexp">vt</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> decode <span class="keyword">with</span> vcopyenv_v_decode</span>
+<span class="dynexp"><span class="keyword">overload</span> decode <span class="keyword">with</span> vcopyenv_vt_decode</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: the_null_ptr = (void*)0</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+the_null_ptr <span class="keyword">:</span> <span class="staexp">ptr</span> <span class="keyword">(</span><span class="staexp">null</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#atsptr_null"</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">praxi</span>
+lemma_addr_param<span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>l &gt;= null<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">praxi</span>
+lemma_string_param
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>n &gt;= 0<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">// end of [lemma_string_param]</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+lemma_stropt_param
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">stropt</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>n &gt;= <span class="keyword">~</span>1<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">// end of [lemma_stropt_param]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">dataprop</span> SGN <span class="staexp"><span class="keyword">(</span>int<span class="keyword">,</span> int<span class="keyword">)</span></span> <span class="keyword">=</span>
+  <span class="keyword">|</span> SGNzero <span class="keyword">(</span><span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>neg<span class="keyword">}</span></span> SGNneg <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">,</span> <span class="staexp"><span class="keyword">~</span></span><span class="staexp">1</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>pos<span class="keyword">}</span></span> SGNpos <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">,</span>  <span class="staexp">1</span><span class="keyword">)</span></span>
+<span class="comment">// end of [SGN] // end of [dataprop]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2012-06:</span>
+<span class="comment">// indication of the failure of</span>
+<span class="keyword">exception</span> <span class="dynexp">AssertExn <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="comment">// an assertion</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2012-06:</span>
+<span class="comment">// indication of something expected</span>
+<span class="keyword">exception</span> <span class="dynexp">NotFoundExn <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="comment">// to be found but not</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">exception</span> <span class="dynexp">GenerallyExn <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span></span> <span class="comment">// for unspecified causes</span>
+<span class="comment">(*
+exception GenerallyExn2 of (string, ptr(*data*)) // for unspecified causes
+*)</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX-2012-07:</span>
+<span class="comment">// indication of a function argument being</span>
+<span class="keyword">exception</span> <span class="dynexp">IllegalArgExn <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">string</span><span class="keyword">)</span></span> <span class="comment">// out of its domain</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">praxi</span> __vfree_exn <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">exn</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// for freeing nullary exception-con</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">datatype</span> unit <span class="keyword">=</span> unit <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">dataprop</span> unit_p <span class="keyword">=</span> unit_p <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">dataview</span> unit_v <span class="keyword">=</span> unit_v <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">prfun</span> unit_v_elim <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp">unit_v</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abstype</span>
+boxed_t0ype_type<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype+</span><span class="keyword">)</span> <span class="keyword">=</span> unit</span>
+<span class="staexp"><span class="keyword">absvtype</span>
+boxed_vt0ype_vtype<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype+</span><span class="keyword">)</span> <span class="keyword">=</span> unit</span>
+<span class="comment">//</span>
+<span class="keyword">vtypedef</span>
+<span class="staexp">boxed<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">vt@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">boxed_vt0ype_vtype</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span>
+<span class="staexp">boxed_vt<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">vt@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">boxed_vt0ype_vtype</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">boxed<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">boxed_t0ype_type</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">boxed_t<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">boxed_t0ype_type</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>type<span class="keyword">}</span></span> box<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">boxed_t</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>type<span class="keyword">}</span></span> unbox<span class="keyword">:</span> <span class="staexp">boxed_t</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vtype<span class="keyword">}</span></span> box_vt<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">boxed_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vtype<span class="keyword">}</span></span> unbox_vt<span class="keyword">:</span> <span class="staexp">boxed_vt</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span>
+<span class="staexp">array <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">@[</span><span class="staexp">a</span><span class="keyword">]</span><span class="keyword">[</span><span class="staexp">n</span><span class="keyword">]</span></span>
+<span class="keyword">viewdef</span>
+<span class="staexp">array_v
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">vt@ype</span></span><span class="keyword">,</span> <span class="staexp">l<span class="keyword">:</span>addr</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">@[</span><span class="staexp">a</span><span class="keyword">]</span><span class="keyword">[</span><span class="staexp">n</span><span class="keyword">]</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">absvtype</span>
+arrayptr_vt0ype_addr_int_vtype
+  <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt0ype+</span><span class="keyword">,</span> l<span class="keyword">:</span>addr<span class="keyword">,</span> n<span class="keyword">:</span>int<span class="comment">(*size*)</span><span class="keyword">)</span> <span class="keyword">=</span> ptr <span class="keyword">(</span>l<span class="keyword">)</span></span>
+<span class="keyword">stadef</span>
+<span class="staexp">arrayptr <span class="keyword">=</span> <span class="staexp">arrayptr_vt0ype_addr_int_vtype</span></span>
+<span class="keyword">vtypedef</span>
+<span class="staexp">arrayptr
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="staexp">arrayptr</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abstype</span>
+arrayref_vt0ype_int_type
+  <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="comment">(*elt*)</span><span class="keyword">,</span> n<span class="keyword">:</span>int<span class="comment">(*size*)</span><span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">stadef</span> <span class="staexp">arrayref <span class="keyword">=</span> <span class="staexp">arrayref_vt0ype_int_type</span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">abstype</span>
+arrszref_vt0ype_type <span class="keyword">(</span>a<span class="keyword">:</span> <span class="keyword">vt@ype</span><span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">stadef</span> <span class="staexp">arrszref <span class="keyword">=</span> <span class="staexp">arrszref_vt0ype_type</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">datatype</span> <span class="comment">// t@ype+: covariant</span>
+list_t0ype_int_type <span class="staexp"><span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype+</span><span class="keyword">,</span> int<span class="keyword">)</span></span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n &gt;= 0<span class="keyword">}</span></span>
+    list_cons <span class="keyword">(</span>a<span class="keyword">,</span> n+1<span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">list_t0ype_int_type</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp"><span class="staexp"><span class="staexp"><span class="staexp"><span class="staexp">n</span></span></span></span></span><span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">|</span> list_nil <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">// end of [datatype]</span>
+<span class="keyword">stadef</span> <span class="staexp">list <span class="keyword">=</span> <span class="staexp">list_t0ype_int_type</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">List <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>t0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>n<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">List0 <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>t0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n &gt;= 0<span class="keyword">]</span></span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">List1 <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>t0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n &gt;= 1<span class="keyword">]</span></span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">listLt
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>t0p</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>k<span class="keyword">:</span>nat <span class="keyword">|</span> k <span class="keyword">&lt;</span> n<span class="keyword">]</span></span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">k</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">listLte
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>t0p</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>k<span class="keyword">:</span>nat <span class="keyword">|</span> k &lt;= n<span class="keyword">]</span></span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">k</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">listGt
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>t0p</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>k<span class="keyword">:</span>int <span class="keyword">|</span> k <span class="keyword">&gt;</span> n<span class="keyword">]</span></span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">k</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">listGte
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>t0p</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>k<span class="keyword">:</span>int <span class="keyword">|</span> k &gt;= n<span class="keyword">]</span></span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">k</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">listBtw
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>t0p</span><span class="keyword">,</span> <span class="staexp">m<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>k<span class="keyword">:</span>int <span class="keyword">|</span> m &lt;= k<span class="keyword">;</span> k <span class="keyword">&lt;</span> n<span class="keyword">]</span></span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">k</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">listBtwe
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>t0p</span><span class="keyword">,</span> <span class="staexp">m<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>k<span class="keyword">:</span>int <span class="keyword">|</span> m &lt;= k<span class="keyword">;</span> k &lt;= n<span class="keyword">]</span></span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">k</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">datavtype</span> <span class="comment">// vt@ype+: covariant</span>
+list_vt0ype_int_vtype <span class="staexp"><span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype+</span><span class="keyword">,</span> int<span class="keyword">)</span></span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n &gt;= 0<span class="keyword">}</span></span>
+    list_vt_cons <span class="keyword">(</span>a<span class="keyword">,</span> n+1<span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">list_vt0ype_int_vtype</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp"><span class="staexp"><span class="staexp"><span class="staexp"><span class="staexp">n</span></span></span></span></span><span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">|</span> list_vt_nil <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">// end of [list_vt0ype_int_vtype]</span>
+<span class="keyword">stadef</span> <span class="staexp">list_vt <span class="keyword">=</span> <span class="staexp">list_vt0ype_int_vtype</span></span>
+<span class="keyword">vtypedef</span>
+<span class="staexp">List_vt <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>n<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span>
+<span class="staexp">List0_vt <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n &gt;= 0<span class="keyword">]</span></span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span>
+<span class="staexp">List1_vt <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n &gt;= 1<span class="keyword">]</span></span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">listLt_vt
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>k<span class="keyword">:</span>nat <span class="keyword">|</span> k <span class="keyword">&lt;</span> n<span class="keyword">]</span></span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">k</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">listLte_vt
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>k<span class="keyword">:</span>nat <span class="keyword">|</span> k &lt;= n<span class="keyword">]</span></span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">k</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">listGt_vt
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>k<span class="keyword">:</span>int <span class="keyword">|</span> k <span class="keyword">&gt;</span> n<span class="keyword">]</span></span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">k</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">listGte_vt
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>k<span class="keyword">:</span>int <span class="keyword">|</span> k &gt;= n<span class="keyword">]</span></span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">k</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">listBtw_vt
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">,</span> <span class="staexp">m<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>k<span class="keyword">:</span>int <span class="keyword">|</span> m &lt;= k<span class="keyword">;</span> k <span class="keyword">&lt;</span> n<span class="keyword">]</span></span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">k</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">listBtwe_vt
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">,</span> <span class="staexp">m<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>k<span class="keyword">:</span>int <span class="keyword">|</span> m &lt;= k<span class="keyword">;</span> k &lt;= n<span class="keyword">]</span></span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">k</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">datatype</span> <span class="comment">// t@ype+: covariant</span>
+option_t0ype_bool_type
+  <span class="staexp"><span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype+</span><span class="keyword">,</span> bool<span class="keyword">)</span></span> <span class="keyword">=</span> Some <span class="keyword">(</span>a<span class="keyword">,</span> true<span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp"><span class="staexp"><span class="staexp">a</span></span></span><span class="keyword">)</span> <span class="keyword">|</span> None <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">false</span><span class="keyword">)</span></span>
+<span class="comment">// end of [datatype]</span>
+<span class="keyword">stadef</span> <span class="staexp">option <span class="keyword">=</span> <span class="staexp">option_t0ype_bool_type</span></span>
+<span class="keyword">typedef</span> <span class="staexp">Option <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>t0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>b<span class="keyword">:</span>bool<span class="keyword">]</span></span> <span class="staexp">option</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">datavtype</span> <span class="comment">// vt@ype+: covariant</span>
+option_vt0ype_bool_vtype
+  <span class="staexp"><span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype+</span><span class="keyword">,</span> bool<span class="keyword">)</span></span> <span class="keyword">=</span> Some_vt <span class="keyword">(</span>a<span class="keyword">,</span> true<span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp"><span class="staexp"><span class="staexp">a</span></span></span><span class="keyword">)</span> <span class="keyword">|</span> None_vt <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">false</span><span class="keyword">)</span></span>
+<span class="comment">// end of [option_vt0ype_bool_vtype]</span>
+<span class="keyword">stadef</span> <span class="staexp">option_vt <span class="keyword">=</span> <span class="staexp">option_vt0ype_bool_vtype</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">Option_vt <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>b<span class="keyword">:</span>bool<span class="keyword">]</span></span> <span class="staexp">option_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+opt_some
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">opt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">true</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="prfexp"><span class="keyword">praxi</span>
+opt_unsome
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">opt</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">true</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+opt_unsome_get <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">opt</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">true</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">a</span><span class="staexp">?</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+opt_none
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="keyword">(</span><span class="staexp">a</span><span class="staexp">?</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">opt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">false</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="prfexp"><span class="keyword">praxi</span>
+opt_unnone
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">opt</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">false</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">a</span><span class="staexp">?</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+opt_clear
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>bool<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">opt</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">a</span><span class="staexp">?</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">dataprop</span>
+or_prop_prop_int_prop
+  <span class="staexp"><span class="keyword">(</span>a0<span class="keyword">:</span> <span class="keyword">prop+</span><span class="keyword">,</span> a1<span class="keyword">:</span> <span class="keyword">prop+</span><span class="keyword">,</span> int<span class="keyword">)</span></span> <span class="keyword">=</span>
+  PORleft<span class="keyword">(</span>a0<span class="keyword">,</span> a1<span class="keyword">,</span> 0<span class="keyword">)</span> <span class="keyword">of</span> <span class="staexp"><span class="staexp"><span class="staexp"><span class="staexp">a0</span></span></span></span> <span class="keyword">|</span> PORright<span class="keyword">(</span>a0<span class="keyword">,</span> a1<span class="keyword">,</span> 1<span class="keyword">)</span> <span class="keyword">of</span> <span class="staexp"><span class="staexp"><span class="staexp"><span class="staexp">a1</span></span></span></span></span>
+<span class="keyword">stadef</span> <span class="staexp">por <span class="keyword">=</span> <span class="staexp">or_prop_prop_int_prop</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">dataview</span>
+or_view_view_int_view
+  <span class="staexp"><span class="keyword">(</span>a0<span class="keyword">:</span> <span class="keyword">view+</span><span class="keyword">,</span> a1<span class="keyword">:</span> <span class="keyword">view+</span><span class="keyword">,</span> int<span class="keyword">)</span></span> <span class="keyword">=</span>
+  VORleft<span class="keyword">(</span>a0<span class="keyword">,</span> a1<span class="keyword">,</span> 0<span class="keyword">)</span> <span class="keyword">of</span> <span class="staexp"><span class="staexp"><span class="staexp"><span class="staexp">a0</span></span></span></span> <span class="keyword">|</span> VORright<span class="keyword">(</span>a0<span class="keyword">,</span> a1<span class="keyword">,</span> 1<span class="keyword">)</span> <span class="keyword">of</span> <span class="staexp"><span class="staexp"><span class="staexp"><span class="staexp">a1</span></span></span></span></span>
+<span class="keyword">stadef</span> <span class="staexp">vor <span class="keyword">=</span> <span class="staexp">or_view_view_int_view</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">dataprop</span>
+option_prop_bool_prop
+  <span class="staexp"><span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">prop+</span><span class="keyword">,</span> bool<span class="keyword">)</span></span> <span class="keyword">=</span> Some_p <span class="keyword">(</span>a<span class="keyword">,</span> true<span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp"><span class="staexp"><span class="staexp">a</span></span></span><span class="keyword">)</span> <span class="keyword">|</span> None_p <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">false</span><span class="keyword">)</span></span>
+<span class="comment">// end of [option_prop_bool_prop]</span>
+<span class="keyword">stadef</span> <span class="staexp">option_p <span class="keyword">=</span> <span class="staexp">option_prop_bool_prop</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">dataview</span>
+option_view_bool_view
+  <span class="staexp"><span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">view+</span><span class="keyword">,</span> bool<span class="keyword">)</span></span> <span class="keyword">=</span> Some_v <span class="keyword">(</span>a<span class="keyword">,</span> true<span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp"><span class="staexp"><span class="staexp">a</span></span></span><span class="keyword">)</span> <span class="keyword">|</span> None_v <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">false</span><span class="keyword">)</span></span>
+<span class="comment">// end of [option_view_bool_view]</span>
+<span class="keyword">stadef</span> <span class="staexp">option_v <span class="keyword">=</span> <span class="staexp">option_view_bool_view</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">absvt@ype</span>
+arrayopt <span class="keyword">(</span>a<span class="keyword">:</span>vt0p<span class="keyword">,</span> n<span class="keyword">:</span>int<span class="keyword">,</span> b<span class="keyword">:</span>bool<span class="keyword">)</span> <span class="keyword">=</span> array <span class="keyword">(</span>a<span class="keyword">,</span> n<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+arrayopt_some
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">array</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">arrayopt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">true</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="prfexp"><span class="keyword">praxi</span>
+arrayopt_none
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">array</span><span class="keyword">(</span><span class="staexp">a</span><span class="staexp">?</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">arrayopt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">false</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="prfexp"><span class="keyword">praxi</span>
+arrayopt_unsome
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">arrayopt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">true</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">array</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="prfexp"><span class="keyword">praxi</span>
+arrayopt_unnone
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">arrayopt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">false</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">array</span><span class="keyword">(</span><span class="staexp">a</span><span class="staexp">?</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">absvtype</span>
+argv_int_vtype <span class="keyword">(</span>n<span class="keyword">:</span>int<span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">stadef</span> <span class="staexp">argv <span class="keyword">=</span> <span class="staexp">argv_int_vtype</span></span>
+
+<span class="comment">(*
+[argv_takeout_strarr] is declared in prelude/SATS/extern.sats
+[argv_takeout_parrnull] is declared in prelude/SATS/extern.sats
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">praxi</span>
+lemma_argv_param <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>argv<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">argv</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>n &gt;= 0<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">// end of [praxi]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+argv_get_at<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>argv<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">argv</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">natLt</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">string</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span>
+argv_set_at<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>argv<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">argv</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">natLt</span> <span class="staexp">n</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> argv_get_at</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> argv_set_at</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> main0</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> main_void_0
+  <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "ext#mainats_void_0"</span>
+<span class="dynexp"><span class="keyword">fun</span> main_argc_argv_0
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n &gt;= 1<span class="keyword">}</span></span>
+  <span class="keyword">(</span>argc<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">,</span> argv<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">argv</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "ext#mainats_argc_argv_0"</span>
+<span class="dynexp"><span class="keyword">overload</span> main0 <span class="keyword">with</span> main_void_0</span>
+<span class="dynexp"><span class="keyword">overload</span> main0 <span class="keyword">with</span> main_argc_argv_0</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> main</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> main_void_int
+  <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> "ext#mainats_void_int"</span>
+<span class="dynexp"><span class="keyword">fun</span> main_argc_argv_int
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n &gt;= 1<span class="keyword">}</span></span>
+  <span class="keyword">(</span>argc<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">,</span> argv<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">argv</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> "ext#mainats_argc_argv_int"</span>
+<span class="dynexp"><span class="keyword">fun</span> main_argc_argv_envp_int
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n &gt;= 1<span class="keyword">}</span></span>
+  <span class="keyword">(</span>argc<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">,</span> argv<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">argv</span> <span class="staexp">n</span><span class="keyword">,</span> envp<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> "ext#mainats_argc_argv_envp_int"</span>
+<span class="dynexp"><span class="keyword">overload</span> main <span class="keyword">with</span> main_void_int</span>
+<span class="dynexp"><span class="keyword">overload</span> main <span class="keyword">with</span> main_argc_argv_int</span>
+<span class="dynexp"><span class="keyword">overload</span> main <span class="keyword">with</span> main_argc_argv_envp_int</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> exit
+  <span class="keyword">(</span>ecode<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> exit_errmsg
+  <span class="keyword">(</span>ecode<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> msg<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">(*
+fun exit_fprintf{ts:types}
+(
+  ecode: int, out: FILEref, fmt: printf_c ts, args: ts
+) :&lt;!exn&gt; {a:vt0p}(a) = "mac#%" // end of [exit_fprintf]
+*)</span>
+
+<span class="comment">(* *****p* ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> exit_void
+  <span class="keyword">(</span>ecode<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> exit_errmsg_void
+  <span class="keyword">(</span>ecode<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> msg<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> assert_bool0
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> assert_bool1
+  <span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>bool<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>b<span class="keyword">]</span></span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> assert <span class="keyword">with</span> assert_bool0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> assert <span class="keyword">with</span> assert_bool1 <span class="keyword">of</span> 10</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+assertexn_bool0 <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+assertexn_bool1 <span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>bool<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>b<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> assertexn</span>
+<span class="dynexp"><span class="keyword">overload</span> assertexn <span class="keyword">with</span> assertexn_bool0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> assertexn <span class="keyword">with</span> assertexn_bool1 <span class="keyword">of</span> 10</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> assert_errmsg</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> assert_errmsg_bool0
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">bool</span><span class="keyword">,</span> msg<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> assert_errmsg_bool1
+  <span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>bool<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">bool</span> <span class="staexp">b</span><span class="keyword">,</span> msg<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>b<span class="keyword">]</span></span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> assert_errmsg <span class="keyword">with</span> assert_errmsg_bool0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> assert_errmsg <span class="keyword">with</span> assert_errmsg_bool1 <span class="keyword">of</span> 10</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> assert_errmsg2_bool0
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">bool</span><span class="keyword">,</span> msg1<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">,</span> msg2<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> assert_errmsg2_bool1<span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>bool<span class="keyword">}</span></span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">bool</span> <span class="staexp">b</span><span class="keyword">,</span> msg1<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">,</span> msg2<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>b<span class="keyword">]</span></span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">symintr</span> assert_errmsg2</span>
+<span class="dynexp"><span class="keyword">overload</span> assert_errmsg2 <span class="keyword">with</span> assert_errmsg2_bool0 <span class="keyword">of</span> 0</span>
+<span class="dynexp"><span class="keyword">overload</span> assert_errmsg2 <span class="keyword">with</span> assert_errmsg2_bool1 <span class="keyword">of</span> 10</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">datasort</span>
+file_mode <span class="keyword">=</span>
+  <span class="keyword">|</span> file_mode_r <span class="comment">(* read *)</span>
+  <span class="keyword">|</span> file_mode_w <span class="comment">(* write *)</span>
+  <span class="keyword">|</span> file_mode_rw</span> <span class="comment">(* read and write *)</span>
+<span class="comment">// end of [file_mode]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">local</span>
+<span class="comment">//</span>
+<span class="keyword">stadef</span> <span class="staexp">r<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">file_mode_r</span><span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">w<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">file_mode_w</span><span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="keyword">stadef</span> <span class="staexp">rw<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">file_mode_rw</span><span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span> <span class="comment">(* in-of-local *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">abstype</span>
+file_mode <span class="keyword">(</span>file_mode<span class="keyword">)</span> <span class="keyword">=</span> string</span>
+<span class="keyword">typedef</span>
+<span class="staexp">file_mode <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>fm<span class="keyword">:</span>file_mode<span class="keyword">]</span></span> <span class="staexp">file_mode</span> <span class="keyword">(</span><span class="staexp">fm</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">sortdef</span> fmode <span class="keyword">=</span> file_mode</span>
+<span class="keyword">typedef</span> <span class="staexp">fmode <span class="keyword">(</span><span class="staexp">fm<span class="keyword">:</span>fmode</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">file_mode</span> <span class="keyword">(</span><span class="staexp">fm</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">fmode <span class="keyword">=</span> <span class="staexp">file_mode</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">dataprop</span>
+file_mode_lte
+  <span class="staexp"><span class="keyword">(</span>fmode<span class="keyword">,</span> fmode<span class="keyword">)</span></span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="staexp"><span class="keyword">{</span>m<span class="keyword">:</span>fmode<span class="keyword">}</span></span> file_mode_lte_refl <span class="keyword">(</span><span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">)</span>
+  <span class="keyword">|</span> <span class="staexp"><span class="keyword">{</span>m1<span class="keyword">,</span>m2<span class="keyword">,</span>m3<span class="keyword">:</span>fmode<span class="keyword">}</span></span>
+    file_mode_lte_tran <span class="keyword">(</span>m1<span class="keyword">,</span> m3<span class="keyword">)</span> <span class="keyword">of</span>
+      <span class="keyword">(</span><span class="staexp">file_mode_lte</span> <span class="keyword">(</span><span class="staexp">m1</span><span class="keyword">,</span> <span class="staexp">m2</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">file_mode_lte</span> <span class="keyword">(</span><span class="staexp">m2</span><span class="keyword">,</span> <span class="staexp"><span class="staexp"><span class="staexp">m3</span></span></span><span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">|</span> <span class="staexp"><span class="keyword">{</span>m<span class="keyword">:</span>fmode<span class="keyword">}</span></span> file_mode_lte_rw_r <span class="keyword">(</span><span class="staexp">rw</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span>
+  <span class="keyword">|</span> <span class="staexp"><span class="keyword">{</span>m<span class="keyword">:</span>fmode<span class="keyword">}</span></span> file_mode_lte_rw_w <span class="keyword">(</span><span class="staexp">rw</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">w</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">// end of [file_mode_lte]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span>
+file_mode_lte_r_r
+  <span class="keyword">:</span> <span class="staexp">file_mode_lte</span> <span class="keyword">(</span><span class="staexp">r</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span> <span class="comment">// impled in [filebas_prf.dats]</span>
+<span class="prfexp"><span class="keyword">prval</span>
+file_mode_lte_w_w
+  <span class="keyword">:</span> <span class="staexp">file_mode_lte</span> <span class="keyword">(</span><span class="staexp">w</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">w</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span> <span class="comment">// impled in [filebas_prf.dats]</span>
+<span class="prfexp"><span class="keyword">prval</span>
+file_mode_lte_rw_rw
+  <span class="keyword">:</span> <span class="staexp">file_mode_lte</span> <span class="keyword">(</span><span class="staexp">rw</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">rw</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span> <span class="comment">// impled in [filebas_prf.dats]</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">abstype</span> FILEref_type <span class="keyword">=</span> ptr</span>
+<span class="keyword">typedef</span> <span class="staexp">FILEref <span class="keyword">=</span> <span class="staexp">FILEref_type</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span>
+<span class="staexp">fprint_type <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span> t0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">FILEref</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="keyword">typedef</span>
+<span class="staexp">fprint_vtype <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span> vt0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">FILEref</span><span class="keyword">,</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">a</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span> print_newline <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> prerr_newline <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+<span class="dynexp"><span class="keyword">fun</span> fprint_newline <span class="keyword">(</span>out<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#%"</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">#if</span> <span class="neuexp">VERBOSE_PRELUDE</span> <span class="keyword">#then</span>
+<span class="neuexp"><span class="keyword">#print</span> "Loading [basics_dyn.sats] finishes!\n"</span>
+<span class="keyword">#endif</span> <span class="comment">// end of [VERBOSE_PRELUDE]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [basics_dyn.sats] *)</span>
+</pre>
+</body>
+</html>

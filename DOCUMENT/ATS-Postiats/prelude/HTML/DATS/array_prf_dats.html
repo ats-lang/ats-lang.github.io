@@ -1,0 +1,227 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/DATS/CODEGEN/array_prf.atxt
+** Time of generation: Sat Jun 27 21:39:37 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: hwxi AT cs DOT bu DOT edu *)</span>
+<span class="comment">(* Start time: Feburary, 2012 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span>
+array_v_unnil_nil
+  <span class="staexp"><span class="keyword">{</span>a1<span class="keyword">,</span>a2<span class="keyword">}</span></span><span class="keyword">(</span>pf<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  array_v_unnil<span class="staexp"><span class="keyword">{</span>a1<span class="keyword">}</span></span><span class="keyword">(</span>pf<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  array_v_nil<span class="staexp"><span class="keyword">{</span>a2<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [array_v_unnil]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span>
+array_v_sing
+  <span class="keyword">(</span>pfat<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="comment">//</span>
+array_v_cons<span class="keyword">(</span>pfat<span class="keyword">,</span> array_v_nil<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [array_v_sing] *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span>
+array_v_unsing
+  <span class="keyword">(</span>pfarr<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span>
+<span class="keyword">(</span>
+  pf1at<span class="keyword">,</span> pf2arr
+<span class="keyword">)</span> <span class="keyword">=</span> array_v_uncons <span class="keyword">(</span>pfarr<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> array_v_unnil <span class="keyword">(</span>pf2arr<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  pf1at
+<span class="keyword">end</span></span> <span class="comment">// end of [array_v_unsing]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span>
+array_v_split
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>pf_arr<span class="keyword">)</span> <span class="keyword">=</span>
+  split <span class="keyword">(</span>pf_arr<span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+split
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span> 
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">,</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i &lt;= n<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">i</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  pf_arr<span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="keyword">(</span>
+  <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="staexp">+</span><span class="staexp">i</span><span class="staexp">*</span><span class="staexp">sizeof</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">-</span><span class="staexp">i</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">sif</span>
+<span class="staexp">i</span> <span class="staexp"><span class="keyword">&gt;</span></span> <span class="staexp">0</span>
+<span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span>pf1elt<span class="keyword">,</span> pf2arr<span class="keyword">)</span> <span class="keyword">=</span> array_v_uncons<span class="keyword">(</span>pf_arr<span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span>pf1arr_res<span class="keyword">,</span> pf2arr_res<span class="keyword">)</span> <span class="keyword">=</span> split<span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n-1<span class="keyword">,</span>i-1<span class="keyword">}</span></span><span class="keyword">(</span>pf2arr<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">(</span>array_v_cons <span class="keyword">(</span>pf1elt<span class="keyword">,</span> pf1arr_res<span class="keyword">)</span><span class="keyword">,</span> pf2arr_res<span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [then]</span>
+<span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prval</span> EQINT <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+    eqint_make<span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>0<span class="keyword">}</span></span><span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">in</span> <span class="keyword">(</span>array_v_nil<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">,</span> pf_arr<span class="keyword">)</span>
+  <span class="comment">// end of [prval]</span>
+<span class="keyword">end</span> <span class="comment">// end of [else]</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [split] *)</span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [array_v_split] *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span>
+array_v_split_at
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span><span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> i<span class="keyword">)</span> <span class="keyword">=</span> array_v_split<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span><span class="keyword">(</span>pf<span class="keyword">)</span></span>
+<span class="comment">// end of [array_v_split_at]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span>
+array_v_unsplit
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>pf1arr<span class="keyword">,</span> pf2arr<span class="keyword">)</span> <span class="keyword">=</span>
+  unsplit <span class="keyword">(</span>pf1arr<span class="keyword">,</span> pf2arr<span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> lemma_array_v_param <span class="keyword">(</span>pf1arr<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> lemma_array_v_param <span class="keyword">(</span>pf2arr<span class="keyword">)</span></span> 
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+unsplit
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n1</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  pf1arr<span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="keyword">)</span>
+<span class="keyword">,</span> pf2arr<span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="staexp">+</span><span class="staexp">n1</span><span class="staexp">*</span><span class="staexp">sizeof</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n2</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="staexp">+</span><span class="staexp">n2</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">sif</span>
+<span class="staexp">n1</span> <span class="staexp"><span class="keyword">&gt;</span></span> <span class="staexp">0</span>
+<span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">@(</span>
+    pf11elt<span class="keyword">,</span> pf12arr
+  <span class="keyword">)</span> <span class="keyword">=</span> array_v_uncons <span class="keyword">(</span>pf1arr<span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> pf_arr_res <span class="keyword">=</span> unsplit <span class="keyword">(</span>pf12arr<span class="keyword">,</span> pf2arr<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  array_v_cons <span class="keyword">(</span>pf11elt<span class="keyword">,</span> pf_arr_res<span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [then]</span>
+<span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prval</span>
+  EQINT <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> eqint_make <span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>0<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> array_v_unnil <span class="keyword">(</span>pf1arr<span class="keyword">)</span></span> <span class="keyword">in</span> pf2arr
+<span class="keyword">end</span> <span class="comment">// end of [sif]</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [unsplit] *)</span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [array_v_unsplit] *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span>
+array_v_extend
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>pf1arr<span class="keyword">,</span> pf2at<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="comment">//</span>
+array_v_unsplit
+<span class="keyword">(</span>
+  pf1arr<span class="keyword">,</span> array_v_sing<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>pf2at<span class="keyword">)</span>
+<span class="keyword">)</span> <span class="comment">// end of [array_v_unsplit]</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [array_v_extend] *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span>
+array_v_unextend
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>pfarr<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span>pf1arr<span class="keyword">,</span> pf2arr<span class="keyword">)</span> <span class="keyword">=</span>
+  array_v_split<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n-1<span class="keyword">}</span></span><span class="keyword">(</span>pfarr<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">(</span>pf1arr<span class="keyword">,</span> array_v_unsing<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>pf2arr<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [array_v_unextend]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">primplmnt</span>
+array_v_takeout
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span> <span class="keyword">(</span>pfarr<span class="keyword">)</span> <span class="keyword">=</span>
+  takeout<span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span><span class="keyword">(</span>pfarr<span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+takeout
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i <span class="keyword">&lt;</span> n<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">i</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  pfarr<span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">vtakeout</span> <span class="keyword">(</span>
+  <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span><span class="staexp"><span class="keyword">@</span></span><span class="staexp">l</span><span class="staexp">+</span><span class="staexp">i</span><span class="staexp">*</span><span class="staexp">sizeof</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">@(</span>pf1at<span class="keyword">,</span> pf2arr<span class="keyword">)</span> <span class="keyword">=</span> array_v_uncons<span class="keyword">(</span>pfarr<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">sif</span> <span class="staexp">i</span> <span class="staexp"><span class="keyword">&gt;</span></span> <span class="staexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span>pfat<span class="keyword">,</span> fpf<span class="keyword">)</span> <span class="keyword">=</span> takeout<span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n-1<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i-1<span class="keyword">}</span></span><span class="keyword">(</span>pf2arr<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">(</span>pfat<span class="keyword">,</span> <span class="keyword">llam</span> pfat <span class="keyword">=&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> array_v_cons<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>pf1at<span class="keyword">,</span> fpf<span class="keyword">(</span>pfat<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+    <span class="prfexp"><span class="keyword">prval</span> EQINT <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> eqint_make<span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>0<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">(</span>pf1at<span class="keyword">,</span> <span class="keyword">llam</span> pf1at <span class="keyword">=&lt;</span><span class="staexp">prf</span><span class="keyword">&gt;</span> array_v_cons<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>pf1at<span class="keyword">,</span> pf2arr<span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="comment">// end of [sif]</span>
+<span class="keyword">end</span></span> <span class="comment">// end of takeout]</span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">// end of [array_v_takeout]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [array_prf.dats] *)</span>
+</pre>

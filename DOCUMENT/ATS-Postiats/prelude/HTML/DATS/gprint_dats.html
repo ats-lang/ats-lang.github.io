@@ -1,0 +1,259 @@
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/DATS/CODEGEN/gprint.atxt
+** Time of generation: Sat Jun 27 21:39:43 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: hwxi AT cs DOT bu DOT edu *)</span>
+<span class="comment">(* Start time: August, 2012 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> gprint$out <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> stdout_ref</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+gprint_newline <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> out <span class="keyword">=</span> gprint$out <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">in</span> fprint_newline <span class="keyword">(</span>out<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [gprint_newline]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+gprint_val <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> out <span class="keyword">=</span> gprint$out <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">in</span> fprint_val&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [gprint_val]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+gprint_ref <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> out <span class="keyword">=</span> gprint$out <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">in</span> fprint_ref&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [gprint_ref]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+gprint_int <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span>
+  fprint_val&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span>gprint$out <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+gprint_char <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span>
+  fprint_val&lt;<span class="staexp">char</span><span class="keyword">&gt;</span> <span class="keyword">(</span>gprint$out <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+gprint_float <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span>
+  fprint_val&lt;<span class="staexp">float</span><span class="keyword">&gt;</span> <span class="keyword">(</span>gprint$out <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+gprint_double <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span>
+  fprint_val&lt;<span class="staexp">double</span><span class="keyword">&gt;</span> <span class="keyword">(</span>gprint$out <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+gprint_string <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span>
+  fprint_val&lt;<span class="staexp">string</span><span class="keyword">&gt;</span> <span class="keyword">(</span>gprint$out <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span> gprint_val&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> gprint_int <span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span> gprint_val&lt;<span class="staexp">char</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> gprint_char <span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span> gprint_val&lt;<span class="staexp">float</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> gprint_float <span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span> gprint_val&lt;<span class="staexp">double</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> gprint_double <span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span> gprint_val&lt;<span class="staexp">string</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> gprint_string <span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+gprint_list$beg <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_string <span class="dynstr">"("</span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+gprint_list$end <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_string <span class="dynstr">")"</span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+gprint_list$sep <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_string <span class="dynstr">", "</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+gprint_list <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">tenv <span class="keyword">=</span> <span class="staexp">int</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+list_foreach$fwork&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">tenv</span><span class="keyword">&gt;</span>
+  <span class="keyword">(</span>x<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> env <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> gprint_list$sep <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> env := succ <span class="keyword">(</span>env<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  gprint_val <span class="keyword">(</span>x<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [list_foreach$fwork]</span>
+<span class="comment">//</span>
+<span class="keyword">var</span> env<span class="keyword">:</span> <span class="staexp">tenv</span> <span class="keyword">=</span> <span class="dynexp">0</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_list$beg <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> list_foreach_env&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">tenv</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> env<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_list$end <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [gprint_list]</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+gprint_val&lt;<span class="staexp">List</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> gprint_list&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+gprint_listlist$beg1 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_string <span class="dynstr">"("</span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+gprint_listlist$end1 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_string <span class="dynstr">")"</span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+gprint_listlist$sep1 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_string <span class="dynstr">", "</span></span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+gprint_listlist$beg2 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_string <span class="dynstr">"("</span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+gprint_listlist$end2 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_string <span class="dynstr">")"</span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+gprint_listlist$sep2 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_string <span class="dynstr">", "</span></span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+gprint_listlist
+  <span class="keyword">(</span>xss<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">xs <span class="keyword">=</span> <span class="staexp">List</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span>
+gprint_val&lt;<span class="staexp">xs</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span> gprint_list$beg&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_listlist$beg2 <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span> gprint_list$end&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_listlist$end2 <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span> gprint_list$sep&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_listlist$sep2 <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  gprint_list&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [gprint_val]</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span> gprint_list$beg&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_listlist$beg1 <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span> gprint_list$end&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_listlist$end1 <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">implement</span> gprint_list$sep&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_listlist$sep1 <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  gprint_list&lt;<span class="staexp">xs</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xss<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [gprint_listlist]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+gprint_array$beg <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_string <span class="dynstr">"("</span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+gprint_array$end <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_string <span class="dynstr">")"</span></span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+gprint_array$sep <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_string <span class="dynstr">", "</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+gprint_array <span class="keyword">(</span>A<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">tenv <span class="keyword">=</span> <span class="staexp">size_t</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">env</span><span class="keyword">)</span>
+array_iforeach$fwork&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">env</span><span class="keyword">&gt;</span>
+  <span class="keyword">(</span>i<span class="keyword">,</span> x<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">if</span> i <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> gprint_array$sep <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  gprint_ref&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [array_iforeach$fwork]</span>
+<span class="comment">//</span>
+<span class="keyword">var</span> env<span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_array$beg <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> _<span class="comment">(*n*)</span> <span class="keyword">=</span> array_iforeach&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>A<span class="keyword">,</span> n<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_array$end <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [gprint_array]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+gprint_arrayptr
+  <span class="keyword">(</span>A<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">{</span>
+  <span class="dynexp"><span class="keyword">val</span> p <span class="keyword">=</span> ptrcast <span class="keyword">(</span>A<span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> pf <span class="keyword">=</span> arrayptr_takeout <span class="keyword">(</span>A<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_array&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="keyword">!</span>p<span class="keyword">,</span> n<span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> arrayptr_addback <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> A<span class="keyword">)</span></span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [gprint_arrayptr] *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+gprint_arrayref
+  <span class="keyword">(</span>A<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">vbox pf</span> <span class="keyword">|</span> p<span class="keyword">)</span> <span class="keyword">=</span>
+  arrayref_get_viewptr <span class="keyword">(</span>A<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">$effmask_ref</span> <span class="keyword">(</span>gprint_array&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="keyword">!</span>p<span class="keyword">,</span> n<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [gprint_arrayref]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="prfexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+gprint_arrszref
+  <span class="keyword">(</span>ASZ<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="keyword">var</span> n<span class="keyword">:</span> <span class="staexp">size_t</span>
+<span class="dynexp"><span class="keyword">val</span> A <span class="keyword">=</span>
+  arrszref_get_refsize&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>ASZ<span class="keyword">,</span> n<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> gprint_arrayref&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>A<span class="keyword">,</span> n<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [gprint_arrszref] *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [gprint.dats] *)</span>
+</pre>
