@@ -71,14 +71,14 @@
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 arrayptr2matrixptr_int <span class="keyword">(</span>A<span class="keyword">,</span> m<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>castvwtp0 <span class="keyword">(</span>A<span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 arrayptr2matrixptr_size <span class="keyword">(</span>A<span class="keyword">,</span> m<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>castvwtp0 <span class="keyword">(</span>A<span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 matrixptr_make_elt
   <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span> n<span class="keyword">}</span></span> <span class="keyword">(</span>m<span class="keyword">,</span> n<span class="keyword">,</span> x0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> mn <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>Size<span class="keyword">}</span></span><span class="keyword">(</span>m * n<span class="keyword">)</span></span>
@@ -88,7 +88,7 @@ matrixptr_make_elt
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 matrixptr_get_at_int
   <span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">,</span> n<span class="keyword">,</span> j<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> ij <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>Size<span class="keyword">}</span></span><span class="keyword">(</span>i * n + j<span class="keyword">)</span></span>
@@ -96,7 +96,7 @@ matrixptr_get_at_int
   $UN<span class="keyword">.</span>ptr0_get&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>ptr_add&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>ptrcast<span class="keyword">(</span>A<span class="keyword">)</span><span class="keyword">,</span> ij<span class="keyword">)</span><span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [matrixptr_get_at_int]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 matrixptr_get_at_size
   <span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">,</span> n<span class="keyword">,</span> j<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> ij <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>Size<span class="keyword">}</span></span><span class="keyword">(</span>i * n + j<span class="keyword">)</span></span>
@@ -106,7 +106,7 @@ matrixptr_get_at_size
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 matrixptr_set_at_int
   <span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">,</span> n<span class="keyword">,</span> j<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> ij <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>Size<span class="keyword">}</span></span><span class="keyword">(</span>i * n + j<span class="keyword">)</span></span>
@@ -114,7 +114,7 @@ matrixptr_set_at_int
   $UN<span class="keyword">.</span>ptr0_set&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>ptr_add&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>ptrcast<span class="keyword">(</span>A<span class="keyword">)</span><span class="keyword">,</span> ij<span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [matrixptr_set_at_int]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 matrixptr_set_at_size
   <span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">,</span> n<span class="keyword">,</span> j<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> ij <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>Size<span class="keyword">}</span></span><span class="keyword">(</span>i * n + j<span class="keyword">)</span></span>
@@ -124,7 +124,7 @@ matrixptr_set_at_size
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 matrixptr_exch_at_int
   <span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">,</span> n<span class="keyword">,</span> j<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> ij <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>Size<span class="keyword">}</span></span><span class="keyword">(</span>i * n + j<span class="keyword">)</span></span>
@@ -132,7 +132,7 @@ matrixptr_exch_at_int
   $UN<span class="keyword">.</span>ptr0_exch&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>ptr_add&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>ptrcast<span class="keyword">(</span>A<span class="keyword">)</span><span class="keyword">,</span> ij<span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [matrixptr_exch_at_int]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 matrixptr_exch_at_size
   <span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">,</span> n<span class="keyword">,</span> j<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> ij <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>Size<span class="keyword">}</span></span><span class="keyword">(</span>i * n + j<span class="keyword">)</span></span>
@@ -142,7 +142,7 @@ matrixptr_exch_at_size
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 fprint_matrixptr
   <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>out<span class="keyword">,</span> M<span class="keyword">,</span> m<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -160,15 +160,15 @@ fprint_matrixptr
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 fprint_matrixptr_sep
 <span class="keyword">(</span>
   out<span class="keyword">,</span> M<span class="keyword">,</span> m<span class="keyword">,</span> n<span class="keyword">,</span> sep1<span class="keyword">,</span> sep2
 <span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 fprint_matrix$sep1&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">)</span> <span class="keyword">=</span> fprint_string <span class="keyword">(</span>out<span class="keyword">,</span> sep1<span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 fprint_matrix$sep2&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">)</span> <span class="keyword">=</span> fprint_string <span class="keyword">(</span>out<span class="keyword">,</span> sep2<span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="keyword">in</span>
@@ -183,14 +183,14 @@ implement matrixptr_free = ATS_MFREE
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 matrixptr_foreach
   <span class="keyword">(</span>A<span class="keyword">,</span> m<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="keyword">var</span> env<span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">in</span>
   matrixptr_foreach_env&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">void</span><span class="keyword">&gt;</span> <span class="keyword">(</span>A<span class="keyword">,</span> m<span class="keyword">,</span> n<span class="keyword">,</span> env<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [matrixptr_foreach]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 matrixptr_foreach_env
   <span class="keyword">(</span>A<span class="keyword">,</span> m<span class="keyword">,</span> n<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> res <span class="keyword">where</span> <span class="keyword">{</span>
@@ -202,7 +202,7 @@ matrixptr_foreach_env
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 matrixptr_tabulate
   <span class="keyword">(</span>nrow<span class="keyword">,</span> ncol<span class="keyword">)</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
@@ -211,11 +211,11 @@ matrixptr_tabulate
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 matrixptr_tabulate_cloref
   <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>nrow<span class="keyword">,</span> ncol<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">a2</span><span class="keyword">)</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">a2</span><span class="keyword">)</span>
 matrix_tabulate$fopr&lt;<span class="staexp">a2</span><span class="keyword">&gt;</span> <span class="keyword">(</span>i<span class="keyword">,</span> j<span class="keyword">)</span> <span class="keyword">=</span>
   $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>a2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>sizeLt<span class="keyword">(</span>m<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">,</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>sizeLt<span class="keyword">(</span>n<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>j<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>

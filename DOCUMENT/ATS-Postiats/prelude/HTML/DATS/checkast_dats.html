@@ -78,7 +78,7 @@ staload "prelude/SATS/checkast.sats"
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 checkast_gintLt
   <span class="keyword">(</span>x<span class="keyword">,</span> i<span class="keyword">,</span> errmsg<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span> g1ofg0_int<span class="keyword">(</span>x<span class="keyword">)</span></span>
@@ -96,7 +96,7 @@ checkast_gintLt
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 checkast_gintLte
   <span class="keyword">(</span>x<span class="keyword">,</span> i<span class="keyword">,</span> errmsg<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span> g1ofg0_int<span class="keyword">(</span>x<span class="keyword">)</span></span>
@@ -114,7 +114,7 @@ checkast_gintLte
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 checkast_gintGt
   <span class="keyword">(</span>x<span class="keyword">,</span> i<span class="keyword">,</span> errmsg<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span> g1ofg0_int<span class="keyword">(</span>x<span class="keyword">)</span></span>
@@ -132,7 +132,7 @@ checkast_gintGt
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 checkast_gintGte
   <span class="keyword">(</span>x<span class="keyword">,</span> i<span class="keyword">,</span> errmsg<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span> g1ofg0_int<span class="keyword">(</span>x<span class="keyword">)</span></span>
@@ -150,7 +150,7 @@ checkast_gintGte
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 checkast_gintBtw
   <span class="keyword">(</span>x<span class="keyword">,</span> i<span class="keyword">,</span> j<span class="keyword">,</span> errmsg<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span> g1ofg0_int<span class="keyword">(</span>x<span class="keyword">)</span></span>
@@ -174,7 +174,7 @@ checkast_gintBtw
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 checkast_gintBtwe
   <span class="keyword">(</span>x<span class="keyword">,</span> i<span class="keyword">,</span> j<span class="keyword">,</span> errmsg<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span> g1ofg0_int<span class="keyword">(</span>x<span class="keyword">)</span></span>
@@ -198,7 +198,7 @@ checkast_gintBtwe
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 checkast_Ptr1
   <span class="keyword">(</span>x<span class="keyword">,</span> errmsg<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span> g1ofg0_ptr<span class="keyword">(</span>x<span class="keyword">)</span></span>
@@ -217,7 +217,7 @@ checkast_Ptr1
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 checkast_Strptr1
   <span class="keyword">(</span>x<span class="keyword">,</span> errmsg<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> p <span class="keyword">=</span> strptr2ptr<span class="keyword">(</span>x<span class="keyword">)</span></span>

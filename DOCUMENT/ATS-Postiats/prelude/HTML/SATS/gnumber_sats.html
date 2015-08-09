@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <style type="text/css">
+    .patsyntax {color:#808080;background-color:#E0E0E0;}
+    .patsyntax span.keyword {color:#000000;font-weight:bold;}
+    .patsyntax span.comment {color:#787878;font-style:italic;}
+    .patsyntax span.extcode {color:#A52A2A;}
+    .patsyntax span.neuexp  {color:#800080;}
+    .patsyntax span.staexp  {color:#0000F0;}
+    .patsyntax span.prfexp  {color:#603030;}
+    .patsyntax span.dynexp  {color:#F00000;}
+    .patsyntax span.stalab  {color:#0000F0;font-style:italic}
+    .patsyntax span.dynlab  {color:#F00000;font-style:italic}
+    .patsyntax span.dynstr  {color:#008000;font-style:normal}
+    .patsyntax span.stacstdec  {text-decoration:none;}
+    .patsyntax span.stacstuse  {color:#0000CF;text-decoration:underline;}
+    .patsyntax span.dyncstdec  {text-decoration:none;}
+    .patsyntax span.dyncstuse  {color:#B80000;text-decoration:underline;}
+    .patsyntax span.dyncst_implement  {color:#B80000;text-decoration:underline;}
+  </style>
+</head>
+<body class="patsyntax">
+<pre class="patsyntax">
+<span class="comment">(***********************************************************************)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(*                         Applied Type System                         *)</span>
+<span class="comment">(*                                                                     *)</span>
+<span class="comment">(***********************************************************************)</span>
+
+<span class="comment">(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/gnumber.atxt
+** Time of generation: Sat Jun 27 21:39:10 2015
+*)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Hongwei Xi *)</span>
+<span class="comment">(* Authoremail: hwxi AT cs DOT bu DOT edu *)</span>
+<span class="comment">(* Start time: September, 2011 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* Author: Brandon Barker *)</span>
+<span class="comment">(* Authoremail: brandon.barker AT gmail DOT com *)</span>
+<span class="comment">(* Start time: July, 2013 *)</span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: for unindexed gnumber types</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">sortdef</span> tk <span class="keyword">=</span> tkind</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">typedef</span> <span class="staexp">SHR<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>type</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">a</span></span> <span class="comment">// for commenting purpose</span>
+<span class="keyword">typedef</span> <span class="staexp">NSH<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>type</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">a</span></span> <span class="comment">// for commenting purpose</span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">abstype</span>
+fprecision_prop <span class="keyword">(</span>a1<span class="keyword">:</span>t0p<span class="keyword">,</span> a2<span class="keyword">:</span>t0p<span class="keyword">)</span></span>
+<span class="keyword">propdef</span>
+<span class="staexp">fprecision <span class="keyword">(</span><span class="staexp">a1<span class="keyword">:</span>t0p</span><span class="keyword">,</span> <span class="staexp">a2<span class="keyword">:</span>t0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">fprecision_prop</span> <span class="keyword">(</span><span class="staexp">a1</span><span class="keyword">,</span> <span class="staexp">a2</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">praxi</span>
+fprecision_float <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">fprecision</span> <span class="keyword">(</span><span class="staexp">float</span><span class="keyword">,</span> <span class="staexp">float</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">praxi</span>
+fprecision_double <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">fprecision</span> <span class="keyword">(</span><span class="staexp">double</span><span class="keyword">,</span> <span class="staexp">double</span><span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">praxi</span>
+fprecision_ldouble <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">fprecision</span> <span class="keyword">(</span><span class="staexp">ldouble</span><span class="keyword">,</span> <span class="staexp">ldouble</span><span class="keyword">)</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="comment">// HX: generic number operations</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gnumber_int <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gnumber_double <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gabs_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gneg_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gsucc_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gpred_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> grecip_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gadd_val_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gsub_val_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gmul_val_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gdiv_val_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gmod_val_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gadd_val_int <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gsub_val_int <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gmul_int_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gmul_val_int <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gdiv_int_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gdiv_val_int <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gmod_val_int <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gsqrt_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">exn</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gconjugate_val <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span> gpow_int_val <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">intGte</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="comment">(* end of [gnumber.sats] *)</span>
+</pre>
+</body>
+</html>

@@ -72,14 +72,14 @@ UN <span class="keyword">=</span> "prelude/SATS/unsafe.sats"
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 tostring_int<span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=</span> 
 <span class="keyword">$effmask_wrt</span>
 <span class="keyword">(</span>
   strptr2string<span class="keyword">(</span>tostrptr_int<span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span>
 <span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 tostrptr_int<span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -98,21 +98,21 @@ tostrptr_int<span class="keyword">(</span>i<span class="keyword">)</span> <span 
   $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>Strptr1<span class="keyword">}</span></span><span class="keyword">(</span>string0_copy<span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>string<span class="keyword">}</span></span><span class="keyword">(</span>bufp<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [tostrptr_int]</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 tostring_val&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">=</span> tostring_int</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 tostrptr_val&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">=</span> tostrptr_int</span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 tostring_uint<span class="keyword">(</span>u<span class="keyword">)</span> <span class="keyword">=</span> 
 <span class="keyword">$effmask_wrt</span>
 <span class="keyword">(</span>
   strptr2string<span class="keyword">(</span>tostrptr_uint<span class="keyword">(</span>u<span class="keyword">)</span><span class="keyword">)</span>
 <span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 tostrptr_uint<span class="keyword">(</span>u<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -131,28 +131,28 @@ tostrptr_uint<span class="keyword">(</span>u<span class="keyword">)</span> <span
   $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>Strptr1<span class="keyword">}</span></span><span class="keyword">(</span>string0_copy<span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>string<span class="keyword">}</span></span><span class="keyword">(</span>bufp<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [tostrptr_uint]</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 tostring_val&lt;<span class="staexp">uint</span><span class="keyword">&gt;</span> <span class="keyword">=</span> tostring_uint</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 tostrptr_val&lt;<span class="staexp">uint</span><span class="keyword">&gt;</span> <span class="keyword">=</span> tostrptr_uint</span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 tostring_bool<span class="keyword">(</span>b<span class="keyword">)</span> <span class="keyword">=</span> bool2string<span class="keyword">(</span>b<span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 tostrptr_bool<span class="keyword">(</span>b<span class="keyword">)</span> <span class="keyword">=</span> string0_copy<span class="keyword">(</span>bool2string<span class="keyword">(</span>b<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 tostring_val&lt;<span class="staexp">bool</span><span class="keyword">&gt;</span> <span class="keyword">=</span> tostring_bool</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 tostrptr_val&lt;<span class="staexp">bool</span><span class="keyword">&gt;</span> <span class="keyword">=</span> tostrptr_bool</span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 tostring_char<span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">=</span>
 <span class="keyword">$effmask_wrt</span>
@@ -160,27 +160,27 @@ tostring_char<span class="keyword">(</span>c<span class="keyword">)</span> <span
   strptr2string<span class="keyword">(</span>char2strptr<span class="keyword">(</span>c<span class="keyword">)</span><span class="keyword">)</span>
 <span class="keyword">)</span></span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 tostrptr_char<span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">=</span> char2strptr<span class="keyword">(</span>c<span class="keyword">)</span></span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 tostring_val&lt;<span class="staexp">char</span><span class="keyword">&gt;</span> <span class="keyword">=</span> tostring_char</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 tostrptr_val&lt;<span class="staexp">char</span><span class="keyword">&gt;</span> <span class="keyword">=</span> tostrptr_char</span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 tostrptr_val&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">=</span> g0int2string_int</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 tostrptr_val&lt;<span class="staexp">lint</span><span class="keyword">&gt;</span> <span class="keyword">=</span> g0int2string_lint</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 tostrptr_val&lt;<span class="staexp">llint</span><span class="keyword">&gt;</span> <span class="keyword">=</span> g0int2string_llint</span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 tostrptr_list<span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -241,19 +241,19 @@ $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyw
 
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> tostrptr_list$beg<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">""</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> tostrptr_list$end<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">""</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> tostrptr_list$sep<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">""</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> tostrptr_list$beg<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">""</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> tostrptr_list$end<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">""</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> tostrptr_list$sep<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">""</span></span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
 tostrptr_val&lt;<span class="staexp">List</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">&gt;</span>
   <span class="keyword">(</span>xs0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">$effmask_all</span> <span class="keyword">(</span>tostrptr_list&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs0<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 tostrptr_array
   <span class="keyword">(</span>A<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -324,13 +324,13 @@ $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyw
 
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> tostrptr_array$beg<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">""</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> tostrptr_array$end<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">""</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> tostrptr_array$sep<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">""</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> tostrptr_array$beg<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">""</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> tostrptr_array$end<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">""</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> tostrptr_array$sep<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">""</span></span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 tostrptr_arrayref
   <span class="keyword">(</span>A<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -346,7 +346,7 @@ tostrptr_arrayref
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 tostrptr_arrszref
   <span class="keyword">(</span>ASZ<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>

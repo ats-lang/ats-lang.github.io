@@ -67,12 +67,12 @@
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> option_vt_some <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> Some_vt <span class="keyword">(</span>x<span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> option_vt_none <span class="keyword">(</span> <span class="keyword">)</span> <span class="keyword">=</span> None_vt <span class="keyword">(</span> <span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> option_vt_some <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> Some_vt <span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> option_vt_none <span class="keyword">(</span> <span class="keyword">)</span> <span class="keyword">=</span> None_vt <span class="keyword">(</span> <span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 option_vt_make_opt
   <span class="keyword">(</span>b<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>
   <span class="keyword">if</span> b <span class="keyword">then</span> <span class="keyword">let</span>
@@ -84,13 +84,13 @@ option_vt_make_opt
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 option_vt_is_some
   <span class="keyword">(</span>opt<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">case+</span> opt <span class="keyword">of</span>
   <span class="keyword">|</span> Some_vt _ <span class="keyword">=&gt;</span> true <span class="keyword">|</span> None_vt _ <span class="keyword">=&gt;</span> false</span>
 <span class="comment">// end of [option_is_some]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 option_vt_is_none
   <span class="keyword">(</span>opt<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">case+</span> opt <span class="keyword">of</span>
   <span class="keyword">|</span> Some_vt _ <span class="keyword">=&gt;</span> false <span class="keyword">|</span> None_vt _ <span class="keyword">=&gt;</span> true</span>
@@ -98,19 +98,19 @@ option_vt_is_none
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 option_vt_unsome
   <span class="keyword">(</span>opt<span class="keyword">)</span> <span class="keyword">=</span> x <span class="keyword">where</span> <span class="keyword">{</span> <span class="dynexp"><span class="keyword">val+</span> <span class="keyword">~</span>Some_vt <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> opt</span> <span class="keyword">}</span></span>
 <span class="comment">// end of [option_unsome]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 option_vt_unnone
   <span class="keyword">(</span>opt<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span> <span class="dynexp"><span class="keyword">val+</span> <span class="keyword">~</span>None_vt <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> opt</span> <span class="keyword">}</span></span>
 <span class="comment">// end of [option_unnone]</span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 option_vt_free <span class="keyword">(</span>opt<span class="keyword">)</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
 <span class="keyword">case+</span> opt <span class="keyword">of</span> <span class="keyword">~</span>Some_vt _ <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="keyword">~</span>None_vt <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span>
@@ -118,7 +118,7 @@ option_vt_free <span class="keyword">(</span>opt<span class="keyword">)</span> <
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 fprint_option_vt
   <span class="keyword">(</span>out<span class="keyword">,</span> opt<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="keyword">in</span>

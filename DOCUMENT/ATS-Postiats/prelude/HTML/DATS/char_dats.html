@@ -75,23 +75,23 @@
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 g0int_of_char
   <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">=</span> __cast <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
   <span class="keyword">extern</span> <span class="dynexp"><span class="keyword">castfn</span> __cast <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
 <span class="keyword">}</span></span> <span class="comment">// end of [g0int_of_char]</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 g0int_of_schar
   <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">=</span> __cast <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
   <span class="keyword">extern</span> <span class="dynexp"><span class="keyword">castfn</span> __cast <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">schar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
 <span class="keyword">}</span></span> <span class="comment">// end of [g0int_of_schar]</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 g0int_of_uchar
   <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">=</span> __cast <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
   <span class="keyword">extern</span> <span class="dynexp"><span class="keyword">castfn</span> __cast <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g0int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
 <span class="keyword">}</span></span> <span class="comment">// end of [g0int_of_uchar]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 g0uint_of_uchar
   <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">=</span> __cast <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
   <span class="keyword">extern</span> <span class="dynexp"><span class="keyword">castfn</span> __cast <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">uchar</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g0uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">)</span></span>
@@ -99,23 +99,23 @@ g0uint_of_uchar
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 g1int_of_char1
   <span class="staexp"><span class="keyword">{</span>c<span class="keyword">}</span></span> <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">=</span> __cast <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
   <span class="keyword">extern</span> <span class="dynexp"><span class="keyword">castfn</span> __cast <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">char</span> <span class="staexp">c</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">)</span></span>
 <span class="keyword">}</span></span> <span class="comment">// end of [g1int_of_char1]</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 g1int_of_schar1
   <span class="staexp"><span class="keyword">{</span>c<span class="keyword">}</span></span> <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">=</span> __cast <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
   <span class="keyword">extern</span> <span class="dynexp"><span class="keyword">castfn</span> __cast <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">schar</span> <span class="staexp">c</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">)</span></span>
 <span class="keyword">}</span></span> <span class="comment">// end of [g1int_of_schar1]</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 g1int_of_uchar1
   <span class="staexp"><span class="keyword">{</span>c<span class="keyword">}</span></span> <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">=</span> __cast <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
   <span class="keyword">extern</span> <span class="dynexp"><span class="keyword">castfn</span> __cast <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="staexp">c</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g1int</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">)</span></span>
 <span class="keyword">}</span></span> <span class="comment">// end of [g1int_of_uchar1]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 g1uint_of_uchar1
   <span class="staexp"><span class="keyword">{</span>c<span class="keyword">}</span></span> <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">=</span> __cast <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
   <span class="keyword">extern</span> <span class="dynexp"><span class="keyword">castfn</span> __cast <span class="keyword">(</span>c<span class="keyword">:</span> <span class="staexp">uchar</span> <span class="staexp">c</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">g1uint</span> <span class="keyword">(</span><span class="staexp">tk</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">)</span></span>
@@ -123,14 +123,14 @@ g1uint_of_uchar1
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 char2string<span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">=</span>
 <span class="keyword">$effmask_wrt</span>
 <span class="keyword">(</span>
   $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>string<span class="keyword">}</span></span><span class="keyword">(</span>char2strptr<span class="keyword">(</span>c<span class="keyword">)</span><span class="keyword">)</span>
 <span class="keyword">)</span></span> <span class="comment">(* end of [char2string] *)</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 char2strptr<span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -151,9 +151,9 @@ char2strptr<span class="keyword">(</span>c<span class="keyword">)</span> <span c
 
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span> fprint_val&lt;<span class="staexp">char</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fprint_char</span>
-<span class="prfexp"><span class="keyword">implement</span> fprint_val&lt;<span class="staexp">uchar</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fprint_uchar</span>
-<span class="prfexp"><span class="keyword">implement</span> fprint_val&lt;<span class="staexp">schar</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fprint_schar</span>
+<span class="dynexp"><span class="keyword">implement</span> fprint_val&lt;<span class="staexp">char</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fprint_char</span>
+<span class="dynexp"><span class="keyword">implement</span> fprint_val&lt;<span class="staexp">uchar</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fprint_uchar</span>
+<span class="dynexp"><span class="keyword">implement</span> fprint_val&lt;<span class="staexp">schar</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fprint_schar</span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 

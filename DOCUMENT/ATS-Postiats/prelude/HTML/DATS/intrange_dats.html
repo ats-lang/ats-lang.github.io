@@ -67,7 +67,7 @@
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 intrange_foreach
   <span class="keyword">(</span>l<span class="keyword">,</span> r<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="keyword">var</span> env<span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span>
@@ -75,7 +75,7 @@ intrange_foreach
   intrange_foreach_env&lt;<span class="staexp">void</span><span class="keyword">&gt;</span> <span class="keyword">(</span>l<span class="keyword">,</span> r<span class="keyword">,</span> env<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [intrange_foreach]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tenv</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tenv</span><span class="keyword">}</span>
 intrange_foreach_env
   <span class="keyword">(</span>l<span class="keyword">,</span> r<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -108,7 +108,7 @@ cont
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 intrange_foreach$cont <span class="keyword">(</span>i<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> true</span>
 <span class="comment">(*
 implement{env}
@@ -117,7 +117,7 @@ intrange_foreach$fwork (i, env) = ((*void*))
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 int_foreach_cloref
   <span class="keyword">(</span>n<span class="keyword">,</span> fwork<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>
@@ -128,15 +128,15 @@ intrange_foreach_cloref&lt;<span class="keyword">&gt;</span> <span class="keywor
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 intrange_foreach_cloref
   <span class="keyword">(</span>l<span class="keyword">,</span> r<span class="keyword">,</span> fwork<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">env</span><span class="keyword">)</span><span class="comment">(*tmp*)</span>
 intrange_foreach$cont&lt;<span class="staexp">env</span><span class="keyword">&gt;</span> <span class="keyword">(</span>i<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> true</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">env</span><span class="keyword">)</span><span class="comment">(*tmp*)</span>
 intrange_foreach$fwork&lt;<span class="staexp">env</span><span class="keyword">&gt;</span><span class="keyword">(</span>i<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> fwork<span class="keyword">(</span>i<span class="keyword">)</span></span>
 <span class="comment">//</span>
@@ -148,7 +148,7 @@ intrange_foreach$fwork&lt;<span class="staexp">env</span><span class="keyword">&
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 intrange_rforeach
   <span class="keyword">(</span>l<span class="keyword">,</span> r<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="keyword">var</span> env<span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span>
@@ -156,7 +156,7 @@ intrange_rforeach
   intrange_rforeach_env&lt;<span class="staexp">void</span><span class="keyword">&gt;</span> <span class="keyword">(</span>l<span class="keyword">,</span> r<span class="keyword">,</span> env<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [intrange_rforeach]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tenv</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tenv</span><span class="keyword">}</span>
 intrange_rforeach_env
   <span class="keyword">(</span>l<span class="keyword">,</span> r<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -190,7 +190,7 @@ cont
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 intrange_rforeach$cont <span class="keyword">(</span>i<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> true</span>
 <span class="comment">(*
 implement{env}
@@ -199,7 +199,7 @@ intrange_rforeach$fwork (i, env) = ((*void*))
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 int_rforeach_cloref
   <span class="keyword">(</span>n<span class="keyword">,</span> fwork<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>
@@ -210,15 +210,15 @@ intrange_rforeach_cloref&lt;<span class="keyword">&gt;</span> <span class="keywo
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 intrange_rforeach_cloref
   <span class="keyword">(</span>l<span class="keyword">,</span> r<span class="keyword">,</span> fwork<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">env</span><span class="keyword">)</span><span class="comment">(*tmp*)</span>
 intrange_rforeach$cont&lt;<span class="staexp">env</span><span class="keyword">&gt;</span> <span class="keyword">(</span>i<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> true</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">env</span><span class="keyword">)</span><span class="comment">(*tmp*)</span>
 intrange_rforeach$fwork&lt;<span class="staexp">env</span><span class="keyword">&gt;</span><span class="keyword">(</span>i<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> fwork<span class="keyword">(</span>i<span class="keyword">)</span></span>
 <span class="comment">//</span>
@@ -230,7 +230,7 @@ intrange_rforeach$fwork&lt;<span class="staexp">env</span><span class="keyword">
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 intrange2_foreach
   <span class="keyword">(</span>l1<span class="keyword">,</span> r1<span class="keyword">,</span> l2<span class="keyword">,</span> r2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="keyword">var</span> env<span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">in</span>
@@ -239,7 +239,7 @@ intrange2_foreach
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tenv</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tenv</span><span class="keyword">}</span>
 intrange2_foreach_env
   <span class="keyword">(</span>l1<span class="keyword">,</span> r1<span class="keyword">,</span> l2<span class="keyword">,</span> r2<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>

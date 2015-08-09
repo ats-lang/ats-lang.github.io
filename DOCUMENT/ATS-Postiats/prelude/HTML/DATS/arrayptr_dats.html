@@ -71,7 +71,7 @@
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_make_elt
   <span class="keyword">(</span>asz<span class="keyword">,</span> elt<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -89,7 +89,7 @@ arrayptr_make_elt
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 arrayptr_make_intrange
   <span class="staexp"><span class="keyword">{</span>l<span class="keyword">,</span>r<span class="keyword">}</span></span> <span class="keyword">(</span>l<span class="keyword">,</span> r<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -120,7 +120,7 @@ arrayptr_make_intrange
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_make_list
   <span class="keyword">(</span>asz<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -137,7 +137,7 @@ arrayptr_make_list
   arrayptr_encode<span class="keyword">(</span><span class="prfexp">pf</span><span class="keyword">,</span> <span class="prfexp">pfgc</span> <span class="keyword">|</span> p<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [arrayptr_make_list]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_make_rlist
   <span class="keyword">(</span>asz<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -156,7 +156,7 @@ arrayptr_make_rlist
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_make_subarray
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>st<span class="keyword">,</span>ln<span class="keyword">}</span></span><span class="keyword">(</span>A<span class="keyword">,</span> st<span class="keyword">,</span> ln<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -183,7 +183,7 @@ arrayptr_make_uninitized&lt;<span class="staexp">a</span><span class="keyword">&
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_make_list_vt
   <span class="keyword">(</span>asz<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -199,7 +199,7 @@ arrayptr_make_list_vt
   arrayptr_encode<span class="keyword">(</span><span class="prfexp">pf</span><span class="keyword">,</span> <span class="prfexp">pfgc</span> <span class="keyword">|</span> p<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [arrayptr_make_list_vt]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_make_rlist_vt
   <span class="keyword">(</span>asz<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -217,7 +217,7 @@ arrayptr_make_rlist_vt
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_make_uninitized
   <span class="keyword">(</span>asz<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -227,7 +227,7 @@ arrayptr_make_uninitized
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_imake_list
   <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">)</span> <span class="keyword">=</span> res <span class="keyword">where</span>
@@ -248,7 +248,7 @@ arrayptr_free = ATS_MFREE // HX: in arrayptr.cats
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 fprint_arrayptr
   <span class="keyword">(</span>out<span class="keyword">,</span> A<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span>
@@ -263,7 +263,7 @@ fprint_arrayptr
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 fprint_arrayptr_sep
   <span class="keyword">(</span>out<span class="keyword">,</span> A<span class="keyword">,</span> n<span class="keyword">,</span> sep<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span>
@@ -278,7 +278,7 @@ fprint_arrayptr_sep
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 arrayptr_get_at_gint
   <span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -286,7 +286,7 @@ arrayptr_get_at_gint
   $UN<span class="keyword">.</span>ptr0_get&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>ptr1_add_gint&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">tk</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [arrayptr_get_at_gint]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 arrayptr_get_at_guint
   <span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -296,7 +296,7 @@ arrayptr_get_at_guint
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 arrayptr_set_at_gint
   <span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -304,7 +304,7 @@ arrayptr_set_at_gint
   $UN<span class="keyword">.</span>ptr0_set&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>ptr1_add_gint&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">tk</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [arrayptr_set_at_gint]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 arrayptr_set_at_guint
   <span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -314,7 +314,7 @@ arrayptr_set_at_guint
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_interchange
   <span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">,</span> j<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -330,7 +330,7 @@ arrayptr_interchange
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_foreach
   <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -338,7 +338,7 @@ arrayptr_foreach
   arrayptr_foreach_env&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">void</span><span class="keyword">&gt;</span> <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">,</span> env<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [arrayptr_foreach]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 arrayptr_foreach_env
   <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> res <span class="keyword">where</span> <span class="keyword">{</span>
@@ -350,7 +350,7 @@ arrayptr_foreach_env
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_foreach_fun
   <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -364,7 +364,7 @@ arrayptr_foreach_fun
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_foreach_funenv
   <span class="keyword">(</span><span class="prfexp">pfv</span> <span class="keyword">|</span> A<span class="keyword">,</span> asz<span class="keyword">,</span> f<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -381,7 +381,7 @@ arrayptr_foreach_funenv
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_iforeach
   <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -389,7 +389,7 @@ arrayptr_iforeach
   arrayptr_iforeach_env&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">void</span><span class="keyword">&gt;</span> <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">,</span> env<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [arrayptr_iforeach]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 arrayptr_iforeach_env
   <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> res <span class="keyword">where</span> <span class="keyword">{</span>
@@ -401,7 +401,7 @@ arrayptr_iforeach_env
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_rforeach
   <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -409,7 +409,7 @@ arrayptr_rforeach
   arrayptr_rforeach_env&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">void</span><span class="keyword">&gt;</span> <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">,</span> env<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [arrayptr_rforeach]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 arrayptr_rforeach_env
   <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> res <span class="keyword">where</span> <span class="keyword">{</span>
@@ -421,7 +421,7 @@ arrayptr_rforeach_env
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_initize
   <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
@@ -433,7 +433,7 @@ arrayptr_initize
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_uninitize
   <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
@@ -445,7 +445,7 @@ arrayptr_uninitize
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_freelin
   <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -458,7 +458,7 @@ arrayptr_freelin
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_tabulate
   <span class="keyword">(</span>asz<span class="keyword">)</span> <span class="keyword">=</span> arrayptr_encode2<span class="keyword">(</span>array_ptr_tabulate&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>asz<span class="keyword">)</span><span class="keyword">)</span></span>
@@ -466,12 +466,12 @@ arrayptr_tabulate
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_tabulate_cloref
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>asz<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">a2</span><span class="keyword">)</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">a2</span><span class="keyword">)</span>
 array_tabulate$fopr&lt;<span class="staexp">a2</span><span class="keyword">&gt;</span> <span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>a2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>sizeLt<span class="keyword">(</span>n<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="keyword">in</span>
@@ -480,7 +480,7 @@ array_tabulate$fopr&lt;<span class="staexp">a2</span><span class="keyword">&gt;<
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 arrayptr_quicksort
   <span class="keyword">(</span>A<span class="keyword">,</span> asz<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span>

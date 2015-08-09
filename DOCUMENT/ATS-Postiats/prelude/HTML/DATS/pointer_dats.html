@@ -71,71 +71,71 @@
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="dynexp"><span class="keyword">primplmnt</span>
+<span class="prfexp"><span class="keyword">primplmnt</span>
 lemma_ptr_param
   <span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span> <span class="keyword">(</span>p<span class="keyword">)</span> <span class="keyword">=</span> lemma_addr_param <span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span></span>
 <span class="comment">// end of [lemma_ptr_param]</span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="dynexp"><span class="keyword">primplmnt</span>
+<span class="prfexp"><span class="keyword">primplmnt</span>
 ptr_get_index <span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span> <span class="keyword">(</span>p<span class="keyword">)</span> <span class="keyword">=</span> eqaddr_make <span class="staexp"><span class="keyword">{</span>l<span class="keyword">,</span> l<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 ptr0_succ <span class="keyword">(</span>p<span class="keyword">)</span> <span class="keyword">=</span> add_ptr_bsz <span class="keyword">(</span>p<span class="keyword">,</span> sizeof&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 ptr0_pred <span class="keyword">(</span>p<span class="keyword">)</span> <span class="keyword">=</span> sub_ptr_bsz <span class="keyword">(</span>p<span class="keyword">,</span> sizeof&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 ptr0_add_gint <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   add_ptr_bsz <span class="keyword">(</span>p<span class="keyword">,</span> g0int2uint<span class="keyword">(</span>i<span class="keyword">)</span> * sizeof&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 ptr0_sub_gint <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   sub_ptr_bsz <span class="keyword">(</span>p<span class="keyword">,</span> g0int2uint<span class="keyword">(</span>i<span class="keyword">)</span> * sizeof&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 ptr0_add_guint <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   add_ptr_bsz <span class="keyword">(</span>p<span class="keyword">,</span> g0uint2uint<span class="keyword">(</span>i<span class="keyword">)</span> * sizeof&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 ptr0_sub_guint <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   sub_ptr_bsz <span class="keyword">(</span>p<span class="keyword">,</span> g0uint2uint<span class="keyword">(</span>i<span class="keyword">)</span> * sizeof&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 ptr1_succ <span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span> <span class="keyword">(</span>p<span class="keyword">)</span> <span class="keyword">=</span>
   $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">(</span>l+sizeof<span class="keyword">(</span>a<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>ptr0_succ&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p<span class="keyword">)</span><span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 ptr1_pred <span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span> <span class="keyword">(</span>p<span class="keyword">)</span> <span class="keyword">=</span>
   $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">(</span>l-sizeof<span class="keyword">(</span>a<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>ptr0_pred&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 ptr1_add_gint <span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span> <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">(</span>l+i*sizeof<span class="keyword">(</span>a<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>ptr0_add_gint&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">tk</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 ptr1_sub_gint <span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span> <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">(</span>l-i*sizeof<span class="keyword">(</span>a<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>ptr0_sub_gint&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">tk</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 ptr1_add_guint <span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span> <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">(</span>l+i*sizeof<span class="keyword">(</span>a<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>ptr0_add_guint&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">tk</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 ptr1_sub_guint <span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span> <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">(</span>l-i*sizeof<span class="keyword">(</span>a<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>ptr0_sub_guint&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">tk</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> ptr_get <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> p<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> ptr_get <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> p<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> ptr_set <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> p<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p := x</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> ptr_set <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> p<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p := x</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 ptr_exch <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> p<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span>
 <span class="keyword">{</span>
   <span class="dynexp"><span class="keyword">val</span> tmp <span class="keyword">=</span> x</span><span class="keyword">;</span> <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x := <span class="keyword">!</span>p</span><span class="keyword">;</span> <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p := tmp</span>
@@ -143,7 +143,7 @@ ptr_exch <span class="keyword">(</span><span class="prfexp">pf</span> <span clas
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 ptr_nullize
   <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> x<span class="keyword">)</span> <span class="keyword">=</span>
@@ -153,13 +153,13 @@ ptr_nullize
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 ptr_alloc <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> ptr_alloc_tsz<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>sizeof&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 aptr_make_elt<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -171,7 +171,7 @@ aptr_make_elt<span class="keyword">(</span>x<span class="keyword">)</span> <span
 
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 aptr_getfree_elt
   <span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="keyword">(</span>ap<span class="keyword">)</span> <span class="keyword">=</span> x <span class="keyword">where</span>
@@ -188,16 +188,16 @@ aptr_getfree_elt
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 aptr_get_elt<span class="keyword">(</span>ap<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr1_get&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>aptr2ptr<span class="keyword">(</span>ap<span class="keyword">)</span><span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 aptr_set_elt<span class="keyword">(</span>ap<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr1_set&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>aptr2ptr<span class="keyword">(</span>ap<span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 fprint_val&lt;<span class="staexp">ptr</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> p<span class="keyword">)</span> <span class="keyword">=</span> fprint_ptr <span class="keyword">(</span>out<span class="keyword">,</span> p<span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>

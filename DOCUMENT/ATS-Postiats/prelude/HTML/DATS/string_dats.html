@@ -94,7 +94,7 @@
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 string_sing <span class="keyword">(</span>c<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pfat</span><span class="keyword">,</span> <span class="prfexp">pfgc</span> <span class="keyword">|</span> p<span class="keyword">)</span> <span class="keyword">=</span> malloc_gc<span class="keyword">(</span>i2sz<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span><span class="keyword">)</span></span>
@@ -106,14 +106,14 @@ string_sing <span class="keyword">(</span>c<span class="keyword">)</span> <span 
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string_is_empty
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>str<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> p <span class="keyword">=</span> string2ptr<span class="keyword">(</span>str<span class="keyword">)</span></span>
 <span class="keyword">in</span>
   $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>bool<span class="keyword">(</span>n==0<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>$UN<span class="keyword">.</span>ptr1_get&lt;<span class="staexp">char</span><span class="keyword">&gt;</span><span class="keyword">(</span>p<span class="keyword">)</span> <span class="keyword">=</span> CNUL<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [string_is_empty]</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string_isnot_empty
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>str<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> p <span class="keyword">=</span> string2ptr<span class="keyword">(</span>str<span class="keyword">)</span></span>
@@ -123,7 +123,7 @@ string_isnot_empty
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string_is_atend_size<span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span>
   <span class="keyword">(</span>str<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> p_i <span class="keyword">=</span> add_ptr_bsz <span class="keyword">(</span>string2ptr<span class="keyword">(</span>str<span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">)</span></span>
@@ -131,34 +131,34 @@ string_is_atend_size<span class="staexp"><span class="keyword">{</span>n<span cl
   $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>bool<span class="keyword">(</span>n==i<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>$UN<span class="keyword">.</span>ptr1_get&lt;<span class="staexp">char</span><span class="keyword">&gt;</span><span class="keyword">(</span>p_i<span class="keyword">)</span> <span class="keyword">=</span> CNUL<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [string_is_atend_size]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 string_is_atend_gint <span class="keyword">(</span>str<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   string_is_atend_size <span class="keyword">(</span>str<span class="keyword">,</span> g1int2uint<span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">// end of [string_is_atend_gint]</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 string_is_atend_guint <span class="keyword">(</span>str<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   string_is_atend_size <span class="keyword">(</span>str<span class="keyword">,</span> g1uint2uint<span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">// end of [string_is_atend_guint]</span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string_get_at_size <span class="keyword">(</span>str<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   $UN<span class="keyword">.</span>ptr1_get&lt;<span class="staexp">charNZ</span><span class="keyword">&gt;</span><span class="keyword">(</span>string2ptr<span class="keyword">(</span>str<span class="keyword">)</span> + i<span class="keyword">)</span></span>
 <span class="comment">// end of [string_get_at_size]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 string_get_at_gint <span class="keyword">(</span>str<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   string_get_at_size <span class="keyword">(</span>str<span class="keyword">,</span> g1int2uint <span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">// end of [string_get_at_gint]</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 string_get_at_guint <span class="keyword">(</span>str<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   string_get_at_size <span class="keyword">(</span>str<span class="keyword">,</span> g1uint2uint <span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">// end of [string_get_at_guint]</span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string_test_at_size
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span> <span class="keyword">(</span>str<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -171,18 +171,18 @@ __cast <span class="keyword">(</span>c<span class="keyword">:</span> <span class
   __cast <span class="keyword">(</span>$UN<span class="keyword">.</span>ptr1_get&lt;<span class="staexp">char</span><span class="keyword">&gt;</span><span class="keyword">(</span>string2ptr<span class="keyword">(</span>str<span class="keyword">)</span> + i<span class="keyword">)</span><span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [string_test_at_size]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 string_test_at_gint <span class="keyword">(</span>str<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   string_test_at_size <span class="keyword">(</span>str<span class="keyword">,</span> g1int2uint <span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">// end of [string_test_at_gint]</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">tk</span><span class="keyword">}</span>
 string_test_at_guint <span class="keyword">(</span>str<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span>
   string_test_at_size <span class="keyword">(</span>str<span class="keyword">,</span> g1uint2uint <span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">// end of [string_test_at_guint]</span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> strintcmp
   <span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">}</span></span> <span class="keyword">(</span>x1<span class="keyword">,</span> n2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -206,7 +206,7 @@ string_test_at_guint <span class="keyword">(</span>str<span class="keyword">,</s
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> strlencmp
   <span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">}</span></span> <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -243,12 +243,12 @@ string_test_at_guint <span class="keyword">(</span>str<span class="keyword">,</s
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> string_make_list <span class="keyword">(</span>cs<span class="keyword">)</span> <span class="keyword">=</span>
   string_make_listlen <span class="keyword">(</span>cs<span class="keyword">,</span> list_length <span class="keyword">(</span>cs<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">// end of [string_make_list]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> string_make_listlen
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>cs<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -281,12 +281,12 @@ string_test_at_guint <span class="keyword">(</span>str<span class="keyword">,</s
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> string_make_rlist <span class="keyword">(</span>cs<span class="keyword">)</span> <span class="keyword">=</span>
   string_make_rlistlen <span class="keyword">(</span>cs<span class="keyword">,</span> list_length <span class="keyword">(</span>cs<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">// end of [string_make_rlist]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> string_make_rlistlen
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>cs<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -321,7 +321,7 @@ string_test_at_guint <span class="keyword">(</span>str<span class="keyword">,</s
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> string_make_substring
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>st<span class="keyword">,</span>ln<span class="keyword">}</span></span>
   <span class="keyword">(</span>str<span class="keyword">,</span> st<span class="keyword">,</span> ln<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">$effmask_wrt</span> <span class="keyword">let</span>
@@ -339,21 +339,21 @@ string_test_at_guint <span class="keyword">(</span>str<span class="keyword">,</s
 
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string_head
   <span class="keyword">(</span>str<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_get&lt;<span class="staexp">charNZ</span><span class="keyword">&gt;</span> <span class="keyword">(</span>string2ptr<span class="keyword">(</span>str<span class="keyword">)</span><span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string_tail<span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span>
   <span class="keyword">(</span>str<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>string<span class="keyword">(</span>n-1<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>ptr_succ&lt;<span class="staexp">char</span><span class="keyword">&gt;</span> <span class="keyword">(</span>string2ptr<span class="keyword">(</span>str<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string0_length
   <span class="keyword">(</span>str<span class="keyword">)</span> <span class="keyword">=</span> string1_length&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>g1ofg0<span class="keyword">(</span>str<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">// end of [string0_length]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string1_length
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>str<span class="keyword">)</span> <span class="keyword">=</span>
   __strlen <span class="keyword">(</span>str<span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
@@ -362,13 +362,13 @@ string1_length
 
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string0_nlength
   <span class="keyword">(</span>str1<span class="keyword">,</span> n2<span class="keyword">)</span> <span class="keyword">=</span>
   string1_nlength&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>g1ofg0<span class="keyword">(</span>str1<span class="keyword">)</span><span class="keyword">,</span> g1ofg0<span class="keyword">(</span>n2<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">// end of [string0_nlength]</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string1_nlength
   <span class="keyword">(</span>str1<span class="keyword">,</span> n2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -399,7 +399,7 @@ isneqz<span class="keyword">(</span>str1<span class="keyword">)</span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string0_copy
   <span class="keyword">(</span>str<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -411,7 +411,7 @@ string0_copy
   strnptr2strptr <span class="keyword">(</span>str2<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [string0_copy]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string1_copy
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>str<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -426,7 +426,7 @@ string1_copy
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> strchr <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>str<span class="keyword">,</span> c0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
 <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> lemma_string_param <span class="keyword">(</span>str<span class="keyword">)</span></span>
@@ -439,7 +439,7 @@ string1_copy
   <span class="keyword">if</span> p1 <span class="keyword">&gt;</span> the_null_ptr <span class="keyword">then</span> __sub <span class="keyword">(</span>p1<span class="keyword">,</span> p0<span class="keyword">)</span> <span class="keyword">else</span> i2ssz<span class="keyword">(</span><span class="keyword">~</span><span class="dynexp">1</span><span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [strchr]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> strrchr <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>str<span class="keyword">,</span> c0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
 <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> lemma_string_param <span class="keyword">(</span>str<span class="keyword">)</span></span>
@@ -454,7 +454,7 @@ string1_copy
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> strstr <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span>
   <span class="keyword">(</span>haystack<span class="keyword">,</span> needle<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -470,7 +470,7 @@ string1_copy
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> strspn <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span>
   <span class="keyword">(</span>str<span class="keyword">,</span> accept<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -481,7 +481,7 @@ string1_copy
   __strspn <span class="keyword">(</span>str<span class="keyword">,</span> accept<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [strspn]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> strcspn <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span>
   <span class="keyword">(</span>str<span class="keyword">,</span> reject<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -494,19 +494,19 @@ string1_copy
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string_index <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span>
   <span class="keyword">(</span>str<span class="keyword">,</span> c<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>ssizeBtw<span class="keyword">(</span><span class="keyword">~</span>1<span class="keyword">,</span>n<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>strchr <span class="keyword">(</span>str<span class="keyword">,</span> c<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">// end of [string_index]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string_rindex <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span>
   <span class="keyword">(</span>str<span class="keyword">,</span> c<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>ssizeBtw<span class="keyword">(</span><span class="keyword">~</span>1<span class="keyword">,</span>n<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>strrchr <span class="keyword">(</span>str<span class="keyword">,</span> c<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">// end of [string_rindex]</span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string0_append
   <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -519,7 +519,7 @@ string0_append
   strnptr2strptr <span class="keyword">(</span>x12<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [string0_append]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string1_append
   <span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">}</span></span> <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -537,7 +537,7 @@ string1_append
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string0_append3
   <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">,</span> x3<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -552,7 +552,7 @@ stringarr_concat&lt;<span class="keyword">&gt;</span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 stringarr_concat <span class="keyword">(</span>xs<span class="keyword">,</span> asz<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
 <span class="dynexp"><span class="keyword">fun</span> loop
@@ -603,7 +603,7 @@ stringarr_concat <span class="keyword">(</span>xs<span class="keyword">,</span> 
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 stringlst_concat <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
 <span class="dynexp"><span class="keyword">val</span> n <span class="keyword">=</span> list_length <span class="keyword">(</span>xs<span class="keyword">)</span></span>
@@ -619,7 +619,7 @@ stringlst_concat <span class="keyword">(</span>xs<span class="keyword">)</span> 
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string_explode
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -666,7 +666,7 @@ string_explode
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string_tabulate <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
 <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> lemma_g1uint_param <span class="keyword">(</span>n<span class="keyword">)</span></span>
@@ -697,17 +697,17 @@ string_tabulate <span class="staexp"><span class="keyword">{</span>n<span class=
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 string_foreach$cont <span class="keyword">(</span>c<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> true</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 string_foreach$fwork <span class="keyword">(</span>c<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string_foreach <span class="keyword">(</span>str<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="keyword">var</span> env<span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">in</span> string_foreach_env <span class="keyword">(</span>str<span class="keyword">,</span> env<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [string_foreach]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 string_foreach_env
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>str<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -736,17 +736,17 @@ string_foreach_env
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 string_rforeach$cont <span class="keyword">(</span>c<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> true</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 string_rforeach$fwork <span class="keyword">(</span>c<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 string_rforeach <span class="keyword">(</span>str<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="keyword">var</span> env<span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">in</span> string_rforeach_env <span class="keyword">(</span>str<span class="keyword">,</span> env<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [string_rforeach]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 string_rforeach_env
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>str<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -798,12 +798,12 @@ stropt_none () = $UN.cast{stropt(~1)} (the_null_ptr)
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> stropt_is_none <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>
   $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>bool<span class="keyword">(</span>n <span class="keyword">&lt;</span> 0<span class="keyword">)</span><span class="keyword">}</span></span> <span class="keyword">(</span>ptr0_is_null <span class="keyword">(</span>$UN<span class="keyword">.</span>cast2ptr <span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
 <span class="keyword">)</span></span> <span class="comment">// end of [stropt_is_none]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> stropt_is_some <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
   $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>bool<span class="keyword">(</span>n&gt;=0<span class="keyword">)</span><span class="keyword">}</span></span> <span class="keyword">(</span>ptr0_isnot_null <span class="keyword">(</span>$UN<span class="keyword">.</span>cast2ptr <span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
@@ -811,7 +811,7 @@ stropt_none () = $UN.cast{stropt(~1)} (the_null_ptr)
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span>
 <span class="staexp"><span class="keyword">}</span></span> stropt_length <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> lemma_stropt_param <span class="keyword">(</span>x<span class="keyword">)</span></span>
 <span class="keyword">in</span>
@@ -822,8 +822,8 @@ stropt_none () = $UN.cast{stropt(~1)} (the_null_ptr)
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span> fprint_val&lt;<span class="staexp">string</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fprint_string</span>
-<span class="prfexp"><span class="keyword">implement</span> fprint_val&lt;<span class="staexp">stropt</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fprint_stropt</span>
+<span class="dynexp"><span class="keyword">implement</span> fprint_val&lt;<span class="staexp">string</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fprint_string</span>
+<span class="dynexp"><span class="keyword">implement</span> fprint_val&lt;<span class="staexp">stropt</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fprint_stropt</span>
 
 <span class="comment">(* ****** ****** *)</span>
 

@@ -71,36 +71,36 @@
 
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_make_sing <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span>
   list_vt_cons<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">,</span> list_vt_nil<span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_make_pair <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span>
   list_vt_cons<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x1<span class="keyword">,</span> list_vt_cons<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x2<span class="keyword">,</span> list_vt_nil<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 print_list_vt <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> fprint_list_vt&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> xs<span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 prerr_list_vt <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> fprint_list_vt&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>stderr_ref<span class="keyword">,</span> xs<span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 fprint_list_vt$sep <span class="keyword">(</span>out<span class="keyword">)</span> <span class="keyword">=</span> fprint_list$sep&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">)</span></span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 fprint_list_vt
   <span class="keyword">(</span>out<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">env</span><span class="keyword">)</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">env</span><span class="keyword">)</span>
 list_vt_iforeach$fwork&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">env</span><span class="keyword">&gt;</span>
   <span class="keyword">(</span>i<span class="keyword">,</span> x<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
@@ -116,12 +116,12 @@ list_vt_iforeach$fwork&lt;<span class="staexp">a</span><span class="keyword">&gt
   <span class="comment">// nothing</span>
 <span class="keyword">end</span></span></span> <span class="comment">// end of [fprint_list_vt]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 fprint_list_vt_sep
   <span class="keyword">(</span>out<span class="keyword">,</span> xs<span class="keyword">,</span> sep<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 fprint_list_vt$sep&lt;<span class="comment">(*none*)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">)</span> <span class="keyword">=</span> fprint_string <span class="keyword">(</span>out<span class="keyword">,</span> sep<span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="keyword">in</span>
@@ -130,25 +130,25 @@ fprint_list_vt$sep&lt;<span class="comment">(*none*)</span><span class="keyword"
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_is_nil <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
   <span class="keyword">case+</span> xs <span class="keyword">of</span> list_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> true <span class="keyword">|</span> _ <span class="keyword">=&gt;&gt;</span> false</span>
 <span class="comment">// end of [list_vt_is_nil]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_is_cons <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
   <span class="keyword">case+</span> xs <span class="keyword">of</span> list_vt_cons _ <span class="keyword">=&gt;</span> true <span class="keyword">|</span> _ <span class="keyword">=&gt;&gt;</span> false</span>
 <span class="comment">// end of [list_vt_is_cons]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_is_sing <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
   <span class="keyword">case+</span> xs <span class="keyword">of</span> list_vt_sing <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> true <span class="keyword">|</span> _ <span class="keyword">=&gt;&gt;</span> false</span>
 <span class="comment">// end of [list_vt_is_sing]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_is_pair <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
   <span class="keyword">case+</span> xs <span class="keyword">of</span> list_vt_pair <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=&gt;</span> true <span class="keyword">|</span> _ <span class="keyword">=&gt;&gt;</span> false</span>
@@ -156,7 +156,7 @@ list_vt_is_pair <span class="keyword">(</span>xs<span class="keyword">)</span> <
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 list_vt_unnil <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val+</span><span class="keyword">~</span>list_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> xs</span> <span class="dynexp"><span class="keyword">in</span> <span class="comment">(*nothing*)</span>
@@ -164,7 +164,7 @@ list_vt_unnil <span class="keyword">(</span>xs<span class="keyword">)</span> <sp
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_uncons <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val+</span><span class="keyword">~</span>list_vt_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=</span> xs</span> <span class="keyword">in</span> xs := xs1<span class="keyword">;</span> x
@@ -172,7 +172,7 @@ list_vt_uncons <span class="keyword">(</span>xs<span class="keyword">)</span> <s
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_length <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -198,11 +198,11 @@ list_vt_length <span class="keyword">(</span>xs<span class="keyword">)</span> <s
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_copy <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x2</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_copylin$copy
   <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_get&lt;<span class="staexp">x2</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp"><span class="keyword">addr@</span></span>x<span class="keyword">)</span></span>
@@ -211,7 +211,7 @@ list_vt_copylin$copy
   <span class="keyword">$effmask_all</span> <span class="keyword">(</span>list_vt_copylin&lt;<span class="staexp">x</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [list_vt_copy]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_copylin
   <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -252,12 +252,12 @@ list_vt_copylin
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_copylin_fun
   <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x2</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_copylin$copy
   <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> x2 <span class="keyword">where</span>
@@ -276,7 +276,7 @@ list_vt_copylin$copy
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_getref_at
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -303,7 +303,7 @@ list_vt_getref_at
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_get_at
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span> x <span class="keyword">where</span>
@@ -327,7 +327,7 @@ list_vt_get_at
 <span class="comment">//</span>
 <span class="keyword">}</span></span> <span class="comment">// end of [list_vt_get_at]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_set_at
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">,</span> i<span class="keyword">,</span> x0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -360,7 +360,7 @@ list_vt_set_at
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_exch_at
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">,</span> i<span class="keyword">,</span> x0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -394,7 +394,7 @@ list_vt_exch_at
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_insert_at
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">,</span> i<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -416,7 +416,7 @@ list_vt_insert_at
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_takeout_at
 <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span> x1 <span class="keyword">where</span>
@@ -439,18 +439,18 @@ __assert <span class="keyword">(</span>xs<span class="keyword">)</span> <span cl
 
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_copy <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
   list_copy&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>$UN<span class="keyword">.</span>list_vt2t<span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_free <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">a2<span class="keyword">:</span>t0p</span><span class="keyword">)</span>
 list_vt_freelin$clear&lt;<span class="staexp">a2</span><span class="keyword">&gt;</span>
   <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -463,10 +463,10 @@ list_vt_freelin$clear&lt;<span class="staexp">a2</span><span class="keyword">&gt
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_freelin$clear <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> gclear_ref <span class="keyword">(</span>x<span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_freelin <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -496,12 +496,12 @@ list_vt_freelin <span class="keyword">(</span>xs<span class="keyword">)</span> <
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_freelin_fun
   <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_freelin$clear
   <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span>
@@ -520,11 +520,11 @@ list_vt_freelin$clear
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_uninitize$clear <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> gclear_ref <span class="keyword">(</span>x<span class="keyword">)</span></span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_uninitize
   <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -555,7 +555,7 @@ list_vt_uninitize
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_append
   <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -588,7 +588,7 @@ list_vt_append
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_extend
   <span class="keyword">(</span>xs<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> list_vt_append&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> cons_vt<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>y<span class="keyword">,</span> nil_vt<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
@@ -596,7 +596,7 @@ list_vt_extend
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_unextend
   <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -634,13 +634,13 @@ list_vt_unextend
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_reverse <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> list_vt_reverse_append&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> list_vt_nil<span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_reverse_append
   <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -670,7 +670,7 @@ list_vt_reverse_append
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_split_at
   <span class="keyword">(</span>xs<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -707,7 +707,7 @@ list_vt_split_at
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_concat
   <span class="keyword">(</span>xss<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -748,7 +748,7 @@ list_vt_concat
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_separate <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -797,14 +797,14 @@ list_vt_separate <span class="keyword">(</span>xs<span class="keyword">)</span> 
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_filter <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 list_vt_filterlin$pred&lt;<span class="staexp">a</span><span class="keyword">&gt;</span>
   <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> list_vt_filter$pred&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 list_vt_filterlin$clear&lt;<span class="staexp">a</span><span class="keyword">&gt;</span>
   <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> topize <span class="keyword">(</span>x<span class="keyword">)</span></span> <span class="dynexp"><span class="keyword">in</span> <span class="comment">(*void*)</span>
@@ -816,7 +816,7 @@ list_vt_filterlin$clear&lt;<span class="staexp">a</span><span class="keyword">&g
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_filterlin <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -861,13 +861,13 @@ list_vt_filterlin <span class="keyword">(</span>xs<span class="keyword">)</span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_filterlin$clear <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> gclear_ref <span class="keyword">(</span>x<span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_app
   <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -887,7 +887,7 @@ list_vt_app
 <span class="comment">//</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [list_vt_app]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_appfree
   <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -908,7 +908,7 @@ list_vt_appfree
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
 list_vt_map
   <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -947,12 +947,12 @@ list_vt_map
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">y</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_map_fun
   <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">y2</span><span class="keyword">}</span>
 list_vt_map$fopr <span class="keyword">(</span>x2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> f <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span><span class="keyword">(</span>&amp;x2<span class="keyword">)</span><span class="keyword">-&gt;</span>y<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">)</span></span> <span class="keyword">in</span> $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>y2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>x2<span class="keyword">)</span><span class="keyword">)</span>
@@ -962,14 +962,14 @@ list_vt_map$fopr <span class="keyword">(</span>x2<span class="keyword">)</span> 
   list_vt_map&lt;<span class="staexp">x</span><span class="keyword">&gt;&lt;</span><span class="staexp">y</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [list_vt_map_fun]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">y</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_map_clo
   <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
 <span class="dynexp"><span class="keyword">val</span> f <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span><span class="keyword">(</span>&amp;x<span class="keyword">)</span> <span class="keyword">-&lt;</span>cloref1<span class="keyword">&gt;</span> y<span class="keyword">}</span></span><span class="keyword">(</span><span class="dynexp"><span class="keyword">addr@</span></span>f<span class="keyword">)</span></span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">y2</span><span class="keyword">}</span>
 list_vt_map$fopr <span class="keyword">(</span>x2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> f <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span><span class="keyword">(</span>&amp;x2<span class="keyword">)</span><span class="keyword">-&lt;</span>cloref1<span class="keyword">&gt;</span>y<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">)</span></span> <span class="keyword">in</span> $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>y2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>x2<span class="keyword">)</span><span class="keyword">)</span>
@@ -979,12 +979,12 @@ list_vt_map$fopr <span class="keyword">(</span>x2<span class="keyword">)</span> 
   list_vt_map&lt;<span class="staexp">x</span><span class="keyword">&gt;&lt;</span><span class="staexp">y</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [list_vt_map_clo]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">y</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_map_cloref
   <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">y2</span><span class="keyword">}</span>
 list_vt_map$fopr <span class="keyword">(</span>x2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> f <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span><span class="keyword">(</span>&amp;x2<span class="keyword">)</span><span class="keyword">-&lt;</span>cloref1<span class="keyword">&gt;</span>y<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">)</span></span> <span class="keyword">in</span> $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>y2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>x2<span class="keyword">)</span><span class="keyword">)</span>
@@ -996,7 +996,7 @@ list_vt_map$fopr <span class="keyword">(</span>x2<span class="keyword">)</span> 
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
 list_vt_mapfree
   <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -1035,12 +1035,12 @@ list_vt_mapfree
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">y</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_mapfree_fun
   <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">y2</span><span class="keyword">}</span>
 list_vt_mapfree$fopr <span class="keyword">(</span>x2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> f <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span><span class="keyword">(</span>&amp;x2&gt;&gt;_?<span class="keyword">)</span><span class="keyword">-&gt;</span>y<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">)</span></span> <span class="keyword">in</span> $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>y2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>x2<span class="keyword">)</span><span class="keyword">)</span>
@@ -1050,7 +1050,7 @@ list_vt_mapfree$fopr <span class="keyword">(</span>x2<span class="keyword">)</sp
   list_vt_mapfree&lt;<span class="staexp">x</span><span class="keyword">&gt;&lt;</span><span class="staexp">y</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [list_vt_mapfree_fun]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">y</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_mapfree_clo
   <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -1058,7 +1058,7 @@ list_vt_mapfree_clo
 <span class="dynexp"><span class="keyword">val</span> f <span class="keyword">=</span>
 $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span><span class="keyword">(</span>&amp;x&gt;&gt;_?<span class="keyword">)</span> <span class="keyword">-&lt;</span>cloref1<span class="keyword">&gt;</span> y<span class="keyword">}</span></span><span class="keyword">(</span><span class="dynexp"><span class="keyword">addr@</span></span>f<span class="keyword">)</span></span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">y2</span><span class="keyword">}</span>
 list_vt_mapfree$fopr <span class="keyword">(</span>x2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> f <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span><span class="keyword">(</span>&amp;x2&gt;&gt;_?<span class="keyword">)</span><span class="keyword">-&lt;</span>cloref1<span class="keyword">&gt;</span>y<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">)</span></span> <span class="keyword">in</span> $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>y2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>x2<span class="keyword">)</span><span class="keyword">)</span>
@@ -1068,12 +1068,12 @@ list_vt_mapfree$fopr <span class="keyword">(</span>x2<span class="keyword">)</sp
   list_vt_mapfree&lt;<span class="staexp">x</span><span class="keyword">&gt;&lt;</span><span class="staexp">y</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [list_vt_mapfree_clo]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">y</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_mapfree_cloref
   <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">y2</span><span class="keyword">}</span>
 list_vt_mapfree$fopr <span class="keyword">(</span>x2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> f <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span><span class="keyword">(</span>&amp;x2&gt;&gt;_?<span class="keyword">)</span><span class="keyword">-&lt;</span>cloref1<span class="keyword">&gt;</span>y<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">)</span></span> <span class="keyword">in</span> $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>y2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>x2<span class="keyword">)</span><span class="keyword">)</span>
@@ -1085,7 +1085,7 @@ list_vt_mapfree$fopr <span class="keyword">(</span>x2<span class="keyword">)</sp
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_foreach
   <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -1094,7 +1094,7 @@ list_vt_foreach
   list_vt_foreach_env&lt;<span class="staexp">x</span><span class="keyword">&gt;&lt;</span><span class="staexp">void</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> env<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [list_vt_foreach]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 list_vt_foreach_env
   <span class="keyword">(</span>xs<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -1136,13 +1136,13 @@ list_vt_foreach_env
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 list_vt_foreach$cont <span class="keyword">(</span>x<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> true</span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_foreach_fun
   <span class="staexp"><span class="keyword">{</span>fe<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -1169,7 +1169,7 @@ loop
   loop <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [list_vt_foreach_fun]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_foreach_funenv
   <span class="staexp"><span class="keyword">{</span>v<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>vt<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>fe<span class="keyword">}</span></span>
@@ -1201,7 +1201,7 @@ list_vt_foreach_funenv
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 list_vt_iforeach
   <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -1210,7 +1210,7 @@ list_vt_iforeach
   list_vt_iforeach_env&lt;<span class="staexp">x</span><span class="keyword">&gt;&lt;</span><span class="staexp">void</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> env<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [list_vt_iforeach]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 list_vt_iforeach_env
   <span class="keyword">(</span>xs<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -1252,7 +1252,7 @@ list_vt_iforeach_env
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">x</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 list_vt_iforeach$cont <span class="keyword">(</span>i<span class="keyword">,</span> x<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> true</span>
 

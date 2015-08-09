@@ -71,7 +71,7 @@
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream2list <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -101,7 +101,7 @@ stream2list <span class="keyword">(</span>xs<span class="keyword">)</span> <span
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_nth_exn
   <span class="keyword">(</span>xs<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -117,7 +117,7 @@ stream_nth_exn
   <span class="keyword">|</span> stream_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp"><span class="keyword">$raise</span> StreamSubscriptExn<span class="keyword">(</span><span class="keyword">)</span></span>
 <span class="keyword">end</span></span> <span class="comment">// end of [stream_nth_exn]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_nth_opt
   <span class="keyword">(</span>xs<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -127,7 +127,7 @@ stream_nth_opt
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_take_exn
   <span class="keyword">(</span>xs<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -170,7 +170,7 @@ stream_take_exn
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_drop_exn
   <span class="keyword">(</span>xs<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -188,7 +188,7 @@ stream_drop_exn
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_append
   <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -210,7 +210,7 @@ stream_append
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_concat <span class="keyword">(</span>xss<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -258,29 +258,29 @@ stream_filter_con
 
 <span class="keyword">in</span> <span class="comment">(* in of [local] *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_filter <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
   <span class="dynexp"><span class="keyword">$delay</span> <span class="keyword">(</span>stream_filter_con&lt;a<span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span></span></span>
 <span class="comment">// end of [stream_filter]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_filter_fun
   <span class="keyword">(</span>xs<span class="keyword">,</span> p<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span>
 stream_filter$pred <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> p<span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="keyword">in</span>
   stream_filter <span class="keyword">(</span>xs<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [stream_filter_fun]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_filter_cloref <span class="keyword">(</span>xs<span class="keyword">,</span> p<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span>
 stream_filter$pred <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> p<span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="keyword">in</span>
@@ -291,7 +291,7 @@ stream_filter$pred <span class="keyword">(</span>x<span class="keyword">)</span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
 stream_map
   <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -312,12 +312,12 @@ stream_map
   aux <span class="keyword">(</span>xs<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [stream_map]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
 stream_map_fun
   <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b2</span><span class="keyword">}</span>
 stream_map$fopr <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>b2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
@@ -325,12 +325,12 @@ stream_map$fopr <span class="keyword">(</span>x<span class="keyword">)</span> <s
   stream_map&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [stream_map_fun]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
 stream_map_cloref
   <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b2</span><span class="keyword">}</span>
 stream_map$fopr <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>b2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
@@ -340,7 +340,7 @@ stream_map$fopr <span class="keyword">(</span>x<span class="keyword">)</span> <s
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
 stream_imap
   <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -366,12 +366,12 @@ stream_imap
   aux <span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> xs<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [stream_imap]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
 stream_imap_fun
   <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b2</span><span class="keyword">}</span>
 stream_imap$fopr
   <span class="keyword">(</span>i<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>b2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>i<span class="keyword">,</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
@@ -380,12 +380,12 @@ stream_imap$fopr
   stream_imap&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [stream_imap_fun]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
 stream_imap_cloref
   <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b2</span><span class="keyword">}</span>
 stream_imap$fopr
   <span class="keyword">(</span>i<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>b2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>i<span class="keyword">,</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
@@ -402,7 +402,7 @@ stream_imap$fopr
 
 <span class="keyword">in</span> <span class="comment">(* in of [local] *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a1<span class="keyword">,</span>a2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
 stream_map2
 <span class="keyword">(</span>
@@ -427,12 +427,12 @@ stream_map2
 
 <span class="keyword">end</span> <span class="comment">// end of [local]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a1<span class="keyword">,</span>a2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
 stream_map2_fun
   <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a12<span class="keyword">,</span>a22</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b2</span><span class="keyword">}</span>
 stream_map2$fopr <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span>
   $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>b2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a1<span class="keyword">}</span></span><span class="keyword">(</span>x1<span class="keyword">)</span><span class="keyword">,</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a2<span class="keyword">}</span></span><span class="keyword">(</span>x2<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
@@ -441,12 +441,12 @@ stream_map2$fopr <span class="keyword">(</span>x1<span class="keyword">,</span> 
   stream_map2&lt;<span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [stream_map2_fun]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a1<span class="keyword">,</span>a2</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
 stream_map2_cloref
   <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">,</span> f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a12<span class="keyword">,</span>a22</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b2</span><span class="keyword">}</span>
 stream_map2$fopr <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span>
   $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>b2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a1<span class="keyword">}</span></span><span class="keyword">(</span>x1<span class="keyword">)</span><span class="keyword">,</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a2<span class="keyword">}</span></span><span class="keyword">(</span>x2<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
@@ -463,7 +463,7 @@ stream_map2$fopr <span class="keyword">(</span>x1<span class="keyword">,</span> 
 
 <span class="keyword">in</span> <span class="comment">(* in of [local] *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_merge
   <span class="keyword">(</span>xs10<span class="keyword">,</span> xs20<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$delay</span>
@@ -491,12 +491,12 @@ stream_merge
 
 <span class="keyword">end</span> <span class="comment">// end of [local]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_merge_fun
   <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">,</span> cmp<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span>
 stream_merge$cmp <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span>
   cmp <span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x1<span class="keyword">)</span><span class="keyword">,</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x2<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
@@ -504,12 +504,12 @@ stream_merge$cmp <span class="keyword">(</span>x1<span class="keyword">,</span> 
   stream_merge <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [stream_merge_fun]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_merge_cloref
   <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">,</span> cmp<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span>
 stream_merge$cmp <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span>
   cmp <span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x1<span class="keyword">)</span><span class="keyword">,</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x2<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
@@ -519,7 +519,7 @@ stream_merge$cmp <span class="keyword">(</span>x1<span class="keyword">,</span> 
 
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_merge$cmp
   <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span> gcompare_val_val&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span></span>
@@ -532,7 +532,7 @@ stream_merge$cmp
 
 <span class="keyword">in</span> <span class="comment">(* in of [local] *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_mergeq
   <span class="keyword">(</span>xs10<span class="keyword">,</span> xs20<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$delay</span>
@@ -562,12 +562,12 @@ stream_mergeq
 
 <span class="keyword">end</span> <span class="comment">// end of [local]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_mergeq_fun
   <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">,</span> cmp<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span>
 stream_mergeq$cmp <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span>
   cmp <span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x1<span class="keyword">)</span><span class="keyword">,</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x2<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
@@ -575,12 +575,12 @@ stream_mergeq$cmp <span class="keyword">(</span>x1<span class="keyword">,</span>
   stream_mergeq <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [stream_mergeq_fun]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_mergeq_cloref
   <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">,</span> cmp<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span>
 stream_mergeq$cmp <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span>
   cmp <span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x1<span class="keyword">)</span><span class="keyword">,</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x2<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
@@ -590,14 +590,14 @@ stream_mergeq$cmp <span class="keyword">(</span>x1<span class="keyword">,</span>
 
 <span class="comment">(* ****** ****** *)</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_mergeq$cmp
   <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span> gcompare_val_val&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_tabulate <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -616,11 +616,11 @@ aux<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_tabulate_fun <span class="keyword">(</span>f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_tabulate$fopr <span class="keyword">(</span>n<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>n<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
@@ -628,11 +628,11 @@ stream_tabulate$fopr <span class="keyword">(</span>n<span class="keyword">)</spa
   stream_tabulate <span class="keyword">(</span><span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [stream_tabulate_fun]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_tabulate_cloref <span class="keyword">(</span>f<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a2</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_tabulate$fopr <span class="keyword">(</span>n<span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>a2<span class="keyword">}</span></span><span class="keyword">(</span>f<span class="keyword">(</span>n<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
@@ -642,17 +642,17 @@ stream_tabulate$fopr <span class="keyword">(</span>n<span class="keyword">)</spa
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 stream_foreach$cont <span class="keyword">(</span>x<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> true</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 stream_foreach <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="keyword">var</span> env<span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">in</span> stream_foreach_env&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">void</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> env<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [stream_foreach]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">env</span><span class="keyword">}</span>
 stream_foreach_env
   <span class="keyword">(</span>xs<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -690,7 +690,7 @@ stream_foreach_env
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 fprint_stream
   <span class="keyword">(</span>out<span class="keyword">,</span> xs<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -698,11 +698,11 @@ fprint_stream
 <span class="keyword">var</span> env<span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="dynexp">0</span>
 <span class="keyword">typedef</span> <span class="staexp">tenv <span class="keyword">=</span> <span class="staexp">int</span></span>
 <span class="comment">//</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 stream_foreach$cont&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">tenv</span><span class="keyword">&gt;</span>
   <span class="keyword">(</span>x<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span>
   <span class="keyword">if</span> n <span class="keyword">&gt;</span> env <span class="keyword">then</span> true <span class="keyword">else</span> false</span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 stream_foreach$fwork&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">tenv</span><span class="keyword">&gt;</span>
   <span class="keyword">(</span>x<span class="keyword">,</span> env<span class="keyword">)</span> <span class="keyword">=</span>
 <span class="keyword">{</span>
@@ -718,7 +718,7 @@ stream_foreach$fwork&lt;<span class="staexp">a</span><span class="keyword">&gt;&
   stream_foreach_env&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">tenv</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> env<span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [fprint_stream]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 fprint_stream$sep <span class="keyword">(</span>out<span class="keyword">)</span> <span class="keyword">=</span> fprint_string <span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">", "</span><span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>

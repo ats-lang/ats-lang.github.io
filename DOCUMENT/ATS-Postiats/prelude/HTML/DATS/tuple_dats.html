@@ -67,16 +67,16 @@
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 fprint_tup$beg&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">)</span> <span class="keyword">=</span> fprint_string <span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"("</span><span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 fprint_tup$end&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">)</span> <span class="keyword">=</span> fprint_string <span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">")"</span><span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 fprint_tup$sep&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">)</span> <span class="keyword">=</span> fprint_string <span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">", "</span><span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a0<span class="keyword">,</span>a1</span><span class="keyword">}</span>
 fprint_tupval2
   <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -89,13 +89,13 @@ fprint_tupval2
   <span class="comment">// nothing</span>
 <span class="keyword">end</span></span></span> <span class="comment">// end of [fprint_tupval2]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">)</span>
 fprint_val&lt;<span class="staexp">tup</span><span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> fprint_tupval2&lt;<span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a0<span class="keyword">,</span>a1<span class="keyword">,</span>a2</span><span class="keyword">}</span>
 fprint_tupval3
   <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -110,13 +110,13 @@ fprint_tupval3
   <span class="comment">// nothing</span>
 <span class="keyword">end</span></span></span> <span class="comment">// end of [fprint_tupval3]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">)</span>
 fprint_val&lt;<span class="staexp">tup</span><span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> fprint_tupval3&lt;<span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a0<span class="keyword">,</span>a1<span class="keyword">,</span>a2<span class="keyword">,</span>a3</span><span class="keyword">}</span>
 fprint_tupval4
   <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -133,13 +133,13 @@ fprint_tupval4
   <span class="comment">// nothing</span>
 <span class="keyword">end</span></span></span> <span class="comment">// end of [fprint_tupval4]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">,</span><span class="staexp">a3</span><span class="keyword">)</span>
 fprint_val&lt;<span class="staexp">tup</span><span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">,</span><span class="staexp">a3</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> fprint_tupval4&lt;<span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">,</span><span class="staexp">a3</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a0<span class="keyword">,</span>a1</span><span class="keyword">}</span>
 fprint_tupref2
   <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -152,13 +152,13 @@ fprint_tupref2
   <span class="comment">// nothing</span>
 <span class="keyword">end</span></span></span> <span class="comment">// end of [fprint_tupref2]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">)</span>
 fprint_ref&lt;<span class="staexp">tup</span><span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> fprint_tupref2&lt;<span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a0<span class="keyword">,</span>a1<span class="keyword">,</span>a2</span><span class="keyword">}</span>
 fprint_tupref3
   <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -173,13 +173,13 @@ fprint_tupref3
   <span class="comment">// nothing</span>
 <span class="keyword">end</span></span></span> <span class="comment">// end of [fprint_tupref3]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">)</span>
 fprint_ref&lt;<span class="staexp">tup</span><span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> fprint_tupref3&lt;<span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a0<span class="keyword">,</span>a1<span class="keyword">,</span>a2<span class="keyword">,</span>a3</span><span class="keyword">}</span>
 fprint_tupref4
   <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
@@ -196,13 +196,13 @@ fprint_tupref4
   <span class="comment">// nothing</span>
 <span class="keyword">end</span></span></span> <span class="comment">// end of [fprint_tupref4]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">,</span><span class="staexp">a3</span><span class="keyword">)</span>
 fprint_ref&lt;<span class="staexp">tup</span><span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">,</span><span class="staexp">a3</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> fprint_tupref4&lt;<span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">,</span><span class="staexp">a3</span><span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a0<span class="keyword">,</span>a1</span><span class="keyword">}</span>
 tupval2_compare <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val</span> sgn0 <span class="keyword">=</span> gcompare_val_val&lt;<span class="staexp">a0</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="dynexp"><span class="keyword">.0</span></span><span class="keyword">,</span> y<span class="dynexp"><span class="keyword">.0</span></span><span class="keyword">)</span></span>
@@ -210,13 +210,13 @@ tupval2_compare <span class="keyword">(</span>x<span class="keyword">,</span> y<
   <span class="keyword">if</span> sgn0 != <span class="dynexp">0</span> <span class="keyword">then</span> sgn0 <span class="keyword">else</span> gcompare_val_val&lt;<span class="staexp">a1</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="dynexp"><span class="keyword">.1</span></span><span class="keyword">,</span> y<span class="dynexp"><span class="keyword">.1</span></span><span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [tupval2_compare]  </span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">)</span>
 gcompare_val_val&lt;<span class="staexp">tup</span><span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> tupval2_compare&lt;<span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a0<span class="keyword">,</span>a1<span class="keyword">,</span>a2</span><span class="keyword">}</span>
 tupval3_compare <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -235,13 +235,13 @@ sgn0 != <span class="dynexp">0</span>
 <span class="comment">//</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [tupval3_compare]</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">)</span>
 gcompare_val_val&lt;<span class="staexp">tup</span><span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> tupval3_compare&lt;<span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span></span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a0<span class="keyword">,</span>a1<span class="keyword">,</span>a2<span class="keyword">,</span>a3</span><span class="keyword">}</span>
 tupval4_compare <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -267,7 +267,7 @@ sgn0 != <span class="dynexp">0</span>
 <span class="comment">//</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [tupval4_compare]  </span>
 
-<span class="prfexp"><span class="keyword">implement</span>
+<span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">,</span><span class="staexp">a3</span><span class="keyword">)</span>
 gcompare_val_val&lt;<span class="staexp">tup</span><span class="keyword">(</span><span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">,</span><span class="staexp">a3</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> tupval4_compare&lt;<span class="staexp">a0</span><span class="keyword">,</span><span class="staexp">a1</span><span class="keyword">,</span><span class="staexp">a2</span><span class="keyword">,</span><span class="staexp">a3</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span></span>
 

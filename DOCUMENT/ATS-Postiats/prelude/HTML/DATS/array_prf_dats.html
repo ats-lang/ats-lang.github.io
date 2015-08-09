@@ -67,7 +67,7 @@
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="dynexp"><span class="keyword">primplmnt</span>
+<span class="prfexp"><span class="keyword">primplmnt</span>
 array_v_unnil_nil
   <span class="staexp"><span class="keyword">{</span>a1<span class="keyword">,</span>a2<span class="keyword">}</span></span><span class="keyword">(</span>pf<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -81,7 +81,7 @@ array_v_unnil_nil
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="dynexp"><span class="keyword">primplmnt</span>
+<span class="prfexp"><span class="keyword">primplmnt</span>
 array_v_sing
   <span class="keyword">(</span>pfat<span class="keyword">)</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
@@ -90,7 +90,7 @@ array_v_cons<span class="keyword">(</span>pfat<span class="keyword">,</span> arr
 <span class="comment">//</span>
 <span class="keyword">)</span></span> <span class="comment">(* end of [array_v_sing] *)</span>
 
-<span class="dynexp"><span class="keyword">primplmnt</span>
+<span class="prfexp"><span class="keyword">primplmnt</span>
 array_v_unsing
   <span class="keyword">(</span>pfarr<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -107,7 +107,7 @@ array_v_unsing
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="dynexp"><span class="keyword">primplmnt</span>
+<span class="prfexp"><span class="keyword">primplmnt</span>
 array_v_split
   <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>pf_arr<span class="keyword">)</span> <span class="keyword">=</span>
   split <span class="keyword">(</span>pf_arr<span class="keyword">)</span> <span class="keyword">where</span>
@@ -143,14 +143,14 @@ split
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="dynexp"><span class="keyword">primplmnt</span>
+<span class="prfexp"><span class="keyword">primplmnt</span>
 array_v_split_at
   <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span><span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> i<span class="keyword">)</span> <span class="keyword">=</span> array_v_split<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span><span class="keyword">(</span>pf<span class="keyword">)</span></span>
 <span class="comment">// end of [array_v_split_at]</span>
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="dynexp"><span class="keyword">primplmnt</span>
+<span class="prfexp"><span class="keyword">primplmnt</span>
 array_v_unsplit
   <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>pf1arr<span class="keyword">,</span> pf2arr<span class="keyword">)</span> <span class="keyword">=</span>
   unsplit <span class="keyword">(</span>pf1arr<span class="keyword">,</span> pf2arr<span class="keyword">)</span> <span class="keyword">where</span>
@@ -191,7 +191,7 @@ unsplit
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="dynexp"><span class="keyword">primplmnt</span>
+<span class="prfexp"><span class="keyword">primplmnt</span>
 array_v_extend
   <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>pf1arr<span class="keyword">,</span> pf2at<span class="keyword">)</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
@@ -203,7 +203,7 @@ array_v_unsplit
 <span class="comment">//</span>
 <span class="keyword">)</span></span> <span class="comment">(* end of [array_v_extend] *)</span>
 
-<span class="dynexp"><span class="keyword">primplmnt</span>
+<span class="prfexp"><span class="keyword">primplmnt</span>
 array_v_unextend
   <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>pfarr<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -216,7 +216,7 @@ array_v_unextend
 
 <span class="comment">(* ****** ****** *)</span>
 
-<span class="dynexp"><span class="keyword">primplmnt</span>
+<span class="prfexp"><span class="keyword">primplmnt</span>
 array_v_takeout
   <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span> <span class="keyword">(</span>pfarr<span class="keyword">)</span> <span class="keyword">=</span>
   takeout<span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">}</span></span><span class="keyword">(</span>pfarr<span class="keyword">)</span> <span class="keyword">where</span>
