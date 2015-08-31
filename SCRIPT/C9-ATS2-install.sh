@@ -65,20 +65,30 @@ sudo apt-get install -y libjson-c-dev
 
 ######
 #
-# Building patsolve_z3
+# For parsing constrants 
 #
 (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve && time make DATS_C)
-(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve-z3 && time make build && mv -f patsolve_z3 ${PATSHOME}/bin)
+#
+# For building patsolve_z3
+# (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve-z3 && time make build && mv -f patsolve_z3 ${PATSHOME}/bin)
 #
 ######
 #
-# Building atscc2js
-# Building atscc2erl
-# Building atscc2php
+# For parsing C code
+# generated from ATS source
 #
 (cd ATS2-contrib/projects/MEDIUM/CATS-parsemit && time make DATS_C)
+#
+# For building atscc2js
+#
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2js && time make build && mv -f atscc2js ${PATSHOME}/bin)
+#
+# For building atscc2erl
+#
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && time make build && mv -f atscc2erl ${PATSHOME}/bin)
+#
+# For building atscc2php
+#
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2php && time make build && mv -f atscc2php ${PATSHOME}/bin)
 #
 ######
