@@ -76,6 +76,10 @@ sudo apt-get install -y libjson-c-dev
 # (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
 #
 ######
+
+sudo apt-get install -y erlang
+
+######
 #
 # For parsing C code
 # generated from ATS source
@@ -92,11 +96,9 @@ sudo apt-get install -y libjson-c-dev
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && time make build)
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && mv -f atscc2erl ${PATSHOME}/bin)
 #
-# For building atscc2php
-#
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2php && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2php && mv -f atscc2php ${PATSHOME}/bin)
-#
 ######
 #
-###### end of [C9-ATS2-install.sh] ######
+(cd ATS2-contrib/contrib/libatscc/libatscc2js && time make all && time make all_in_one)
+(cd ATS2-contrib/contrib/libatscc/libatscc2erl && time make all && time make all_in_one)
+#
+###### end of [C9-ATS2-install-cs520.sh] ######
