@@ -5,9 +5,7 @@
 # A shell script for
 # installing ATS2 + ATS2-contrib
 #
-######
-#
-# The URL for this script: http://git.io/vIFPF
+# This is mainly for teaching CS520
 #
 ######
 #

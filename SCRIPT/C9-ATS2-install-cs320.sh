@@ -5,6 +5,8 @@
 # A shell script for
 # installing ATS2 + ATS2-contrib
 #
+# This is mainly for teaching CS320
+#
 ######
 #
 # Author: Hongwei Xi
@@ -65,7 +67,7 @@ sudo apt-get install -y libjson-c-dev
 #
 # For parsing constrants 
 #
-(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve && time make DATS_C)
+# (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve && time make DATS_C)
 #
 # For building patsolve_z3
 # (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve-z3 && time make build)
@@ -85,14 +87,14 @@ sudo apt-get install -y libjson-c-dev
 #
 # For building atscc2erl
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && mv -f atscc2erl ${PATSHOME}/bin)
+# (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && time make build)
+# (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && mv -f atscc2erl ${PATSHOME}/bin)
 #
 # For building atscc2php
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2php && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2php && mv -f atscc2php ${PATSHOME}/bin)
+# (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2php && time make build)
+# (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2php && mv -f atscc2php ${PATSHOME}/bin)
 #
 ######
 #
-###### end of [C9-ATS2-install.sh] ######
+###### end of [C9-ATS2-install-cs320.sh] ######
