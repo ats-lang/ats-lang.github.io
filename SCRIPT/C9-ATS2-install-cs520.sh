@@ -88,15 +88,15 @@ sudo apt-get install -y erlang
 #
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2js && time make build)
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2js && mv -f atscc2js ${PATSHOME}/bin)
+(cd ATS2-contrib/contrib/libatscc/libatscc2js && time make all && time make all_in_one)
 #
 # For building atscc2erl
 #
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && time make build)
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && mv -f atscc2erl ${PATSHOME}/bin)
+(cd ATS2-contrib/contrib/libatscc/libatscc2erl && time make all && time make all_in_one)
+(cd ATS2-contrib/contrib/libatscc/libatscc2erl/Session && time make all && time make all_in_one)
 #
 ######
-#
-(cd ATS2-contrib/contrib/libatscc/libatscc2js && time make all && time make all_in_one)
-(cd ATS2-contrib/contrib/libatscc/libatscc2erl && time make all && time make all_in_one)
 #
 ###### end of [C9-ATS2-install-cs520.sh] ######
