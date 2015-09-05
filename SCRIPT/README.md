@@ -1,9 +1,10 @@
-# Miscellaneous Scripts
+# Scripts for ATS2
 
 ## C9-ATS2-install.sh
 
 This script is for installing ATS2 and ATS2-contrib under a
-distrbution of Linux.
+distrbution of Linux. It is primarily used on an Ubuntu box
+provided by [Cloud-9](http://c9.io).
 
 ## C9-ATS2-install-cs320.sh
 
