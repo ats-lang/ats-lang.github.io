@@ -1,5 +1,9 @@
 # Scripts for ATS2
 
+## [Homebrew for ATS2](https://github.com/Homebrew/homebrew/blob/master/Library/Formula/ats2-postiats.rb)
+
+This script is for installing ATS2 under a Mac OS. It is maintained externally.
+
 ## [C9-ATS2-install.sh](http://ats-lang.github.io/SCRIPT/C9-ATS2-install.sh)
 
 This script is for installing ATS2 and ATS2-contrib under a
@@ -16,6 +20,8 @@ mainly for teaching BU-CAS-CS-320.
 This script is a variant of C9-ATS2-install.sh. It is tailored
 mainly for teaching BU-CAS-CS-520.
 
-## [Homebrew script for ATS2](https://github.com/Homebrew/homebrew/blob/master/Library/Formula/ats2-postiats.rb)
+## [Sortsmill-Gentoo-Overlay](https://bitbucket.org/sortsmill/sortsmill-gentoo-overlay)
 
-This script is for installing ATS2 under a Mac OS. It is maintained externally.
+Please see a brief description of this overlay
+[on-line](https://groups.google.com/forum/?fromgroups#!topic/ats-lang-users/JqX9zV2uexk).
+It is maintained externally.
