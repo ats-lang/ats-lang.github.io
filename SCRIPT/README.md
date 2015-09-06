@@ -23,10 +23,7 @@ mainly for teaching BU-CAS-CS-520.
 ## [Sortsmill-Gentoo-Overlay](https://bitbucket.org/sortsmill/sortsmill-gentoo-overlay)
 
 The sortsmill overlay for Gentoo is a collection of ebuilds related in
-some way to font development. Please see a brief description of this overlay
-[on-line](https://groups.google.com/forum/?fromgroups#!topic/ats-lang-users/JqX9zV2uexk).
-
-It is a Mercurial
+some way to font development. It is a Mercurial
 [repository](https://bitbucket.org/sortsmill/sortsmill-gentoo-overlay) and
 is listed by "layman -L" under the name sortsmill. So you can install it,
 if you are using layman, with the command
@@ -59,3 +56,6 @@ special file format like what you find in rpm and dpkg packages.)
 (Gentoo users may be curious about my ebuild-writing style. It is based on
 what is common practice in Exherbo Linux, though their repository layout
 and script conventions are different.)
+
+The above brief description of the sortsmill overlay is taken
+[on-line](https://groups.google.com/forum/?fromgroups#!topic/ats-lang-users/JqX9zV2uexk).
