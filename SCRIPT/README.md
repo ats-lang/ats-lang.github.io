@@ -58,4 +58,4 @@ what is common practice in Exherbo Linux, though their repository layout
 and script conventions are different.)
 
 The above brief description of the sortsmill overlay is taken
-[on-line](https://groups.google.com/forum/?fromgroups#!topic/ats-lang-users/JqX9zV2uexk).
+[on-line](https://groups.google.com/forum/?fromgroups#!topic/ats-lang-users/Jj79enV9MpY).
