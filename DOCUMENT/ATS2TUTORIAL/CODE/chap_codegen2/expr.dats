@@ -80,7 +80,7 @@ val () = fprintln! (stdout_ref, "E = ", E)
 val () = fprintln! (stdout_ref, "datcon(E) = ", datcon_expr(E))
 val () = fprintln! (stdout_ref, "datcontag(E) = ", datcontag_expr(E))
 //
-val E2 = Sub(E, E)
+val E2 = Div(Int(1), Sub(E, E))
 val () = fprintln! (stdout_ref, "E2 = ", E2)
 val () = fprintln! (stdout_ref, "datcon(E2) = ", datcon_expr(E2))
 val () = fprintln! (stdout_ref, "datcontag(E2) = ", datcontag_expr(E2))
