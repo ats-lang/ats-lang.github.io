@@ -20,7 +20,7 @@ mainly for teaching BU-CAS-CS-320.
 This script is a variant of C9-ATS2-install.sh. It is tailored
 mainly for teaching BU-CAS-CS-520.
 
-## [C9-ATS2-install-cs520-2.sh](http://ats-lang.github.io/SCRIPT/C9-ATS2-install-cs520-2.sh)
+## [C9-ATS2-install-cs520-z3.sh](http://ats-lang.github.io/SCRIPT/C9-ATS2-install-cs520-z3.sh)
 
 In addition to C9-ATS2-install-cs520.sh, this script installs patsolve_z3,
 a Z3-based external constraint-solver for handling ATS2-typechecking constraints.
