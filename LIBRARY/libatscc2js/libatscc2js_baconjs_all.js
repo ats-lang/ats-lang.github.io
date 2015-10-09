@@ -1325,3 +1325,310 @@ _057_home_057_hwxi_057_Research_057_ATS_055_Postiats_055_contrib_057_contrib_057
 /* ****** ****** */
 
 /* end-of-compilation-unit */
+/*
+******
+*
+* HX-2015-04:
+* for JavaScript code
+* translated from ATS
+*
+******
+*/
+
+/*
+******
+* beg of [baconjs_cats.js]
+******
+*/
+
+/* ****** ****** */
+//
+function
+ats2js_bacon_Bacon_once(x) { return Bacon.once(x); }
+function
+ats2js_bacon_Bacon_never() { return Bacon.never(); }
+//
+function
+ats2js_bacon_Bacon_later(delay, x) { return Bacon.later(delay, x); }
+//
+function
+ats2js_bacon_Bacon_interval
+  (int, x) { return Bacon.interval(int, x); }
+//
+function
+ats2js_bacon_Bacon_repeatedly
+  (int, xs) { return Bacon.repeatedly(int, xs); }
+//
+function
+ats2js_bacon_Bacon_sequentially
+  (int, xs) { return Bacon.sequentially(int, xs); }
+//
+function
+ats2js_bacon_Bacon_repeat(fopr)
+{
+  return Bacon.repeat(function(i){return ats2jspre_cloref1_app(fopr, i);});
+}
+//
+/* ****** ****** */
+//
+function
+ats2js_bacon_EStream_map(xs, f)
+{
+  return ats2js_bacon_Observable_map(xs, f);
+}
+function
+ats2js_bacon_Property_map(xs, f)
+{
+  return ats2js_bacon_Observable_map(xs, f);
+}
+function
+ats2js_bacon_Observable_map(xs, f)
+{
+  return xs.map(
+    function(x){return ats2jspre_cloref1_app(f, x);}
+  ); // end of [return]
+}
+//
+/* ****** ****** */
+//
+function
+ats2js_bacon_EStream_filter(xs, f)
+{
+  return ats2js_bacon_Observable_filter(xs, f);
+}
+function
+ats2js_bacon_Property_filter(xs, f)
+{
+  return ats2js_bacon_Observable_filter(xs, f);
+}
+function
+ats2js_bacon_Observable_filter(xs, f)
+{
+  return xs.filter(
+    function(x){return ats2jspre_cloref1_app(f, x);}
+  ); // end of [return]
+}
+//
+/* ****** ****** */
+//
+function
+ats2js_bacon_EStream_map_property(xs, ys) { return xs.map(ys); }
+function
+ats2js_bacon_EStream_filter_property(xs, bs) { return xs.filter(bs); }
+//
+/* ****** ****** */
+
+function
+ats2js_bacon_EStream_scan(xs, ini, f)
+{
+  return xs.scan(
+    ini, function(y, x){return ats2jspre_cloref2_app(f, y, x);}
+  ); // end of [return]
+}
+
+/* ****** ****** */
+//
+function
+ats2js_bacon_EStream_merge2
+  (xs1, xs2) { return Bacon.mergeAll(xs1, xs2); }
+//
+function
+ats2js_bacon_EStream_merge3
+  (xs1, xs2, xs3) { return Bacon.mergeAll(xs1, xs2, xs3); }
+//
+/* ****** ****** */
+
+function
+ats2js_bacon_Bacon_combineWith2(xs1, xs2, f)
+{
+  var
+  theCombined =
+  Bacon.combineWith(
+    function(x1,x2){ return ats2jspre_cloref2_app(f, x1, x2); },
+    xs1, xs2
+  ) // end of [var]
+  return theCombined;
+}
+
+function
+ats2js_bacon_Bacon_combineWith3(xs1, xs2, xs3, f)
+{
+  var
+  theCombined =
+  Bacon.combineWith(
+    function(x1,x2,x3){ return ats2jspre_cloref3_app(f, x1, x2, x3); },
+    xs1, xs2, xs3
+  ) // end of [var]
+  return theCombined;
+}
+
+/* ****** ****** */
+//
+function
+ats2js_bacon_EStream_toProperty(xs) { return xs.toProperty(); }
+function
+ats2js_bacon_EStream_toProperty_init(xs, x0) { return xs.toProperty(x0); }
+//
+function
+ats2js_bacon_Property_toEventStream(xs) { return xs.toEventStream(); }
+//
+/* ****** ****** */
+
+function
+ats2js_bacon_EStream_onValue(xs, f)
+{
+  return ats2js_bacon_Observable_onValue(xs, f);
+}
+function
+ats2js_bacon_Property_onValue(xs, f)
+{
+  return ats2js_bacon_Observable_onValue(xs, f);
+}
+function
+ats2js_bacon_Observable_onValue(xs, f)
+{
+  return xs.onValue(function(x){return ats2jspre_cloref1_app(f, x);});
+}
+
+/* ****** ****** */
+
+function
+ats2js_bacon_EStream_subscribe(xs, f)
+{
+  return ats2js_bacon_Observable_subscribe(xs, f);
+}
+function
+ats2js_bacon_Property_subscribe(xs, f)
+{
+  return ats2js_bacon_Observable_subscribe(xs, f);
+}
+function
+ats2js_bacon_Observable_subscribe(xs, f)
+{
+  return xs.subscribe(function(x){return ats2jspre_cloref1_app(f, x);});
+}
+
+/* ****** ****** */
+//
+function
+ats2js_bacon_Property_startWith
+  (xs, x0) { return xs.startWith(x0); }
+//
+/* ****** ****** */
+
+function
+ats2js_bacon_EStream_doAction(xs, f0)
+{
+  return ats2js_bacon_Observable_doAction(xs, f0);
+}
+function
+ats2js_bacon_Property_doAction(xs, f0)
+{
+  return ats2js_bacon_Observable_doAction(xs, f0);
+}
+function
+ats2js_bacon_Observable_doAction(xs, f0)
+{
+  return xs.doAction(function(x){ats2jspre_cloref1_app(f0, x); return;});
+}
+
+/* ****** ****** */
+//
+function
+ats2js_bacon_Property_sampledBy_estream
+  (xs, ys) { return xs.sampledBy(ys); }
+function
+ats2js_bacon_Property_sampledBy_estream_cfun(xs, ys, f)
+{
+  return xs.sampledBy(
+    ys,function(x,y){return ats2jspre_cloref2_app(f,x,y);}
+  ); // end of [return]
+}
+//
+function
+ats2js_bacon_Property_sampledBy_property
+  (xs, ys) { return xs.sampledBy(ys); }
+function
+ats2js_bacon_Property_sampledBy_property_cfun(xs, ys, f)
+{
+  return xs.sampledBy(
+    ys,function(x,y){return ats2jspre_cloref2_app(f,x,y);}
+  ); // end of [return]
+}
+//
+/* ****** ****** */
+//
+function
+ats2js_bacon_EStream_zip_estream_cfun(xs, ys, f) 
+{
+  return xs.zip(ys,function(x,y){return ats2jspre_cloref2_app(f,x,y);});
+}
+//
+/* ****** ****** */
+
+/* end of [baconjs_cats.js] */
+/*
+**
+** The JavaScript code is generated by atscc2js
+** The starting compilation time is: 2015-10-9:  9h:58m
+**
+*/
+
+function
+__patsfun_1__closurerize(env0, env1)
+{
+  return [function(cenv, arg0) { return __patsfun_1(cenv[1], cenv[2], arg0); }, env0, env1];
+}
+
+
+function
+ats2js_bacon_ext_EStream_zip_stream_cfun(arg0, arg1, arg2, arg3)
+{
+//
+// knd = 0
+  var tmpret0
+  var tmp1
+  var tmplab, tmplab_js
+//
+  // __patsflab_EStream_zip_stream_cfun
+  tmp1 = ats2jspre_stream2cloref_last(arg1, arg2);
+  tmpret0 = ats2js_bacon_EStream_map(arg0, __patsfun_1__closurerize(arg3, tmp1));
+  return tmpret0;
+} // end-of-function
+
+
+function
+__patsfun_1(env0, env1, arg0)
+{
+//
+// knd = 0
+  var tmpret2
+  var tmp3
+  var tmplab, tmplab_js
+//
+  // __patsflab___patsfun_1
+  tmp3 = env1[0](env1);
+  tmpret2 = env0[0](env0, arg0, tmp3);
+  return tmpret2;
+} // end-of-function
+
+
+function
+_057_home_057_hwxi_057_Research_057_ATS_055_Postiats_055_contrib_057_contrib_057_libatscc_057_libatscc2js_057_DATS_057_Bacon_056_js_057_baconjs_ext_056_dats__dynload()
+{
+//
+// knd = 0
+  var tmplab, tmplab_js
+//
+  // ATSdynload()
+  // ATSdynloadflag_ext(_057_home_057_hwxi_057_Research_057_ATS_055_Postiats_055_contrib_057_contrib_057_libatscc_057_libatscc2js_057_DATS_057_Bacon_056_js_057_baconjs_ext_056_dats__dynloadflag(36))
+  if(ATSCKiseqz(_057_home_057_hwxi_057_Research_057_ATS_055_Postiats_055_contrib_057_contrib_057_libatscc_057_libatscc2js_057_DATS_057_Bacon_056_js_057_baconjs_ext_056_dats__dynloadflag)) {
+    _057_home_057_hwxi_057_Research_057_ATS_055_Postiats_055_contrib_057_contrib_057_libatscc_057_libatscc2js_057_DATS_057_Bacon_056_js_057_baconjs_ext_056_dats__dynloadflag = 1 ; // flag is set
+  } // endif
+  return/*_void*/;
+} // end-of-function
+
+
+/* ****** ****** */
+
+/* end-of-compilation-unit */
