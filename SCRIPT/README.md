@@ -7,7 +7,7 @@ This script is for installing ATS2 under a Mac OS. It is maintained externally.
 ## [C9-ATS2-install.sh](http://ats-lang.github.io/SCRIPT/C9-ATS2-install.sh)
 
 This script is for installing ATS2 and ATS2-contrib under a
-distrbution of Linux. It is primarily used on an Ubuntu box
+distrbution of Linux. It is primarily used in an Ubuntu box
 provided by [Cloud-9](http://c9.io).
 
 ## [C9-ATS2-install-cs320.sh](http://ats-lang.github.io/SCRIPT/C9-ATS2-install-cs320.sh)
