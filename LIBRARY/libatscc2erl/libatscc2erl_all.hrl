@@ -1,6 +1,6 @@
 %%
 %% Time of Generation:
-%% Tue Jul 14 15:34:15 EDT 2015
+%% Sun Oct 25 12:18:11 EDT 2015
 %%
 
 %%
@@ -31,7 +31,12 @@
 
 %% ****** ****** %%
 
+-define(ATSCKpat_string(X, S), X =:= S).
+
+%% ****** ****** %%
+
 -define(ATSCKpat_con0(X, TAG), X =:= TAG).
+-define(ATSCKpat_con1(X, TAG), (is_tuple(X) andalso (element(1, X) =:= TAG))).
 
 %% ****** ****** %%
 
@@ -76,11 +81,32 @@ atspre_lazy2cloref(Arg) -> exit('atspre_lazy2cloref').
 %%
 %% ****** ****** %%
 
-ats2erlpre_cloref0_app(F) -> ?ATSfunclo_clo(F)(F).
-ats2erlpre_cloref1_app(F, X1) -> ?ATSfunclo_clo(F)(F, X1).
-ats2erlpre_cloref2_app(F, X1, X2) -> ?ATSfunclo_clo(F)(F, X1, X2).
-ats2erlpre_cloref3_app(F, X1, X2, X3) -> ?ATSfunclo_clo(F)(F, X1, X2, X3).
+%%
+%% HX-2015-10-25:
+%% Commenting out
+%% implementation in basics.dats
+%%
+ats2erlpre_cloref0_app
+  (F) -> ?ATSfunclo_clo(F)(F).
+ats2erlpre_cloref1_app
+  (F, X1) -> ?ATSfunclo_clo(F)(F, X1).
+ats2erlpre_cloref2_app
+  (F, X1, X2) -> ?ATSfunclo_clo(F)(F, X1, X2).
+ats2erlpre_cloref3_app
+  (F, X1, X2, X3) -> ?ATSfunclo_clo(F)(F, X1, X2, X3).
+%%
 
+%% ****** ****** %%
+%%
+ats2erlpre_cloref2fun0(F) ->
+  fun() -> ats2erlpre_cloref0_app(F) end.
+ats2erlpre_cloref2fun1(F) ->
+  fun(X1) -> ats2erlpre_cloref1_app(F, X1) end.
+ats2erlpre_cloref2fun2(F) ->
+  fun(X1, X2) -> ats2erlpre_cloref2_app(F, X1, X2) end.
+ats2erlpre_cloref2fun3(F) ->
+  fun(X1, X2, X3) -> ats2erlpre_cloref3_app(F, X1, X2, X3) end.
+%%
 %% ****** ****** %%
 
 %% end of [basics_cats.hrl] %%
@@ -344,6 +370,9 @@ ats2erlpre_print_double(X) -> io:format("~f", [X]).
 ats2erlpre_print_string(X) -> io:format("~s", [X]).
 %%
 %%fun%%
+ats2erlpre_print_ERLval(X) -> io:format("~p", [X]).
+%%
+%%fun%%
 ats2erlpre_print_newline() -> io:format("~n", []).
 %%
 %% ****** ****** %%
@@ -385,7 +414,7 @@ ats2erlpre_ref_server_proc(X) ->
     {Client, set_elt, Y} ->
       Client ! {self(), atscc2erl_void}, ats2erlpre_ref_server_proc(Y);
     {Client, exch_elt, Y} ->
-      Client ! {self(), Y}, ats2erlpre_ref_server_proc(Y);
+      Client ! {self(), X}, ats2erlpre_ref_server_proc(Y);
     {Client, takeout} ->
       Client ! {self(), X}, ats2erlpre_ref_server_proc2()
   end.
@@ -472,10 +501,175 @@ ats2erlpre_ref_vt_addback(Server, Y) ->
 %% ****** ****** %%
 
 %% end of [reference_cats.hrl] %%
+%%
+%%%%%%
+%
+% HX-2015-09:
+% for Erlang code
+% translated from ATS
+%
+%%%%%%
+%%
+
+%%
+%%%%%%
+% beg of [file_cats.hrl]
+%%%%%%
+%%
+
+%% ****** ****** %%
+%%fun%%
+ats2erlibc_filename_all2string
+  (X) ->
+  case X of
+    _ when is_list(X) -> X;
+    _ when is_binary(X) -> binary:bin_to_list(X)
+  end.
+%%
+%% ****** ****** %%
+
+%%fun%%
+ats2erlibc_file_print_filename(X) -> io:format("~p", [X]).
+%%fun%%
+ats2erlibc_file_print_filename_all(X) -> io:format("~p", [X]).
+
+%% ****** ****** %%
+%%
+%%fun%%
+ats2erlibc_file_ats2get_cwd_0_opt
+  () ->
+  case file:get_cwd() of
+    {ok, Filename} ->
+      ats2erlpre_option_some(Filename)
+    ; %% Some(Filename)
+    {error, _Reason_} ->
+      ats2erlpre_option_none() %% None((*void*))
+  end.
+%%fun%%
+ats2erlibc_file_ats2get_cwd_1_opt
+  (Drive) ->
+  case file:get_cwd(Drive) of
+    {ok, Filename} ->
+      ats2erlpre_option_some(Filename)
+    ; %% Some(Filename)
+    {error, _Reason_} ->
+      ats2erlpre_option_none() %% None((*void*))
+  end.
+%%
+%% ****** ****** %%
+%%
+%%fun%%
+ats2erlibc_file_ats2del_dir_opt
+  (Dir) ->
+  case
+  file:del_dir(Dir)
+  of %% of-case
+    ok -> true; {error, _Reason_} -> false
+  end. %% end-case
+%%
+%% ****** ****** %%
+%%
+%%fun%%
+ats2erlibc_file_ats2list_dir_opt
+  (Dir) ->
+  case
+  file:list_dir(Dir)
+  of %% case
+    {ok, Filenames} ->
+      ats2erlpre_option_some(Filenames)
+    ; %% Some(Filename)
+    {error, _Reason_} ->
+      ats2erlpre_option_none() %% None((*void*))
+  end.
+%%
+%%fun%%
+ats2erlibc_file_ats2list_dir_all_opt
+  (Dir) ->
+  case
+  file:list_dir_all(Dir)
+  of %% case
+    {ok, Filenames} ->
+      ats2erlpre_option_some(Filenames)
+    ; %% Some(Filename)
+    {error, _Reason_} ->
+      ats2erlpre_option_none() %% None((*void*))
+  end.
+%%
+%% ****** ****** %%
+%%
+%%fun%%
+ats2erlibc_file_ats2make_dir_opt
+  (Dir) ->
+  case
+  file:make_dir(Dir)
+  of %% of-case
+    ok -> true; {error, _Reason_} -> false
+  end. %% end-case
+%%
+%% ****** ****** %%
+%%
+%%fun%%
+ats2erlibc_file_ats2make_link_opt
+  (Existing, New) ->
+  case
+  file:make_link(Existing, New)
+  of %% of-case
+    ok -> true; {error, _Reason_} -> false
+  end. %% end-case
+%%
+%%fun%%
+ats2erlibc_file_ats2make_symlink_opt
+  (Existing, New) ->
+  case
+  file:make_symlink(Existing, New)
+  of %% of-case
+    ok -> true; {error, _Reason_} -> false
+  end. %% end-case
+%%
+%% ****** ****** %%
+%%
+%%fun%%
+ats2erlibc_file_ats2read_file_opt
+  (Filename) ->
+  case
+  file:read_file(Filename)
+  of %% case
+    {ok, Binary} ->
+      ats2erlpre_option_some(Binary)
+    ; %% Some(Filename)
+    {error, _Reason_} ->
+      ats2erlpre_option_none() %% None((*void*))
+  end.
+%%
+%% ****** ****** %%
+%%
+%%fun%%
+ats2erlibc_file_ats2rename_opt
+  (Src, Dst) ->
+  case
+  file:rename(Src, Dst)
+  of %% of-case
+    ok -> true; {error, _Reason_} -> false
+  end. %% end-case
+%%
+%% ****** ****** %%
+%%
+%%fun%%
+ats2erlibc_file_ats2set_cwd_opt
+  (Dir) ->
+  case
+  file:set_cwd(Dir)
+  of %% of-case
+    ok -> true; {error, _Reason_} -> false
+  end. %% end-case
+%%
+%% ****** ****** %%
+
+%% end of [file_cats.hrl] %%
 %%%%%%
 %%
 %% The Erlang code is generated by atscc2erl
-%% The starting compilation time is: 2015-7-14: 14h:26m
+%% The starting compilation time is: 2015-10-25: 12h: 1m
 %%
 %%%%%%
 %%%%%%
@@ -486,7 +680,7 @@ ats2erlpre_ref_vt_addback(Server, Y) ->
 %%%%%%
 %%
 %% The Erlang code is generated by atscc2erl
-%% The starting compilation time is: 2015-7-14: 14h:26m
+%% The starting compilation time is: 2015-10-25: 12h: 1m
 %%
 %%%%%%
 
@@ -1094,16 +1288,42 @@ ats2erlpre_list_map(Arg0, Arg1) ->
 %%%%%%
 %%
 %% The Erlang code is generated by atscc2erl
-%% The starting compilation time is: 2015-7-14: 14h:26m
+%% The starting compilation time is: 2015-10-25: 12h: 1m
 %%
 %%%%%%
+
+%%fun%%
+ats2erlpre_option_some(Arg0) ->
+%{
+%%
+%% knd = 0
+%% var Tmpret0
+%% var Tmplab, Tmplab_erl
+%%
+  %% __patsflab_option_some,
+  {Arg0}.
+%} // end-of-function
+
+
+%%fun%%
+ats2erlpre_option_none() ->
+%{
+%%
+%% knd = 0
+%% var Tmpret1
+%% var Tmplab, Tmplab_erl
+%%
+  %% __patsflab_option_none,
+  atscc2erl_null.
+%} // end-of-function
+
 
 %%fun%%
 ats2erlpre_option_is_some(Arg0) ->
 %{
 %%
 %% knd = 0
-%% var Tmpret0
+%% var Tmpret2
 %% var Tmplab, Tmplab_erl
 %%
   %% __patsflab_option_is_some,
@@ -1140,7 +1360,7 @@ ats2erlpre_option_is_none(Arg0) ->
 %{
 %%
 %% knd = 0
-%% var Tmpret1
+%% var Tmpret3
 %% var Tmplab, Tmplab_erl
 %%
   %% __patsflab_option_is_none,
@@ -1179,7 +1399,7 @@ ats2erlpre_option_is_none(Arg0) ->
 %%%%%%
 %%
 %% The Erlang code is generated by atscc2erl
-%% The starting compilation time is: 2015-7-14: 14h:26m
+%% The starting compilation time is: 2015-10-25: 12h: 1m
 %%
 %%%%%%
 
@@ -1430,7 +1650,7 @@ f_ats2erlpre_intrange_patsfun_14(Env0, Arg0, Arg1) ->
 
 
 %%fun%%
-f_057_home_057_hwxi_057_research_057_Postiats_055_contrib_057_git_057_contrib_057_libatscc_057_libatscc2erl_057_SATS_057_intrange_056_sats__int_list_map_cloref(Arg0, Arg1) ->
+f_057_home_057_hwxi_057_Research_057_ATS_055_Postiats_055_contrib_057_contrib_057_libatscc_057_libatscc2erl_057_SATS_057_intrange_056_sats__int_list_map_cloref(Arg0, Arg1) ->
 %{
 %%
 %% knd = 0
@@ -1471,7 +1691,7 @@ f_ats2erlpre_intrange_aux_16(Env0, Env1, Arg0) ->
 
 
 %%fun%%
-f_057_home_057_hwxi_057_research_057_Postiats_055_contrib_057_git_057_contrib_057_libatscc_057_libatscc2erl_057_SATS_057_intrange_056_sats__int_list_map_method(Arg0, Arg1) ->
+f_057_home_057_hwxi_057_Research_057_ATS_055_Postiats_055_contrib_057_contrib_057_libatscc_057_libatscc2erl_057_SATS_057_intrange_056_sats__int_list_map_method(Arg0, Arg1) ->
 %{
 %%
 %% knd = 0
@@ -1492,7 +1712,7 @@ f_ats2erlpre_intrange_patsfun_18(Env0, Arg0) ->
 %% var Tmplab, Tmplab_erl
 %%
   %% __patsflab__ats2erlpre_intrange_patsfun_18,
-  f_057_home_057_hwxi_057_research_057_Postiats_055_contrib_057_git_057_contrib_057_libatscc_057_libatscc2erl_057_SATS_057_intrange_056_sats__int_list_map_cloref(Env0, Arg0).
+  f_057_home_057_hwxi_057_Research_057_ATS_055_Postiats_055_contrib_057_contrib_057_libatscc_057_libatscc2erl_057_SATS_057_intrange_056_sats__int_list_map_cloref(Env0, Arg0).
 %} // end-of-function
 
 
