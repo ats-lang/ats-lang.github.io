@@ -99,4 +99,4 @@ sudo apt-get install -y erlang
 #
 ######
 #
-###### end of [C9-ATS2-install-cs520.sh] ######
+###### end of [C9-ATS2-install-cs520-z3.sh] ######
