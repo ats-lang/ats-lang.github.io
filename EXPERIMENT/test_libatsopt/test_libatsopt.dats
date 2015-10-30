@@ -27,16 +27,16 @@ abstype emcc_string
 
 (* ****** ****** *)
 
-abstype comarg
-abstype comarglst
+abstype emcc_comarg
+abstype emcc_comarglst
 
 (* ****** ****** *)
 
 extern
-fun comarg_strlit(string): comarg
-and comarg_strinp(string): comarg
-and comarg_prefil(string): comarg
-and comarg_postfil(string): comarg
+fun comarg_strlit(string): emcc_comarg
+and comarg_strinp(string): emcc_comarg
+and comarg_prefil(string): emcc_comarg
+and comarg_postfil(string): emcc_comarg
 
 (* ****** ****** *)
 //
@@ -72,29 +72,31 @@ emcc_stringify(emcc_string): string = "mac#emcc_stringify"
 extern
 fun
 _comarg_strlit
-  (emcc_string): comarg
+  (emcc_string): emcc_comarg
   = "mac#_libatsopt_comarg_strlit"
 and
 _comarg_strinp
-  (emcc_string): comarg
+  (emcc_string): emcc_comarg
   = "mac#_libatsopt_comarg_strinp"
 and
 _comarg_prefil
-  (emcc_string): comarg
+  (emcc_string): emcc_comarg
   = "mac#_libatsopt_comarg_prefil"
 and
 _comarg_postfil
-  (emcc_string): comarg
+  (emcc_string): emcc_comarg
   = "mac#_libatsopt_comarg_postfil"
 //
 extern
 fun
 _comarglst_nil
-  ((*void*)): comarglst
+  ((*void*)): emcc_comarglst
   = "mac#_libatsopt_comarglst_nil"
 and
 _comarglst_cons
-  (comarg, comarglst): comarglst
+(
+  emcc_comarg, emcc_comarglst
+) : emcc_comarglst
   = "mac#_libatsopt_comarglst_cons"
 //
 (* ****** ****** *)
@@ -123,6 +125,12 @@ theExample_dats_c_set_value(code)
   return document.getElementById("theExample_dats_c").value = code;
 }
 //
+function
+theExample_patsopt_optstr_get_value()
+{
+  return document.getElementById("theExample_patsopt_optstr").value;
+}
+//
 %} // end of [%{^]
 //
 extern
@@ -131,6 +139,10 @@ theExample_dats_get_value(): string = "mac#"
 extern
 fun
 theExample_dats_c_set_value(code: string): void = "mac#"
+//
+extern
+fun
+theExample_patsopt_optstr_get_value(): string = "mac#"
 //
 (* ****** ****** *)
 //
@@ -170,13 +182,72 @@ emcc_stringify
 //
 extern
 fun
-theExample_button_onclick
-  (arglst: comarglst): int
+theExample_patsopt_getarg
+  ((*void*)): emcc_comarglst
+//
+implement
+theExample_patsopt_getarg
+  ((*void*)) = let
+//
+val
+code = theExample_dats_get_value()
+//
+val
+comarg = comarg_strinp(code)
+val
+arglst = _comarglst_nil((*void*))
+val
+arglst = _comarglst_cons(comarg, arglst)
+//
+val
+delim = " "
+val
+optstr =
+theExample_patsopt_optstr_get_value()
+val
+optarr =
+$extmcall(JSarray(string), optstr, "split", delim)
+//
+typedef
+res = emcc_comarglst
+//
+fun
+aux(n: int, xs: res): res =
+(
+//
+if
+n > 0
+then let
+  val n = n - 1
+  val x =
+    comarg_strlit(optarr[n])
+  // end of [val]
+in
+  aux(n, _comarglst_cons(x, xs))
+end // end of [then]
+else xs // end of [else]
+//
+) (* end of [aux] *)
+//
+in
+  aux(length(optarr), arglst)
+end // end of [theExample_patsopt_getarg]
+
+(* ****** ****** *)
+//
+extern
+fun
+theExample_patsopt_arglst
+  (arglst: emcc_comarglst): int
+//
+extern
+fun
+theExample_patsopt_onclick(): int = "mac#"
 //
 (* ****** ****** *)
 //
 implement
-theExample_button_onclick
+theExample_patsopt_arglst
   (arglst) = nerr where
 {
 //
@@ -234,85 +305,29 @@ if nerr > 0 then
 *)
 //
 val () =
-  if (nerr = 0) then theExample_dats_c_set_value(stdout)
+  if (nerr = 0)
+    then theExample_dats_c_set_value(stdout)
+  // end of [if]
 val () =
-  if (nerr > 0) then theExample_dats_c_set_value(stderr)
+  if (nerr > 0)
+    then theExample_dats_c_set_value(stderr)
+  // end of [if]
 //
-} (* end of [theExample_button_onclick] *)
+val () = if nerr = 0 then alert("Patsopt succeeded!")
+val () = if nerr > 0 then alert("Patsopt yielded errors!")
+//
+} (* end of [theExample_patsopt_arglst] *)
 //
 (* ****** ****** *)
-//
-extern
-fun
-theExample_button_cc_onclick
-  ((*void*)): int = "mac#"
 //
 implement
-theExample_button_cc_onclick
-  () = nerr where
-{
-//
-val arg1 =
-  comarg_strlit("--dynamic")
-val arg2 =
-  comarg_strinp(theExample_dats_get_value())
-//
-val arglst = _comarglst_nil()
-val arglst = _comarglst_cons(arg2, arglst)
-val arglst = _comarglst_cons(arg1, arglst)
-//
-val nerr = theExample_button_onclick(arglst)
-//
-val ((*void*)) =
-  if nerr > 0 then alert("There are errors!")
-//
-} // end of [theExample_button_cc_onclick]
+theExample_patsopt_onclick() = 
+  theExample_patsopt_arglst(theExample_patsopt_getarg())
 //
 (* ****** ****** *)
 //
-extern
-fun
-theExample_button_tc_onclick
-  ((*void*)): int = "mac#"
-//
-implement
-theExample_button_tc_onclick
-  () = nerr where
-{
-//
-val arg0 =
-  comarg_strlit("-tc")
-val arg1 =
-  comarg_strlit("--dynamic")
-val arg2 =
-  comarg_strinp(theExample_dats_get_value())
-//
-val arglst = _comarglst_nil()
-val arglst = _comarglst_cons(arg2, arglst)
-val arglst = _comarglst_cons(arg1, arglst)
-val arglst = _comarglst_cons(arg0, arglst)
-//
-val nerr = theExample_button_onclick(arglst)
-//
-val ((*void*)) =
-  if nerr = 0 then alert("Well-typed!")
-val ((*void*)) =
-  if nerr > 0 then alert("There are errors!")
-//
-} (* end of [theExample_button_tc_onclick] *)
-
-(* ****** ****** *)
-
 %{$
-/*
-function
-libatsopt_ext_js_eval()
-{
-  preRun();
-  preMain();
-  Module.callMain();
-}
-*/
+//
 function
 the_libatsopt_main()
 {
