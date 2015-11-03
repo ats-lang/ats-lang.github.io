@@ -190,12 +190,23 @@ theExample_patsopt_getarg
   ((*void*)) = let
 //
 val
-code = theExample_dats_get_value()
+code =
+theExample_dats_get_value()
+//
+val
+arglst = _comarglst_nil((*void*))
 //
 val
 comarg = comarg_strinp(code)
 val
-arglst = _comarglst_nil((*void*))
+arglst = _comarglst_cons(comarg, arglst)
+//
+val
+comarg =
+comarg_prefil
+(
+  "#include \"share/atspre_staload.hats\""
+)
 val
 arglst = _comarglst_cons(comarg, arglst)
 //
@@ -313,8 +324,9 @@ val () =
     then theExample_dats_c_set_value(stderr)
   // end of [if]
 //
-val () = if nerr = 0 then alert("Patsopt succeeded!")
-val () = if nerr > 0 then alert("Patsopt yielded errors!")
+val () = if nerr = 0 then alert("Patsopt finished normally!")
+val () = if nerr >= 2 then alert("Patsopt encountered an error!")
+val () = if nerr >= 2 then alert("Patsopt encountered some errors!")
 //
 } (* end of [theExample_patsopt_arglst] *)
 //
