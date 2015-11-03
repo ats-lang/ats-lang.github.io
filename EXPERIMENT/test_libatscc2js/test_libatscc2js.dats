@@ -250,7 +250,7 @@ val () =
   // end of [if]
 //
 val () = if nerr = 0 then alert("Atscc2js finished normally!")
-val () = if nerr >= 2 then alert("Atscc2js encountered an error!")
+val () = if nerr >= 1 then alert("Atscc2js encountered an error!")
 val () = if nerr >= 2 then alert("Atscc2js encountered some errors!")
 //
 } (* end of [theExample_atscc2js_arglst] *)
