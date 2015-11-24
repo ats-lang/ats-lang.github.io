@@ -65,7 +65,7 @@ sudo apt-get install -y libjson-c-dev
 
 ######
 #
-# For parsing constrants 
+# For parsing constraints 
 #
 # (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve && time make DATS_C)
 #
