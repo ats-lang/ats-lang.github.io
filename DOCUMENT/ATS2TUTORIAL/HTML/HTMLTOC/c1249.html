@@ -1,0 +1,434 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Stack-allocated Closure-Functions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Advanced Tutorial Topics"
+HREF="p1175.html"><LINK
+REL="PREVIOUS"
+TITLE="Linear Closure-Functions"
+HREF="c1202.html"><LINK
+REL="NEXT"
+TITLE="Automatic Code Generation"
+HREF="c1286.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c1202.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c1286.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="stkclo"
+></A
+>Chapter 27. Stack-allocated Closure-Functions</H1
+><P
+>&#13;Higher-order functions are a very convenient programming feature for
+supporting certain forms of code reuse. Often a function passed as an
+argument to a higher-order function call is a closure-function created on
+heap at run-time, and it is most likely of no more use after the call. If
+the closure-function is linear, then it needs to be freed explicitly by the
+programmer (or a type-error would occur during typechecking).  If the
+closure-function is non-linear, then its memory should be reclaimed through
+garbage-collection (GC) (or the memory is leaked).
+
+</P
+><P
+>&#13;Creating heap-allocated closure-functions implies the need for dynamic
+memory allocation (DMA). In a restricted environment (e.g., one for
+embedded programming), DMA may not (fully) supported. One option for
+constructing a closure-function in the absence of support for DMA is to
+store it in the stack-frame of the calling function, and there is special
+systax in ATS for doing so.
+
+</P
+><P
+>&#13;Let us see a concrete example of stack-allocated closure.
+The following code implements a higher-order function template:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1254"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{res:t@ype}
+ifold{n:nat}
+(
+  n: int(n)
+, fopr: (res, natLt(n)) -&#60;cloref1&#62; res, ini: res
+) : res = let
+//
+fun
+loop
+{i:nat | i &#60;= n} .&#60;n-i&#62;.
+  (i: int(i), res: res): res =
+  if i &#60; n then loop(i+1, fopr(res, i)) else res
+//
+in
+  loop(0, ini)
+end // end of [ifold]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Essentially, <FONT
+COLOR="RED"
+>ifold(n, fopr, ini)</FONT
+> evaluates the expression
+<FONT
+COLOR="RED"
+>fopr(...fopr(fopr(ini, 0), 1)..., n-1)</FONT
+>.  For instance, the
+function <FONT
+COLOR="RED"
+>dotprod</FONT
+> for computing the dot product (or inner
+product) of two vectors can be implemented with a call to <FONT
+COLOR="RED"
+>ifold</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1260"
+></A
+><PRE
+CLASS="programlisting"
+>//
+typedef res = double
+//
+fun
+dotprod
+  {n:nat}
+(
+  n: int(n)
+, A: arrayref(res, n)
+, B: arrayref(res, n)
+) : res =
+(
+  ifold&#60;res&#62;(n, lam(res, i) =&#62; res + A[i]*B[i], 0.0)
+)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The second argument passed to the call to <FONT
+COLOR="RED"
+>ifold</FONT
+> is a
+closure created on heap at run-time, and it is of no more use
+after the call returns. The function <FONT
+COLOR="RED"
+>dotprod</FONT
+> can also be
+implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1264"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+dotprod
+  {n:nat}
+(
+  n: int(n)
+, A: arrayref(res, n)
+, B: arrayref(res, n)
+) : res = let
+//
+var
+fopr =
+lam@(res: res, i: natLt(n)): res =&#62; res + A[i]*B[i]
+//
+in
+  ifold&#60;res&#62;(n, $UNSAFE.cast(addr@fopr), 0.0)
+end // end of [dotprod]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The keyword <FONT
+COLOR="RED"
+>lam@</FONT
+> (instead of <FONT
+COLOR="RED"
+>lam</FONT
+>) initiates the
+creation of an unboxed closure at a given location. In the above case, the
+variable <FONT
+COLOR="RED"
+>fopr</FONT
+> is located in the stack-frame of
+<FONT
+COLOR="RED"
+>dotprod</FONT
+>, and the created closure is stored in the memory
+reserved for <FONT
+COLOR="RED"
+>fopr</FONT
+>. It is the obligation of the compiler of ATS
+to make sure that the memory is large enough for storing the closure. The
+call to the (unsafe) cast turns the address of <FONT
+COLOR="RED"
+>fopr</FONT
+> into a
+boxed closure so that it can be passed to <FONT
+COLOR="RED"
+>ifold</FONT
+>.
+
+</P
+><P
+>&#13;In order to remove the unsafe cast in the implementation of
+<FONT
+COLOR="RED"
+>dotprod</FONT
+>, we need to implement a slight variant
+of <FONT
+COLOR="RED"
+>ifold</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1276"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{res:t@ype}
+ifold_{n:nat}
+(
+  n: int(n)
+, fopr: &#38;(res, natLt(n)) -&#60;clo1&#62; res, ini: res
+) : res = let
+//
+fun
+loop
+{i:nat | i &#60;= n} .&#60;n-i&#62;.
+(
+  i: int(i)
+, fopr: &#38;(res, natLt(n)) -&#60;clo1&#62; res, res: res
+) : res =
+  if i &#60; n
+    then loop(i+1, fopr, fopr(res, i)) else res
+  // end of [if]
+//
+in
+  loop(0, fopr, ini)
+end // end of [ifold_]
+//
+(* ****** ****** *)
+//
+fun
+dotprod_
+  {n:nat}
+(
+  n: int(n)
+, A: arrayref(res, n)
+, B: arrayref(res, n)
+) : res = let
+//
+var
+fopr =
+lam@(res: res, i: natLt(n)): res =&#62; res + A[i]*B[i]
+//
+in
+  ifold_&#60;res&#62;(n, fopr, 0.0)
+end // end of [dotprod_]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the second argument of <FONT
+COLOR="RED"
+>ifold_</FONT
+> is call-by-reference.
+The anotated arrow <FONT
+COLOR="RED"
+>-&#60;clo1&#62;</FONT
+> is used to form function types
+for unboxed closures. So only a left value (representing some unboxed
+closure) can be passed as the second argument to a call to
+<FONT
+COLOR="RED"
+>ifold_</FONT
+>, and what is really passed at run-time is the address of
+the left value. The function <FONT
+COLOR="RED"
+>dotprod</FONT
+> can be safely implemented
+as <FONT
+COLOR="RED"
+>dotprod_</FONT
+> with a call to <FONT
+COLOR="RED"
+>ifold_</FONT
+>.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_stkclo.dats"
+TARGET="_top"
+>on-line</A
+> the entirety of the
+code used in this chapter plus some testing code.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c1202.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c1286.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Linear Closure-Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p1175.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Automatic Code Generation</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2TUTORIAL-BOOK.js"></SCRIPT></BODY
+></HTML
+>
