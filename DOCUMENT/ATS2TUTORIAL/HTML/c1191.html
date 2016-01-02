@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Linear Stream-Based Lazy Evaluation</TITLE
+>Automatic Code Generation</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -15,6 +15,9 @@ HREF="p1117.html"><LINK
 REL="PREVIOUS"
 TITLE="Linear Closure-Functions"
 HREF="c1144.html"><LINK
+REL="NEXT"
+TITLE="Generating a datcontag-function"
+HREF="x1228.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -58,7 +61,11 @@ VALIGN="bottom"
 WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
->&nbsp;</TD
+><A
+HREF="x1228.html"
+ACCESSKEY="N"
+>Next</A
+></TD
 ></TR
 ></TABLE
 ><HR
@@ -68,95 +75,177 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="linear-stream-based-lazy-evaluation"
+NAME="codegen2"
 ></A
->Chapter 26. Linear Stream-Based Lazy Evaluation</H1
+>Chapter 26. Automatic Code Generation</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c1191.html#codegen2_datcon"
+>Generating a datcon-function</A
+></DT
+><DT
+><A
+HREF="x1228.html"
+>Generating a datcontag-function</A
+></DT
+><DT
+><A
+HREF="x1247.html"
+>Generating a fprint-function</A
+></DT
+></DL
+></DIV
 ><P
->&#13;In ATS, there is also support for lazy evaluation based on linear
-streams. As far as I can tell, linear stream-based lazy evaluation is
-currently a unique language feature of ATS.
+>&#13;In practice, one often encounters a need to write boilerplate code or code
+that tends to follow certain clearly recognizable patterns. It is commonly
+seen that meta-programming (of various forms) is employed to automatically
+generate such code, thus not only increasing programming productivity but
+also potentially eliminating bugs that would otherwise be introduced due to
+manual code construction.
 
 </P
 ><P
->&#13;In practice, it is most likely that (non-linear) stream-based lazy
-evaluation requires the support of garbage collection (GC). As the behavior
-of GC can in general be very difficult to predict, lazy evaluation may not
-be suitable in a setting where great precision in control is needed.  With
-linear stream-based lazy evaluation, the need for GC to reclaim values
-representing streams is eliminated as such values can be explicitly freed
-in a safe manner.
-</P
-><P
->&#13;There is a special language construct <FONT
-COLOR="RED"
->$ldelay</FONT
-> for delaying or
-suspending the evaluation of an expression (by forming a linear thunk), and
-there are also a pair of special functions <FONT
-COLOR="RED"
->lazy_vt_force</FONT
-> and
-<FONT
-COLOR="RED"
->lazy_vt_free</FONT
-> for resuming and freeing, respectively, a
-suspended evaluation (represented by a linear thunk).  Unlike
-<FONT
-COLOR="RED"
->delay</FONT
->, <FONT
-COLOR="RED"
->$ldelay</FONT
-> applies to two expressions to
-form a linear lazy stream; the first expression is the one whose evaluation
-is suspended; the second expression is the one whose evaluation results in
-all the linear values contained in the first expression being freed.
+>&#13;In the following presentation, I am to show that the ATS compiler can be
+directed to generate the code for certain functions on values of a declared
+datatype. Following is the datatype used for illustration:
 
-</P
+<DIV
+CLASS="informalexample"
 ><P
->&#13;The abstract type constructor <FONT
-COLOR="RED"
->lazy_vt</FONT
-> of the sort
-<FONT
-COLOR="RED"
->(vt@ype) =&#62; vtype</FONT
-> forms a (boxed) viewtype when applied to a
-viewtype.  Given two expressions exp1 of some type T and exp2 of the type
-<FONT
-COLOR="RED"
->void</FONT
->, the value <FONT
-COLOR="RED"
->$ldelay(exp1, exp2)</FONT
-> is of the type
-<FONT
-COLOR="RED"
->lazy_vt(T)</FONT
->; calling <FONT
-COLOR="RED"
->lazy_vt_force</FONT
-> on
-<FONT
-COLOR="RED"
->$ldelay(exp1, exp2)</FONT
-> resumes the suspended evaluation of exp1;
-calling <FONT
-COLOR="RED"
->lazy_vt_free</FONT
-> on <FONT
-COLOR="RED"
->$ldelay(exp1, exp2)</FONT
+></P
+><A
+NAME="AEN1195"
+></A
+><PRE
+CLASS="programlisting"
+>//
+datatype expr =
+  | Int of int
+  | Var of string
+  | Add of (expr, expr)
+  | Sub of (expr, expr)
+  | Mul of (expr, expr)
+  | Div of (expr, expr)
+  | Ifgtz of (expr, expr, expr) // if expr &#62; 0 then ... else ...
+  | Ifgtez of (expr, expr, expr) // if expr &#62;= 0 then ... else ...
+//
+</PRE
+><P
+></P
+></DIV
 >
-initiates the evaluation of exp2 (to free linear values contained in exp1).
+
+
+which is for some kind of abstract syntax trees representing arithmetic
+expressions.
 
 </P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="codegen2_datcon"
+>Generating a datcon-function</A
+></H1
 ><P
->&#13;The interface for the
-function template <FONT
+>&#13;Given a datatype, its datcon-function is the one that takes a value of the
+datatype and then returns a string representing the name of the (outmost)
+constructor in the construction of the value.  We can use the following
+directive to indicate (to the ATS compiler) that the datcon-function for
+the datatype <FONT
 COLOR="RED"
->lazy_vt_force</FONT
-> is given as follows:
+>expr</FONT
+> needs to be generated:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1201"
+></A
+><PRE
+CLASS="programlisting"
+>#codegen2("datcon", expr)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+By default, the name of the generated function is <FONT
+COLOR="RED"
+>datcon_expr</FONT
+>.
+If a different name is needed, it can be supplied as the third argument of
+the <FONT
+COLOR="RED"
+>\codegen2</FONT
+>-directive. For instance, the following directive
+indicates that the generated function is of the given name
+<FONT
+COLOR="RED"
+>my_datcon_expr</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1206"
+></A
+><PRE
+CLASS="programlisting"
+>#codegen2("datcon", expr, my_datcon_expr)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Assume that a file of the name <TT
+CLASS="filename"
+>expr.dats</TT
+> contains the
+following directive (as a toplevel declaration):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1209"
+></A
+><PRE
+CLASS="programlisting"
+>#codegen2("datcon", expr)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+and the definition for <FONT
+COLOR="RED"
+>expr</FONT
+> is accessible at the point where
+the <FONT
+COLOR="RED"
+>codegen2</FONT
+>-directive is declared. By executing the
+following command-line:
 
 <DIV
 CLASS="informalexample"
@@ -167,40 +256,49 @@ NAME="AEN1213"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:vt@ype} lazy_vt_force (lazyval: lazy_vt(a)): (a)
+>&#13;<B
+CLASS="command"
+>patscc</B
+> --codegen-2 -d expr.dats
 </PRE
 ><P
 ></P
 ></DIV
 >
 
-
-Note that the special prefix operator <FONT
+we can see some output of ATS code that implements <FONT
 COLOR="RED"
->!</FONT
-> in ATS is overloaded
-with <FONT
-COLOR="RED"
->lazy_vt_force</FONT
->.
-</P
-><P
->&#13;The interface for the
-function <FONT
-COLOR="RED"
->lazy_vt_free</FONT
-> is given as follows:
+>datcon_expr</FONT
+>:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1219"
+NAME="AEN1217"
 ></A
 ><PRE
 CLASS="programlisting"
->fun lazy_vt_free {a:vt@ype} (lazyval: lazy_vt(a)): void
+>(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+datcon_expr
+  (arg0) =
+(
+case+ arg0 of
+| Int _ =&#62; "Int"
+| Var _ =&#62; "Var"
+| Add _ =&#62; "Add"
+| Sub _ =&#62; "Sub"
+| Mul _ =&#62; "Mul"
+| Div _ =&#62; "Div"
+| Ifgtz _ =&#62; "Ifgtz"
+| Ifgtez _ =&#62; "Ifgtez"
+)
+//
+(* ****** ****** *)
 </PRE
 ><P
 ></P
@@ -208,169 +306,65 @@ CLASS="programlisting"
 >
 
 
-Note that the special prefix operator <FONT
-COLOR="RED"
->~</FONT
-> in ATS is overloaded
-with <FONT
-COLOR="RED"
->lazy_vt_free</FONT
->.
-</P
-><P
->&#13;In <A
-HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/stream_vt.sats"
-TARGET="_top"
->prelude/SATS/stream_vt.sats</A
->,
-the following viewtypes <FONT
-COLOR="RED"
->stream_vt_con</FONT
-> and
+If the output needs to be stored in a file of the name
 <FONT
 COLOR="RED"
->stream_vt</FONT
-> are declared mutually recursively for representing
-linear lazy streams:
+>fprint_expr.hats</FONT
+>, we can issue the following command-line:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1227"
+NAME="AEN1220"
 ></A
 ><PRE
 CLASS="programlisting"
->datavtype
-stream_vt_con (a:vt@ype+) =
-  | stream_vt_nil of ((*void*)) | stream_vt_cons of (a, stream_vt(a))
-where stream_vt (a:vt@ype) = lazy_vt (stream_vt_con(a))
+>&#13;<B
+CLASS="command"
+>patscc</B
+> -o fprint_expr.hats --codegen-2 -d expr.dats
 </PRE
 ><P
 ></P
 ></DIV
 >
 
-
-Also, a number of common functions on linear streams are declared in
-<A
-HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/stream_vt.sats"
-TARGET="_top"
->prelude/SATS/stream_vt.sats</A
-> and
-implemented in <A
-HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/DATS/stream_vt.dats"
-TARGET="_top"
->prelude/DATS/stream_vt.dats</A
->.
-
-</P
-><P
->&#13;The following code gives an implementation of the sieve
-of Eratosthenes in which a linear stream of all the prime numbers is
-constructed:
+Note that the funtion template <FONT
+COLOR="RED"
+>datcon_expr</FONT
+> is required to be
+declared somewhere in order for the generated code to be compiled properly:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1232"
+NAME="AEN1224"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-fun
-from (n: int): stream_vt (int) =
-  $ldelay (stream_vt_cons (n, from (n+1)))
-//
-fun sieve
-(
-  ns: stream_vt(int)
-) : stream_vt(int) = $ldelay
-(
-let
-//
-// [val-] means no warning message from the compiler
-//
-  val ns_con = !ns
-  val-@stream_vt_cons(n, ns1) = ns_con
-  val n = n
-  val ns1_ = ns1
-  val ((*void*)) = ns1 := sieve (stream_vt_filter_cloptr&#60;int&#62; (ns1_, lam x =&#62; x mod n &#62; 0))
-  prval ((*void*)) = fold@(ns_con)
-in
-  ns_con
-end // end of [let]
-,
-~ns // [ns] is freed
-) (* end of [$ldelay] *) // end of [sieve]
-//
-val thePrimes = sieve(from(2))
-//
+>fun{} datcon_expr : (expr) -&#62; string // a function template
 </PRE
 ><P
 ></P
 ></DIV
 >
 
-
-</P
-><P
->&#13;The function template <FONT
-COLOR="RED"
->stream_vt_filter_cloptr</FONT
-> is given
-the following interface:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1236"
-></A
-><PRE
-CLASS="programlisting"
->fun{a:t0p}
-stream_vt_filter_cloptr
-  (xs: stream_vt (a), pred: (&#38;a) -&#60;cloptr&#62; bool): stream_vt (a)
-// end of [stream_vt_filter_cloptr]
-</PRE
-><P
-></P
-></DIV
->
-
-
-Given a stream xs and a predicate pred, <FONT
-COLOR="RED"
->stream_vt_filter_cloptr</FONT
->
-returns another stream consisting of all the elements in the stream xs
-satisfying the predicate pred.  Note that both xs and pred are consumed by
-the call to <FONT
-COLOR="RED"
->stream_vt_filter_cloptr</FONT
->.
 
 </P
 ><P
 >&#13;Please find <A
-HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_stream_vt.dats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_codegen2"
 TARGET="_top"
 >on-line</A
-> the entirety of
-the code used in this chapter. One can readily use a tool like
-<A
-HREF="http://www.valgrind.org"
-TARGET="_top"
->valgrind</A
-> to verify that the
-implementation given above leaks no memory.
-
+> the entirety of this
+presented example plus a Makefile (for illustrating the code generation
+process).
 </P
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"
@@ -405,7 +399,11 @@ ACCESSKEY="H"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->&nbsp;</TD
+><A
+HREF="x1228.html"
+ACCESSKEY="N"
+>Next</A
+></TD
 ></TR
 ><TR
 ><TD
@@ -426,7 +424,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->&nbsp;</TD
+>Generating a datcontag-function</TD
 ></TR
 ></TABLE
 ></DIV

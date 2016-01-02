@@ -16,7 +16,7 @@ REL="PREVIOUS"
 TITLE="Exceptions"
 HREF="c607.html"><LINK
 REL="NEXT"
-TITLE="Persistent Arrays"
+TITLE="Boxed Tuples and Records"
 HREF="c715.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
@@ -359,10 +359,11 @@ NAME="AEN691"
 ></A
 ><PRE
 CLASS="programlisting"
->int fact (int n) {
+>int
+fact (int n) {
   int res = 1 ;
   while (n &#62; 0) { res = n * res; n = n - 1; } ;
-  return res ;
+  return (res) ;
 }
 </PRE
 ><P
@@ -561,7 +562,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Persistent Arrays</TD
+>Boxed Tuples and Records</TD
 ></TR
 ></TABLE
 ></DIV
