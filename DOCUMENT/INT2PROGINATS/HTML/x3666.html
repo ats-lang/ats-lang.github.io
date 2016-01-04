@@ -1,0 +1,374 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Dataview for Linear Strings</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Dataviews as Linear Dataprops"
+HREF="c3542.html"><LINK
+REL="PREVIOUS"
+TITLE="Dataview for Linear Arrays"
+HREF="x3606.html"><LINK
+REL="NEXT"
+TITLE="Dataview for Singly-Linked Lists"
+HREF="x3690.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3606.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 14. Dataviews as Linear Dataprops</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3690.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="linear_strings"
+>Dataview for Linear Strings</A
+></H1
+><P
+>&#13;The following dataview <FONT
+COLOR="RED"
+>strbuf_v</FONT
+> captures the notion of a
+string in C, which consisits a sequence of non-null characters followed by the
+null character:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3670"
+></A
+><PRE
+CLASS="programlisting"
+>dataview
+strbuf_v(addr, int) =
+  | {l:addr}
+    strbuf_v_nil(l, 0) of (char(0) @ l)
+  | {l:addr}{n:nat}
+    strbuf_v_cons(l, n+1) of (charNZ @ l, strbuf_v(l+sizeof(char), n))
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Let us define a linear type <FONT
+COLOR="RED"
+>strptr</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3673"
+></A
+><PRE
+CLASS="programlisting"
+>vtypedef strptr(l:addr, n:int) = (strbuf_v(l, n) | ptr(l))
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Then a C-string of length N that is stored at location L can be assigned
+the type <FONT
+COLOR="RED"
+>strptr(L, N)</FONT
+>.
+
+</P
+><P
+>&#13;Given a C-string, one can always access its first character; if the
+character is null, then the C-string is empty; if it is not, then the
+C-string is non-empty. The following implementation of
+<FONT
+COLOR="RED"
+>strptr_is_nil</FONT
+> precisely follows this simple way of testing
+whether a C-string is empty or not:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3678"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+strptr_is_nil
+  {l:addr}{n:int}
+(
+  str: !strptr(l, n)
+) : bool(n==0) = let
+//
+  prval
+  (pf_at, fpf) =
+    strbuf_v_getfst(str.0)
+  // prval
+  val c0 = !(str.1)
+  prval () = str.0 := fpf(pf_at)
+in
+  iseqz(c0) // testing whether [c0] is null
+end // end of [strptr_is_nil]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the proof function <FONT
+COLOR="RED"
+>strbuf_v_getfst</FONT
+>
+is declared and implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3681"
+></A
+><PRE
+CLASS="programlisting"
+>extern
+prfun
+strbuf_v_getfst
+  {l:addr}{n:int}
+(
+  pf: strbuf_v(l, n)
+) : [
+  c:int | (c==0 &#38;&#38; n==0) || (c != 0 &#38;&#38; n &#62; 0)
+] (char(c) @ l, char(c) @ l -&#60;lin,prf&#62; strbuf_v(l, n))
+
+(* ****** ****** *)
+
+primplmnt
+strbuf_v_getfst
+  (pf) =
+(
+case+ pf of
+| strbuf_v_nil(pf_at) =&#62; #[.. | (pf_at, llam(pf_at) =&#62; strbuf_v_nil(pf_at))]
+| strbuf_v_cons(pf_at, pf2) =&#62; #[.. | (pf_at, llam(pf_at) =&#62; strbuf_v_cons(pf_at, pf2))]
+)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The following implementation gives another example of handling the dataview
+<FONT
+COLOR="RED"
+>strbuf_v</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3685"
+></A
+><PRE
+CLASS="programlisting"
+>fun
+strptr_length
+  {l:addr}{n:int}
+(
+  str: !strptr(l, n)
+) : size_t(n) = let
+//
+fun
+loop
+{l:addr}
+{i,j:int}
+(
+  pf: !strbuf_v(l, i)
+| p0: ptr(l), j: size_t(j)
+) : size_t(i+j) = let
+//
+prval
+[c:int]
+(pf_at, fpf) = strbuf_v_getfst(pf)
+//
+val c0 = !p0
+//
+prval ((*return*)) = pf := fpf(pf_at)
+//
+in
+//
+if
+iseqz(c0)
+then j
+else res where
+{
+  prval
+  strbuf_v_cons(pf_at, pf2) = pf
+  val res = loop(pf2 | ptr_succ&#60;char&#62;(p0), succ(j))
+  prval ((*folded*)) = pf := strbuf_v_cons(pf_at, pf2)
+} (* end of [else] *)
+//
+end // end of [loop]
+//
+in
+  loop(str.0 | str.1, i2sz(0))
+end // end of [strptr_length]  
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, the implemented function of <FONT
+COLOR="RED"
+>strptr_length</FONT
+> computes the
+length of a given C-string.
+
+</P
+><P
+>&#13;Please find the entirety of the above presented code
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_DATAVIEW/strbuf.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3606.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3690.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Dataview for Linear Arrays</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3542.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Dataview for Singly-Linked Lists</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

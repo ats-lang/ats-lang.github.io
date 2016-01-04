@@ -254,8 +254,9 @@ NAME="AEN825"
 ></A
 ><PRE
 CLASS="programlisting"
->fun sqrmodsum (n: int, d: int): int =
-  ifold (n, lam (res, x) =&#62; if x mod d then res + x * x else res, 0)
+>fun sqrmodsum
+  (n: int, d: int): int =
+  ifold (n, lam (res, x) =&#62; if x mod d = 0 then res + x * x else res, 0)
 // end of [sqrmodsum]
 </PRE
 ><P
