@@ -1,0 +1,482 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Dot-Symbol Overloading</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Tutorial Topics"
+HREF="p34.html"><LINK
+REL="PREVIOUS"
+TITLE="Bracket Overloading"
+HREF="c204.html"><LINK
+REL="NEXT"
+TITLE="Recursion"
+HREF="c271.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c204.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c271.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="dot-overload"
+></A
+>Chapter 7. Dot-Symbol Overloading</H1
+><P
+>&#13;In many programming languages, the so-called dot-notation is commonly
+associated with selecting a field from a given tuple-value, record-value or
+object-value.  In ATS, field selection can be done through either pattern
+matching or the use of dot-notation. For example, the following code
+constructs a flat tuple and also a boxed one, and then uses dot-notation to
+select their components:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN228"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val tup_flat = @("a", "b")
+val tup_boxed = $tup("a", "b")
+//
+val-"a" = tup_flat.0 and "b" = tup_flat.1
+val-"a" = tup_boxed.0 and "b" = tup_boxed.1
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+There is support in ATS for overloading a specified dot-symbol with
+multiple function names so that dot-notation can be employed to call these
+functions, resulting in code that reads like field selection from tuples or
+records. This style of calling functions can, sometimes, make the code
+written in ATS more easily accessible, and it is especially so when
+ATS interacts with languages that support object-oriented programming.
+</P
+><P
+>&#13;As an example of dot-notation in overloading, let us introduce a non-linear
+abstract type <FONT
+COLOR="RED"
+>point</FONT
+> for points in a 2-dimensional space and also
+declare some associated functions:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN232"
+></A
+><PRE
+CLASS="programlisting"
+>//
+abstype point = ptr // boxed
+//
+extern
+fun
+point_make
+  (x: double, y: double): point
+//
+extern
+fun point_get_x (p: point): double
+and point_get_y (p: point): double
+//
+extern
+fun point_set_x (p: point, x: double): void
+and point_set_y (p: point, x: double): void
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+For getting the x-coordinate and y-coordinate of a given point, the
+functions <FONT
+COLOR="RED"
+>point_get_x</FONT
+> and <FONT
+COLOR="RED"
+>point_get_y</FONT
+> can be
+called, respectively.  For setting the x-coordinate and y-coordinate of a
+given point, the functions <FONT
+COLOR="RED"
+>point_set_x</FONT
+> and
+<FONT
+COLOR="RED"
+>point_set_y</FONT
+> can be called, respectively. By introducing two
+dot-symbols <FONT
+COLOR="RED"
+>.x</FONT
+> and <FONT
+COLOR="RED"
+>.y</FONT
+> and then overloading them
+with certain function names as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN240"
+></A
+><PRE
+CLASS="programlisting"
+>symintr .x .y
+overload .x with point_get_x
+overload .x with point_set_x
+overload .y with point_get_y
+overload .y with point_set_y
+</PRE
+><P
+></P
+></DIV
+>
+
+
+we can use dot-notation to call the corresponding get-functions and
+set-functions as is shown in the following code:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN242"
+></A
+><PRE
+CLASS="programlisting"
+>val p0 = point_make (1.0, ~1.0)
+val x0 = p0.x() // point_get_x (p0)
+and y0 = p0.y() // point_get_y (p0)
+val () = p0.x := y0 // point_set_x (p0, y0)
+and () = p0.y := x0 // point_set_y (p0, x0)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that writing <FONT
+COLOR="RED"
+>p0.x</FONT
+> for <FONT
+COLOR="RED"
+>p0.x()</FONT
+> is currently not
+supported.  The dot-notation in any assigement is only allowed to refer to
+a function that returns the void-value. In the above example, both
+<FONT
+COLOR="RED"
+>point_set_x</FONT
+> and <FONT
+COLOR="RED"
+>point_set_y</FONT
+> return the void-value.
+
+</P
+><P
+>&#13;Let us introduce a linear abstract type <FONT
+COLOR="RED"
+>counter</FONT
+> for counter
+objects and a few functions associated with it:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN250"
+></A
+><PRE
+CLASS="programlisting"
+>//
+absvtype counter = ptr
+//
+extern
+fun counter_make (): counter
+extern
+fun counter_free (counter): void
+//
+extern
+fun counter_get (cntr: !counter): int
+extern
+fun counter_incby (cntr: !counter, n: int): void
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+As can be expected, the functions <FONT
+COLOR="RED"
+>counter_make</FONT
+> and
+<FONT
+COLOR="RED"
+>counter_free</FONT
+> are for creating and destroying a counter object,
+respectively. The function <FONT
+COLOR="RED"
+>counter_get</FONT
+> returns the current
+count stored in a give counter, and the function <FONT
+COLOR="RED"
+>counter_incby</FONT
+>
+increase that count by a given integer value.
+
+</P
+><P
+>&#13;Let us introduce the following overloading declarations:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN257"
+></A
+><PRE
+CLASS="programlisting"
+>//
+overload .get with counter_get
+overload .incby with counter_incby
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+As is expected, one can now call <FONT
+COLOR="RED"
+>counter_get</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN260"
+></A
+><PRE
+CLASS="programlisting"
+>val n0 = c0.get() // = counter_get(c0)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Similarly, one can call <FONT
+COLOR="RED"
+>counter_incby</FONT
+> as follows to increase
+the count stored in <FONT
+COLOR="RED"
+>c0</FONT
+> by 1:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN264"
+></A
+><PRE
+CLASS="programlisting"
+>val () = c0.incby(1) // = counter_incby(c0, 1)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+If we revisit the previous example involving (non-linear) points, then
+we can see that the following code also typechecks:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN266"
+></A
+><PRE
+CLASS="programlisting"
+>val p0 = point_make (1.0, ~1.0)
+val x0 = p0.x() // point_get_x (p0)
+and y0 = p0.y() // point_get_y (p0)
+val () = p0.x(y0) // point_set_x (p0, y0)
+and () = p0.y(x0) // point_set_y (p0, x0)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+I may use the phrase <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>functional dot-notation</I
+></SPAN
+> to refer to
+this form of dot-notation so as to differentiate it from the general form of
+dot-notation.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_dotoverld.dats"
+TARGET="_top"
+>on-line</A
+> the entirety of the
+code presented in this chapter plus some testing code.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c204.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c271.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Bracket Overloading</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p34.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Recursion</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2TUTORIAL-BOOK.js"></SCRIPT></BODY
+></HTML
+>

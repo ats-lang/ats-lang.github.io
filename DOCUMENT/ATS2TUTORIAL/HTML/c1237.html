@@ -1,0 +1,433 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Automatic Code Generation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Advanced Tutorial Topics"
+HREF="p1163.html"><LINK
+REL="PREVIOUS"
+TITLE="Linear Closure-Functions"
+HREF="c1190.html"><LINK
+REL="NEXT"
+TITLE="Generating a datcontag-function"
+HREF="x1274.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c1190.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1274.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="codegen2"
+></A
+>Chapter 27. Automatic Code Generation</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c1237.html#codegen2_datcon"
+>Generating a datcon-function</A
+></DT
+><DT
+><A
+HREF="x1274.html"
+>Generating a datcontag-function</A
+></DT
+><DT
+><A
+HREF="x1293.html"
+>Generating a fprint-function</A
+></DT
+></DL
+></DIV
+><P
+>&#13;In practice, one often encounters a need to write boilerplate code or code
+that tends to follow certain clearly recognizable patterns. It is commonly
+seen that meta-programming (of various forms) is employed to automatically
+generate such code, thus not only increasing programming productivity but
+also potentially eliminating bugs that would otherwise be introduced due to
+manual code construction.
+
+</P
+><P
+>&#13;In the following presentation, I am to show that the ATS compiler can be
+directed to generate the code for certain functions on values of a declared
+datatype. Following is the datatype used for illustration:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1241"
+></A
+><PRE
+CLASS="programlisting"
+>//
+datatype expr =
+  | Int of int
+  | Var of string
+  | Add of (expr, expr)
+  | Sub of (expr, expr)
+  | Mul of (expr, expr)
+  | Div of (expr, expr)
+  | Ifgtz of (expr, expr, expr) // if expr &#62; 0 then ... else ...
+  | Ifgtez of (expr, expr, expr) // if expr &#62;= 0 then ... else ...
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+which is for some kind of abstract syntax trees representing arithmetic
+expressions.
+
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="codegen2_datcon"
+>Generating a datcon-function</A
+></H1
+><P
+>&#13;Given a datatype, its datcon-function is the one that takes a value of the
+datatype and then returns a string representing the name of the (outmost)
+constructor in the construction of the value.  We can use the following
+directive to indicate (to the ATS compiler) that the datcon-function for
+the datatype <FONT
+COLOR="RED"
+>expr</FONT
+> needs to be generated:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1247"
+></A
+><PRE
+CLASS="programlisting"
+>#codegen2("datcon", expr)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+By default, the name of the generated function is <FONT
+COLOR="RED"
+>datcon_expr</FONT
+>.
+If a different name is needed, it can be supplied as the third argument of
+the <FONT
+COLOR="RED"
+>#codegen2</FONT
+>-directive. For instance, the following directive
+indicates that the generated function is of the given name
+<FONT
+COLOR="RED"
+>my_datcon_expr</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1252"
+></A
+><PRE
+CLASS="programlisting"
+>#codegen2("datcon", expr, my_datcon_expr)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Assume that a file of the name <TT
+CLASS="filename"
+>expr.dats</TT
+> contains the
+following directive (as a toplevel declaration):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1255"
+></A
+><PRE
+CLASS="programlisting"
+>#codegen2("datcon", expr)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+and the definition for <FONT
+COLOR="RED"
+>expr</FONT
+> is accessible at the point where
+the <FONT
+COLOR="RED"
+>codegen2</FONT
+>-directive is declared. By executing the
+following command-line:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1259"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;<B
+CLASS="command"
+>patscc</B
+> --codegen-2 -d expr.dats
+</PRE
+><P
+></P
+></DIV
+>
+
+we can see some output of ATS code that implements <FONT
+COLOR="RED"
+>datcon_expr</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1263"
+></A
+><PRE
+CLASS="programlisting"
+>(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+datcon_expr
+  (arg0) =
+(
+case+ arg0 of
+| Int _ =&#62; "Int"
+| Var _ =&#62; "Var"
+| Add _ =&#62; "Add"
+| Sub _ =&#62; "Sub"
+| Mul _ =&#62; "Mul"
+| Div _ =&#62; "Div"
+| Ifgtz _ =&#62; "Ifgtz"
+| Ifgtez _ =&#62; "Ifgtez"
+)
+//
+(* ****** ****** *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+If the output needs to be stored in a file of the name
+<FONT
+COLOR="RED"
+>fprint_expr.hats</FONT
+>, we can issue the following command-line:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1266"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;<B
+CLASS="command"
+>patscc</B
+> -o fprint_expr.hats --codegen-2 -d expr.dats
+</PRE
+><P
+></P
+></DIV
+>
+
+Note that the funtion template <FONT
+COLOR="RED"
+>datcon_expr</FONT
+> is required to be
+declared somewhere in order for the generated code to be compiled properly:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1270"
+></A
+><PRE
+CLASS="programlisting"
+>fun{} datcon_expr : (expr) -&#62; string // a function template
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_codegen2"
+TARGET="_top"
+>on-line</A
+> the entirety of this
+presented example plus a Makefile (for illustrating the code generation
+process).
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c1190.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1274.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Linear Closure-Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p1163.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Generating a datcontag-function</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

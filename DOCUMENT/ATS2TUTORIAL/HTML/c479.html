@@ -1,0 +1,457 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Functional Sets and Maps</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Tutorial Topics"
+HREF="p34.html"><LINK
+REL="PREVIOUS"
+TITLE="Functional Lists"
+HREF="c411.html"><LINK
+REL="NEXT"
+TITLE="Functional Maps"
+HREF="x522.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c411.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x522.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="funsetmap"
+></A
+>Chapter 11. Functional Sets and Maps</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c479.html#funsetmap_set"
+>Functional Sets</A
+></DT
+><DT
+><A
+HREF="x522.html"
+>Functional Maps</A
+></DT
+></DL
+></DIV
+><P
+>&#13;Both (finite) sets and (finite) maps are commonly used data structures.
+Functional sets and maps are immutable after their construction.  Insertion
+into or removal from a functional set/map results in the construction of a
+new set/map while the original is kept intact. Usually the newly
+constructed set/map and the original one share a lot of underlying
+representation. Note that a functional set/map cannot be safely freed
+explicitly and the memory for representing it can only be reclaimed through
+garbage collection (GC).
+
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="funsetmap_set"
+>Functional Sets</A
+></H1
+><P
+>&#13;Suppose that a set is needed for collecting values of type
+<FONT
+COLOR="RED"
+>elt_t</FONT
+>. The following code essentially sets up an interface for
+creating and operating on such a set based on a balanced-tree
+implementation in ATSLIB/libats:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN486"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;local
+//
+typedef elt = elt_t
+//
+staload
+FS = "libats/ML/SATS/funset.sats"
+implement
+$FS.compare_elt_elt&#60;elt&#62;(x, y) = compare(x, y)
+//
+in (* in-of-local *)
+
+#include "libats/ML/HATS/myfunset.hats"
+
+end // end of [local]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/libats/ML/HATS/myfunset.hats"
+TARGET="_top"
+>on-line</A
+> the
+HATS file mentioned in the code, which is just a convenience wrapper made
+to simplify programming with functional sets. Note that it is assumed here
+that there is a comparison function on values of the type <FONT
+COLOR="RED"
+>elt_t</FONT
+>
+that overloads the symbol <FONT
+COLOR="RED"
+>compare</FONT
+>. If this is not the case, one
+needs to implement such a function.
+
+</P
+><P
+>&#13;Assume that <FONT
+COLOR="RED"
+>elt_t</FONT
+> is <FONT
+COLOR="RED"
+>int</FONT
+>. The following line
+of code creates a functional set (of integers) containing no elements:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN494"
+></A
+><PRE
+CLASS="programlisting"
+>val myset = myfunset_nil()
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The function for inserting an element into a given set is assigned the
+following type:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN496"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun myfunset_insert(xs: &#38;myset &#62;&#62; _, x0: elt): bool
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.insert</FONT
+> is overloaded with the function
+<FONT
+COLOR="RED"
+>myfunset_insert</FONT
+>. Note that the first argument of
+<FONT
+COLOR="RED"
+>myfunset_insert</FONT
+> is call-by-reference. If the given element is
+inserted into the given set, then the newly created set is stored into the
+call-by-reference argument and <FONT
+COLOR="RED"
+>false</FONT
+> is returned (to indicate
+no error).  Otherwise, <FONT
+COLOR="RED"
+>true</FONT
+> is returned (to indicate a
+failure). The following few lines of code shows how insertion can be
+operated on a functional set:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN503"
+></A
+><PRE
+CLASS="programlisting"
+>//
+var myset = myset
+//
+val-false = myset.insert(0) // inserted
+val-(true) = myset.insert(0) // not actually inserted
+val-false = myset.insert(1) // inserted
+val-(true) = myset.insert(1) // not actually inserted
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The first line in the above code may seem puzzling:
+Its sole purpose is to create a left-value to be passed as the first
+argument to <FONT
+COLOR="RED"
+>myfunset_insert</FONT
+>.
+
+During the course of debugging, one may want to print out the values
+contained in a given set:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN506"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val () = fprintln! (stdout_ref, "myset = ", myset)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the symbol <FONT
+COLOR="RED"
+>fprint</FONT
+> is overloaded with
+<FONT
+COLOR="RED"
+>fprint_myset</FONT
+>. The function for removing an element from a
+given set is assigned the following type:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN510"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun myfunset_remove(xs: &#38;myset &#62;&#62; _, x0: elt): bool
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.remove</FONT
+> is overloaded with the function
+<FONT
+COLOR="RED"
+>myfunset_remove</FONT
+>. Note that the first argument of
+<FONT
+COLOR="RED"
+>myfunset_remove</FONT
+> is call-by-reference. If the given element is
+removed from the given set, then the newly created set is stored into the
+call-by-reference argument and <FONT
+COLOR="RED"
+>true</FONT
+> is returned.  Otherwise,
+<FONT
+COLOR="RED"
+>false</FONT
+> is returned.  The following few lines of code shows how
+removal can be operated on a functional set:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN517"
+></A
+><PRE
+CLASS="programlisting"
+>val-true = myset.remove(0) // removed
+val-false = myset.remove(0) // not actually removed
+val-true = myset.remove(1) // removed
+val-false = myset.remove(1) // not actually removed
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Various common set operations can be found in
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/libats/ML/HATS/myfunset.hats"
+TARGET="_top"
+>libats/ML/HATS/myfunset.hats</A
+>.  By following the types assigned to these
+operations, one should have no difficulty in figuring out how they are
+supposed to be called.  Please find the entirety of the code used in this
+section <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_funsetmap_set.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c411.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x522.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Functional Lists</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p34.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Functional Maps</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,785 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Generating a fprint-function</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Automatic Code Generation"
+HREF="c1233.html"><LINK
+REL="PREVIOUS"
+TITLE="Generating a datcontag-function"
+HREF="x1270.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1270.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 27. Automatic Code Generation</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+>&nbsp;</TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="codegen2_fprint"
+>Generating a fprint-function</A
+></H1
+><P
+>&#13;A fprint-function takes a file-handle (of the type <FONT
+COLOR="RED"
+>FILEref</FONT
+>) and
+a value and then outputs a text representation of the value to the
+file-handle.  Given a datatype, one is often in need of a function that can
+output certain kind of text representation for values of this datatype. For
+instance, such a function can be of great use in debugging.
+
+</P
+><P
+>&#13;Let us first declare a function template <FONT
+COLOR="RED"
+>fprint_expr</FONT
+> as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1295"
+></A
+><PRE
+CLASS="programlisting"
+>fun{} fprint_expr : (FILEref, expr) -&#62; void // a function template
+</PRE
+><P
+></P
+></DIV
+>
+
+
+We can then use the directive below to indicate (to the ATS compiler) that
+the fprint-function for the datatype <FONT
+COLOR="RED"
+>expr</FONT
+> needs to be generated:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1298"
+></A
+><PRE
+CLASS="programlisting"
+>#codegen2("fprint", expr, fprint_expr)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The third argument of the <FONT
+COLOR="RED"
+>codegen2</FONT
+>-directive can be omitted
+in this case as it coincides with the default. The generated code that
+implements <FONT
+COLOR="RED"
+>fprint_expr</FONT
+> is listed as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1302"
+></A
+><PRE
+CLASS="programlisting"
+>(* ****** ****** *)
+//
+extern
+fun{}
+fprint_expr$Int: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Var: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Add: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Sub: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Mul: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Div: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtz: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtez: $d2ctype(fprint_expr&#60;&#62;)
+//
+(* ****** ****** *)
+//
+implement{}
+fprint_expr
+  (out, arg0) =
+(
+case+ arg0 of
+| Int _ =&#62; fprint_expr$Int&#60;&#62;(out, arg0)
+| Var _ =&#62; fprint_expr$Var&#60;&#62;(out, arg0)
+| Add _ =&#62; fprint_expr$Add&#60;&#62;(out, arg0)
+| Sub _ =&#62; fprint_expr$Sub&#60;&#62;(out, arg0)
+| Mul _ =&#62; fprint_expr$Mul&#60;&#62;(out, arg0)
+| Div _ =&#62; fprint_expr$Div&#60;&#62;(out, arg0)
+| Ifgtz _ =&#62; fprint_expr$Ifgtz&#60;&#62;(out, arg0)
+| Ifgtez _ =&#62; fprint_expr$Ifgtez&#60;&#62;(out, arg0)
+)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_expr$sep: (FILEref) -&#62; void
+implement{}
+fprint_expr$sep(out) = fprint(out, ",")
+//
+extern
+fun{}
+fprint_expr$lpar: (FILEref) -&#62; void
+implement{}
+fprint_expr$lpar(out) = fprint(out, "(")
+//
+extern
+fun{}
+fprint_expr$rpar: (FILEref) -&#62; void
+implement{}
+fprint_expr$rpar(out) = fprint(out, ")")
+//
+extern
+fun{a:t0p}
+fprint_expr$carg: (FILEref, INV(a)) -&#62; void
+implement{a}
+fprint_expr$carg(out, arg) = fprint_val&#60;a&#62;(out, arg)
+//
+(* ****** ****** *)
+//
+extern
+fun{}
+fprint_expr$Int$con: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Int$lpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Int$rpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Int$arg1: $d2ctype(fprint_expr&#60;&#62;)
+//
+implement{}
+fprint_expr$Int(out, arg0) = 
+{
+//
+val () = fprint_expr$Int$con&#60;&#62;(out, arg0)
+val () = fprint_expr$Int$lpar&#60;&#62;(out, arg0)
+val () = fprint_expr$Int$arg1&#60;&#62;(out, arg0)
+val () = fprint_expr$Int$rpar&#60;&#62;(out, arg0)
+//
+}
+implement{}
+fprint_expr$Int$con(out, _) = fprint(out, "Int")
+implement{}
+fprint_expr$Int$lpar(out, _) = fprint_expr$lpar(out)
+implement{}
+fprint_expr$Int$rpar(out, _) = fprint_expr$rpar(out)
+implement{}
+fprint_expr$Int$arg1(out, arg0) =
+  let val-Int(arg1) = arg0 in fprint_expr$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_expr$Var$con: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Var$lpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Var$rpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Var$arg1: $d2ctype(fprint_expr&#60;&#62;)
+//
+implement{}
+fprint_expr$Var(out, arg0) = 
+{
+//
+val () = fprint_expr$Var$con&#60;&#62;(out, arg0)
+val () = fprint_expr$Var$lpar&#60;&#62;(out, arg0)
+val () = fprint_expr$Var$arg1&#60;&#62;(out, arg0)
+val () = fprint_expr$Var$rpar&#60;&#62;(out, arg0)
+//
+}
+implement{}
+fprint_expr$Var$con(out, _) = fprint(out, "Var")
+implement{}
+fprint_expr$Var$lpar(out, _) = fprint_expr$lpar(out)
+implement{}
+fprint_expr$Var$rpar(out, _) = fprint_expr$rpar(out)
+implement{}
+fprint_expr$Var$arg1(out, arg0) =
+  let val-Var(arg1) = arg0 in fprint_expr$carg(out, arg1) end
+//
+extern
+fun{}
+fprint_expr$Add$con: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Add$lpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Add$rpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Add$sep1: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Add$arg1: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Add$arg2: $d2ctype(fprint_expr&#60;&#62;)
+//
+implement{}
+fprint_expr$Add(out, arg0) = 
+{
+//
+val () = fprint_expr$Add$con&#60;&#62;(out, arg0)
+val () = fprint_expr$Add$lpar&#60;&#62;(out, arg0)
+val () = fprint_expr$Add$arg1&#60;&#62;(out, arg0)
+val () = fprint_expr$Add$sep1&#60;&#62;(out, arg0)
+val () = fprint_expr$Add$arg2&#60;&#62;(out, arg0)
+val () = fprint_expr$Add$rpar&#60;&#62;(out, arg0)
+//
+}
+implement{}
+fprint_expr$Add$con(out, _) = fprint(out, "Add")
+implement{}
+fprint_expr$Add$lpar(out, _) = fprint_expr$lpar(out)
+implement{}
+fprint_expr$Add$rpar(out, _) = fprint_expr$rpar(out)
+implement{}
+fprint_expr$Add$sep1(out, _) = fprint_expr$sep&#60;&#62;(out)
+implement{}
+fprint_expr$Add$arg1(out, arg0) =
+  let val-Add(arg1, _) = arg0 in fprint_expr$carg(out, arg1) end
+implement{}
+fprint_expr$Add$arg2(out, arg0) =
+  let val-Add(_, arg2) = arg0 in fprint_expr$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_expr$Sub$con: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Sub$lpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Sub$rpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Sub$sep1: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Sub$arg1: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Sub$arg2: $d2ctype(fprint_expr&#60;&#62;)
+//
+implement{}
+fprint_expr$Sub(out, arg0) = 
+{
+//
+val () = fprint_expr$Sub$con&#60;&#62;(out, arg0)
+val () = fprint_expr$Sub$lpar&#60;&#62;(out, arg0)
+val () = fprint_expr$Sub$arg1&#60;&#62;(out, arg0)
+val () = fprint_expr$Sub$sep1&#60;&#62;(out, arg0)
+val () = fprint_expr$Sub$arg2&#60;&#62;(out, arg0)
+val () = fprint_expr$Sub$rpar&#60;&#62;(out, arg0)
+//
+}
+implement{}
+fprint_expr$Sub$con(out, _) = fprint(out, "Sub")
+implement{}
+fprint_expr$Sub$lpar(out, _) = fprint_expr$lpar(out)
+implement{}
+fprint_expr$Sub$rpar(out, _) = fprint_expr$rpar(out)
+implement{}
+fprint_expr$Sub$sep1(out, _) = fprint_expr$sep&#60;&#62;(out)
+implement{}
+fprint_expr$Sub$arg1(out, arg0) =
+  let val-Sub(arg1, _) = arg0 in fprint_expr$carg(out, arg1) end
+implement{}
+fprint_expr$Sub$arg2(out, arg0) =
+  let val-Sub(_, arg2) = arg0 in fprint_expr$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_expr$Mul$con: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Mul$lpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Mul$rpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Mul$sep1: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Mul$arg1: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Mul$arg2: $d2ctype(fprint_expr&#60;&#62;)
+//
+implement{}
+fprint_expr$Mul(out, arg0) = 
+{
+//
+val () = fprint_expr$Mul$con&#60;&#62;(out, arg0)
+val () = fprint_expr$Mul$lpar&#60;&#62;(out, arg0)
+val () = fprint_expr$Mul$arg1&#60;&#62;(out, arg0)
+val () = fprint_expr$Mul$sep1&#60;&#62;(out, arg0)
+val () = fprint_expr$Mul$arg2&#60;&#62;(out, arg0)
+val () = fprint_expr$Mul$rpar&#60;&#62;(out, arg0)
+//
+}
+implement{}
+fprint_expr$Mul$con(out, _) = fprint(out, "Mul")
+implement{}
+fprint_expr$Mul$lpar(out, _) = fprint_expr$lpar(out)
+implement{}
+fprint_expr$Mul$rpar(out, _) = fprint_expr$rpar(out)
+implement{}
+fprint_expr$Mul$sep1(out, _) = fprint_expr$sep&#60;&#62;(out)
+implement{}
+fprint_expr$Mul$arg1(out, arg0) =
+  let val-Mul(arg1, _) = arg0 in fprint_expr$carg(out, arg1) end
+implement{}
+fprint_expr$Mul$arg2(out, arg0) =
+  let val-Mul(_, arg2) = arg0 in fprint_expr$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_expr$Div$con: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Div$lpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Div$rpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Div$sep1: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Div$arg1: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Div$arg2: $d2ctype(fprint_expr&#60;&#62;)
+//
+implement{}
+fprint_expr$Div(out, arg0) = 
+{
+//
+val () = fprint_expr$Div$con&#60;&#62;(out, arg0)
+val () = fprint_expr$Div$lpar&#60;&#62;(out, arg0)
+val () = fprint_expr$Div$arg1&#60;&#62;(out, arg0)
+val () = fprint_expr$Div$sep1&#60;&#62;(out, arg0)
+val () = fprint_expr$Div$arg2&#60;&#62;(out, arg0)
+val () = fprint_expr$Div$rpar&#60;&#62;(out, arg0)
+//
+}
+implement{}
+fprint_expr$Div$con(out, _) = fprint(out, "Div")
+implement{}
+fprint_expr$Div$lpar(out, _) = fprint_expr$lpar(out)
+implement{}
+fprint_expr$Div$rpar(out, _) = fprint_expr$rpar(out)
+implement{}
+fprint_expr$Div$sep1(out, _) = fprint_expr$sep&#60;&#62;(out)
+implement{}
+fprint_expr$Div$arg1(out, arg0) =
+  let val-Div(arg1, _) = arg0 in fprint_expr$carg(out, arg1) end
+implement{}
+fprint_expr$Div$arg2(out, arg0) =
+  let val-Div(_, arg2) = arg0 in fprint_expr$carg(out, arg2) end
+//
+extern
+fun{}
+fprint_expr$Ifgtz$con: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtz$lpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtz$rpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtz$sep1: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtz$sep2: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtz$arg1: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtz$arg2: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtz$arg3: $d2ctype(fprint_expr&#60;&#62;)
+//
+implement{}
+fprint_expr$Ifgtz(out, arg0) = 
+{
+//
+val () = fprint_expr$Ifgtz$con&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtz$lpar&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtz$arg1&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtz$sep1&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtz$arg2&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtz$sep2&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtz$arg3&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtz$rpar&#60;&#62;(out, arg0)
+//
+}
+implement{}
+fprint_expr$Ifgtz$con(out, _) = fprint(out, "Ifgtz")
+implement{}
+fprint_expr$Ifgtz$lpar(out, _) = fprint_expr$lpar(out)
+implement{}
+fprint_expr$Ifgtz$rpar(out, _) = fprint_expr$rpar(out)
+implement{}
+fprint_expr$Ifgtz$sep1(out, _) = fprint_expr$sep&#60;&#62;(out)
+implement{}
+fprint_expr$Ifgtz$sep2(out, _) = fprint_expr$sep&#60;&#62;(out)
+implement{}
+fprint_expr$Ifgtz$arg1(out, arg0) =
+  let val-Ifgtz(arg1, _, _) = arg0 in fprint_expr$carg(out, arg1) end
+implement{}
+fprint_expr$Ifgtz$arg2(out, arg0) =
+  let val-Ifgtz(_, arg2, _) = arg0 in fprint_expr$carg(out, arg2) end
+implement{}
+fprint_expr$Ifgtz$arg3(out, arg0) =
+  let val-Ifgtz(_, _, arg3) = arg0 in fprint_expr$carg(out, arg3) end
+//
+extern
+fun{}
+fprint_expr$Ifgtez$con: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtez$lpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtez$rpar: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtez$sep1: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtez$sep2: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtez$arg1: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtez$arg2: $d2ctype(fprint_expr&#60;&#62;)
+extern
+fun{}
+fprint_expr$Ifgtez$arg3: $d2ctype(fprint_expr&#60;&#62;)
+//
+implement{}
+fprint_expr$Ifgtez(out, arg0) = 
+{
+//
+val () = fprint_expr$Ifgtez$con&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtez$lpar&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtez$arg1&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtez$sep1&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtez$arg2&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtez$sep2&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtez$arg3&#60;&#62;(out, arg0)
+val () = fprint_expr$Ifgtez$rpar&#60;&#62;(out, arg0)
+//
+}
+implement{}
+fprint_expr$Ifgtez$con(out, _) = fprint(out, "Ifgtez")
+implement{}
+fprint_expr$Ifgtez$lpar(out, _) = fprint_expr$lpar(out)
+implement{}
+fprint_expr$Ifgtez$rpar(out, _) = fprint_expr$rpar(out)
+implement{}
+fprint_expr$Ifgtez$sep1(out, _) = fprint_expr$sep&#60;&#62;(out)
+implement{}
+fprint_expr$Ifgtez$sep2(out, _) = fprint_expr$sep&#60;&#62;(out)
+implement{}
+fprint_expr$Ifgtez$arg1(out, arg0) =
+  let val-Ifgtez(arg1, _, _) = arg0 in fprint_expr$carg(out, arg1) end
+implement{}
+fprint_expr$Ifgtez$arg2(out, arg0) =
+  let val-Ifgtez(_, arg2, _) = arg0 in fprint_expr$carg(out, arg2) end
+implement{}
+fprint_expr$Ifgtez$arg3(out, arg0) =
+  let val-Ifgtez(_, _, arg3) = arg0 in fprint_expr$carg(out, arg3) end
+//
+(* ****** ****** *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The code for <FONT
+COLOR="RED"
+>fprint_expr</FONT
+> is entirely template-based. This style
+makes the code extremely flexible for adaption through template re-mplementation.
+As the datatype <FONT
+COLOR="RED"
+>expr</FONT
+> is recursively defined, the following template
+implementation needs to be added in order to make <FONT
+COLOR="RED"
+>fprint_expr</FONT
+> work:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1307"
+></A
+><PRE
+CLASS="programlisting"
+>implement fprint_expr$card&#60;expr&#62; = fprint_expr
+</PRE
+><P
+></P
+></DIV
+>
+
+
+For instance,
+applying <FONT
+COLOR="RED"
+>fprint_expr</FONT
+>
+to the expression <FONT
+COLOR="RED"
+>Add(Int(10),Mul(Int(1),Int(2)))</FONT
+>
+outputs the same text representation.
+
+As an example of adaptation, let us add the following template implementations:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1311"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+fprint_expr$Add$con&#60;&#62; (_, _) = ()
+implement
+fprint_expr$Add$sep1&#60;&#62; (out, _) = fprint! (out, "+")
+</PRE
+><P
+></P
+></DIV
+>
+
+
+When <FONT
+COLOR="RED"
+>fprint_expr</FONT
+> is applied to the expression
+<FONT
+COLOR="RED"
+>Add(Int(10),Mul(Int(1),Int(2)))</FONT
+> this time, the output is
+expected to read <FONT
+COLOR="RED"
+>(Int(10)+Mul(Int(1),Int(2)))</FONT
+>.
+
+</P
+><P
+>&#13;After proper adaptation is done, one can introduce a (non-template)
+function as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1317"
+></A
+><PRE
+CLASS="programlisting"
+>//
+extern
+fun
+my_fprint_expr(FILEref, expr): void
+implement
+my_fprint_expr (out, x) = fprint_expr&#60;&#62; (out, x)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+In this way, only one instance of <FONT
+COLOR="RED"
+>fprint_expr</FONT
+> is compiled even
+if repeated calls to <FONT
+COLOR="RED"
+>my_fprint_expr</FONT
+> are made.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_codegen2"
+TARGET="_top"
+>on-line</A
+>
+the entirety of this presented example plus a Makefile (for illustrating
+the code generation process).
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1270.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Generating a datcontag-function</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1233.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2TUTORIAL-BOOK.js"></SCRIPT></BODY
+></HTML
+>

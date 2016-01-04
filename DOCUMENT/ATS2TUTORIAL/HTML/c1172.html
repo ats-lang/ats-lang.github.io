@@ -1,0 +1,432 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Linear Closure-Functions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Advanced Tutorial Topics"
+HREF="p1145.html"><LINK
+REL="PREVIOUS"
+TITLE="Extvar-Declaration"
+HREF="c1147.html"><LINK
+REL="NEXT"
+TITLE="Automatic Code Generation"
+HREF="c1219.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c1147.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c1219.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="cloptr"
+></A
+>Chapter 26. Linear Closure-Functions</H1
+><P
+>&#13;
+A closure-function is a boxed record that contains a pointer to an envless
+function plus bindings that map certain names in the body of the envless
+function to values. In practice, a function argument of a higher-order
+function is often a closure-function (instead of an envless function). For
+instance, the following higher-order function <FONT
+COLOR="RED"
+>list_map_cloref</FONT
+>
+takes a closure-function as its second argument:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1176"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype}{b:t@ype
+} list_map_cloref{n:int}
+  (xs: list (a, n), f: (a) -&#60;cloref&#62; b): list_vt (b, n)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Closure-functions can be either linear or non-linear, and linear ones can
+be explicitly freed in a safe manner. The keyword
+<FONT
+COLOR="RED"
+>-&#60;cloref&#62;</FONT
+> is used to form a type for non-linear
+closure-functions. As a variant of <FONT
+COLOR="RED"
+>list_map_cloref</FONT
+>, the
+following higher-order function <FONT
+COLOR="RED"
+>list_map_cloptr</FONT
+> takes a linear
+closure-function as its second argument:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1182"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype}{b:t@ype
+} list_map_cloptr{n:int}
+  (xs: list (a, n), f: !(a) -&#60;cloptr&#62; b): list_vt (b, n)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+As can be easily guessed, the keyword <FONT
+COLOR="RED"
+>-&#60;cloptr&#62;</FONT
+> is used
+to form a type for linear closure-functions.  Note that the symbol
+<FONT
+COLOR="RED"
+>!</FONT
+> indicates that the second argument is still available after
+a call to <FONT
+COLOR="RED"
+>list_map_cloptr</FONT
+> returns.
+
+</P
+><P
+>&#13;A typical example making use of <FONT
+COLOR="RED"
+>list_map_cloptr</FONT
+> is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1189"
+></A
+><PRE
+CLASS="programlisting"
+>fun foo{n:int}
+(
+  x0: int, xs: list (int, n)
+) : list_vt (int, n) = res where
+{
+//
+val f = lam (x) =&#60;cloptr&#62; x0 + x
+val res = list_map_cloptr (xs, f)
+val () = cloptr_free ($UNSAFE.cast{cloptr(void)}(f))
+//
+} (* end of [foo] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that a linear closure is first created in the body of the function
+<FONT
+COLOR="RED"
+>foo</FONT
+>, and it is explicitly freed after its use. The function
+<FONT
+COLOR="RED"
+>cloptr_free</FONT
+> is given the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1193"
+></A
+><PRE
+CLASS="programlisting"
+>fun cloptr_free {a:t0p} (pclo: cloptr (a)): void
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>cloptr</FONT
+> is abstract. The cast
+<FONT
+COLOR="RED"
+>$UNSAFE.cast{cloptr(void)}(f)</FONT
+> can certainly be replaced with
+something safer but it would make programming more curbersome.
+
+</P
+><P
+>&#13;There is also some interesting interaction between currying and linear
+closure-functions. In functional programming, currying means turning a
+function taking multiple arguments simutaneously into a corresponding one
+that takes these arguments sequentially. For instance, the function
+<FONT
+COLOR="RED"
+>acker2</FONT
+> in the following code is a curried version of the
+function <FONT
+COLOR="RED"
+>acker</FONT
+>, which implements the famous Ackermann function
+(that is recursive but not primitive recursive):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1200"
+></A
+><PRE
+CLASS="programlisting"
+>fun
+acker(m:int, n:int): int =
+(
+  case+ (m, n) of
+  | (0, _) =&#62; n + 1
+  | (m, 0) =&#62; acker (m-1, 1)
+  | (_, _) =&#62; acker (m-1, acker (m, n-1))
+) (* end of [acker] *)
+
+fun acker2 (m:int) (n:int): int = acker (m, n)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Suppose that we apply <FONT
+COLOR="RED"
+>acker2</FONT
+> to two integers 3 and 4:
+<FONT
+COLOR="RED"
+>acker2(3)(4)</FONT
+>; the application <FONT
+COLOR="RED"
+>acker2(3)</FONT
+> evaluates
+to a (non-linear) closure-function; the application of this
+closure-function to 4 evaluates to <FONT
+COLOR="RED"
+>acker(3,4)</FONT
+>, which further
+evaluates to the integer 125. Note that the closure-function generated from
+evaluating <FONT
+COLOR="RED"
+>acker2(3)</FONT
+> becomes a heap-allocated value that is no
+longer accessible after the evaluation of <FONT
+COLOR="RED"
+>acker2(3)(4)</FONT
+>
+finishes, and the memory for such a value can only to be safely reclaimed
+through garbage collection (GC).
+
+</P
+><P
+>&#13;It is also possible to define a curried version of <FONT
+COLOR="RED"
+>acker</FONT
+> as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1210"
+></A
+><PRE
+CLASS="programlisting"
+>fun acker3 (m:int) = lam (n:int): int =&#60;cloptr1&#62; acker (m, n)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+While the evaluation of <FONT
+COLOR="RED"
+>acker3(3)(4)</FONT
+> yields the same result as
+<FONT
+COLOR="RED"
+>acker2(3)(4)</FONT
+>, the compiler of ATS (ATS/Postiats) inserts code
+that automatically frees the linear closure-function generated from evaluating
+<FONT
+COLOR="RED"
+>acker3(3)</FONT
+> after the evaluation of <FONT
+COLOR="RED"
+>acker3(3)(4)</FONT
+> finishes.
+
+</P
+><P
+>&#13;In ATS1, linear closure-functions play a pivotal role in supporting
+programming with higher-order functions in the absence of GC. Due to
+advanced support for templates in ATS2, the role played by linear
+closure-functions in ATS1 is greatly diminished. However, if
+closure-functions need to be stored in a data structure but GC is
+unavailable or undesirable, then using linear closure-functions can lead to
+a solution that avoids the risk of generatig memory leaks at run-time.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_cloptr.dats"
+TARGET="_top"
+>on-line</A
+> the entirety of the
+code used in this chapter.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c1147.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c1219.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Extvar-Declaration</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p1145.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Automatic Code Generation</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
