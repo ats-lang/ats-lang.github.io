@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Persistent Arrays</TITLE
+>Boxed Tuples and Records</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -16,8 +16,8 @@ REL="PREVIOUS"
 TITLE="References"
 HREF="c642.html"><LINK
 REL="NEXT"
-TITLE="Persistent Arrays-with-size"
-HREF="c776.html"><LINK
+TITLE="Persistent Arrays"
+HREF="c773.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c776.html"
+HREF="c773.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,38 +75,38 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="arrayref"
+NAME="boxed_tuprec"
 ></A
->Chapter 15. Persistent Arrays</H1
+>Chapter 15. Boxed Tuples and Records</H1
 ><P
->&#13;A persistent array of size n is just n heap-allocated cells (or references)
-in a row.  It is persistent in the sense that the memory allocated for the
-array cannot be freed manually. Instead, it can only be safely reclaimed
-through garbage collection (GC).
-</P
-><P
->&#13;Given a viewtype VT, the type for persistent arrays containing N values of
-viewtype VT is <FONT
-COLOR="RED"
->arrayref(VT, N)</FONT
->.  Note that arrays in ATS are
-the same as those in C: There is no size information attached to them. The
-interfaces for various functions on persistent arrays can be found in
-the SATS file
-<A
-HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/arrayref.sats"
-TARGET="_top"
->prelude/SATS/arrayref.sats</A
->,
-which is automatically loaded by <B
-CLASS="command"
->atsopt</B
->.
+>&#13;A <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>boxed</I
+></SPAN
+> tuple/record is just a reference to
+some location in memory where a flat tuple/record is stored.
+Often the word <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>unboxed</I
+></SPAN
+> is also used to describe a
+flat tuple/record.
 
 </P
 ><P
->&#13;There are various functions in ATSLIB for array creation. For instance, the
-following two are commonly used:
+>&#13;In the following code,
+the types <FONT
+COLOR="RED"
+>abc_tup</FONT
+>
+and <FONT
+COLOR="RED"
+>abc_rec</FONT
+> are for boxed tuples and records, respectively:
 
 <DIV
 CLASS="informalexample"
@@ -117,15 +117,10 @@ NAME="AEN723"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:t@ype}
-arrayref_make_elt
-  {n:nat} (asz: size_t n, elt: a):&#60;!wrt&#62; arrayref (a, n)
-// end of [arrayref_make_elt]
-
-fun{a:t@ype}
-arrayref_make_listlen
-  {n:int} (xs: list (a, n), n: int n):&#60;!wrt&#62; arrayref (a, n)
-// end of [arrayref_make_listlen]
+>typedef
+abc_tup = '(int, int, string) // for tuples
+typedef
+abc_rec = '{a=int, b=int, c=string} // for records
 </PRE
 ><P
 ></P
@@ -133,29 +128,29 @@ arrayref_make_listlen
 >
 
 
-Applied to a size and an element, <FONT
+Note that a tuple is just a special record in the sense that the
+labels in the tuple are fixed to be ranging from 0 to n-1, inclusive,
+where n is the tuple length. In the case of <FONT
 COLOR="RED"
->arrayref_make_elt</FONT
-> returns an
-array of the given size in which each cell is initialized with the given
-element.  Applied to a list of elements and the length of the list,
+>abc_tup</FONT
+>, the
+three associated labels are 0, 1, and 2. Note that <FONT
+COLOR="RED"
+>'(</FONT
+> and
 <FONT
 COLOR="RED"
->arrayref_make_listlen</FONT
-> returns an array of size equal to the
-given length in which each cell is initialized with the corresponding
-element in the given list.
-</P
-><P
->&#13;For reading from and writing to an array, the function templates
+>'{</FONT
+> are special symbols in ATS and there is no space
+allowed after the single quote. If the use of these special symbols is
+to be avoided, then one can declare the types <FONT
+COLOR="RED"
+>abc_tup</FONT
+> and
 <FONT
 COLOR="RED"
->arrayref_get_at</FONT
-> and <FONT
-COLOR="RED"
->arrayref_set_at</FONT
-> can be used,
-respectively, which are assigned the following interfaces:
+>abc_rec</FONT
+> as follows in a slightly different syntax:
 
 <DIV
 CLASS="informalexample"
@@ -166,13 +161,10 @@ NAME="AEN730"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:t@ype}
-arrayref_get_at
-  {n:int} (A: arrayref (a, n), i: sizeLt (n)):&#60;!ref&#62; a
-
-fun{a:t@ype}
-arrayref_set_at
-  {n:int} (A: arrayref (a, n), i: sizeLt (n), x: a):&#60;!ref&#62; void
+>typedef
+abc_tup = $tup(int, int, string) // for tuples
+typedef
+abc_rec = $rec{a=int, b=int, c=string} // for records
 </PRE
 ><P
 ></P
@@ -180,230 +172,43 @@ arrayref_set_at
 >
 
 
-Given an array <FONT
-COLOR="RED"
->A</FONT
->, an index <FONT
-COLOR="RED"
->i</FONT
-> and a value
+Also, the keywords
 <FONT
 COLOR="RED"
->v</FONT
->, <FONT
+>$tup</FONT
+> and <FONT
 COLOR="RED"
->arrayref_get_at(A, i)</FONT
-> and
+>$rec</FONT
+> can be replaced with
 <FONT
 COLOR="RED"
->arrayref_set_at(A, i, v)</FONT
-> can be written as <FONT
+>$tuple</FONT
+> and <FONT
 COLOR="RED"
->A[i]</FONT
->
-and <FONT
-COLOR="RED"
->A[i] := v</FONT
+>$record</FONT
 >, respectively.
-</P
-><P
->&#13;
-As an example, the following function template reverses the content of a
-given array:
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN740"
-></A
-><PRE
-CLASS="programlisting"
->fun{a:t@ype}
-arrayref_reverse{n:nat}
-(
-  A: arrayref (a, n), n: size_t (n)
-) : void = let
-//
-fun loop
-  {i: nat | i &#60;= n} .&#60;n-i&#62;.
-(
-  A: arrayref (a, n), n: size_t n, i: size_t i
-) : void = let
-  val n2 = half (n)
-in
-  if i &#60; n2 then let
-    val tmp = A[i]
-    val ni = pred(n)-i
-  in
-    A[i] := A[ni]; A[ni] := tmp; loop (A, n, succ(i))
-  end else () // end of [if]
-end // end of [loop]
-//
-in
-  loop (A, n, i2sz(0))
-end // end of [arrayref_reverse]
-</PRE
-><P
-></P
-></DIV
->
-
 
 </P
 ><P
->&#13;If the test <FONT
-COLOR="RED"
->i &#60; n2</FONT
-> is changed to <FONT
-COLOR="RED"
->i &#60;= n2</FONT
->, a type-error
-is to be reported. Why? The reason is that <FONT
-COLOR="RED"
->A[n-1-i]</FONT
-> becomes
-out-of-bounds array subscripting in the case where <FONT
-COLOR="RED"
->n</FONT
-> and
-<FONT
-COLOR="RED"
->i</FONT
-> both equal zero. Given that it is very unlikely to encounter a
-case where an array of size 0 is involved, a bug like this, if not detected
-early, can be buried so scarily deep!
-</P
-><P
->&#13;The careful reader may have already noticed that the sort <FONT
-COLOR="RED"
->t@ype</FONT
->
-is assigned to the template parameter <FONT
-COLOR="RED"
->a</FONT
->. In other words, the
-above implementation of <FONT
-COLOR="RED"
->arrayref_reverse</FONT
-> cannot handle a case
-where the values stored in a given array are of some linear type. The
-reason for choosing the sort <FONT
-COLOR="RED"
->t@ype</FONT
-> is that both
-<FONT
-COLOR="RED"
->arrayref_get_at</FONT
-> and <FONT
-COLOR="RED"
->arrayref_set_at</FONT
-> can only be
-applied to an array containing values of a nonlinear type. In the following
-implementation, the template parameter is given the sort <FONT
-COLOR="RED"
->vt@ype</FONT
->
-so that an array containing linear values, that is, values of some linear
-type can be handled:
-</P
-><DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN756"
-></A
-><PRE
-CLASS="programlisting"
->fun{a:vt@ype}
-arrayref_reverse{n:nat}
-(
-  A: arrayref (a, n), n: size_t (n)
-) : void = let
-//
-fun loop
-  {i: nat | i &#60;= n} .&#60;n-i&#62;.
-(
-  A: arrayref (a, n), n: size_t n, i: size_t i
-) : void = let
-  val n2 = half (n)
-in
-  if i &#60; n2 then let
-    val () = arrayref_interchange (A, i, pred(n)-i) in loop (A, n, succ(i))
-  end else () // end of [if]
-end // end of [loop]
-//
-in
-  loop (A, n, i2sz(0))
-end // end of [arrayref_reverse]
-</PRE
-><P
-></P
-></DIV
-><P
->&#13;
-The interface for the function template <FONT
-COLOR="RED"
->arrayref_interchange</FONT
-> is
-given below:
+>&#13;The following code demonstrates how tuples and records can be created
+and their components (i.e., fields) taken out:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN760"
-></A
-><PRE
-CLASS="programlisting"
->fun{a:vt@ype}
-arrayref_interchange{n:int}
-  (A: arrayref (a, n), i: sizeLt n, j: sizeLt n):&#60;!ref&#62; void
-// end of [arrayref_interchange]
-</PRE
-><P
-></P
-></DIV
->
-
-
-Note that <FONT
-COLOR="RED"
->arrayref_interchange</FONT
-> can not be implemented in terms
-of <FONT
-COLOR="RED"
->arrayref_get_at</FONT
-> and <FONT
-COLOR="RED"
->arrayref_set_at</FONT
-> (unless some
-form of type-unsafe code is employed).
-</P
-><P
->&#13;There are various functions available for traversing an array from left to
-right or from right to left. Also, the following two functions can be conveniently
-called to traverse an array from left to right:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN766"
+NAME="AEN737"
 ></A
 ><PRE
 CLASS="programlisting"
 >//
-fun{a:t0p}
-arrayref_head{n:pos} (A: arrayref (a, n)): (a) // A[0]
-fun{a:t0p}
-arrayref_tail{n:pos} (A: arrayref (a, n)): arrayref (a, n-1)
+val x_tup = '(0, 1, "2") : abc_tup
+val x_rec = '{a=0, b=1, c="2"} : abc_rec
 //
-overload .head with arrayref_head
-overload .tail with arrayref_tail
+val ((*void*)) = assertloc(x_tup.0 = x_rec.a)
+val ((*void*)) = assertloc(x_tup.1 = x_rec.b)
+val ((*void*)) = assertloc(x_tup.2 = x_rec.c)
 //
 </PRE
 ><P
@@ -412,8 +217,263 @@ overload .tail with arrayref_tail
 >
 
 
-For instance, the fold-left function for arrays can be implemented
-as follows:
+</P
+><P
+>&#13;It should be noted that both <FONT
+COLOR="RED"
+>x_tup</FONT
+> and <FONT
+COLOR="RED"
+>x_rec</FONT
+>
+are immutable. If one tries to typecheck the following code, then he
+or she should see error messages reporting that <FONT
+COLOR="RED"
+>x_tup.0</FONT
+>
+and <FONT
+COLOR="RED"
+>x_rec.a</FONT
+> are non-left-values:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN744"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val () = x_tup.0 := 100 // *ERROR*: x_tup.0 not a left-value
+val () = x_rec.a := 100 // *ERROR*: x_tup.0 not a left-value
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;In order to have a tuple/record with mutable fields, we can just
+literally create a reference to a flat tuple/record. In the following
+code, the types <FONT
+COLOR="RED"
+>abc_tup_</FONT
+> and <FONT
+COLOR="RED"
+>abc_rec_</FONT
+> are
+declcared for flat tuples and records, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN749"
+></A
+><PRE
+CLASS="programlisting"
+>//
+typedef
+abc_tup_ = @(int, int, string) // for tuples
+typedef
+abc_rec_ = @{a=int, b=int, c=string} // for records
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+and the types <FONT
+COLOR="RED"
+>abc_tup_r</FONT
+> and <FONT
+COLOR="RED"
+>abc_rec_r</FONT
+> are for
+references to tuples and records classified by <FONT
+COLOR="RED"
+>abc_tup_</FONT
+>
+and <FONT
+COLOR="RED"
+>abc_rec_</FONT
+>, respetively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN755"
+></A
+><PRE
+CLASS="programlisting"
+>//
+typedef abc_tup_r = ref(abc_tup_) // for tuples
+typedef abc_rec_r = ref(abc_rec_) // for records
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The code below demonstrates how tuples and records with mutable fields
+can be created and their fields accessed and updated.
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN757"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val x_tup_r = ref&#60;abc_tup_&#62;(@(0, 1, "2"))
+val x_rec_r = ref&#60;abc_rec_&#62;(@{a=0, b=1, c="2"})
+//
+(* ****** ****** *)
+//
+val () = assertloc(x_tup_r-&#62;0 = x_rec_r-&#62;a)
+val () = assertloc(x_tup_r-&#62;1 = x_rec_r-&#62;b)
+val () = assertloc(x_tup_r-&#62;2 = x_rec_r-&#62;c)
+//
+(* ****** ****** *)
+//
+val () = x_tup_r-&#62;0 := 100 // *OKAY*: x_tup_r.0 is a left-value
+val () = x_rec_r-&#62;a := 100 // *OKAY*: x_rec_r.a is a left-value
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;If we want to have records of a type where certain fields are
+read-only while the others may be updated, we can do this by making
+use of the support for abstract types in ATS.  In the following
+example, <FONT
+COLOR="RED"
+>myrec</FONT
+> is declared to be abstract; there are three
+fields associated with <FONT
+COLOR="RED"
+>myrec</FONT
+> that are of the names
+<FONT
+COLOR="RED"
+>a</FONT
+>, <FONT
+COLOR="RED"
+>b</FONT
+>, and <FONT
+COLOR="RED"
+>c</FONT
+>; the first two may be
+updated while the third one is read-only:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN765"
+></A
+><PRE
+CLASS="programlisting"
+>(* ****** ****** *)
+
+abstype myrec = ptr  
+
+(* ****** ****** *)
+//
+extern
+fun{}
+myrec_make
+(
+  a: int, b: int, c: string
+) : myrec // end-of-function
+//
+extern
+fun{}
+myrec_get_a : myrec -&#62; int
+extern
+fun{}
+myrec_set_a : (myrec, int) -&#62; void
+extern
+fun{}
+myrec_get_b : myrec -&#62; int
+extern
+fun{}
+myrec_set_b : (myrec, int) -&#62; void
+extern
+fun{}
+myrec_get_c : myrec -&#62; string
+//
+overload .a with myrec_get_a
+overload .a with myrec_set_a
+overload .b with myrec_get_b
+overload .b with myrec_set_b
+overload .c with myrec_get_c
+//
+(* ****** ****** *)
+
+local
+//
+assume myrec = abc_rec_r
+//
+in (* in-of-local *)
+//
+implement
+{}(*tmp*)
+myrec_make
+  (a, b, c) = ref(@{a=a, b=b, c=c})
+//
+implement{} myrec_get_a(x) = x-&#62;a
+implement{} myrec_set_a(x, a) = x-&#62;a := a
+//
+implement{} myrec_get_b(x) = x-&#62;b
+implement{} myrec_set_b(x, b) = x-&#62;b := b
+//
+implement{} myrec_get_c(x) = x-&#62;c
+(*
+//
+// there is no update for the c-field:
+//
+implement{} myrec_set_a(x, c) = x-&#62;c := c
+*)
+//
+end // end of [local]
+
+(* ****** ****** *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Following is some code that creates a
+record of the type <FONT
+COLOR="RED"
+>myrec</FONT
+> and then
+accesses and updates certain fields of the
+created record:
 
 <DIV
 CLASS="informalexample"
@@ -424,17 +484,23 @@ NAME="AEN768"
 ></A
 ><PRE
 CLASS="programlisting"
->&#13;fun{a,b:t@ype}
-arrayref_foldleft{n:int}
-(
-  f: (a, b) -&#62; a, x: a, A: arrayref (b, n), n: size_t(n)
-) : a =
-(
-if n &#62; 0
-  then arrayref_foldleft&#60;a,b&#62; (f, f (x, A.head()), A.tail(), pred(n))
-  else x
-// end of [if]
-) (* end of [arrayref_foldleft] *)
+>//
+val x_abc = myrec_make(0, 1, "2")
+//
+val ((*void*)) = assertloc(x_abc.a() = 0)
+val ((*void*)) = assertloc(x_abc.b() = 1)
+val ((*void*)) = assertloc(x_abc.c() = "2")
+//
+val ((*void*)) = x_abc.a(100)
+val ((*void*)) = assertloc(x_abc.a() = 100)
+//
+val ((*void*)) = x_abc.b(101)
+val ((*void*)) = assertloc(x_abc.b() = 101)
+//
+(*
+val ((*void*)) = x_abc.c("102") // *ERROR*: unsupported
+*)
+//
 </PRE
 ><P
 ></P
@@ -442,31 +508,23 @@ if n &#62; 0
 >
 
 
-As can be expected, <FONT
+While this example (<FONT
 COLOR="RED"
->A.head</FONT
-> and <FONT
-COLOR="RED"
->A.tail</FONT
-> translate
-into <FONT
-COLOR="RED"
->A[0]</FONT
-> and <FONT
-COLOR="RED"
->ptr_succ&#60;T&#62;(p0)</FONT
->, respectively, where T
-is the type for the elements stored in A and p0 is the starting address of
-A.
+>myrec</FONT
+>) demonstrates an approach
+to constructing records containing both read-only fields and fields that
+can be updated, this approach does seem a bit too verbose. One
+possibilty is to develop meta-programming support so as to greatly
+reduce the verbosity (due to the need for boilerplate code).
 
 </P
 ><P
 >&#13;Please find <A
-HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_arrayref.dats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_tuprec_1.dats"
 TARGET="_top"
 >on-line</A
-> the entirety of the
-code used in this chapter.
+> the
+entirety of the code used in this chapter plus some testing code.
 </P
 ></DIV
 ><DIV
@@ -503,7 +561,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c776.html"
+HREF="c773.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -527,7 +585,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Persistent Arrays-with-size</TD
+>Persistent Arrays</TD
 ></TR
 ></TABLE
 ></DIV

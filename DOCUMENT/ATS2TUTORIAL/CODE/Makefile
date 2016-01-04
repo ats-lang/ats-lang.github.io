@@ -130,6 +130,15 @@ cleanall:: ; $(RMF) chap_reference
 ######
 #
 all:: \
+chap_tuprec_1
+chap_tuprec_1: \
+  chap_tuprec_1.dats ; $(PATSCC2) -DATS_MEMALLOC_LIBC -o $@ $<
+regress:: chap_tuprec_1; ./$<
+cleanall:: ; $(RMF) chap_tuprec_1
+#
+######
+#
+all:: \
 chap_arrayref
 chap_arrayref: \
   chap_arrayref.dats ; $(PATSCC2) -DATS_MEMALLOC_LIBC -o $@ $<
@@ -217,6 +226,15 @@ chap_cloptr: \
   chap_cloptr.dats ; $(PATSCC2) -DATS_MEMALLOC_GCBDW -o $@ $< -lgc
 regress:: chap_cloptr; ./$<
 cleanall:: ; $(RMF) chap_cloptr
+#
+######
+#
+all:: \
+chap_stkclo
+chap_stkclo: \
+  chap_stkclo.dats ; $(PATSCC2) -DATS_MEMALLOC_GCBDW -o $@ $< -lgc
+regress:: chap_stkclo; ./$<
+cleanall:: ; $(RMF) chap_stkclo
 #
 ######
 #

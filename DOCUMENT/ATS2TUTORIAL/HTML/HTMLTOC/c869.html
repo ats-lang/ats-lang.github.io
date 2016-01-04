@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Persistent Hashtables</TITLE
+>Persistent Matrices</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Basic Tutorial Topics"
 HREF="p34.html"><LINK
 REL="PREVIOUS"
-TITLE="Persistent Matrices-with-size"
-HREF="c838.html"><LINK
+TITLE="Persistent Arrays-with-size"
+HREF="c834.html"><LINK
 REL="NEXT"
-TITLE="Tail-Recursion"
-HREF="c930.html"><LINK
+TITLE="Persistent Matrices-with-size"
+HREF="c893.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c838.html"
+HREF="c834.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c930.html"
+HREF="c893.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,49 +75,52 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="hashtable"
+NAME="matrixref"
 ></A
->Chapter 19. Persistent Hashtables</H1
+>Chapter 18. Persistent Matrices</H1
 ><P
->&#13;Hashtables are commonly used to implement finite maps. In ATSLIB/libats,
-there are hashtable implementations based on linear chaining and linear
-probing. There is also support for linear hashtables as well as persistent
-hashtables. The linear ones can be safely freed by the programmer, and the
-persistent ones (which are directly based on linear ones) can only be
-safely reclaimed through garbage collection (GC). In this chapter, I show
-how persistent hashtables can be created and operated on.
+>&#13;A persistent matrix of dimension m by n is just a persistent array of size
+m*n. Like in C, the representation of a matrix in ATS is row-major. In
+other words, element (i, j) in a matrix of dimension m by n is element
+i*n+j in the underlying array that represents the matrix.
+
 </P
 ><P
->&#13;Suppose that a map is needed for mapping keys of type
+>&#13;Given a viewtype VT and two integers M and N, the type
 <FONT
 COLOR="RED"
->key_t</FONT
-> to items of type <FONT
-COLOR="RED"
->itm_t</FONT
->. The following code
-essentially sets up an interface for creating and operating on such a map
-based on a hashtable implementation in ATSLIB/libats:
+>matrixref(VT, M, N)</FONT
+> is for persistent matrices of dimension M
+by N that contain elements of the viewtype VT.  There is no dimension
+information attached to matrixref-values explicitly. The interfaces for various
+functions on persistent matrices can be found in the SATS file
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/matrixref.sats"
+TARGET="_top"
+>prelude/SATS/matrixref.sats</A
+>, which is automatically loaded by
+<B
+CLASS="command"
+>atsopt</B
+>.
+
+</P
+><P
+>&#13;The following function is commonly used to create a matrixref-value:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN875"
+NAME="AEN877"
 ></A
 ><PRE
 CLASS="programlisting"
->local
-
-typedef
-key = key_t and itm = itm_t
-
-in (* in-of-local *)
-
-#include "libats/ML/HATS/myhashtblref.hats"
-
-end // end of [local]
+>fun{a:t0p}
+matrixref_make_elt{m,n:int}
+  (m: size_t m, n: size_t n, x0: a):&#60;!wrt&#62; matrixref (a, m, n)
+// end of [matrixref_make_elt]
 </PRE
 ><P
 ></P
@@ -125,58 +128,48 @@ end // end of [local]
 >
 
 
-Please find <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/libats/ML/HATS/myhashtblref.hats"
-TARGET="_top"
->on-line</A
+Given two sizes m and n plus an element x0,
+<FONT
+COLOR="RED"
+>matrixref_make_elt</FONT
+> returns a matrix of dimension m by n
+in which each cell is initialized with the element x0.
+</P
+><P
+>&#13;Also, the following cast function can be called to turn an array into
+a matrix:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN881"
+></A
+><PRE
+CLASS="programlisting"
+>castfn
+arrayref2matrixref
+  {a:vt0p}{m,n:nat} (A: arrayref (a, m*n)):&#60;&#62; matrixref (a, m, n)
+// end of [arrayref2matrixref]
+</PRE
+><P
+></P
+></DIV
 >
-the HATS file mentioned in the code, which is just a convenience wrapper
-made to simplify programming with hashtables.
+
 
 </P
 ><P
->&#13;Assume that <FONT
+>&#13;For accessing and updating the content of a matrix-cell, the following
+two functions <FONT
 COLOR="RED"
->key_t</FONT
-> is <FONT
-COLOR="RED"
->string</FONT
+>matrixref_get_at</FONT
 > and <FONT
 COLOR="RED"
->itm_t</FONT
+>matrixref_set_at</FONT
 >
-is <FONT
-COLOR="RED"
->int</FONT
->. The following line of code creates a hashtable with its
-initial capacity set to be 1000:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN883"
-></A
-><PRE
-CLASS="programlisting"
->val mymap = myhashtbl_make_nil(1000)
-</PRE
-><P
-></P
-></DIV
->
-
-
-Note that the capacity in this case is the size of the array associated
-with the created hashtable. The underlying hashtable implementation is
-based on linear chaining, and this hashtable can store up to 5000 (5*1000)
-items without need for resizing. When resizing is indeed needed, it is done
-automatically. The following few lines insert some key/item pairs into
-<FONT
-COLOR="RED"
->mymap</FONT
->:
+can be called:
 
 <DIV
 CLASS="informalexample"
@@ -188,88 +181,19 @@ NAME="AEN886"
 ><PRE
 CLASS="programlisting"
 >//
-val-~None_vt() = mymap.insert("a", 0)
-val-~Some_vt(0) = mymap.insert("a", 1)
+fun{a:t0p}
+matrixref_get_at
+  {m,n:int}
+(
+  A: matrixref (a, m, n), i: sizeLt(m), n: size_t(n), j: sizeLt(n)
+) :&#60;!ref&#62; (a) // end of [matrixref_get_at]
 //
-val-~None_vt() = mymap.insert("b", 1)
-val-~Some_vt(1) = mymap.insert("b", 2)
-//
-val-~None_vt() = mymap.insert("c", 2)
-val-~Some_vt(2) = mymap.insert("c", 3)
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-The dot-symbol <FONT
-COLOR="RED"
->.insert</FONT
-> is overloaded with a function of the
-name <FONT
-COLOR="RED"
->myhashtbl_insert</FONT
->. Given a key and an item,
-<FONT
-COLOR="RED"
->mymap.insert</FONT
-> inserts the key/item pair into <FONT
-COLOR="RED"
->mymap</FONT
->.
-If the key is in the domain of the map represented by <FONT
-COLOR="RED"
->mymap</FONT
->
-before insertion, then the original item associated with the key is
-returned. Otherwise, no item is returned. As can be expected, the size
-of <FONT
-COLOR="RED"
->mymap</FONT
-> is 3 at this point:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN894"
-></A
-><PRE
-CLASS="programlisting"
->val () = assertloc (mymap.size = 3)
-</PRE
-><P
-></P
-></DIV
->
-
-
-The dot-symbol <FONT
-COLOR="RED"
->.size</FONT
-> is overloaded with a function of the name
-<FONT
-COLOR="RED"
->myhashtbl_get_size</FONT
->, which returns the number of key/item pairs
-stored in a given hashtable.  During the course of debugging, one may want
-to print out the key/item pairs in a given hashtable:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN898"
-></A
-><PRE
-CLASS="programlisting"
->//
-val () =
-  fprintln! (stdout_ref, "mymap = ", mymap)
+fun{a:t0p}
+matrixref_set_at
+  {m,n:int}
+(
+  A: matrixref (INV(a), m, n), i: sizeLt (m), n: size_t n, j: sizeLt (n), x: a
+) :&#60;!refwrt&#62; void // end of [matrixref_set_at]
 //
 </PRE
 ><P
@@ -278,206 +202,66 @@ val () =
 >
 
 
-where the symbol <FONT
-COLOR="RED"
->fprint</FONT
-> is overloaded with
-<FONT
-COLOR="RED"
->fprint_myhashtbl</FONT
->. The next two lines of code show how search
-with a given key operates on a hashtable:
+Note that it is not enough to just supply the coordinates of a
+matrix-cell in order to access it; the column dimension of the matrix
+needs to be supplied as well.
+
+</P
+><P
+>&#13;In the following presentation, I give an implementation of a function that
+turns a given square matrix into its transpose:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN902"
-></A
-><PRE
-CLASS="programlisting"
->val-~None_vt() = mymap.search("")
-val-~Some_vt(1) = mymap.search("a")
-</PRE
-><P
-></P
-></DIV
->
-
-
-The dot-symbol <FONT
-COLOR="RED"
->.search</FONT
-> is overloaded with a function of the
-name <FONT
-COLOR="RED"
->myhashtbl_search</FONT
->, which returns the item associated with a
-given key if it is found. The next few lines of code remove some key/item
-pairs from <FONT
-COLOR="RED"
->mymap</FONT
->:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN907"
-></A
-><PRE
-CLASS="programlisting"
->//
-val-true = mymap.remove("a")
-val-false = mymap.remove("a")
-//
-val-~Some_vt(2) = mymap.takeout("b")
-val-~Some_vt(3) = mymap.takeout("c")
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-The dot-symbol <FONT
-COLOR="RED"
->.remove</FONT
-> is overloaded with a function of the
-name <FONT
-COLOR="RED"
->myhashtbl_remove</FONT
-> for removing a key/item pair of a given
-key. If a key/item pair is removed, then the function returns
-true. Otherwise, it returns false to indicates that no key/item pair of the
-given key is stored in the hashtable being operated on.  The dot-symbol
-<FONT
-COLOR="RED"
->.takeout</FONT
-> is overloaded with a function of the name
-<FONT
-COLOR="RED"
->myhashtbl_takeout</FONT
->, which is similar to
-<FONT
-COLOR="RED"
->myhashtbl_remove</FONT
-> excepting for returning the removed item.
-The next few lines of code make use of several less commonly used functions
-on hashtables:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN914"
-></A
-><PRE
-CLASS="programlisting"
->//
-val () = mymap.insert_any("a", 0)
-val () = mymap.insert_any("b", 1)
-val () = mymap.insert_any("c", 2)
-val kxs = mymap.listize1((*void*))
-val ((*void*)) = fprintln! (stdout_ref, "kxs = ", kxs)
-val kxs = mymap.takeout_all((*void*))
-val ((*void*)) = fprintln! (stdout_ref, "kxs = ", kxs)
-//
-val () = assertloc (mymap.size = 0)
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-The dot-symbol <FONT
-COLOR="RED"
->.insert_any</FONT
-> is overloaded with a function of the
-name <FONT
-COLOR="RED"
->myhashtbl_insert_any</FONT
->, which <SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->always</I
-></SPAN
-> inserts a
-given key/item pair regardless whether the key is already in use. One
-should really avoid using this function or only call it when it is
-absolutely sure that the given key is not already in use for otherwise the
-involved hashtable would be corrupted.  The dot-symbols
-<FONT
-COLOR="RED"
->.listize1</FONT
-> and <FONT
-COLOR="RED"
->.takeout_all</FONT
-> are overloaded with two
-functions of the names <FONT
-COLOR="RED"
->myhashtbl_listize1</FONT
-> and
-<FONT
-COLOR="RED"
->myhashtbl_takeout_all</FONT
->, respectively. Both of them return a list
-consisting of all the key/item pairs in a given hashtable; the former keeps
-the hashtable unchanged while the latter empties it. Last, I present as follows the
-interface for an iterator going over all the key/item pairs in a given hashtable:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN923"
+NAME="AEN889"
 ></A
 ><PRE
 CLASS="programlisting"
 >//
 extern
-fun
-myhashtbl_foreach_cloref
+fun{a:t0p}
+matrixref_transpose
+  {n:nat}
 (
-  tbl: myhashtbl
-, fwork: (key, &#38;(itm) &#62;&#62; _) -&#60;cloref1&#62; void
-) : void // end-of-function
+  M: matrixref (a, n, n), n: size_t (n)
+) : void // end of [matrixref_transpose]
 //
-</PRE
-><P
-></P
-></DIV
->
-
-
-As an example, the following code prints out all the key/item
-pairs in a given hashtable:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN925"
-></A
-><PRE
-CLASS="programlisting"
->//
-val () =
-myhashtbl_foreach_cloref
+implement{a}
+matrixref_transpose
+  {n} (M, n) = let
+//
+macdef
+mget (i, j) =
+  matrixref_get_at (M, ,(i), n, ,(j))
+macdef
+mset (i, j, x) =
+  matrixref_set_at (M, ,(i), n, ,(j), ,(x))
+//
+fun loop
+  {i,j:nat |
+   i &#60; j; j &#60;= n
+  } .&#60;n-i,n-j&#62;. 
 (
-  mymap
-, lam (k, x) =&#62; fprintln! (stdout_ref, "k=", k, " and ", "x=", x)
-) (* myhashtbl_foreach_cloref *)
+  i: size_t (i), j: size_t (j)
+) : void =
+  if j &#60; n then let
+    val x = mget(i, j)
+    val () = mset(i, j, mget(j, i))
+    val () = mset(j, i, x)
+  in
+    loop (i, j+1)
+  end else let
+    val i1 = succ (i)
+  in
+    if i1 &#60; n then loop (i1, succ(i1)) else ()
+  end // end of [if]
 //
+in
+  if n &#62; 0 then loop (i2sz(0), i2sz(1)) else ()
+end // end of [matrixref_transpose]
 </PRE
 ><P
 ></P
@@ -487,19 +271,12 @@ myhashtbl_foreach_cloref
 
 </P
 ><P
->&#13;Please find the entirety of the code used in this chapter
-<A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_hashtable.dats"
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_matrixref.dats"
 TARGET="_top"
 >on-line</A
->. Also, there is a
-hashtable-based implementation of symbol table available
-<A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_hashtable2.dats"
-TARGET="_top"
->on-line</A
->.
-
+> the entirety of the
+code used in this chapter.
 </P
 ></DIV
 ><DIV
@@ -518,7 +295,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c838.html"
+HREF="c834.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -536,7 +313,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c930.html"
+HREF="c893.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -546,7 +323,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Persistent Matrices-with-size</TD
+>Persistent Arrays-with-size</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -560,7 +337,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Tail-Recursion</TD
+>Persistent Matrices-with-size</TD
 ></TR
 ></TABLE
 ></DIV
