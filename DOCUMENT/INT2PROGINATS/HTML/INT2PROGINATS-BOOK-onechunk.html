@@ -1,8 +1,3 @@
-<!--
-Using catalogs: /etc/sgml/catalog
-Using stylesheet: /home/hwxi/Research/ATS-Postiats/doc/BOOK/INT2PROGINATS/mydocbook.dsl
-Working on: /home/hwxi/Research/ATS-Postiats/doc/BOOK/INT2PROGINATS/main.db
--->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
 <HTML
 ><HEAD
@@ -5283,8 +5278,9 @@ NAME="AEN825"
 ></A
 ><PRE
 CLASS="programlisting"
->fun sqrmodsum (n: int, d: int): int =
-  ifold (n, lam (res, x) =&#62; if x mod d then res + x * x else res, 0)
+>fun sqrmodsum
+  (n: int, d: int): int =
+  ifold (n, lam (res, x) =&#62; if x mod d = 0 then res + x * x else res, 0)
 // end of [sqrmodsum]
 </PRE
 ><P
@@ -21356,7 +21352,7 @@ NAME="AEN3347"
 ></A
 ><PRE
 CLASS="programlisting"
->{l:addr} (T? @ l | ptr (l)) -&#62; (T @ l | void)
+>{l:addr} (T? @ l | ptr (l), T) -&#62; (T @ l | void)
 </PRE
 ><P
 ></P
@@ -23413,7 +23409,225 @@ COLOR="RED"
 >strbuf_v</FONT
 > captures the notion of a
 string in C, which consisits a sequence of non-null characters followed by the
-null character.
+null character:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3670"
+></A
+><PRE
+CLASS="programlisting"
+>dataview
+strbuf_v(addr, int) =
+  | {l:addr}
+    strbuf_v_nil(l, 0) of (char(0) @ l)
+  | {l:addr}{n:nat}
+    strbuf_v_cons(l, n+1) of (charNZ @ l, strbuf_v(l+sizeof(char), n))
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Let us define a linear type <FONT
+COLOR="RED"
+>strptr</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3673"
+></A
+><PRE
+CLASS="programlisting"
+>vtypedef strptr(l:addr, n:int) = (strbuf_v(l, n) | ptr(l))
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Then a C-string of length N that is stored at location L can be assigned
+the type <FONT
+COLOR="RED"
+>strptr(L, N)</FONT
+>.
+
+</P
+><P
+>&#13;Given a C-string, one can always access its first character; if the
+character is null, then the C-string is empty; if it is not, then the
+C-string is non-empty. The following implementation of
+<FONT
+COLOR="RED"
+>strptr_is_nil</FONT
+> precisely follows this simple way of testing
+whether a C-string is empty or not:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3678"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+strptr_is_nil
+  {l:addr}{n:int}
+(
+  str: !strptr(l, n)
+) : bool(n==0) = let
+//
+  prval
+  (pf_at, fpf) =
+    strbuf_v_getfst(str.0)
+  // prval
+  val c0 = !(str.1)
+  prval () = str.0 := fpf(pf_at)
+in
+  iseqz(c0) // testing whether [c0] is null
+end // end of [strptr_is_nil]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the proof function <FONT
+COLOR="RED"
+>strbuf_v_getfst</FONT
+>
+is declared and implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3681"
+></A
+><PRE
+CLASS="programlisting"
+>extern
+prfun
+strbuf_v_getfst
+  {l:addr}{n:int}
+(
+  pf: strbuf_v(l, n)
+) : [
+  c:int | (c==0 &#38;&#38; n==0) || (c != 0 &#38;&#38; n &#62; 0)
+] (char(c) @ l, char(c) @ l -&#60;lin,prf&#62; strbuf_v(l, n))
+
+(* ****** ****** *)
+
+primplmnt
+strbuf_v_getfst
+  (pf) =
+(
+case+ pf of
+| strbuf_v_nil(pf_at) =&#62; #[.. | (pf_at, llam(pf_at) =&#62; strbuf_v_nil(pf_at))]
+| strbuf_v_cons(pf_at, pf2) =&#62; #[.. | (pf_at, llam(pf_at) =&#62; strbuf_v_cons(pf_at, pf2))]
+)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The following implementation gives another example of handling the dataview
+<FONT
+COLOR="RED"
+>strbuf_v</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3685"
+></A
+><PRE
+CLASS="programlisting"
+>fun
+strptr_length
+  {l:addr}{n:int}
+(
+  str: !strptr(l, n)
+) : size_t(n) = let
+//
+fun
+loop
+{l:addr}
+{i,j:int}
+(
+  pf: !strbuf_v(l, i)
+| p0: ptr(l), j: size_t(j)
+) : size_t(i+j) = let
+//
+prval
+[c:int]
+(pf_at, fpf) = strbuf_v_getfst(pf)
+//
+val c0 = !p0
+//
+prval ((*return*)) = pf := fpf(pf_at)
+//
+in
+//
+if
+iseqz(c0)
+then j
+else res where
+{
+  prval
+  strbuf_v_cons(pf_at, pf2) = pf
+  val res = loop(pf2 | ptr_succ&#60;char&#62;(p0), succ(j))
+  prval ((*folded*)) = pf := strbuf_v_cons(pf_at, pf2)
+} (* end of [else] *)
+//
+end // end of [loop]
+//
+in
+  loop(str.0 | str.1, i2sz(0))
+end // end of [strptr_length]  
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, the implemented function of <FONT
+COLOR="RED"
+>strptr_length</FONT
+> computes the
+length of a given C-string.
+
+</P
+><P
+>&#13;Please find the entirety of the above presented code
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_DATAVIEW/strbuf.dats"
+TARGET="_top"
+>on-line</A
+>.
 
 </P
 ></DIV
@@ -23436,7 +23650,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3674"
+NAME="AEN3694"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -23473,13 +23687,12 @@ COLOR="RED"
 >, which are
 assigned the following types:
 
-</P
-><DIV
+<DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3679"
+NAME="AEN3699"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -23492,6 +23705,10 @@ slseg_v_cons :
 ><P
 ></P
 ></DIV
+>
+
+
+</P
 ><P
 >&#13;Note that <FONT
 COLOR="RED"
@@ -23506,13 +23723,12 @@ containing N elements of the type T that starts at L1 and finishes at L2.
 In the case where L2 is the null pointer, then the list segment is considered
 a list as is formally defined below:
 
-</P
-><DIV
+<DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3684"
+NAME="AEN3704"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -23523,6 +23739,10 @@ CLASS="programlisting"
 ><P
 ></P
 ></DIV
+>
+
+
+</P
 ><P
 >&#13;Given a type T, a pointer pointing to L plus a proof of the view
 <FONT
@@ -23535,13 +23755,12 @@ COLOR="RED"
 >slist_struct</FONT
 > in C:
 
-</P
-><DIV
+<DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3689"
+NAME="AEN3709"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -23554,6 +23773,10 @@ struct slist {
 ><P
 ></P
 ></DIV
+>
+
+
+</P
 ><P
 >&#13;Let us now see a simple example involving singly-linked lists:
 
@@ -23562,7 +23785,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3692"
+NAME="AEN3712"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -23611,13 +23834,12 @@ COLOR="RED"
 >
 essentially corresponds to the following implementation in C:
 
-</P
-><DIV
+<DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3697"
+NAME="AEN3717"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -23630,6 +23852,10 @@ CLASS="programlisting"
 ><P
 ></P
 ></DIV
+>
+
+
+</P
 ><P
 >&#13;As another example, the following function template
 <FONT
@@ -23642,7 +23868,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3701"
+NAME="AEN3721"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -23694,7 +23920,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3705"
+NAME="AEN3725"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -23725,7 +23951,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3708"
+NAME="AEN3728"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -23769,13 +23995,12 @@ COLOR="RED"
 > in C can be translated directly into to
 the following one in ATS:
 
-</P
-><DIV
+<DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3716"
+NAME="AEN3736"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -23821,6 +24046,10 @@ end // end of [slist_ptr_append]
 ><P
 ></P
 ></DIV
+>
+
+
+</P
 ><P
 >&#13;In the above examples, it is evident that the code in ATS is a lot more
 verbose than its counterpart in C. However, the former is also a lot more
@@ -23835,13 +24064,12 @@ COLOR="RED"
 > in C is certainly
 type-correct:
 
-</P
-><DIV
+<DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3720"
+NAME="AEN3740"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -23862,6 +24090,10 @@ slist_ptr_reverse
 ><P
 ></P
 ></DIV
+>
+
+
+</P
 ><P
 >&#13;I now point out that the dataview <FONT
 COLOR="RED"
@@ -23924,7 +24156,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3731"
+NAME="AEN3751"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -23959,7 +24191,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3735"
+NAME="AEN3755"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24022,7 +24254,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3744"
+NAME="AEN3764"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24076,7 +24308,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3749"
+NAME="AEN3769"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24100,7 +24332,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3752"
+NAME="AEN3772"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24132,7 +24364,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3757"
+NAME="AEN3777"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24164,7 +24396,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3761"
+NAME="AEN3781"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24217,7 +24449,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3766"
+NAME="AEN3786"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24256,7 +24488,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3771"
+NAME="AEN3791"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24353,7 +24585,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3786"
+NAME="AEN3806"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24400,7 +24632,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3794"
+NAME="AEN3814"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24458,7 +24690,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3801"
+NAME="AEN3821"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24531,7 +24763,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3814"
+NAME="AEN3834"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24611,7 +24843,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3827"
+NAME="AEN3847"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24706,7 +24938,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3845"
+NAME="AEN3865"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24811,7 +25043,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3865"
+NAME="AEN3885"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24909,7 +25141,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3886"
+NAME="AEN3906"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -24953,7 +25185,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3893"
+NAME="AEN3913"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25045,7 +25277,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3914"
+NAME="AEN3934"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25128,7 +25360,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3925"
+NAME="AEN3945"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25221,7 +25453,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3939"
+NAME="AEN3959"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25261,7 +25493,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3943"
+NAME="AEN3963"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25412,7 +25644,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3965"
+NAME="AEN3985"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25435,7 +25667,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3967"
+NAME="AEN3987"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25481,7 +25713,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3974"
+NAME="AEN3994"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25548,7 +25780,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3979"
+NAME="AEN3999"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25593,7 +25825,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3984"
+NAME="AEN4004"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25649,7 +25881,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN3991"
+NAME="AEN4011"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25705,7 +25937,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4001"
+NAME="AEN4021"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25748,7 +25980,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4008"
+NAME="AEN4028"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25843,7 +26075,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4019"
+NAME="AEN4039"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25906,7 +26138,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4025"
+NAME="AEN4045"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -25980,7 +26212,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4034"
+NAME="AEN4054"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26019,7 +26251,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4041"
+NAME="AEN4061"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26121,7 +26353,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4056"
+NAME="AEN4076"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26195,7 +26427,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4064"
+NAME="AEN4084"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26294,7 +26526,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4074"
+NAME="AEN4094"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26345,7 +26577,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4083"
+NAME="AEN4103"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26384,7 +26616,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4087"
+NAME="AEN4107"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26444,7 +26676,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4094"
+NAME="AEN4114"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26501,7 +26733,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4099"
+NAME="AEN4119"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26577,7 +26809,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4106"
+NAME="AEN4126"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26665,7 +26897,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4115"
+NAME="AEN4135"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26780,7 +27012,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4131"
+NAME="AEN4151"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26819,7 +27051,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4135"
+NAME="AEN4155"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26915,7 +27147,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4143"
+NAME="AEN4163"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -26990,7 +27222,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4147"
+NAME="AEN4167"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27163,7 +27395,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4163"
+NAME="AEN4183"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27198,7 +27430,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4166"
+NAME="AEN4186"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27237,7 +27469,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4171"
+NAME="AEN4191"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27264,7 +27496,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4174"
+NAME="AEN4194"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27305,7 +27537,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4177"
+NAME="AEN4197"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27339,7 +27571,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4180"
+NAME="AEN4200"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27361,7 +27593,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4183"
+NAME="AEN4203"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27399,7 +27631,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4186"
+NAME="AEN4206"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27457,7 +27689,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4190"
+NAME="AEN4210"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27493,7 +27725,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4194"
+NAME="AEN4214"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27534,7 +27766,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4199"
+NAME="AEN4219"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27615,7 +27847,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4211"
+NAME="AEN4231"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27641,7 +27873,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4214"
+NAME="AEN4234"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27688,7 +27920,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4223"
+NAME="AEN4243"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27727,7 +27959,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4229"
+NAME="AEN4249"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27762,7 +27994,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4233"
+NAME="AEN4253"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27806,7 +28038,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4238"
+NAME="AEN4258"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27870,7 +28102,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4247"
+NAME="AEN4267"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27915,7 +28147,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4251"
+NAME="AEN4271"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27962,7 +28194,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4258"
+NAME="AEN4278"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -27990,7 +28222,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4261"
+NAME="AEN4281"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28077,7 +28309,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4274"
+NAME="AEN4294"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28112,7 +28344,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4279"
+NAME="AEN4299"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28137,7 +28369,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4281"
+NAME="AEN4301"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28176,7 +28408,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4286"
+NAME="AEN4306"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28212,7 +28444,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4291"
+NAME="AEN4311"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28241,7 +28473,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4293"
+NAME="AEN4313"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28268,7 +28500,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4296"
+NAME="AEN4316"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28380,7 +28612,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4312"
+NAME="AEN4332"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28409,7 +28641,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4316"
+NAME="AEN4336"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28441,7 +28673,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4321"
+NAME="AEN4341"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28478,7 +28710,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4327"
+NAME="AEN4347"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28513,7 +28745,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4331"
+NAME="AEN4351"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28545,7 +28777,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4335"
+NAME="AEN4355"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28598,7 +28830,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4340"
+NAME="AEN4360"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28665,7 +28897,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4345"
+NAME="AEN4365"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28701,7 +28933,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4347"
+NAME="AEN4367"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28799,7 +29031,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4360"
+NAME="AEN4380"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28826,7 +29058,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4363"
+NAME="AEN4383"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28870,7 +29102,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4369"
+NAME="AEN4389"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28907,7 +29139,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4373"
+NAME="AEN4393"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28944,7 +29176,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4378"
+NAME="AEN4398"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -28989,7 +29221,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4385"
+NAME="AEN4405"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29106,7 +29338,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4404"
+NAME="AEN4424"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29127,7 +29359,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4406"
+NAME="AEN4426"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29151,7 +29383,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4409"
+NAME="AEN4429"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29177,7 +29409,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4413"
+NAME="AEN4433"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29252,7 +29484,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4424"
+NAME="AEN4444"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29293,7 +29525,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4427"
+NAME="AEN4447"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29322,7 +29554,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4431"
+NAME="AEN4451"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29518,7 +29750,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4459"
+NAME="AEN4479"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29545,7 +29777,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4463"
+NAME="AEN4483"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29570,7 +29802,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4466"
+NAME="AEN4486"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29601,7 +29833,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4471"
+NAME="AEN4491"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29640,7 +29872,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4478"
+NAME="AEN4498"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29681,7 +29913,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4484"
+NAME="AEN4504"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29725,7 +29957,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4489"
+NAME="AEN4509"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29747,7 +29979,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4492"
+NAME="AEN4512"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29806,7 +30038,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4502"
+NAME="AEN4522"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29848,7 +30080,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4507"
+NAME="AEN4527"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29906,7 +30138,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4514"
+NAME="AEN4534"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29945,7 +30177,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4517"
+NAME="AEN4537"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -29991,7 +30223,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4524"
+NAME="AEN4544"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30031,7 +30263,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4529"
+NAME="AEN4549"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30067,7 +30299,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4532"
+NAME="AEN4552"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30104,7 +30336,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4536"
+NAME="AEN4556"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30128,7 +30360,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4538"
+NAME="AEN4558"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30161,7 +30393,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4540"
+NAME="AEN4560"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30203,7 +30435,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4547"
+NAME="AEN4567"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30263,7 +30495,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4553"
+NAME="AEN4573"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30308,7 +30540,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4559"
+NAME="AEN4579"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30385,7 +30617,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4568"
+NAME="AEN4588"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30463,7 +30695,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4578"
+NAME="AEN4598"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30491,7 +30723,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4581"
+NAME="AEN4601"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30528,7 +30760,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4585"
+NAME="AEN4605"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30562,7 +30794,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4589"
+NAME="AEN4609"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30623,7 +30855,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4600"
+NAME="AEN4620"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30665,7 +30897,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4605"
+NAME="AEN4625"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30718,7 +30950,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4613"
+NAME="AEN4633"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30752,7 +30984,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4616"
+NAME="AEN4636"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30780,7 +31012,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4620"
+NAME="AEN4640"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30863,7 +31095,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4632"
+NAME="AEN4652"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30893,7 +31125,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4636"
+NAME="AEN4656"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -30946,7 +31178,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4644"
+NAME="AEN4664"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -31022,7 +31254,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4656"
+NAME="AEN4676"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -31082,7 +31314,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4662"
+NAME="AEN4682"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -31110,7 +31342,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN4664"
+NAME="AEN4684"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -31178,4 +31410,4 @@ entirety of the code presented in this section plus some testing code.
 ></DIV
 ></BODY
 ></HTML
->Done.
+>

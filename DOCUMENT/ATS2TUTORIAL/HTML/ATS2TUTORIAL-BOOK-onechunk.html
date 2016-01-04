@@ -203,46 +203,51 @@ HREF="#reference"
 ></DT
 ><DT
 >15. <A
+HREF="#boxed_tuprec"
+>Boxed Tuples and Records</A
+></DT
+><DT
+>16. <A
 HREF="#arrayref"
 >Persistent Arrays</A
 ></DT
 ><DT
->16. <A
+>17. <A
 HREF="#arrszref"
 >Persistent Arrays-with-size</A
 ></DT
 ><DT
->17. <A
+>18. <A
 HREF="#matrixref"
 >Persistent Matrices</A
 ></DT
 ><DT
->18. <A
+>19. <A
 HREF="#mtrxszref"
 >Persistent Matrices-with-size</A
 ></DT
 ><DT
->19. <A
+>20. <A
 HREF="#hashtable"
 >Persistent Hashtables</A
 ></DT
 ><DT
->20. <A
+>21. <A
 HREF="#Tail-Recursion"
 >Tail-Recursion</A
 ></DT
 ><DT
->21. <A
+>22. <A
 HREF="#hordfun"
 >Higher-Order Functions</A
 ></DT
 ><DT
->22. <A
+>23. <A
 HREF="#stream-based-lazy-evaluation"
 >Stream-Based Lazy Evaluation</A
 ></DT
 ><DT
->23. <A
+>24. <A
 HREF="#linlist"
 >Linearly Typed Lists</A
 ></DT
@@ -256,17 +261,22 @@ HREF="#advanced_tutorial_topics"
 ><DD
 ><DL
 ><DT
->24. <A
+>25. <A
 HREF="#extvar-declaration"
 >Extvar-Declaration</A
 ></DT
 ><DT
->25. <A
+>26. <A
 HREF="#cloptr"
 >Linear Closure-Functions</A
 ></DT
 ><DT
->26. <A
+>27. <A
+HREF="#stkclo"
+>Stack-Allocated Closure-Functions</A
+></DT
+><DT
+>28. <A
 HREF="#codegen2"
 >Automatic Code Generation</A
 ></DT
@@ -407,46 +417,51 @@ HREF="#reference"
 ></DT
 ><DT
 >15. <A
+HREF="#boxed_tuprec"
+>Boxed Tuples and Records</A
+></DT
+><DT
+>16. <A
 HREF="#arrayref"
 >Persistent Arrays</A
 ></DT
 ><DT
->16. <A
+>17. <A
 HREF="#arrszref"
 >Persistent Arrays-with-size</A
 ></DT
 ><DT
->17. <A
+>18. <A
 HREF="#matrixref"
 >Persistent Matrices</A
 ></DT
 ><DT
->18. <A
+>19. <A
 HREF="#mtrxszref"
 >Persistent Matrices-with-size</A
 ></DT
 ><DT
->19. <A
+>20. <A
 HREF="#hashtable"
 >Persistent Hashtables</A
 ></DT
 ><DT
->20. <A
+>21. <A
 HREF="#Tail-Recursion"
 >Tail-Recursion</A
 ></DT
 ><DT
->21. <A
+>22. <A
 HREF="#hordfun"
 >Higher-Order Functions</A
 ></DT
 ><DT
->22. <A
+>23. <A
 HREF="#stream-based-lazy-evaluation"
 >Stream-Based Lazy Evaluation</A
 ></DT
 ><DT
->23. <A
+>24. <A
 HREF="#linlist"
 >Linearly Typed Lists</A
 ></DT
@@ -4741,10 +4756,11 @@ NAME="AEN691"
 ></A
 ><PRE
 CLASS="programlisting"
->int fact (int n) {
+>int
+fact (int n) {
   int res = 1 ;
   while (n &#62; 0) { res = n * res; n = n - 1; } ;
-  return res ;
+  return (res) ;
 }
 </PRE
 ><P
@@ -4889,9 +4905,465 @@ code used in this chapter.
 CLASS="chapter"
 ><HR><H1
 ><A
+NAME="boxed_tuprec"
+></A
+>Chapter 15. Boxed Tuples and Records</H1
+><P
+>&#13;A <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>boxed</I
+></SPAN
+> tuple/record is just a reference to
+some location in memory where a flat tuple/record is stored.
+Often the word <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>unboxed</I
+></SPAN
+> is also used to describe a
+flat tuple/record.
+
+</P
+><P
+>&#13;In the following code,
+the types <FONT
+COLOR="RED"
+>abc_tup</FONT
+>
+and <FONT
+COLOR="RED"
+>abc_rec</FONT
+> are for boxed tuples and records, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN723"
+></A
+><PRE
+CLASS="programlisting"
+>typedef
+abc_tup = '(int, int, string) // for tuples
+typedef
+abc_rec = '{a=int, b=int, c=string} // for records
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that a tuple is just a special record in the sense that the
+labels in the tuple are fixed to be ranging from 0 to n-1, inclusive,
+where n is the tuple length. In the case of <FONT
+COLOR="RED"
+>abc_tup</FONT
+>, the
+three associated labels are 0, 1, and 2. Note that <FONT
+COLOR="RED"
+>'(</FONT
+> and
+<FONT
+COLOR="RED"
+>'{</FONT
+> are special symbols in ATS and there is no space
+allowed after the single quote. If the use of these special symbols is
+to be avoided, then one can declare the types <FONT
+COLOR="RED"
+>abc_tup</FONT
+> and
+<FONT
+COLOR="RED"
+>abc_rec</FONT
+> as follows in a slightly different syntax:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN730"
+></A
+><PRE
+CLASS="programlisting"
+>typedef
+abc_tup = $tup(int, int, string) // for tuples
+typedef
+abc_rec = $rec{a=int, b=int, c=string} // for records
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Also, the keywords
+<FONT
+COLOR="RED"
+>$tup</FONT
+> and <FONT
+COLOR="RED"
+>$rec</FONT
+> can be replaced with
+<FONT
+COLOR="RED"
+>$tuple</FONT
+> and <FONT
+COLOR="RED"
+>$record</FONT
+>, respectively.
+
+</P
+><P
+>&#13;The following code demonstrates how tuples and records can be created
+and their components (i.e., fields) taken out:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN737"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val x_tup = '(0, 1, "2") : abc_tup
+val x_rec = '{a=0, b=1, c="2"} : abc_rec
+//
+val ((*void*)) = assertloc(x_tup.0 = x_rec.a)
+val ((*void*)) = assertloc(x_tup.1 = x_rec.b)
+val ((*void*)) = assertloc(x_tup.2 = x_rec.c)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;It should be noted that both <FONT
+COLOR="RED"
+>x_tup</FONT
+> and <FONT
+COLOR="RED"
+>x_rec</FONT
+>
+are immutable. If one tries to typecheck the following code, then he
+or she should see error messages reporting that <FONT
+COLOR="RED"
+>x_tup.0</FONT
+>
+and <FONT
+COLOR="RED"
+>x_rec.a</FONT
+> are non-left-values:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN744"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val () = x_tup.0 := 100 // *ERROR*: x_tup.0 not a left-value
+val () = x_rec.a := 100 // *ERROR*: x_tup.0 not a left-value
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;In order to have a tuple/record with mutable fields, we can just
+literally create a reference to a flat tuple/record. In the following
+code, the types <FONT
+COLOR="RED"
+>abc_tup_</FONT
+> and <FONT
+COLOR="RED"
+>abc_rec_</FONT
+> are
+declcared for flat tuples and records, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN749"
+></A
+><PRE
+CLASS="programlisting"
+>//
+typedef
+abc_tup_ = @(int, int, string) // for tuples
+typedef
+abc_rec_ = @{a=int, b=int, c=string} // for records
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+and the types <FONT
+COLOR="RED"
+>abc_tup_r</FONT
+> and <FONT
+COLOR="RED"
+>abc_rec_r</FONT
+> are for
+references to tuples and records classified by <FONT
+COLOR="RED"
+>abc_tup_</FONT
+>
+and <FONT
+COLOR="RED"
+>abc_rec_</FONT
+>, respetively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN755"
+></A
+><PRE
+CLASS="programlisting"
+>//
+typedef abc_tup_r = ref(abc_tup_) // for tuples
+typedef abc_rec_r = ref(abc_rec_) // for records
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The code below demonstrates how tuples and records with mutable fields
+can be created and their fields accessed and updated.
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN757"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val x_tup_r = ref&#60;abc_tup_&#62;(@(0, 1, "2"))
+val x_rec_r = ref&#60;abc_rec_&#62;(@{a=0, b=1, c="2"})
+//
+(* ****** ****** *)
+//
+val () = assertloc(x_tup_r-&#62;0 = x_rec_r-&#62;a)
+val () = assertloc(x_tup_r-&#62;1 = x_rec_r-&#62;b)
+val () = assertloc(x_tup_r-&#62;2 = x_rec_r-&#62;c)
+//
+(* ****** ****** *)
+//
+val () = x_tup_r-&#62;0 := 100 // *OKAY*: x_tup_r.0 is a left-value
+val () = x_rec_r-&#62;a := 100 // *OKAY*: x_rec_r.a is a left-value
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;If we want to have records of a type where certain fields are
+read-only while the others may be updated, we can do this by making
+use of the support for abstract types in ATS.  In the following
+example, <FONT
+COLOR="RED"
+>myrec</FONT
+> is declared to be abstract; there are three
+fields associated with <FONT
+COLOR="RED"
+>myrec</FONT
+> that are of the names
+<FONT
+COLOR="RED"
+>a</FONT
+>, <FONT
+COLOR="RED"
+>b</FONT
+>, and <FONT
+COLOR="RED"
+>c</FONT
+>; the first two may be
+updated while the third one is read-only:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN765"
+></A
+><PRE
+CLASS="programlisting"
+>(* ****** ****** *)
+
+abstype myrec = ptr  
+
+(* ****** ****** *)
+//
+extern
+fun{}
+myrec_make
+(
+  a: int, b: int, c: string
+) : myrec // end-of-function
+//
+extern
+fun{}
+myrec_get_a : myrec -&#62; int
+extern
+fun{}
+myrec_set_a : (myrec, int) -&#62; void
+extern
+fun{}
+myrec_get_b : myrec -&#62; int
+extern
+fun{}
+myrec_set_b : (myrec, int) -&#62; void
+extern
+fun{}
+myrec_get_c : myrec -&#62; string
+//
+overload .a with myrec_get_a
+overload .a with myrec_set_a
+overload .b with myrec_get_b
+overload .b with myrec_set_b
+overload .c with myrec_get_c
+//
+(* ****** ****** *)
+
+local
+//
+assume myrec = abc_rec_r
+//
+in (* in-of-local *)
+//
+implement
+{}(*tmp*)
+myrec_make
+  (a, b, c) = ref(@{a=a, b=b, c=c})
+//
+implement{} myrec_get_a(x) = x-&#62;a
+implement{} myrec_set_a(x, a) = x-&#62;a := a
+//
+implement{} myrec_get_b(x) = x-&#62;b
+implement{} myrec_set_b(x, b) = x-&#62;b := b
+//
+implement{} myrec_get_c(x) = x-&#62;c
+(*
+//
+// there is no update for the c-field:
+//
+implement{} myrec_set_a(x, c) = x-&#62;c := c
+*)
+//
+end // end of [local]
+
+(* ****** ****** *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Following is some code that creates a
+record of the type <FONT
+COLOR="RED"
+>myrec</FONT
+> and then
+accesses and updates certain fields of the
+created record:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN768"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val x_abc = myrec_make(0, 1, "2")
+//
+val ((*void*)) = assertloc(x_abc.a() = 0)
+val ((*void*)) = assertloc(x_abc.b() = 1)
+val ((*void*)) = assertloc(x_abc.c() = "2")
+//
+val ((*void*)) = x_abc.a(100)
+val ((*void*)) = assertloc(x_abc.a() = 100)
+//
+val ((*void*)) = x_abc.b(101)
+val ((*void*)) = assertloc(x_abc.b() = 101)
+//
+(*
+val ((*void*)) = x_abc.c("102") // *ERROR*: unsupported
+*)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+While this example (<FONT
+COLOR="RED"
+>myrec</FONT
+>) demonstrates an approach
+to constructing records containing both read-only fields and fields that
+can be updated, this approach does seem a bit too verbose. One
+possibilty is to develop meta-programming support so as to greatly
+reduce the verbosity (due to the need for boilerplate code).
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_tuprec_1.dats"
+TARGET="_top"
+>on-line</A
+> the
+entirety of the code used in this chapter plus some testing code.
+</P
+></DIV
+><DIV
+CLASS="chapter"
+><HR><H1
+><A
 NAME="arrayref"
 ></A
->Chapter 15. Persistent Arrays</H1
+>Chapter 16. Persistent Arrays</H1
 ><P
 >&#13;A persistent array of size n is just n heap-allocated cells (or references)
 in a row.  It is persistent in the sense that the memory allocated for the
@@ -4927,7 +5399,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN723"
+NAME="AEN781"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -4976,7 +5448,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN730"
+NAME="AEN788"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5029,7 +5501,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN740"
+NAME="AEN798"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5126,7 +5598,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN756"
+NAME="AEN814"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5168,7 +5640,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN760"
+NAME="AEN818"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5206,7 +5678,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN766"
+NAME="AEN824"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5234,7 +5706,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN768"
+NAME="AEN826"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5289,7 +5761,7 @@ CLASS="chapter"
 ><A
 NAME="arrszref"
 ></A
->Chapter 16. Persistent Arrays-with-size</H1
+>Chapter 17. Persistent Arrays-with-size</H1
 ><P
 >&#13;I use the name <SPAN
 CLASS="emphasis"
@@ -5336,7 +5808,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN787"
+NAME="AEN845"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5362,7 +5834,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN789"
+NAME="AEN847"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5400,7 +5872,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN796"
+NAME="AEN854"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5454,7 +5926,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN806"
+NAME="AEN864"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5512,7 +5984,7 @@ CLASS="chapter"
 ><A
 NAME="matrixref"
 ></A
->Chapter 17. Persistent Matrices</H1
+>Chapter 18. Persistent Matrices</H1
 ><P
 >&#13;A persistent matrix of dimension m by n is just a persistent array of size
 m*n. Like in C, the representation of a matrix in ATS is row-major. In
@@ -5548,7 +6020,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN819"
+NAME="AEN877"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5579,7 +6051,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN823"
+NAME="AEN881"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5611,7 +6083,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN828"
+NAME="AEN886"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5651,7 +6123,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN831"
+NAME="AEN889"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5720,7 +6192,7 @@ CLASS="chapter"
 ><A
 NAME="mtrxszref"
 ></A
->Chapter 18. Persistent Matrices-with-size</H1
+>Chapter 19. Persistent Matrices-with-size</H1
 ><P
 >&#13;I use the name <SPAN
 CLASS="emphasis"
@@ -5763,7 +6235,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN845"
+NAME="AEN903"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5800,7 +6272,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN851"
+NAME="AEN909"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5854,7 +6326,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN861"
+NAME="AEN919"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -5921,7 +6393,7 @@ CLASS="chapter"
 ><A
 NAME="hashtable"
 ></A
->Chapter 19. Persistent Hashtables</H1
+>Chapter 20. Persistent Hashtables</H1
 ><P
 >&#13;Hashtables are commonly used to implement finite maps. In ATSLIB/libats,
 there are hashtable implementations based on linear chaining and linear
@@ -5948,7 +6420,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN872"
+NAME="AEN930"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6000,7 +6472,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN880"
+NAME="AEN938"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6027,7 +6499,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN883"
+NAME="AEN941"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6079,7 +6551,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN891"
+NAME="AEN949"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6107,7 +6579,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN895"
+NAME="AEN953"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6137,7 +6609,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN899"
+NAME="AEN957"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6169,7 +6641,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN904"
+NAME="AEN962"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6218,7 +6690,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN911"
+NAME="AEN969"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6282,7 +6754,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN920"
+NAME="AEN978"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6310,7 +6782,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN922"
+NAME="AEN980"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6352,7 +6824,7 @@ CLASS="chapter"
 ><A
 NAME="Tail-Recursion"
 ></A
->Chapter 20. Tail-Recursion</H1
+>Chapter 21. Tail-Recursion</H1
 ><P
 >&#13;Please see
 <A
@@ -6370,7 +6842,7 @@ CLASS="chapter"
 ><A
 NAME="hordfun"
 ></A
->Chapter 21. Higher-Order Functions</H1
+>Chapter 22. Higher-Order Functions</H1
 ><P
 >&#13;A higher-order function is one that takes another function as its argument.
 
@@ -6536,7 +7008,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN975"
+NAME="AEN1033"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6579,7 +7051,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN979"
+NAME="AEN1037"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6625,7 +7097,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN982"
+NAME="AEN1040"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6671,7 +7143,7 @@ CLASS="chapter"
 ><A
 NAME="stream-based-lazy-evaluation"
 ></A
->Chapter 22. Stream-Based Lazy Evaluation</H1
+>Chapter 23. Stream-Based Lazy Evaluation</H1
 ><P
 >&#13;While the core of ATS is based on call-by-value evaluation, there is also
 direct support in ATS for lazy (that is, call-by-need) evaluation.
@@ -6723,7 +7195,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1000"
+NAME="AEN1058"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6769,7 +7241,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1009"
+NAME="AEN1067"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6806,7 +7278,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1014"
+NAME="AEN1072"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6856,7 +7328,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1018"
+NAME="AEN1076"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6887,7 +7359,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1022"
+NAME="AEN1080"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6924,7 +7396,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1025"
+NAME="AEN1083"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -6961,7 +7433,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1029"
+NAME="AEN1087"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7006,7 +7478,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1032"
+NAME="AEN1090"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7061,7 +7533,7 @@ CLASS="chapter"
 ><A
 NAME="linlist"
 ></A
->Chapter 23. Linearly Typed Lists</H1
+>Chapter 24. Linearly Typed Lists</H1
 ><P
 >&#13;A linearly typed list in ATS is also referred to as a linear list, which
 essentially corresponds to a singly-linked list in C. The following linear
@@ -7076,7 +7548,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1043"
+NAME="AEN1101"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7130,7 +7602,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1052"
+NAME="AEN1110"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7216,7 +7688,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1070"
+NAME="AEN1128"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7337,7 +7809,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1095"
+NAME="AEN1153"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7400,7 +7872,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1101"
+NAME="AEN1159"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7503,17 +7975,22 @@ CLASS="TOC"
 >Table of Contents</B
 ></DT
 ><DT
->24. <A
+>25. <A
 HREF="#extvar-declaration"
 >Extvar-Declaration</A
 ></DT
 ><DT
->25. <A
+>26. <A
 HREF="#cloptr"
 >Linear Closure-Functions</A
 ></DT
 ><DT
->26. <A
+>27. <A
+HREF="#stkclo"
+>Stack-Allocated Closure-Functions</A
+></DT
+><DT
+>28. <A
 HREF="#codegen2"
 >Automatic Code Generation</A
 ></DT
@@ -7526,7 +8003,7 @@ CLASS="chapter"
 ><A
 NAME="extvar-declaration"
 ></A
->Chapter 24. Extvar-Declaration</H1
+>Chapter 25. Extvar-Declaration</H1
 ><P
 >&#13;ATS puts great emphasis on interacting with other programming
 languages.
@@ -7548,7 +8025,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1125"
+NAME="AEN1183"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7575,7 +8052,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1128"
+NAME="AEN1186"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7602,7 +8079,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1131"
+NAME="AEN1189"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7646,7 +8123,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1140"
+NAME="AEN1198"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7678,7 +8155,7 @@ CLASS="chapter"
 ><A
 NAME="cloptr"
 ></A
->Chapter 25. Linear Closure-Functions</H1
+>Chapter 26. Linear Closure-Functions</H1
 ><P
 >&#13;
 A closure-function is a boxed record that contains a pointer to an envless
@@ -7696,7 +8173,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1148"
+NAME="AEN1206"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7734,7 +8211,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1154"
+NAME="AEN1212"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7775,7 +8252,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1161"
+NAME="AEN1219"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7812,7 +8289,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1165"
+NAME="AEN1223"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7855,7 +8332,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1172"
+NAME="AEN1230"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7917,7 +8394,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1182"
+NAME="AEN1240"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -7970,9 +8447,305 @@ code used in this chapter.
 CLASS="chapter"
 ><HR><H1
 ><A
+NAME="stkclo"
+></A
+>Chapter 27. Stack-Allocated Closure-Functions</H1
+><P
+>&#13;Higher-order functions are a very convenient programming feature for
+supporting certain forms of code reuse. Often a function passed as an
+argument to a higher-order function call is a closure-function created on
+heap at run-time, and it is most likely of no more use after the call. If
+the closure-function is linear, then it needs to be freed explicitly by the
+programmer (or a type-error would occur during typechecking).  If the
+closure-function is non-linear, then its memory should be reclaimed through
+garbage-collection (GC) (or the memory is leaked).
+
+</P
+><P
+>&#13;Creating heap-allocated closure-functions implies the need for dynamic
+memory allocation (DMA). In a restricted environment (e.g., one for
+embedded programming), DMA may not be (fully) supported. One option for
+constructing a closure-function in the absence of support for DMA is to
+store it in the stack-frame of the calling function, and there is special
+systax in ATS for doing so.
+
+</P
+><P
+>&#13;Let us see a concrete example of stack-allocated closure.
+The following code implements a higher-order function template:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1254"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{res:t@ype}
+ifold{n:nat}
+(
+  n: int(n)
+, fopr: (res, natLt(n)) -&#60;cloref1&#62; res, ini: res
+) : res = let
+//
+fun
+loop
+{i:nat | i &#60;= n} .&#60;n-i&#62;.
+  (i: int(i), res: res): res =
+  if i &#60; n then loop(i+1, fopr(res, i)) else res
+//
+in
+  loop(0, ini)
+end // end of [ifold]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Essentially, <FONT
+COLOR="RED"
+>ifold(n, fopr, ini)</FONT
+> evaluates the expression
+<FONT
+COLOR="RED"
+>fopr(...fopr(fopr(ini, 0), 1)..., n-1)</FONT
+>.  For instance, the
+function <FONT
+COLOR="RED"
+>dotprod</FONT
+> for computing the dot product (or inner
+product) of two vectors can be implemented with a call to <FONT
+COLOR="RED"
+>ifold</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1260"
+></A
+><PRE
+CLASS="programlisting"
+>//
+typedef res = double
+//
+fun
+dotprod
+  {n:nat}
+(
+  n: int(n)
+, A: arrayref(res, n)
+, B: arrayref(res, n)
+) : res =
+(
+  ifold&#60;res&#62;(n, lam(res, i) =&#62; res + A[i]*B[i], 0.0)
+)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The second argument passed to the call to <FONT
+COLOR="RED"
+>ifold</FONT
+> is a
+closure created on heap at run-time, and it is of no more use
+after the call returns. The function <FONT
+COLOR="RED"
+>dotprod</FONT
+> can also be
+implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1264"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+dotprod
+  {n:nat}
+(
+  n: int(n)
+, A: arrayref(res, n)
+, B: arrayref(res, n)
+) : res = let
+//
+var
+fopr =
+lam@(res: res, i: natLt(n)): res =&#62; res + A[i]*B[i]
+//
+in
+  ifold&#60;res&#62;(n, $UNSAFE.cast(addr@fopr), 0.0)
+end // end of [dotprod]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The keyword <FONT
+COLOR="RED"
+>lam@</FONT
+> (instead of <FONT
+COLOR="RED"
+>lam</FONT
+>) initiates the
+creation of an unboxed closure at a given location. In the above case, the
+variable <FONT
+COLOR="RED"
+>fopr</FONT
+> is located in the stack-frame of
+<FONT
+COLOR="RED"
+>dotprod</FONT
+>, and the created closure is stored in the memory
+reserved for <FONT
+COLOR="RED"
+>fopr</FONT
+>. It is the obligation of the compiler of ATS
+to make sure that the memory is large enough for storing the closure. The
+call to the (unsafe) cast turns the address of <FONT
+COLOR="RED"
+>fopr</FONT
+> into a
+boxed closure so that it can be passed to <FONT
+COLOR="RED"
+>ifold</FONT
+>.
+
+</P
+><P
+>&#13;In order to remove the (unsafe) cast in the implementation of
+<FONT
+COLOR="RED"
+>dotprod</FONT
+>, we need to implement a slight variant
+of <FONT
+COLOR="RED"
+>ifold</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1276"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{res:t@ype}
+ifold_{n:nat}
+(
+  n: int(n)
+, fopr: &#38;(res, natLt(n)) -&#60;clo1&#62; res, ini: res
+) : res = let
+//
+fun
+loop
+{i:nat | i &#60;= n} .&#60;n-i&#62;.
+(
+  i: int(i)
+, fopr: &#38;(res, natLt(n)) -&#60;clo1&#62; res, res: res
+) : res =
+  if i &#60; n
+    then loop(i+1, fopr, fopr(res, i)) else res
+  // end of [if]
+//
+in
+  loop(0, fopr, ini)
+end // end of [ifold_]
+//
+(* ****** ****** *)
+//
+fun
+dotprod_
+  {n:nat}
+(
+  n: int(n)
+, A: arrayref(res, n)
+, B: arrayref(res, n)
+) : res = let
+//
+var
+fopr =
+lam@(res: res, i: natLt(n)): res =&#62; res + A[i]*B[i]
+//
+in
+  ifold_&#60;res&#62;(n, fopr, 0.0)
+end // end of [dotprod_]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the second argument of <FONT
+COLOR="RED"
+>ifold_</FONT
+> is call-by-reference.
+The anotated arrow <FONT
+COLOR="RED"
+>-&#60;clo1&#62;</FONT
+> is used to form function types
+for unboxed closures. So only a left value (representing some unboxed
+closure) can be passed as the second argument to a call to
+<FONT
+COLOR="RED"
+>ifold_</FONT
+>, and what is really passed at run-time is the address of
+the left value. The function <FONT
+COLOR="RED"
+>dotprod</FONT
+> can be safely implemented
+as <FONT
+COLOR="RED"
+>dotprod_</FONT
+> with a call to <FONT
+COLOR="RED"
+>ifold_</FONT
+>.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_stkclo.dats"
+TARGET="_top"
+>on-line</A
+> the entirety of the
+code used in this chapter plus some testing code.
+</P
+></DIV
+><DIV
+CLASS="chapter"
+><HR><H1
+><A
 NAME="codegen2"
 ></A
->Chapter 26. Automatic Code Generation</H1
+>Chapter 28. Automatic Code Generation</H1
 ><P
 >&#13;In practice, one often encounters a need to write boilerplate code or code
 that tends to follow certain clearly recognizable patterns. It is commonly
@@ -7992,7 +8765,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1195"
+NAME="AEN1290"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8041,7 +8814,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1201"
+NAME="AEN1296"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8073,7 +8846,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1206"
+NAME="AEN1301"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8096,7 +8869,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1209"
+NAME="AEN1304"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8123,7 +8896,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1213"
+NAME="AEN1308"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8147,7 +8920,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1217"
+NAME="AEN1312"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8188,7 +8961,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1220"
+NAME="AEN1315"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8213,7 +8986,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1224"
+NAME="AEN1319"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8260,7 +9033,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1232"
+NAME="AEN1327"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8292,7 +9065,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1237"
+NAME="AEN1332"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8315,7 +9088,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1240"
+NAME="AEN1335"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8356,7 +9129,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1243"
+NAME="AEN1338"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8410,7 +9183,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1253"
+NAME="AEN1348"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8433,7 +9206,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1256"
+NAME="AEN1351"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8460,7 +9233,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1260"
+NAME="AEN1355"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8931,7 +9704,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1265"
+NAME="AEN1360"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8961,7 +9734,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1269"
+NAME="AEN1364"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -8999,7 +9772,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1275"
+NAME="AEN1370"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -9042,4 +9815,4 @@ the code generation process).
 ></DIV
 ></BODY
 ></HTML
->Done.
+>
