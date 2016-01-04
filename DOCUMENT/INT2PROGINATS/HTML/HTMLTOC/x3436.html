@@ -1,0 +1,317 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Left-Values and Call-by-Reference</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Introduction to Views and Viewtypes"
+HREF="c3309.html"><LINK
+REL="PREVIOUS"
+TITLE="Viewtypes as a Combination of Views and Types"
+HREF="x3406.html"><LINK
+REL="NEXT"
+TITLE="Stack-Allocated Variables"
+HREF="x3463.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3406.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 13. Introduction to Views and Viewtypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3463.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="lval_and_cbr"
+>Left-Values and Call-by-Reference</A
+></H1
+><P
+>&#13;In its simplest form, a left-value is just a pointer paired with a linear
+proof attesting to a value (of some type) being stored at the location to
+which the pointer points. The name <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>left-value</I
+></SPAN
+> stems from such a
+value being allowed to appear on the left-hand side of an assignment
+statement (in languages like C). Often, a left-value is intuitively
+explained as a value with an address attached to it. Note that whatever
+representation chosen for a left-value must make it possible to identify
+both the pointer and the linear proof (of some at-view) that are associated
+with the left-value.
+
+</P
+><P
+>&#13;In ATS, the simplest expression representing a left-value is
+<FONT
+COLOR="RED"
+>!p</FONT
+>, where <FONT
+COLOR="RED"
+>!</FONT
+> is a special symbol and p a value of
+the type <FONT
+COLOR="RED"
+>ptr(L)</FONT
+> for some address L. When this expression is
+typechecked, a proof of <FONT
+COLOR="RED"
+>T@L</FONT
+> for some type T is required to be
+found among the currently available proofs. I will introduce additional
+forms of left values gradually.
+
+</P
+><P
+>&#13;The default strategy for passing a function argument in ATS is
+call-by-value. However, it is also allowed in ATS to specify that
+call-by-reference is chosen for passing a particular function argument. By
+call-by-reference, it is meant that the argument to be passed must be a
+left-value and what is actually passed is the address of the left-value
+(instead of the value stored at the address). For example, the following
+defined function <FONT
+COLOR="RED"
+>swap2</FONT
+> makes essential use of
+call-by-reference:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3447"
+></A
+><PRE
+CLASS="programlisting"
+>fn{
+a:t@ype
+} swap2 (
+  x1: &#38;a, x2: &#38;a
+) : void = let
+  val tmp = x1 in x1 := x2; x2 := tmp
+end // end of [swap2]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the special symbol <FONT
+COLOR="RED"
+>&#38;</FONT
+> in front of the type of a
+function argument indicates that the argument needs to be passed according
+to the call-by-reference strategy. The following code implements
+<FONT
+COLOR="RED"
+>swap1</FONT
+> based on <FONT
+COLOR="RED"
+>swap2</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3452"
+></A
+><PRE
+CLASS="programlisting"
+>fn{
+a:t@ype
+} swap1{l1,l2:addr}
+(
+  pf1: !a @ l1, pf2: !a @ l2 | p1: ptr l1, p2: ptr l2
+) : void = swap2 (!p1, !p2)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+When the call <FONT
+COLOR="RED"
+>swap2(!p1, !p2)</FONT
+> is evaluated at run-time, the
+parameters actually being passed are the two pointers <FONT
+COLOR="RED"
+>p1</FONT
+> and
+<FONT
+COLOR="RED"
+>p2</FONT
+> (rather than the values stored at the locations to which
+these two pointers point).
+</P
+><P
+>&#13;Given a type T and an integer N, the syntax <FONT
+COLOR="RED"
+>@[T][N]</FONT
+> stands for
+a flat array consisting N elements of the type T. Please note that a value
+of the type <FONT
+COLOR="RED"
+>@[T][N]</FONT
+> is of the size N*sizeof(T). If a function
+has a parameter representing an array, then this parameter is most liklely
+call-by-reference. For instance, the following code implements a function
+that takes two arrays of doubles to compute their dot product (also knowns
+as inner product):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3460"
+></A
+><PRE
+CLASS="programlisting"
+>fun dotprod 
+(
+  A: &#38;(@[double][3])
+, B: &#38;(@[double][3])
+) : double =
+(
+  A[0] * B[0] + A[1] * B[1] + A[2] * B[2]
+)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that both array arguments of <FONT
+COLOR="RED"
+>dotprod</FONT
+> are call-by-reference.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3406.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3463.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Viewtypes as a Combination of Views and Types</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3309.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Stack-Allocated Variables</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

@@ -1,0 +1,293 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Heap-Allocated Linear Closure-Functions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Introduction to Views and Viewtypes"
+HREF="c3309.html"><LINK
+REL="PREVIOUS"
+TITLE="Stack-Allocated Variables"
+HREF="x3463.html"><LINK
+REL="NEXT"
+TITLE="Dataviews as Linear Dataprops"
+HREF="c3542.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3463.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 13. Introduction to Views and Viewtypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c3542.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="heap-allocated-linear-closure-functions"
+>Heap-Allocated Linear Closure-Functions</A
+></H1
+><P
+>&#13;In ATS, a closure-function can be assiged a linear type, allowing
+it to be properly tracked within the type system and also explicitly
+freed by the programmer.
+</P
+><P
+>&#13;The following code implements a higher-order function
+<FONT
+COLOR="RED"
+>list_map_cloptr</FONT
+> which takes a linear closure-function
+as its second argument:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3527"
+></A
+><PRE
+CLASS="programlisting"
+>fun{
+a:t@ype}{b:vt@ype
+} list_map_cloptr{n:int}
+(
+  xs: list (a, n), f: !(a) -&#60;cloptr1&#62; b
+) : list_vt (b, n) =
+(
+  case+ xs of
+  | list_nil () =&#62; list_vt_nil ()
+  | list_cons (x, xs) =&#62; list_vt_cons (f (x), list_map_cloptr&#60;a&#62;&#60;b&#62; (xs, f))
+)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the keyword <FONT
+COLOR="RED"
+>-&#60;cloptr1&#62;</FONT
+> indicates that the
+function type it forms is for a linear closure-function. If a type for a
+pure linear closure-function is needed, the keyword
+<FONT
+COLOR="RED"
+>-&#60;cloptr0&#62;</FONT
+> can be used.  The symbol <FONT
+COLOR="RED"
+>!</FONT
+> in
+front of the function type means that the second (linear) argument of
+<FONT
+COLOR="RED"
+>list_map_cloptr</FONT
+> is call-by-value and it is still available
+after <FONT
+COLOR="RED"
+>list_map_cloptr</FONT
+> returns.
+</P
+><P
+>&#13;Let us now see some concrete code in which a linear closure-function is
+created, called, and finally freed:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3535"
+></A
+><PRE
+CLASS="programlisting"
+>implement
+main0 () =
+{
+//
+val xs =
+$list_vt{int}(0, 1, 2, 3, 4)
+//
+val len = list_vt_length (xs)
+//
+val f = lam (x: int): int =&#60;cloptr1&#62; x * len
+//
+val ys =
+list_map_cloptr&#60;int&#62;&#60;int&#62; ($UNSAFE.list_vt2t(xs), f)
+//
+val () = cloptr_free($UNSAFE.castvwtp0{cloptr(void)}(f))
+//
+val () = println! ("xs = ", xs) // xs = 0, 1, 2, 3, 4
+val () = println! ("ys = ", ys) // ys = 0, 5, 10, 15, 20
+//
+val ((*freed*)) = list_vt_free (xs)
+val ((*freed*)) = list_vt_free (ys)
+//
+} (* end of [main0] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The function <FONT
+COLOR="RED"
+>cloptr_free</FONT
+> is given the following
+interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3538"
+></A
+><PRE
+CLASS="programlisting"
+>fun cloptr_free{a:t0p}(pclo: cloptr (a)):&#60;!wrt&#62; void
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Also, the cast involved in
+<FONT
+COLOR="RED"
+>$UNSAFE.castvwtp0{cloptr(void)}(f)</FONT
+> is a safe cast.
+
+</P
+><P
+>&#13;The support for linear closure-functions in ATS1 is crucial in a setting
+where higher-order functions are needed but run-time garbage collection
+(GC) is not allowed or supported. In ATS2, linear closure-functions become
+much less important as programming with higher-order functions in a setting
+without GC can be more conveniently achieved through the use of templates.
+However, if one wants to store closure-functions in a data structure
+without causing memory leaks, it is necessary to use linear closure-functions
+unless GC can be relied upon to reclaim memory.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3463.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c3542.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Stack-Allocated Variables</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3309.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Dataviews as Linear Dataprops</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>
