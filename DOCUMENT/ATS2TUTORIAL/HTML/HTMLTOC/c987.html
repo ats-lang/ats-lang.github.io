@@ -242,11 +242,11 @@ val thePrimes = sieve(from(2))
 >
 
 
-A stream is constructed consisting of all the integers
-starting from 2; the first element of the stream is kept and all the
-multiples of this element are removed from the tail of stream; this process
-is then repeated on the tail of the stream recursively. Clearly, the final
-stream thus generated consists of all the prime numbers ordered
+A stream is constructed consisting of all the integers starting from
+2; the first element of the stream is kept and all the multiples of
+this element are removed from the tail of the stream; this process is
+then repeated on the tail of the stream recursively. Clearly, the
+final stream thus generated consists of all the prime numbers ordered
 ascendingly.
 
 </P
@@ -384,8 +384,8 @@ val
 rec theHamming
   : stream(int) = $delay
 (
-  stream_cons (1, merge2 (merge2 (theHamming2, theHamming3), theHamming5))
-) (* end of [val] *)
+  stream_cons(1, merge2(merge2(theHamming2, theHamming3), theHamming5))
+) (* end of [theHamming] *)
 
 and theHamming2
   : stream(int) = stream_map_fun&#60;int&#62;&#60;int&#62; (theHamming, lam x =&#62; 2 * x)
@@ -435,7 +435,7 @@ COLOR="RED"
 >stream_mergeq_fun</FONT
 > returns a stream listed ascendingly that
 represents the union of the two given streams such that any elements in the
-second stream that also occurs in the first stream are dropped.
+second stream that also occur in the first stream are dropped.
 
 </P
 ><P

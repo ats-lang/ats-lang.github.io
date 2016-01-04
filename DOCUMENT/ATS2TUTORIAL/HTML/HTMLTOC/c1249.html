@@ -92,7 +92,7 @@ garbage-collection (GC) (or the memory is leaked).
 ><P
 >&#13;Creating heap-allocated closure-functions implies the need for dynamic
 memory allocation (DMA). In a restricted environment (e.g., one for
-embedded programming), DMA may not (fully) supported. One option for
+embedded programming), DMA may not be (fully) supported. One option for
 constructing a closure-function in the absence of support for DMA is to
 store it in the stack-frame of the calling function, and there is special
 systax in ATS for doing so.
@@ -262,7 +262,7 @@ COLOR="RED"
 
 </P
 ><P
->&#13;In order to remove the unsafe cast in the implementation of
+>&#13;In order to remove the (unsafe) cast in the implementation of
 <FONT
 COLOR="RED"
 >dotprod</FONT

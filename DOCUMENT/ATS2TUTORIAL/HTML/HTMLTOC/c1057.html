@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Extvar-Declaration</TITLE
+>Linearly Typed Lists</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -10,14 +10,14 @@ REL="HOME"
 TITLE="A Tutorial on Programming Features in ATS"
 HREF="book1.html"><LINK
 REL="UP"
-TITLE="Advanced Tutorial Topics"
-HREF="p1055.html"><LINK
+TITLE="Basic Tutorial Topics"
+HREF="p34.html"><LINK
 REL="PREVIOUS"
-TITLE="Advanced Tutorial Topics"
-HREF="p1055.html"><LINK
+TITLE="Stream-Based Lazy Evaluation"
+HREF="c1005.html"><LINK
 REL="NEXT"
-TITLE="Linear Closure-Functions"
-HREF="c1082.html"><LINK
+TITLE="Advanced Tutorial Topics"
+HREF="p1135.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="p1055.html"
+HREF="c1005.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c1082.html"
+HREF="p1135.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,134 +75,314 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="extvar-declaration"
+NAME="linlist"
 ></A
->Chapter 24. Extvar-Declaration</H1
+>Chapter 24. Linearly Typed Lists</H1
 ><P
->&#13;ATS puts great emphasis on interacting with other programming
-languages.
+>&#13;A linearly typed list in ATS is also referred to as a linear list, which
+essentially corresponds to a singly-linked list in C. The following linear
+datatype declaration introduces a linear type <FONT
+COLOR="RED"
+>list_vt</FONT
+> for
+linear lists:
 
-</P
+<DIV
+CLASS="informalexample"
 ><P
->&#13;Suppose that I have in some C code a (global) integer variable of the name
+></P
+><A
+NAME="AEN1061"
+></A
+><PRE
+CLASS="programlisting"
+>//
+datavtype
+list_vt(a:vt@ype, int) =
+| list_vt_nil(a, 0) of ()
+| {n:nat}
+  list_vt_cons(a, n+1) of (a, list_vt(a, n))
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the keyword <FONT
+COLOR="RED"
+>datavtype</FONT
+> can also be written as
 <FONT
 COLOR="RED"
->foo</FONT
-> and I want to increase in some ATS code the value stored in
-<FONT
+>dataviewtype</FONT
+>. Given a (possibly linear) type T and an integer
+N, the type <FONT
 COLOR="RED"
->foo</FONT
-> by 1. This can be done as follows:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1063"
-></A
-><PRE
-CLASS="programlisting"
->val x0 = $extval(int, "foo") // get the value of foo
-val p_foo = $extval(ptr, "&#38;foo") // get the address of foo
-val () = $UNSAFE.ptr_set&#60;int&#62; (p_foo, x0 + 1) // update foo
-</PRE
-><P
-></P
-></DIV
->
-
-
-where the address-of operator (&#38;) in C is needed for taking the address
-of <FONT
-COLOR="RED"
->foo</FONT
->. If I want to interact in ATS with a language that does
-not support the address-of operator (e.g., JavaScript and Python), then I
-can do it as follows:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1066"
-></A
-><PRE
-CLASS="programlisting"
->extvar "foo" = x0 + 1
-</PRE
-><P
-></P
-></DIV
->
-
-
-where the keyword <FONT
-COLOR="RED"
->extvar</FONT
-> indicates that the string following it
-refers to an external variable (or left-value) that should be updated with
-the value of the expression on the right-hand side of the equality symbol
-following the string. Of course, this works for languages like C that do
-support the address-of operator as well. This so-called extvar-declaration
-can also be written as follows:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1069"
-></A
-><PRE
-CLASS="programlisting"
->extern var "foo" = x0 + 1
-</PRE
-><P
-></P
-></DIV
->
-
-
-where <FONT
-COLOR="RED"
->extvar</FONT
-> expands into <FONT
-COLOR="RED"
->extern var</FONT
+>list_vt(T,N)</FONT
+> is for a list of length N that
+contains elements of type T.  The interfaces for various functions on
+linear lists can be found in the SATS file
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/list_vt.sats"
+TARGET="_top"
+>prelude/SATS/list_vt.sats</A
+>,
+which is automatically loaded by <B
+CLASS="command"
+>atsopt</B
 >.
+</P
+><P
+>&#13;The following function <FONT
+COLOR="RED"
+>list_vt_length</FONT
+> shows a typical way of
+handling a linear list in a read-only situation:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1070"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{a:vt@ype}
+list_vt_length
+  (xs: !list_vt(a, n)): int(n) =
+(
+case+ xs of
+| list_vt_nil() =&#62; 0
+| list_vt_cons(x, xs2) =&#62; 1 + list_vt_length&#60;a&#62; (xs2)
+)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+When <FONT
+COLOR="RED"
+>xs</FONT
+> is matched with the pattern <FONT
+COLOR="RED"
+>list_vt_nil()</FONT
+>,
+the type of <FONT
+COLOR="RED"
+>xs</FONT
+> is <FONT
+COLOR="RED"
+>list_vt(a, 0)</FONT
+>.  When
+<FONT
+COLOR="RED"
+>xs</FONT
+> is matched with the pattern <FONT
+COLOR="RED"
+>list_vt_cons(x, xs2)</FONT
+>,
+the type of <FONT
+COLOR="RED"
+>xs</FONT
+> is <FONT
+COLOR="RED"
+>list_vt(a, N+1)</FONT
+> for some natural
+number N and the types of <FONT
+COLOR="RED"
+>x</FONT
+> and <FONT
+COLOR="RED"
+>xs2</FONT
+> are
+<FONT
+COLOR="RED"
+>a</FONT
+> and <FONT
+COLOR="RED"
+>list_vt(a, N)</FONT
+>, respectively. Note that both
+<FONT
+COLOR="RED"
+>x</FONT
+> and <FONT
+COLOR="RED"
+>xs2</FONT
+> are names for values, and their types are
+required to stay unchanged.
 
 </P
 ><P
->&#13;As for another example, let us suppose that <FONT
+>&#13;The following function <FONT
 COLOR="RED"
->foo2</FONT
-> is a record
-variable that contains two integer fields named <FONT
+>list_vt_foreach</FONT
+> shows a typical way of
+modifying elements stored in a linear list:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1088"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{a:vt@ype}
+list_vt_foreach
+(
+  xs: !list_vt(a, n)
+, fwork: (&#38;(a) &#62;&#62; _) -&#60;cloref1&#62; void
+) : void =
+(
+case+ xs of
+| list_vt_nil() =&#62; ()
+| @list_vt_cons(x, xs2) =&#62; (fwork(x); list_vt_foreach&#60;a&#62; (xs2, fwork); fold@(xs))
+)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+When <FONT
 COLOR="RED"
->first</FONT
+>xs</FONT
+> is matched with the pattern
+<FONT
+COLOR="RED"
+>@list_vt_cons(x,xs2)</FONT
+>, the type of <FONT
+COLOR="RED"
+>xs</FONT
+> is
+<FONT
+COLOR="RED"
+>list_vt(a, N+1)</FONT
+> for some natural number N and the types of
+<FONT
+COLOR="RED"
+>x</FONT
+> and <FONT
+COLOR="RED"
+>xs2</FONT
+> are <FONT
+COLOR="RED"
+>a</FONT
 > and
 <FONT
 COLOR="RED"
->second</FONT
->. Then the following code assigns integers 1 and 2 to
-these two fields of <FONT
+>list_vt(a, N)</FONT
+>, respectively. Note that both <FONT
 COLOR="RED"
->foo2</FONT
->:
+>x</FONT
+> and
+<FONT
+COLOR="RED"
+>xs2</FONT
+> are variables (that are a form of left-values).  At the
+beginning of the body following the pattern
+<FONT
+COLOR="RED"
+>@list_vt_cons(x,xs2)</FONT
+>, the type of <FONT
+COLOR="RED"
+>xs</FONT
+> is assumed to
+be <FONT
+COLOR="RED"
+>list_vt_cons_unfold(L0, L1, L2)</FONT
+>, which is a viewtype for
+a list-node created by a call to <FONT
+COLOR="RED"
+>list_vt_cons</FONT
+> such that the
+node is located at L0 and the two arguments of <FONT
+COLOR="RED"
+>list_vt_cons</FONT
+> are
+located at L1 and L2 while the proofs for the at-views associated with L1
+and L2 are put in the store for currently available proofs. Therefore,
+as left-values, <FONT
+COLOR="RED"
+>x</FONT
+> and <FONT
+COLOR="RED"
+>xs2</FONT
+> have addresses L1 and L2,
+respectively, and the views of the proofs associated with L1 and L2 are
+<FONT
+COLOR="RED"
+>a@L1</FONT
+> and <FONT
+COLOR="RED"
+>list_vt_cons(a, N)@L2</FONT
+>, respectively.
+The application <FONT
+COLOR="RED"
+>fold@(xs)</FONT
+> turns <FONT
+COLOR="RED"
+>xs</FONT
+> into a value
+of the type <FONT
+COLOR="RED"
+>list_vt(a, N+1)</FONT
+> while consuming the proofs
+associated with L1 and L2. Notice that the type of <FONT
+COLOR="RED"
+>xs</FONT
+> can be
+different from the original one assigned to it after folding. The following
+example shows a case as such:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1078"
+NAME="AEN1113"
 ></A
 ><PRE
 CLASS="programlisting"
->extvar "foo2.first" = 1
-extvar "foo2.second" = 2
+>//
+fun
+{a:vt@ype}
+list_vt_append
+  {m,n:nat}
+(
+  xs: list_vt(a, m), ys: list_vt(a, n)
+) : list_vt(a, m+n) = let
+//
+fun
+loop{m:nat}
+(
+  xs: &#38;list_vt(a, m) &#62;&#62; list_vt(a, m+n), ys: list_vt(a, n)
+) : void =
+(
+case+ xs of
+| ~list_vt_nil() =&#62; (xs := ys)
+| @list_vt_cons(x, xs2) =&#62; (loop(xs2, ys); fold@(xs))
+)
+//
+in
+  case+ xs of
+  | ~list_vt_nil () =&#62; ys
+  | @list_vt_cons (x, xs2) =&#62; (loop(xs2, ys); fold@(xs); xs)
+end // end of [list_vt_append]
+//
 </PRE
 ><P
 ></P
@@ -210,17 +390,114 @@ extvar "foo2.second" = 2
 >
 
 
-By its very nature, the feature of extvar-declaration is inherently
-unsafe, and it should only be used with caution.
+The meaning of the symbol <FONT
+COLOR="RED"
+>~</FONT
+> in front of a pattern is to be
+explained below. The implementation of <FONT
+COLOR="RED"
+>list_vt_append</FONT
+> exactly
+corresponds to the standard implementaion of concatenating two
+singly-linked lists in C: Let xs and ys be two given lists; if xs is empty,
+then ys is returned; otherwise, the last node in xs is located and ys is
+stored in the field of the node reserved for the next node.
+
+</P
+><P
+>&#13;The following function <FONT
+COLOR="RED"
+>list_vt_free</FONT
+> frees a given linear
+list containing non-linear elements:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1119"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun
+{a:vt@ype}
+list_vt_free
+  {n:nat}
+(
+  xs: list_vt(a?, n)
+) : void =
+(
+case+ xs of
+| ~list_vt_nil() =&#62; ()
+| ~list_vt_cons(x, xs2) =&#62; list_vt_free&#60;a&#62; (xs2)
+)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+When <FONT
+COLOR="RED"
+>xs</FONT
+> is matched with the pattern <FONT
+COLOR="RED"
+>~list_vt_nil()</FONT
+>,
+the type of <FONT
+COLOR="RED"
+>xs</FONT
+> changes to a special one indicating that
+<FONT
+COLOR="RED"
+>xs</FONT
+> is no longer available for subsequent use.  When
+<FONT
+COLOR="RED"
+>xs</FONT
+> is matched with the pattern
+<FONT
+COLOR="RED"
+>~list_vt_cons(x,xs2)</FONT
+>, the type of <FONT
+COLOR="RED"
+>xs</FONT
+> changes again
+to a special one indicating that <FONT
+COLOR="RED"
+>xs</FONT
+> is no longer available for
+subsequent use. In the latter case, the two values representing the head
+and tail of the list referred to as <FONT
+COLOR="RED"
+>xs</FONT
+> can be subsequently
+referred to as <FONT
+COLOR="RED"
+>x</FONT
+> and <FONT
+COLOR="RED"
+>xs2</FONT
+>, respectively. So what is
+really freed here is the memory for the first list-node in the list
+referred to as <FONT
+COLOR="RED"
+>xs</FONT
+>.
+
 
 </P
 ><P
 >&#13;Please find <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_extvar.dats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_list_vt.dats"
 TARGET="_top"
 >on-line</A
 > the entirety of the
-code presented in this chapter.
+code used in this chapter plus some testing code.
 </P
 ></DIV
 ><DIV
@@ -239,7 +516,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="p1055.html"
+HREF="c1005.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -257,7 +534,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c1082.html"
+HREF="p1135.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -267,13 +544,13 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Advanced Tutorial Topics</TD
+>Stream-Based Lazy Evaluation</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
 ><A
-HREF="p1055.html"
+HREF="p34.html"
 ACCESSKEY="U"
 >Up</A
 ></TD
@@ -281,7 +558,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Linear Closure-Functions</TD
+>Advanced Tutorial Topics</TD
 ></TR
 ></TABLE
 ></DIV

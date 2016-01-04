@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Higher-Order Functions</TITLE
+>Persistent Matrices</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Basic Tutorial Topics"
 HREF="p34.html"><LINK
 REL="PREVIOUS"
-TITLE="Tail-Recursion"
-HREF="c864.html"><LINK
+TITLE="Persistent Arrays-with-size"
+HREF="c833.html"><LINK
 REL="NEXT"
-TITLE="Stream-Based Lazy Evaluation"
-HREF="c924.html"><LINK
+TITLE="Persistent Matrices-with-size"
+HREF="c892.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c864.html"
+HREF="c833.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c924.html"
+HREF="c892.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,297 +75,204 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="hordfun"
+NAME="matrixref"
 ></A
->Chapter 21. Higher-Order Functions</H1
+>Chapter 18. Persistent Matrices</H1
 ><P
->&#13;A higher-order function is one that takes another function as its argument.
+>&#13;A persistent matrix of dimension m by n is just a persistent array of size
+m*n. Like in C, the representation of a matrix in ATS is row-major. In
+other words, element (i, j) in a matrix of dimension m by n is element
+i*n+j in the underlying array that represents the matrix.
 
-Let us use BT to range over base types such as <FONT
-COLOR="RED"
->int</FONT
->,
+</P
+><P
+>&#13;Given a viewtype VT and two integers M and N, the type
 <FONT
 COLOR="RED"
->bool</FONT
->, <FONT
-COLOR="RED"
->char</FONT
->, <FONT
-COLOR="RED"
->double</FONT
-> and
-<FONT
-COLOR="RED"
->string</FONT
->.  A simple type T is formed according to the following
-inductive definition:
+>matrixref(VT, M, N)</FONT
+> is for persistent matrices of dimension M
+by N that contain elements of the viewtype VT.  There is no dimension
+information attached to matrixref-values explicitly. The interfaces for various
+functions on persistent matrices can be found in the SATS file
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/matrixref.sats"
+TARGET="_top"
+>prelude/SATS/matrixref.sats</A
+>, which is automatically loaded by
+<B
+CLASS="command"
+>atsopt</B
+>.
 
 </P
 ><P
-></P
-><UL
-><LI
-><P
->BT is a simple type.</P
-></LI
-><LI
-><P
->(T<SUB
->1</SUB
->, ..., T<SUB
->n</SUB
->) -&#62; T<SUB
->0</SUB
-> is a simple type if
-T<SUB
->0</SUB
->, T<SUB
->1</SUB
->, ... T<SUB
->n</SUB
-> are simple types.
-</P
-></LI
-></UL
-><P
->&#13;Let <SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->order</I
-></SPAN
-> be a function from simple types to natural numbers
-defined as follows:
-
-</P
-><P
-></P
-><UL
-><LI
-><P
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->order</I
-></SPAN
->(BT) = 0
-</P
-></LI
-><LI
-><P
-><SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->order</I
-></SPAN
->((T<SUB
->1</SUB
->, ..., T<SUB
->n</SUB
->) -&#62; T<SUB
->0</SUB
->) = 
-<SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->max</I
-></SPAN
->(<SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->order</I
-></SPAN
->(T<SUB
->0</SUB
->), 1 + <SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->order</I
-></SPAN
->(T<SUB
->1</SUB
->), ..., 1 + <SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->order</I
-></SPAN
->(T<SUB
->n</SUB
->))
-</P
-></LI
-></UL
-><P
->&#13;Given a function f of some simple type T, let us say that f is a
-<SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->n</I
-></SPAN
->th-order function if <SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->order</I
-></SPAN
->(T) =
-<SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->n</I
-></SPAN
->. For instance, a function of the type (int, int) -&#62; int
-is 1st-order, and a function of the type int -&#62; (int -&#62; int) is also
-1st-order, and a function of the type ((int -&#62; int), int) -&#62; int is
-2nd-order.  In practice, most functions are 1st-order and most higher-order
-functions are 2nd-order.
-
-</P
-><P
->&#13;As an example, let us implement as follows a 2nd-order function
-<FONT
-COLOR="RED"
->find_root</FONT
-> that takes as its only argument a function f from
-integers to integers and searches for a root of f by enumeration:
+>&#13;The following function is commonly used to create a matrixref-value:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN912"
+NAME="AEN876"
 ></A
 ><PRE
 CLASS="programlisting"
->fn find_root
+>fun{a:t0p}
+matrixref_make_elt{m,n:int}
+  (m: size_t m, n: size_t n, x0: a):&#60;!wrt&#62; matrixref (a, m, n)
+// end of [matrixref_make_elt]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given two sizes m and n plus an element x0,
+<FONT
+COLOR="RED"
+>matrixref_make_elt</FONT
+> returns a matrix of dimension m by n
+in which each cell is initialized with the element x0.
+</P
+><P
+>&#13;Also, the following cast function can be called to turn an array into
+a matrix:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN880"
+></A
+><PRE
+CLASS="programlisting"
+>castfn
+arrayref2matrixref
+  {a:vt0p}{m,n:nat} (A: arrayref (a, m*n)):&#60;&#62; matrixref (a, m, n)
+// end of [arrayref2matrixref]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;For accessing and updating the content of a matrix-cell, the following
+two functions <FONT
+COLOR="RED"
+>matrixref_get_at</FONT
+> and <FONT
+COLOR="RED"
+>matrixref_set_at</FONT
+>
+can be called:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN885"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun{a:t0p}
+matrixref_get_at
+  {m,n:int}
 (
-  f: int -&#60;cloref1&#62; int
-) : int = let
+  A: matrixref (a, m, n), i: sizeLt(m), n: size_t(n), j: sizeLt(n)
+) :&#60;!ref&#62; (a) // end of [matrixref_get_at]
+//
+fun{a:t0p}
+matrixref_set_at
+  {m,n:int}
+(
+  A: matrixref (INV(a), m, n), i: sizeLt (m), n: size_t n, j: sizeLt (n), x: a
+) :&#60;!refwrt&#62; void // end of [matrixref_set_at]
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that it is not enough to just supply the coordinates of a
+matrix-cell in order to access it; the column dimension of the matrix
+needs to be supplied as well.
+
+</P
+><P
+>&#13;In the following presentation, I give an implementation of a function that
+turns a given square matrix into its transpose:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN888"
+></A
+><PRE
+CLASS="programlisting"
+>//
+extern
+fun{a:t0p}
+matrixref_transpose
+  {n:nat}
+(
+  M: matrixref (a, n, n), n: size_t (n)
+) : void // end of [matrixref_transpose]
+//
+implement{a}
+matrixref_transpose
+  {n} (M, n) = let
+//
+macdef
+mget (i, j) =
+  matrixref_get_at (M, ,(i), n, ,(j))
+macdef
+mset (i, j, x) =
+  matrixref_set_at (M, ,(i), n, ,(j), ,(x))
 //
 fun loop
+  {i,j:nat |
+   i &#60; j; j &#60;= n
+  } .&#60;n-i,n-j&#62;. 
 (
-  f: int -&#60;cloref1&#62; int, n: int
-) : int =
-  if f (n) = 0 then n else (
-    if n &#60;= 0 then loop (f, ~n + 1) else loop (f, ~n)
-  ) // end of [else] // end of [if]
-in
-  loop (f, 0)
-end // end of [find_root]
-</PRE
-><P
-></P
-></DIV
->
-
-
-The function <FONT
-COLOR="RED"
->find_root</FONT
-> computes the values of f at 0, 1, -1, 2,
--2, etc. until it finds the first integer n in this sequence that satisfies
-f(n) = 0.
-
-</P
-><P
->&#13;As another example, let us implement as follows the famous Newton-Raphson's
-method for finding roots of functions on reals:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN916"
-></A
-><PRE
-CLASS="programlisting"
->typedef
-fdouble = double -&#60;cloref1&#62; double
-//
-macdef epsilon = 1E-6 (* precision *)
-//
-// [f1] is the derivative of [f]
-//
-fun
-newton_raphson
-(
-  f: fdouble, f1: fdouble, x0: double
-) : double = let
-  fun loop (
-    f: fdouble, f1: fdouble, x0: double
-  ) : double = let
-    val y0 = f x0
+  i: size_t (i), j: size_t (j)
+) : void =
+  if j &#60; n then let
+    val x = mget(i, j)
+    val () = mset(i, j, mget(j, i))
+    val () = mset(j, i, x)
   in
-    if abs (y0 / x0) &#60; epsilon then x0 else
-      let val y1 = f1 x0 in loop (f, f1, x0 - y0 / y1) end
-    // end of [if]
-  end // end of [loop]
+    loop (i, j+1)
+  end else let
+    val i1 = succ (i)
+  in
+    if i1 &#60; n then loop (i1, succ(i1)) else ()
+  end // end of [if]
+//
 in
-  loop (f, f1, x0)
-end // end of [newton_raphson]
+  if n &#62; 0 then loop (i2sz(0), i2sz(1)) else ()
+end // end of [matrixref_transpose]
 </PRE
 ><P
 ></P
 ></DIV
 >
 
-
-With <FONT
-COLOR="RED"
->newton_raphson</FONT
->, both the square root function and the
-cubic root function can be readily implemented as follows:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN919"
-></A
-><PRE
-CLASS="programlisting"
->// square root function
-fn sqrt (c: double): double =
-  newton_raphson (lam x =&#62; x * x - c, lam x =&#62; 2.0 * x, 1.0)
-// cubic root function
-fn cbrt (c: double): double =
-  newton_raphson (lam x =&#62; x * x * x - c, lam x =&#62; 3.0 * x * x, 1.0)
-</PRE
-><P
-></P
-></DIV
->
-
-
-</P
-><P
->&#13;Higher-order functions can be of great use in supporting a form of code
-sharing that is both common and flexible. As function arguments are often
-represented as heap-allocated closures that can only be reclaimed through
-garbage collection (GC), higher-order functions are used infrequently, if
-at all, in a setting where GC is not present. In ATS, linear closures,
-which can be freed explictly in a safe manner, are available to support
-higher-order functions in the absence of GC, making it possible to employ
-higher-order functions extensively in systems programming (where GC is
-unavailable or simply disallowed). The details on linear closures are to be
-given elsewhere.
 
 </P
 ><P
 >&#13;Please find <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_hordfun.dats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_matrixref.dats"
 TARGET="_top"
 >on-line</A
 > the entirety of the
@@ -388,7 +295,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c864.html"
+HREF="c833.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -406,7 +313,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c924.html"
+HREF="c892.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -416,7 +323,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Tail-Recursion</TD
+>Persistent Arrays-with-size</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -430,7 +337,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Stream-Based Lazy Evaluation</TD
+>Persistent Matrices-with-size</TD
 ></TR
 ></TABLE
 ></DIV

@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Extvar-Declaration</TITLE
+>Persistent Hashtables</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -10,14 +10,14 @@ REL="HOME"
 TITLE="A Tutorial on Programming Features in ATS"
 HREF="book1.html"><LINK
 REL="UP"
-TITLE="Advanced Tutorial Topics"
-HREF="p888.html"><LINK
+TITLE="Basic Tutorial Topics"
+HREF="p34.html"><LINK
 REL="PREVIOUS"
-TITLE="Advanced Tutorial Topics"
-HREF="p888.html"><LINK
+TITLE="Persistent Matrices-with-size"
+HREF="c859.html"><LINK
 REL="NEXT"
-TITLE="Linear Closure-Functions"
-HREF="c915.html"><LINK
+TITLE="Tail-Recursion"
+HREF="c951.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="p888.html"
+HREF="c859.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c915.html"
+HREF="c951.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,24 +75,29 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="extvar-declaration"
+NAME="hashtable"
 ></A
->Chapter 21. Extvar-Declaration</H1
+>Chapter 20. Persistent Hashtables</H1
 ><P
->&#13;ATS puts great emphasis on interacting with other programming
-languages.
-
+>&#13;Hashtables are commonly used to implement finite maps. In ATSLIB/libats,
+there are hashtable implementations based on linear chaining and linear
+probing. There is also support for linear hashtables as well as persistent
+hashtables. The linear ones can be safely freed by the programmer, and the
+persistent ones (which are directly based on linear ones) can only be
+safely reclaimed through garbage collection (GC). In this chapter, I show
+how persistent hashtables can be created and operated on.
 </P
 ><P
->&#13;Suppose that I have in some C code a (global) integer variable of the name
+>&#13;Suppose that a map is needed for mapping keys of type
 <FONT
 COLOR="RED"
->foo</FONT
-> and I want to increase in some ATS code the value stored in
-<FONT
+>key_t</FONT
+> to items of type <FONT
 COLOR="RED"
->foo</FONT
-> by 1. This can be done as follows:
+>itm_t</FONT
+>. The following code
+essentially sets up an interface for creating and operating on such a map
+based on a hashtable implementation in ATSLIB/libats:
 
 <DIV
 CLASS="informalexample"
@@ -103,9 +108,16 @@ NAME="AEN896"
 ></A
 ><PRE
 CLASS="programlisting"
->val x0 = $extval(int, "foo") // get the value of foo
-val p_foo = $extval(ptr, "&#38;foo") // get the address of foo
-val () = $UNSAFE.ptr_set&#60;int&#62; (p_foo, x0 + 1) // update foo
+>local
+
+typedef
+key = key_t and itm = itm_t
+
+in (* in-of-local *)
+
+#include "libats/ML/HATS/myhashtblref.hats"
+
+end // end of [local]
 </PRE
 ><P
 ></P
@@ -113,83 +125,57 @@ val () = $UNSAFE.ptr_set&#60;int&#62; (p_foo, x0 + 1) // update foo
 >
 
 
-where the address-of operator (&#38;) in C is needed for taking the address
-of <FONT
-COLOR="RED"
->foo</FONT
->. If I want to interact in ATS with a language that does
-not support the address-of operator (e.g., JavaScript and Python), then I
-can do it as follows:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN899"
-></A
-><PRE
-CLASS="programlisting"
->extvar "foo" = x0 + 1
-</PRE
-><P
-></P
-></DIV
+Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/libats/ML/HATS/myhashtblref.hats"
+TARGET="_top"
+>on-line</A
 >
-
-
-where the keyword <FONT
-COLOR="RED"
->extvar</FONT
-> indicates that the string following it
-refers to an external variable (or left-value) that should be updated with
-the value of the expression on the right-hand side of the equality symbol
-following the string. Of course, this works for languages like C that do
-support the address-of operator as well. This so-called extvar-declaration
-can also be written as follows:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN902"
-></A
-><PRE
-CLASS="programlisting"
->extern var "foo" = x0 + 1
-</PRE
-><P
-></P
-></DIV
->
-
-
-where <FONT
-COLOR="RED"
->extvar</FONT
-> expands into <FONT
-COLOR="RED"
->extern var</FONT
->.
+the HATS file mentioned in the code, which is just a convenience wrapper
+made to simplify programming with hashtables.
 
 </P
 ><P
->&#13;As for another example, let us suppose that <FONT
+>&#13;Assume that <FONT
 COLOR="RED"
->foo2</FONT
-> is a record
-variable that contains two integer fields named <FONT
+>key_t</FONT
+> is <FONT
 COLOR="RED"
->first</FONT
-> and
+>string</FONT
+> and <FONT
+COLOR="RED"
+>itm_t</FONT
+>
+is <FONT
+COLOR="RED"
+>int</FONT
+>. The following line of code creates a hashtable with its
+initial capacity set to be 1000:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN904"
+></A
+><PRE
+CLASS="programlisting"
+>val mymap = myhashtbl_make_nil(1000)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the capacity in this case is the size of the array associated
+with the created hashtable. The underlying hashtable implementation is
+based on linear chaining, and this hashtable can store up to 5000 (5*1000)
+items without need for resizing. When resizing is indeed needed, it is done
+automatically. The following few lines insert some key/item pairs into
 <FONT
 COLOR="RED"
->second</FONT
->. Then the following code assigns integers 1 and 2 to
-these two fields of <FONT
-COLOR="RED"
->foo2</FONT
+>mymap</FONT
 >:
 
 <DIV
@@ -197,12 +183,20 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN911"
+NAME="AEN907"
 ></A
 ><PRE
 CLASS="programlisting"
->extvar "foo2.first" = 1
-extvar "foo2.second" = 2
+>//
+val-~None_vt() = mymap.insert("a", 0)
+val-~Some_vt(0) = mymap.insert("a", 1)
+//
+val-~None_vt() = mymap.insert("b", 1)
+val-~Some_vt(1) = mymap.insert("b", 2)
+//
+val-~None_vt() = mymap.insert("c", 2)
+val-~Some_vt(2) = mymap.insert("c", 3)
+//
 </PRE
 ><P
 ></P
@@ -210,17 +204,302 @@ extvar "foo2.second" = 2
 >
 
 
-By its very nature, the feature of extvar-declaration is inherently
-unsafe, and it should only be used with caution.
+The dot-symbol <FONT
+COLOR="RED"
+>.insert</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myhashtbl_insert</FONT
+>. Given a key and an item,
+<FONT
+COLOR="RED"
+>mymap.insert</FONT
+> inserts the key/item pair into <FONT
+COLOR="RED"
+>mymap</FONT
+>.
+If the key is in the domain of the map represented by <FONT
+COLOR="RED"
+>mymap</FONT
+>
+before insertion, then the original item associated with the key is
+returned. Otherwise, no item is returned. As can be expected, the size
+of <FONT
+COLOR="RED"
+>mymap</FONT
+> is 3 at this point:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN915"
+></A
+><PRE
+CLASS="programlisting"
+>val () = assertloc (mymap.size() = 3)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.size</FONT
+> is overloaded with a function of the name
+<FONT
+COLOR="RED"
+>myhashtbl_get_size</FONT
+>, which returns the number of key/item pairs
+stored in a given hashtable.  During the course of debugging, one may want
+to print out the key/item pairs in a given hashtable:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN919"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val () =
+  fprintln! (stdout_ref, "mymap = ", mymap)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where the symbol <FONT
+COLOR="RED"
+>fprint</FONT
+> is overloaded with
+<FONT
+COLOR="RED"
+>fprint_myhashtbl</FONT
+>. The next two lines of code show how search
+with a given key operates on a hashtable:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN923"
+></A
+><PRE
+CLASS="programlisting"
+>val-~None_vt() = mymap.search("")
+val-~Some_vt(1) = mymap.search("a")
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.search</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myhashtbl_search</FONT
+>, which returns the item associated with a
+given key if it is found. The next few lines of code remove some key/item
+pairs from <FONT
+COLOR="RED"
+>mymap</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN928"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val-true = mymap.remove("a")
+val-false = mymap.remove("a")
+//
+val-~Some_vt(2) = mymap.takeout("b")
+val-~Some_vt(3) = mymap.takeout("c")
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.remove</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myhashtbl_remove</FONT
+> for removing a key/item pair of a given
+key. If a key/item pair is removed, then the function returns
+true. Otherwise, it returns false to indicates that no key/item pair of the
+given key is stored in the hashtable being operated on.  The dot-symbol
+<FONT
+COLOR="RED"
+>.takeout</FONT
+> is overloaded with a function of the name
+<FONT
+COLOR="RED"
+>myhashtbl_takeout</FONT
+>, which is similar to
+<FONT
+COLOR="RED"
+>myhashtbl_remove</FONT
+> excepting for returning the removed item.
+The next few lines of code make use of several less commonly used functions
+on hashtables:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN935"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val () = mymap.insert_any("a", 0)
+val () = mymap.insert_any("b", 1)
+val () = mymap.insert_any("c", 2)
+val kxs = mymap.listize1((*void*))
+val ((*void*)) = fprintln! (stdout_ref, "kxs = ", kxs)
+val kxs = mymap.takeout_all((*void*))
+val ((*void*)) = fprintln! (stdout_ref, "kxs = ", kxs)
+//
+val () = assertloc (mymap.size() = 0)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.insert_any</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myhashtbl_insert_any</FONT
+>, which <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>always</I
+></SPAN
+> inserts a
+given key/item pair regardless whether the key is already in use. One
+should really avoid using this function or only call it when it is
+absolutely sure that the given key is not already in use for otherwise the
+involved hashtable would be corrupted.  The dot-symbols
+<FONT
+COLOR="RED"
+>.listize1</FONT
+> and <FONT
+COLOR="RED"
+>.takeout_all</FONT
+> are overloaded with two
+functions of the names <FONT
+COLOR="RED"
+>myhashtbl_listize1</FONT
+> and
+<FONT
+COLOR="RED"
+>myhashtbl_takeout_all</FONT
+>, respectively. Both of them return a list
+consisting of all the key/item pairs in a given hashtable; the former keeps
+the hashtable unchanged while the latter empties it. Last, I present as follows the
+interface for an iterator going over all the key/item pairs in a given hashtable:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN944"
+></A
+><PRE
+CLASS="programlisting"
+>//
+extern
+fun
+myhashtbl_foreach_cloref
+(
+  tbl: myhashtbl
+, fwork: (key, &#38;(itm) &#62;&#62; _) -&#60;cloref1&#62; void
+) : void // end-of-function
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+As an example, the following code prints out all the key/item
+pairs in a given hashtable:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN946"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val () =
+myhashtbl_foreach_cloref
+(
+  mymap
+, lam (k, x) =&#62; fprintln! (stdout_ref, "k=", k, " and ", "x=", x)
+) (* myhashtbl_foreach_cloref *)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
 
 </P
 ><P
->&#13;Please find <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_extvar.dats"
+>&#13;Please find the entirety of the code used in this chapter
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_hashtable.dats"
 TARGET="_top"
 >on-line</A
-> the entirety of the
-code presented in this chapter.
+>. Also, there is a
+hashtable-based implementation of symbol table available
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_hashtable2.dats"
+TARGET="_top"
+>on-line</A
+>.
+
 </P
 ></DIV
 ><DIV
@@ -239,7 +518,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="p888.html"
+HREF="c859.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -257,7 +536,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c915.html"
+HREF="c951.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -267,13 +546,13 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Advanced Tutorial Topics</TD
+>Persistent Matrices-with-size</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
 ><A
-HREF="p888.html"
+HREF="p34.html"
 ACCESSKEY="U"
 >Up</A
 ></TD
@@ -281,7 +560,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Linear Closure-Functions</TD
+>Tail-Recursion</TD
 ></TR
 ></TABLE
 ></DIV

@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Stream-Based Lazy Evaluation</TITLE
+>Persistent Arrays-with-size</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,14 +13,14 @@ REL="UP"
 TITLE="Basic Tutorial Topics"
 HREF="p34.html"><LINK
 REL="PREVIOUS"
-TITLE="Higher-Order Functions"
-HREF="c738.html"><LINK
+TITLE="Persistent Arrays"
+HREF="c733.html"><LINK
 REL="NEXT"
-TITLE="Advanced Tutorial Topics"
-HREF="p846.html"><LINK
+TITLE="Persistent Matrices"
+HREF="c829.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
-HREF="./ATS2TUTORIAL-BOOK.css"></HEAD
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
 ><BODY
 CLASS="chapter"
 BGCOLOR="#FFFFFF"
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c738.html"
+HREF="c733.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="p846.html"
+HREF="c829.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,54 +75,75 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="stream-based-lazy-evaluation"
+NAME="arrszref"
 ></A
->Chapter 20. Stream-Based Lazy Evaluation</H1
+>Chapter 17. Persistent Arrays-with-size</H1
 ><P
->&#13;While the core of ATS is based on call-by-value evaluation, there is also
-direct support in ATS for lazy (that is, call-by-need) evaluation.
+>&#13;I use the name <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>array-with-size</I
+></SPAN
+> to refer to a persistent
+array with attached size information.  Given a viewtype VT, the type for an
+array-with-size that contains N values of viewtype VT is
+<FONT
+COLOR="RED"
+>arrszref(VT, N)</FONT
+>. Essentially, such a value is a boxed pair of
+two components of types <FONT
+COLOR="RED"
+>arrayref(VT, N)</FONT
+> and
+<FONT
+COLOR="RED"
+>size_t(N)</FONT
+>. The interfaces for various functions on persistent
+arrays-with-size can be found in
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/arrayref.sats"
+TARGET="_top"
+>prelude/SATS/arrayref.sats</A
+>.
 
 </P
 ><P
->&#13;There is a special language construct <FONT
-COLOR="RED"
->$delay</FONT
-> for delaying or
-suspending the evaluation of an expression (by forming a thunk), and there
-is also a special function <FONT
-COLOR="RED"
->lazy_force</FONT
-> for resuming a suspended
-evaluation (represented by a thunk).  The abstract type constructor
+>&#13;For creating an array-with-size, the following functions
 <FONT
 COLOR="RED"
->lazy</FONT
-> of the sort <FONT
+>arrszref_make_arrpsz</FONT
+> and <FONT
 COLOR="RED"
->(t@ype) =&#62; type</FONT
-> forms a (boxed)
-type when applied to a type. Given an expression exp of type T, the value
-<FONT
-COLOR="RED"
->$delay(exp)</FONT
-> of the type <FONT
-COLOR="RED"
->lazy(T)</FONT
-> represents the
-suspended evaluation of exp. Given a value V of the type
-<FONT
-COLOR="RED"
->lazy(T)</FONT
-> for some type T, calling <FONT
-COLOR="RED"
->lazy_force</FONT
-> on V
-resumes the suspended evaluation represented by V. If the call returns,
-then the returned value is of type T. The interface for the function
-template <FONT
-COLOR="RED"
->lazy_force</FONT
-> is given as follows:
+>arrszref_make_arrayref</FONT
+> can
+be called:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN805"
+></A
+><PRE
+CLASS="programlisting"
+>fun{}
+arrszref_make_arrpsz
+  {a:vt0p}{n:int} (arrpsz (INV(a), n)): arrszref(a)
+fun{}
+arrszref_make_arrayref
+  {a:vt0p}{n:int} (arrayref (a, n), size_t(n)): arrszref(a)
+// end of [arrszref_make_arrayref]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+As an example, the following code creates an array-with-size containing
+all the decimal digits:
 
 <DIV
 CLASS="informalexample"
@@ -133,7 +154,7 @@ NAME="AEN807"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:t@ype} lazy_force (lazyval: lazy(a)):&#60;!laz&#62; a
+>val DIGITS = (arrszref)$arrpsz{int}(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
 </PRE
 ><P
 ></P
@@ -141,135 +162,40 @@ CLASS="programlisting"
 >
 
 
-where the symbol <FONT
+Note that <FONT
 COLOR="RED"
->!laz</FONT
-> indicates a form of effect associated
-with lazy-evaluation. Note that the special prefix operator <FONT
+>arrszref</FONT
+> is overloaded with
+<FONT
 COLOR="RED"
->!</FONT
->
-in ATS is overloaded with <FONT
-COLOR="RED"
->lazy_force</FONT
+>arrszref_make_arrpsz</FONT
 >.
 
 </P
 ><P
->&#13;In <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/prelude/SATS/stream.sats"
-TARGET="_top"
->prelude/SATS/stream.sats</A
->,
-the following types <FONT
+>&#13;For reading from and writing to an array-with-size, the function templates
+<FONT
 COLOR="RED"
->stream_con</FONT
+>arrszref_get_at</FONT
 > and <FONT
 COLOR="RED"
->stream</FONT
-> are declared
-mutually recursively for representing lazy streams:
+>arrszref_set_at</FONT
+> can be used,
+respectively, which are assigned the following interfaces:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN816"
-></A
-><PRE
-CLASS="programlisting"
->datatype
-stream_con (a:t@ype+) =
-  | stream_nil of ((*void*)) | stream_cons of (a, stream(a))
-where stream (a:t@ype) = lazy (stream_con(a))
-</PRE
-><P
-></P
-></DIV
->
-
-
-Also, a number of common functions on streams are declared in
-<A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/prelude/SATS/stream.sats"
-TARGET="_top"
->prelude/SATS/stream.sats</A
-> and
-implemented in <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/prelude/DATS/stream.dats"
-TARGET="_top"
->prelude/DATS/stream.dats</A
->.
-
-</P
-><P
->&#13;The following code gives a standard implementation of the sieve of
-Eratosthenes:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN821"
-></A
-><PRE
-CLASS="programlisting"
->//
-fun
-from (n: int): stream (int) =
-  $delay (stream_cons (n, from (n+1)))
-//
-fun sieve
-(
-  ns: stream(int)
-) :&#60;!laz&#62; stream(int) = $delay let
-//
-// [val-] means no warning message from the compiler
-//
-  val-stream_cons(n, ns) = !ns
-in
-  stream_cons (n, sieve (stream_filter_cloref&#60;int&#62; (ns, lam x =&#62; x mod n &#62; 0)))
-end // end of [$delay let] // end of [sieve]
-//
-val thePrimes = sieve(from(2))
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-A stream is constructed consisting of all the integers
-starting from 2; the first element of the stream is kept and all the
-multiples of this element are removed from the tail of stream; this process
-is then repeated on the tail of the stream recursively. Clearly, the final
-stream thus generated consists of all the prime numbers ordered
-ascendingly.
-
-</P
-><P
->&#13;The function template <FONT
-COLOR="RED"
->stream_filter_cloref</FONT
-> is of the following
-interface:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN825"
+NAME="AEN814"
 ></A
 ><PRE
 CLASS="programlisting"
 >fun{a:t@ype}
-stream_filter_cloref
-  (xs: stream(a), pred: a -&#60;cloref&#62; bool):&#60;!laz&#62; stream(a)
-// end of [stream_filter_cloref]
+arrszref_get_at (A: arrszref (a), i: size_t): (a)
+fun{a:t@ype}
+arrszref_set_at (A: arrszref (a), i: size_t, x: a): void
 </PRE
 ><P
 ></P
@@ -277,123 +203,72 @@ stream_filter_cloref
 >
 
 
-Given a stream and a predicate, <FONT
-COLOR="RED"
->stream_filter_cloref</FONT
->
-generates another stream consisting of all the elements in the given stream
-that satisfy the given predicate.
-</P
-><P
->&#13;Let us see another example of lazy evaluation.  The follow code
-demonstrates an interesting approach to computing the Fibonacci numbers:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN829"
-></A
-><PRE
-CLASS="programlisting"
->//
-val _0_ = $UNSAFE.cast{int64}(0)
-val _1_ = $UNSAFE.cast{int64}(1)
-//
-val // the following values are defined mutually recursively
-rec theFibs_0
-  : stream(int64) = $delay (stream_cons(_0_, theFibs_1)) // fib0, fib1, ...
-and theFibs_1
-  : stream(int64) = $delay (stream_cons(_1_, theFibs_2)) // fib1, fib2, ...
-and theFibs_2
-  : stream(int64) = // fib2, fib3, fib4, ...
-(
-  stream_map2_fun&#60;int64,int64&#62;&#60;int64&#62; (theFibs_0, theFibs_1, lam (x, y) =&#62; x + y)
-) (* end of [val/and/and] *)
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-The function template <FONT
-COLOR="RED"
->stream_map2_fun</FONT
-> is assigned the following
-interface:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN832"
-></A
-><PRE
-CLASS="programlisting"
->fun{
-a1,a2:t0p}{b:t0p
-} stream_map2_cloref
-(
-  xs1: stream (a1), xs2: stream (a2), f: (a1, a2) -&#60;fun&#62; b
-) :&#60;!laz&#62; stream (b) // end of [stream_map2_cloref]
-</PRE
-><P
-></P
-></DIV
->
-
-
-Given two streams xs1 and xs2 and a binary function f,
+Given an array-with-size A, an index i and a value v,
 <FONT
 COLOR="RED"
->stream_map2_fun</FONT
-> forms a stream xs such that xs[n] (that is,
-element n in xs), if exists, equals f(xs1[n], xs2[n]), where n ranges over
-natural numbers.
+>arrszref_get_at(A, i)</FONT
+> and <FONT
+COLOR="RED"
+>arrszref_set_at(A, i, v)</FONT
+>
+can be written as <FONT
+COLOR="RED"
+>A[i]</FONT
+> and <FONT
+COLOR="RED"
+>A[i] := v</FONT
+>,
+respectively. Notice that array-bounds checking is performed at run-time
+whenever <FONT
+COLOR="RED"
+>arrszref_get_at</FONT
+> or <FONT
+COLOR="RED"
+>arrszref_set_at</FONT
+> is
+called, and the exception <FONT
+COLOR="RED"
+>ArraySubscriptExn</FONT
+> is raised in case
+of out-of-bounds array access being detected.
 
 </P
 ><P
->&#13;Let us see yet another example of lazy evaluation.
-A Hamming number is a positive natural number whose prime factors can
-contain only 2, 3 and 5.  The following code shows a straightforward way to
-generate a stream consisting of all the Hamming numbers:
+>&#13;As a simple example, the following code implements a function that
+reverses the content of the array inside a given array-with-size:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN836"
+NAME="AEN824"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val
-compare_int_int =
-  lam (x1: int, x2: int): int =&#60;fun&#62; compare(x1, x2)
-//
-macdef
-merge2 (xs1, xs2) =
-  stream_mergeq_fun&#60;int&#62; (,(xs1), ,(xs2), compare_int_int)
-//
-val
-rec theHamming
-  : stream(int) = $delay
+>fun{a:t@ype}
+arrszref_reverse
 (
-  stream_cons (1, merge2 (merge2 (theHamming2, theHamming3), theHamming5))
-) (* end of [val] *)
-
-and theHamming2
-  : stream(int) = stream_map_fun&#60;int&#62;&#60;int&#62; (theHamming, lam x =&#62; 2 * x)
-and theHamming3
-  : stream(int) = stream_map_fun&#60;int&#62;&#60;int&#62; (theHamming, lam x =&#62; 3 * x)
-and theHamming5
-  : stream(int) = stream_map_fun&#60;int&#62;&#60;int&#62; (theHamming, lam x =&#62; 5 * x)
+  A: arrszref (a)
+) : void = let
 //
+val n = A.size()
+val n2 = half (n)
+//
+fun loop
+  (i: size_t): void = let
+in
+  if i &#60; n2 then let
+    val tmp = A[i]
+    val ni = pred(n)-i
+  in
+    A[i] := A[ni]; A[ni] := tmp; loop (succ(i))
+  end else () // end of [if]
+end // end of [loop]
+//
+in
+  loop (i2sz(0))
+end // end of [arrszref_reverse]
 </PRE
 ><P
 ></P
@@ -401,60 +276,18 @@ and theHamming5
 >
 
 
-The function template <FONT
-COLOR="RED"
->stream_mergeq_fun</FONT
-> is given the following
-interface:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN839"
-></A
-><PRE
-CLASS="programlisting"
->fun{a:t0p}
-stream_mergeq_fun
-(
-  xs1: stream (a), xs2: stream (a), (a, a) -&#60;fun&#62; int
-) :&#60;!laz&#62; stream (a) // end of [stream_mergeq_fun]
-</PRE
-><P
-></P
-></DIV
->
-
-
-Given two streams and an ordering (represented by a function) such that the
-two streams are listed ascendingly according to the ordering,
-<FONT
-COLOR="RED"
->stream_mergeq_fun</FONT
-> returns a stream listed ascendingly that
-represents the union of the two given streams such that any elements in the
-second stream that also occurs in the first stream are dropped.
-
 </P
 ><P
->&#13;With stream-based lazy evaluation, an illusion of infinite data can be
-readily created. This illusion is given a simple programming interface plus
-automatic support for memoization, enabling a programming style that can
-often be both elegant and intriguing.
-
-</P
-><P
->&#13;In general, it is difficult to estimate the time-complexity and
-space-complexity of a program based on lazy evaluation. This is regarded as
-a serious weakness. With linear stream-based lazy evalution, this weakness
-can essentially be removed.
-
+>&#13;Arrays-with-size can be a good choice over arrays in a prototype
+implementation as it is often more demanding to program with arrays. Also,
+for programmers who are yet to become familiar with dependent types, it is
+definitely easier to work with arrays-with-size than arrays. When
+programming in ATS, I often start out with arrays-with-size and then
+replace them with arrays when I can see clear benefits from doing so.
 </P
 ><P
 >&#13;Please find <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_stream.dats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_arrszref.dats"
 TARGET="_top"
 >on-line</A
 > the entirety of the
@@ -477,7 +310,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c738.html"
+HREF="c733.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -495,7 +328,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="p846.html"
+HREF="c829.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -505,7 +338,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Higher-Order Functions</TD
+>Persistent Arrays</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -519,7 +352,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Advanced Tutorial Topics</TD
+>Persistent Matrices</TD
 ></TR
 ></TABLE
 ></DIV

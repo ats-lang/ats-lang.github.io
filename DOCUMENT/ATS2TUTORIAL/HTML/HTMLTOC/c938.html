@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Stream-Based Lazy Evaluation</TITLE
+>Higher-Order Functions</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Basic Tutorial Topics"
 HREF="p34.html"><LINK
 REL="PREVIOUS"
-TITLE="Higher-Order Functions"
-HREF="c882.html"><LINK
+TITLE="Tail-Recursion"
+HREF="c934.html"><LINK
 REL="NEXT"
-TITLE="Advanced Tutorial Topics"
-HREF="p990.html"><LINK
+TITLE="Stream-Based Lazy Evaluation"
+HREF="c994.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c882.html"
+HREF="c934.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="p990.html"
+HREF="c994.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,166 +75,193 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="stream-based-lazy-evaluation"
+NAME="hordfun"
 ></A
->Chapter 22. Stream-Based Lazy Evaluation</H1
+>Chapter 22. Higher-Order Functions</H1
 ><P
->&#13;While the core of ATS is based on call-by-value evaluation, there is also
-direct support in ATS for lazy (that is, call-by-need) evaluation.
+>&#13;A higher-order function is one that takes another function as its argument.
 
-</P
-><P
->&#13;There is a special language construct <FONT
+Let us use BT to range over base types such as <FONT
 COLOR="RED"
->$delay</FONT
-> for delaying or
-suspending the evaluation of an expression (by forming a thunk), and there
-is also a special function <FONT
-COLOR="RED"
->lazy_force</FONT
-> for resuming a suspended
-evaluation (represented by a thunk).  The abstract type constructor
-<FONT
-COLOR="RED"
->lazy</FONT
-> of the sort <FONT
-COLOR="RED"
->(t@ype) =&#62; type</FONT
-> forms a (boxed)
-type when applied to a type. Given an expression exp of type T, the value
-<FONT
-COLOR="RED"
->$delay(exp)</FONT
-> of the type <FONT
-COLOR="RED"
->lazy(T)</FONT
-> represents the
-suspended evaluation of exp. Given a value V of the type
-<FONT
-COLOR="RED"
->lazy(T)</FONT
-> for some type T, calling <FONT
-COLOR="RED"
->lazy_force</FONT
-> on V
-resumes the suspended evaluation represented by V. If the call returns,
-then the returned value is of type T. The interface for the function
-template <FONT
-COLOR="RED"
->lazy_force</FONT
-> is given as follows:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN951"
-></A
-><PRE
-CLASS="programlisting"
->fun{a:t@ype} lazy_force (lazyval: lazy(a)):&#60;!laz&#62; a
-</PRE
-><P
-></P
-></DIV
->
-
-
-where the symbol <FONT
-COLOR="RED"
->!laz</FONT
-> indicates a form of effect associated
-with lazy-evaluation. Note that the special prefix operator <FONT
-COLOR="RED"
->!</FONT
->
-in ATS is overloaded with <FONT
-COLOR="RED"
->lazy_force</FONT
->.
-
-</P
-><P
->&#13;In <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/prelude/SATS/stream.sats"
-TARGET="_top"
->prelude/SATS/stream.sats</A
+>int</FONT
 >,
-the following types <FONT
+<FONT
 COLOR="RED"
->stream_con</FONT
-> and <FONT
+>bool</FONT
+>, <FONT
 COLOR="RED"
->stream</FONT
-> are declared
-mutually recursively for representing lazy streams:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN960"
-></A
-><PRE
-CLASS="programlisting"
->datatype
-stream_con (a:t@ype+) =
-  | stream_nil of ((*void*)) | stream_cons of (a, stream(a))
-where stream (a:t@ype) = lazy (stream_con(a))
-</PRE
-><P
-></P
-></DIV
->
-
-
-Also, a number of common functions on streams are declared in
-<A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/prelude/SATS/stream.sats"
-TARGET="_top"
->prelude/SATS/stream.sats</A
+>char</FONT
+>, <FONT
+COLOR="RED"
+>double</FONT
 > and
-implemented in <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/prelude/DATS/stream.dats"
-TARGET="_top"
->prelude/DATS/stream.dats</A
->.
+<FONT
+COLOR="RED"
+>string</FONT
+>.  A simple type T is formed according to the following
+inductive definition:
 
 </P
 ><P
->&#13;The following code gives a standard implementation of the sieve of
-Eratosthenes:
+></P
+><UL
+><LI
+><P
+>BT is a simple type.</P
+></LI
+><LI
+><P
+>(T<SUB
+>1</SUB
+>, ..., T<SUB
+>n</SUB
+>) -&#62; T<SUB
+>0</SUB
+> is a simple type if
+T<SUB
+>0</SUB
+>, T<SUB
+>1</SUB
+>, ... T<SUB
+>n</SUB
+> are simple types.
+</P
+></LI
+></UL
+><P
+>&#13;Let <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+> be a function from simple types to natural numbers
+defined as follows:
+
+</P
+><P
+></P
+><UL
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+>(BT) = 0
+</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+>((T<SUB
+>1</SUB
+>, ..., T<SUB
+>n</SUB
+>) -&#62; T<SUB
+>0</SUB
+>) = 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>max</I
+></SPAN
+>(<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+>(T<SUB
+>0</SUB
+>), 1 + <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+>(T<SUB
+>1</SUB
+>), ..., 1 + <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+>(T<SUB
+>n</SUB
+>))
+</P
+></LI
+></UL
+><P
+>&#13;Given a function f of some simple type T, let us say that f is a
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n</I
+></SPAN
+>th-order function if <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>order</I
+></SPAN
+>(T) =
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n</I
+></SPAN
+>. For instance, a function of the type (int, int) -&#62; int
+is 1st-order, and a function of the type int -&#62; (int -&#62; int) is also
+1st-order, and a function of the type ((int -&#62; int), int) -&#62; int is
+2nd-order.  In practice, most functions are 1st-order and most higher-order
+functions are 2nd-order.
+
+</P
+><P
+>&#13;As an example, let us implement as follows a 2nd-order function
+<FONT
+COLOR="RED"
+>find_root</FONT
+> that takes as its only argument a function f from
+integers to integers and searches for a root of f by enumeration:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN965"
+NAME="AEN982"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-fun
-from (n: int): stream (int) =
-  $delay (stream_cons (n, from (n+1)))
-//
-fun sieve
+>fn find_root
 (
-  ns: stream(int)
-) :&#60;!laz&#62; stream(int) = $delay let
+  f: int -&#60;cloref1&#62; int
+) : int = let
 //
-// [val-] means no warning message from the compiler
-//
-  val-stream_cons(n, ns) = !ns
+fun loop
+(
+  f: int -&#60;cloref1&#62; int, n: int
+) : int =
+  if f (n) = 0 then n else (
+    if n &#60;= 0 then loop (f, ~n + 1) else loop (f, ~n)
+  ) // end of [else] // end of [if]
 in
-  stream_cons (n, sieve (stream_filter_cloref&#60;int&#62; (ns, lam x =&#62; x mod n &#62; 0)))
-end // end of [$delay let] // end of [sieve]
-//
-val thePrimes = sieve(from(2))
-//
+  loop (f, 0)
+end // end of [find_root]
 </PRE
 ><P
 ></P
@@ -242,76 +269,51 @@ val thePrimes = sieve(from(2))
 >
 
 
-A stream is constructed consisting of all the integers
-starting from 2; the first element of the stream is kept and all the
-multiples of this element are removed from the tail of stream; this process
-is then repeated on the tail of the stream recursively. Clearly, the final
-stream thus generated consists of all the prime numbers ordered
-ascendingly.
+The function <FONT
+COLOR="RED"
+>find_root</FONT
+> computes the values of f at 0, 1, -1, 2,
+-2, etc. until it finds the first integer n in this sequence that satisfies
+f(n) = 0.
 
 </P
 ><P
->&#13;The function template <FONT
-COLOR="RED"
->stream_filter_cloref</FONT
-> is of the following
-interface:
+>&#13;As another example, let us implement as follows the famous Newton-Raphson's
+method for finding roots of functions on reals:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN969"
+NAME="AEN986"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:t@ype}
-stream_filter_cloref
-  (xs: stream(a), pred: a -&#60;cloref&#62; bool):&#60;!laz&#62; stream(a)
-// end of [stream_filter_cloref]
-</PRE
-><P
-></P
-></DIV
->
-
-
-Given a stream and a predicate, <FONT
-COLOR="RED"
->stream_filter_cloref</FONT
->
-generates another stream consisting of all the elements in the given stream
-that satisfy the given predicate.
-</P
-><P
->&#13;Let us see another example of lazy evaluation.  The follow code
-demonstrates an interesting approach to computing the Fibonacci numbers:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN973"
-></A
-><PRE
-CLASS="programlisting"
->//
-val _0_ = $UNSAFE.cast{int64}(0)
-val _1_ = $UNSAFE.cast{int64}(1)
+>typedef
+fdouble = double -&#60;cloref1&#62; double
 //
-val // the following values are defined mutually recursively
-rec theFibs_0
-  : stream(int64) = $delay (stream_cons(_0_, theFibs_1)) // fib0, fib1, ...
-and theFibs_1
-  : stream(int64) = $delay (stream_cons(_1_, theFibs_2)) // fib1, fib2, ...
-and theFibs_2
-  : stream(int64) = // fib2, fib3, fib4, ...
+macdef epsilon = 1E-6 (* precision *)
+//
+// [f1] is the derivative of [f]
+//
+fun
+newton_raphson
 (
-  stream_map2_fun&#60;int64,int64&#62;&#60;int64&#62; (theFibs_0, theFibs_1, lam (x, y) =&#62; x + y)
-) (* end of [val/and/and] *)
-//
+  f: fdouble, f1: fdouble, x0: double
+) : double = let
+  fun loop (
+    f: fdouble, f1: fdouble, x0: double
+  ) : double = let
+    val y0 = f x0
+  in
+    if abs (y0 / x0) &#60; epsilon then x0 else
+      let val y1 = f1 x0 in loop (f, f1, x0 - y0 / y1) end
+    // end of [if]
+  end // end of [loop]
+in
+  loop (f, f1, x0)
+end // end of [newton_raphson]
 </PRE
 ><P
 ></P
@@ -319,27 +321,27 @@ and theFibs_2
 >
 
 
-The function template <FONT
+With <FONT
 COLOR="RED"
->stream_map2_fun</FONT
-> is assigned the following
-interface:
+>newton_raphson</FONT
+>, both the square root function and the
+cubic root function can be readily implemented as follows:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN976"
+NAME="AEN989"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{
-a1,a2:t0p}{b:t0p
-} stream_map2_cloref
-(
-  xs1: stream (a1), xs2: stream (a2), f: (a1, a2) -&#60;fun&#62; b
-) :&#60;!laz&#62; stream (b) // end of [stream_map2_cloref]
+>// square root function
+fn sqrt (c: double): double =
+  newton_raphson (lam x =&#62; x * x - c, lam x =&#62; 2.0 * x, 1.0)
+// cubic root function
+fn cbrt (c: double): double =
+  newton_raphson (lam x =&#62; x * x * x - c, lam x =&#62; 3.0 * x * x, 1.0)
 </PRE
 ><P
 ></P
@@ -347,114 +349,23 @@ a1,a2:t0p}{b:t0p
 >
 
 
-Given two streams xs1 and xs2 and a binary function f,
-<FONT
-COLOR="RED"
->stream_map2_fun</FONT
-> forms a stream xs such that xs[n] (that is,
-element n in xs), if exists, equals f(xs1[n], xs2[n]), where n ranges over
-natural numbers.
-
 </P
 ><P
->&#13;Let us see yet another example of lazy evaluation.
-A Hamming number is a positive natural number whose prime factors can
-contain only 2, 3 and 5.  The following code shows a straightforward way to
-generate a stream consisting of all the Hamming numbers:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN980"
-></A
-><PRE
-CLASS="programlisting"
->//
-val
-compare_int_int =
-  lam (x1: int, x2: int): int =&#60;fun&#62; compare(x1, x2)
-//
-macdef
-merge2 (xs1, xs2) =
-  stream_mergeq_fun&#60;int&#62; (,(xs1), ,(xs2), compare_int_int)
-//
-val
-rec theHamming
-  : stream(int) = $delay
-(
-  stream_cons (1, merge2 (merge2 (theHamming2, theHamming3), theHamming5))
-) (* end of [val] *)
-
-and theHamming2
-  : stream(int) = stream_map_fun&#60;int&#62;&#60;int&#62; (theHamming, lam x =&#62; 2 * x)
-and theHamming3
-  : stream(int) = stream_map_fun&#60;int&#62;&#60;int&#62; (theHamming, lam x =&#62; 3 * x)
-and theHamming5
-  : stream(int) = stream_map_fun&#60;int&#62;&#60;int&#62; (theHamming, lam x =&#62; 5 * x)
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-The function template <FONT
-COLOR="RED"
->stream_mergeq_fun</FONT
-> is given the following
-interface:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN983"
-></A
-><PRE
-CLASS="programlisting"
->fun{a:t0p}
-stream_mergeq_fun
-(
-  xs1: stream (a), xs2: stream (a), (a, a) -&#60;fun&#62; int
-) :&#60;!laz&#62; stream (a) // end of [stream_mergeq_fun]
-</PRE
-><P
-></P
-></DIV
->
-
-
-Given two streams and an ordering (represented by a function) such that the
-two streams are listed ascendingly according to the ordering,
-<FONT
-COLOR="RED"
->stream_mergeq_fun</FONT
-> returns a stream listed ascendingly that
-represents the union of the two given streams such that any elements in the
-second stream that also occurs in the first stream are dropped.
-
-</P
-><P
->&#13;With stream-based lazy evaluation, an illusion of infinite data can be
-readily created. This illusion is given a simple programming interface plus
-automatic support for memoization, enabling a programming style that can
-often be both elegant and intriguing.
-
-</P
-><P
->&#13;In general, it is difficult to estimate the time-complexity and
-space-complexity of a program based on lazy evaluation. This is regarded as
-a serious weakness. With linear stream-based lazy evalution, this weakness
-can essentially be removed.
+>&#13;Higher-order functions can be of great use in supporting a form of code
+sharing that is both common and flexible. As function arguments are often
+represented as heap-allocated closures that can only be reclaimed through
+garbage collection (GC), higher-order functions are used infrequently, if
+at all, in a setting where GC is not present. In ATS, linear closures,
+which can be freed explictly in a safe manner, are available to support
+higher-order functions in the absence of GC, making it possible to employ
+higher-order functions extensively in systems programming (where GC is
+unavailable or simply disallowed). The details on linear closures are to be
+given elsewhere.
 
 </P
 ><P
 >&#13;Please find <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_stream.dats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_hordfun.dats"
 TARGET="_top"
 >on-line</A
 > the entirety of the
@@ -477,7 +388,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c882.html"
+HREF="c934.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -495,7 +406,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="p990.html"
+HREF="c994.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -505,7 +416,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Higher-Order Functions</TD
+>Tail-Recursion</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -519,7 +430,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Advanced Tutorial Topics</TD
+>Stream-Based Lazy Evaluation</TD
 ></TR
 ></TABLE
 ></DIV

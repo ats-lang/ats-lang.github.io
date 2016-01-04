@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Persistent Matrices-with-size</TITLE
+>Persistent Matrices</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Basic Tutorial Topics"
 HREF="p34.html"><LINK
 REL="PREVIOUS"
-TITLE="Persistent Matrices"
-HREF="c804.html"><LINK
+TITLE="Persistent Arrays-with-size"
+HREF="c793.html"><LINK
 REL="NEXT"
-TITLE="Persistent Hashtables"
-HREF="c859.html"><LINK
+TITLE="Persistent Matrices-with-size"
+HREF="c852.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c804.html"
+HREF="c793.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c859.html"
+HREF="c852.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,58 +75,52 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="mtrxszref"
+NAME="matrixref"
 ></A
->Chapter 18. Persistent Matrices-with-size</H1
+>Chapter 18. Persistent Matrices</H1
 ><P
->&#13;I use the name <SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->matrix-with-size</I
-></SPAN
-> to refer to a persistent
-matrix with attached dimension information (that is, number of rows and
-number of columns).  Given a viewtype VT, the type for a matrix-with-size
-that contains M rows and N columns of elements of viewtype VT is
+>&#13;A persistent matrix of dimension m by n is just a persistent array of size
+m*n. Like in C, the representation of a matrix in ATS is row-major. In
+other words, element (i, j) in a matrix of dimension m by n is element
+i*n+j in the underlying array that represents the matrix.
+
+</P
+><P
+>&#13;Given a viewtype VT and two integers M and N, the type
 <FONT
 COLOR="RED"
->mtrxszref(VT, M, N)</FONT
->. Essentially, such a value is a boxed
-record of three components of types <FONT
-COLOR="RED"
->arrayref(VT, N)</FONT
->,
-<FONT
-COLOR="RED"
->size_t(M)</FONT
-> and <FONT
-COLOR="RED"
->size_t(N)</FONT
->. The interfaces for various
-functions on persistent matrices-with-size can be found in
+>matrixref(VT, M, N)</FONT
+> is for persistent matrices of dimension M
+by N that contain elements of the viewtype VT.  There is no dimension
+information attached to matrixref-values explicitly. The interfaces for various
+functions on persistent matrices can be found in the SATS file
 <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/prelude/SATS/matrixref.sats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/matrixref.sats"
 TARGET="_top"
 >prelude/SATS/matrixref.sats</A
+>, which is automatically loaded by
+<B
+CLASS="command"
+>atsopt</B
 >.
 
 </P
 ><P
->&#13;The following function is commonly used to create a matrix-with-size:
+>&#13;The following function is commonly used to create a matrixref-value:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN838"
+NAME="AEN836"
 ></A
 ><PRE
 CLASS="programlisting"
 >fun{a:t0p}
-mtrxszref_make_elt (m: size_t, n: size_t, x0: a): mtrxref (a)
-// end of [mtrxszref_make_elt]
+matrixref_make_elt{m,n:int}
+  (m: size_t m, n: size_t n, x0: a):&#60;!wrt&#62; matrixref (a, m, n)
+// end of [matrixref_make_elt]
 </PRE
 ><P
 ></P
@@ -134,21 +128,46 @@ mtrxszref_make_elt (m: size_t, n: size_t, x0: a): mtrxref (a)
 >
 
 
-Given two sizes m and n plus an element x0, <FONT
+Given two sizes m and n plus an element x0,
+<FONT
 COLOR="RED"
->mtrxszref_make_elt</FONT
+>matrixref_make_elt</FONT
+> returns a matrix of dimension m by n
+in which each cell is initialized with the element x0.
+</P
+><P
+>&#13;Also, the following cast function can be called to turn an array into
+a matrix:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN840"
+></A
+><PRE
+CLASS="programlisting"
+>castfn
+arrayref2matrixref
+  {a:vt0p}{m,n:nat} (A: arrayref (a, m*n)):&#60;&#62; matrixref (a, m, n)
+// end of [arrayref2matrixref]
+</PRE
+><P
+></P
+></DIV
 >
-returns a matrix-with-size of the dimension m by n in which each matrix-cell
-is initialized with the given element x0.
+
+
 </P
 ><P
 >&#13;For accessing and updating the content of a matrix-cell, the following
 two functions <FONT
 COLOR="RED"
->mtrxszref_get_at</FONT
+>matrixref_get_at</FONT
 > and <FONT
 COLOR="RED"
->mtrxszref_set_at</FONT
+>matrixref_set_at</FONT
 >
 can be called:
 
@@ -157,14 +176,25 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN844"
+NAME="AEN845"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:t0p}
-mtrxszref_get_at (M: mtrxszref(a), i: size_t, j: size_t): (a)
+>//
 fun{a:t0p}
-mtrxszref_set_at (M: mtrxszref(a), i: size_t, j: size_t, x: a): void
+matrixref_get_at
+  {m,n:int}
+(
+  A: matrixref (a, m, n), i: sizeLt(m), n: size_t(n), j: sizeLt(n)
+) :&#60;!ref&#62; (a) // end of [matrixref_get_at]
+//
+fun{a:t0p}
+matrixref_set_at
+  {m,n:int}
+(
+  A: matrixref (INV(a), m, n), i: sizeLt (m), n: size_t n, j: sizeLt (n), x: a
+) :&#60;!refwrt&#62; void // end of [matrixref_set_at]
+//
 </PRE
 ><P
 ></P
@@ -172,70 +202,57 @@ mtrxszref_set_at (M: mtrxszref(a), i: size_t, j: size_t, x: a): void
 >
 
 
-Given a matrix-with-size M, two indices i and j, and a value v,
-<FONT
-COLOR="RED"
->mtrxszref_get_at(M, i, j)</FONT
-> and <FONT
-COLOR="RED"
->mtrxszref_set_at(M, i,
-j, v)</FONT
-> can be written as <FONT
-COLOR="RED"
->M[i,j]</FONT
-> and <FONT
-COLOR="RED"
->M[i,j] := v</FONT
->,
-respectively. Notice that matrix-bounds checking is performed at run-time
-whenever <FONT
-COLOR="RED"
->mtrxszref_get_at</FONT
-> or <FONT
-COLOR="RED"
->mtrxszref_set_at</FONT
-> is
-called, and the exception <FONT
-COLOR="RED"
->MatrixSubscriptExn</FONT
-> is raised in case
-of out-of-bounds matrix access being detected.
+Note that it is not enough to just supply the coordinates of a
+matrix-cell in order to access it; the column dimension of the matrix
+needs to be supplied as well.
 
 </P
 ><P
->&#13;As a simple example, the following code implements a function that
-transpose the content of the matrix inside a given matrix-with-size:
+>&#13;In the following presentation, I give an implementation of a function that
+turns a given square matrix into its transpose:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN854"
+NAME="AEN848"
 ></A
 ><PRE
 CLASS="programlisting"
 >//
 extern
 fun{a:t0p}
-mtrxszref_transpose (M: mtrxszref (a)): void
+matrixref_transpose
+  {n:nat}
+(
+  M: matrixref (a, n, n), n: size_t (n)
+) : void // end of [matrixref_transpose]
 //
 implement{a}
-mtrxszref_transpose (M) = let
+matrixref_transpose
+  {n} (M, n) = let
 //
-val n = M.nrow
-val ((*void*)) = assertloc (M.nrow = M.ncol)
+macdef
+mget (i, j) =
+  matrixref_get_at (M, ,(i), n, ,(j))
+macdef
+mset (i, j, x) =
+  matrixref_set_at (M, ,(i), n, ,(j), ,(x))
 //
 fun loop
+  {i,j:nat |
+   i &#60; j; j &#60;= n
+  } .&#60;n-i,n-j&#62;. 
 (
-  i: size_t, j: size_t
+  i: size_t (i), j: size_t (j)
 ) : void =
   if j &#60; n then let
-    val x = M[i,j]
-    val () = M[i,j] := M[j,i]
-    val () = M[j,i] := x
+    val x = mget(i, j)
+    val () = mset(i, j, mget(j, i))
+    val () = mset(j, i, x)
   in
-    loop (i, succ(j))
+    loop (i, j+1)
   end else let
     val i1 = succ (i)
   in
@@ -244,7 +261,7 @@ fun loop
 //
 in
   if n &#62; 0 then loop (i2sz(0), i2sz(1)) else ()
-end // end of [mtrxszref_transpose]
+end // end of [matrixref_transpose]
 </PRE
 ><P
 ></P
@@ -254,16 +271,8 @@ end // end of [mtrxszref_transpose]
 
 </P
 ><P
->&#13;Like arrays-with-size, matrices-with-size are easier to program with than
-dependently typed matrices. However, the latter can not only lead to more
-effective error detection at compile-time but also more efficent code
-execution at run-time. For someone programming in ATS, it is quite
-reasonable to start out with matrices-with-size and then replace them with
-matrices when there are clear benefits from doing so.
-</P
-><P
 >&#13;Please find <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_mtrxszref.dats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_matrixref.dats"
 TARGET="_top"
 >on-line</A
 > the entirety of the
@@ -286,7 +295,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c804.html"
+HREF="c793.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -304,7 +313,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c859.html"
+HREF="c852.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -314,7 +323,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Persistent Matrices</TD
+>Persistent Arrays-with-size</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -328,7 +337,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Persistent Hashtables</TD
+>Persistent Matrices-with-size</TD
 ></TR
 ></TABLE
 ></DIV

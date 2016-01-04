@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Persistent Matrices</TITLE
+>Persistent Arrays</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Basic Tutorial Topics"
 HREF="p34.html"><LINK
 REL="PREVIOUS"
-TITLE="Persistent Arrays-with-size"
-HREF="c708.html"><LINK
+TITLE="Boxed Tuples and Records"
+HREF="c715.html"><LINK
 REL="NEXT"
-TITLE="Persistent Matrices-with-size"
-HREF="c767.html"><LINK
+TITLE="Persistent Arrays-with-size"
+HREF="c804.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c708.html"
+HREF="c715.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c767.html"
+HREF="c804.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,38 +75,38 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="matrixref"
+NAME="arrayref"
 ></A
->Chapter 17. Persistent Matrices</H1
+>Chapter 16. Persistent Arrays</H1
 ><P
->&#13;A persistent matrix of dimension m by n is just a persistent array of size
-m*n. Like in C, the representation of a matrix in ATS is row-major. In
-other words, element (i, j) in a matrix of dimension m by n is element
-i*n+j in the underlying array that represents the matrix.
-
+>&#13;A persistent array of size n is just n heap-allocated cells (or references)
+in a row.  It is persistent in the sense that the memory allocated for the
+array cannot be freed manually. Instead, it can only be safely reclaimed
+through garbage collection (GC).
 </P
 ><P
->&#13;Given a viewtype VT and two integers M and N, the type
-<FONT
+>&#13;Given a viewtype VT, the type for persistent arrays containing N values of
+viewtype VT is <FONT
 COLOR="RED"
->matrixref(VT, M, N)</FONT
-> is for persistent matrices of dimension M
-by N that contain elements of the viewtype VT.  There is no dimension
-information attached to matrixref-values explicitly. The interfaces for various
-functions on persistent matrices can be found in the SATS file
+>arrayref(VT, N)</FONT
+>.  Note that arrays in ATS are
+the same as those in C: There is no size information attached to them. The
+interfaces for various functions on persistent arrays can be found in
+the SATS file
 <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/prelude/SATS/matrixref.sats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/arrayref.sats"
 TARGET="_top"
->prelude/SATS/matrixref.sats</A
->, which is automatically loaded by
-<B
+>prelude/SATS/arrayref.sats</A
+>,
+which is automatically loaded by <B
 CLASS="command"
 >atsopt</B
 >.
 
 </P
 ><P
->&#13;The following function is commonly used to create a matrixref-value:
+>&#13;There are various functions in ATSLIB for array creation. For instance, the
+following two are commonly used:
 
 <DIV
 CLASS="informalexample"
@@ -117,10 +117,15 @@ NAME="AEN751"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:t0p}
-matrixref_make_elt{m,n:int}
-  (m: size_t m, n: size_t n, x0: a):&#60;!wrt&#62; matrixref (a, m, n)
-// end of [matrixref_make_elt]
+>fun{a:t@ype}
+arrayref_make_elt
+  {n:nat} (asz: size_t n, elt: a):&#60;!wrt&#62; arrayref (a, n)
+// end of [arrayref_make_elt]
+
+fun{a:t@ype}
+arrayref_make_listlen
+  {n:int} (xs: list (a, n), n: int n):&#60;!wrt&#62; arrayref (a, n)
+// end of [arrayref_make_listlen]
 </PRE
 ><P
 ></P
@@ -128,73 +133,46 @@ matrixref_make_elt{m,n:int}
 >
 
 
-Given two sizes m and n plus an element x0,
+Applied to a size and an element, <FONT
+COLOR="RED"
+>arrayref_make_elt</FONT
+> returns an
+array of the given size in which each cell is initialized with the given
+element.  Applied to a list of elements and the length of the list,
 <FONT
 COLOR="RED"
->matrixref_make_elt</FONT
-> returns a matrix of dimension m by n
-in which each cell is initialized with the element x0.
+>arrayref_make_listlen</FONT
+> returns an array of size equal to the
+given length in which each cell is initialized with the corresponding
+element in the given list.
 </P
 ><P
->&#13;Also, the following cast function can be called to turn an array into
-a matrix:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN755"
-></A
-><PRE
-CLASS="programlisting"
->castfn
-arrayref2matrixref
-  {a:vt0p}{m,n:nat} (A: arrayref (a, m*n)):&#60;&#62; matrixref (a, m, n)
-// end of [arrayref2matrixref]
-</PRE
-><P
-></P
-></DIV
->
-
-
-</P
-><P
->&#13;For accessing and updating the content of a matrix-cell, the following
-two functions <FONT
+>&#13;For reading from and writing to an array, the function templates
+<FONT
 COLOR="RED"
->matrixref_get_at</FONT
+>arrayref_get_at</FONT
 > and <FONT
 COLOR="RED"
->matrixref_set_at</FONT
->
-can be called:
+>arrayref_set_at</FONT
+> can be used,
+respectively, which are assigned the following interfaces:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN760"
+NAME="AEN758"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-fun{a:t0p}
-matrixref_get_at
-  {m,n:int}
-(
-  A: matrixref (a, m, n), i: sizeLt(m), n: size_t(n), j: sizeLt(n)
-) :&#60;!ref&#62; (a) // end of [matrixref_get_at]
-//
-fun{a:t0p}
-matrixref_set_at
-  {m,n:int}
-(
-  A: matrixref (INV(a), m, n), i: sizeLt (m), n: size_t n, j: sizeLt (n), x: a
-) :&#60;!refwrt&#62; void // end of [matrixref_set_at]
-//
+>fun{a:t@ype}
+arrayref_get_at
+  {n:int} (A: arrayref (a, n), i: sizeLt (n)):&#60;!ref&#62; a
+
+fun{a:t@ype}
+arrayref_set_at
+  {n:int} (A: arrayref (a, n), i: sizeLt (n), x: a):&#60;!ref&#62; void
 </PRE
 ><P
 ></P
@@ -202,77 +180,289 @@ matrixref_set_at
 >
 
 
-Note that it is not enough to just supply the coordinates of a
-matrix-cell in order to access it; the column dimension of the matrix
-needs to be supplied as well.
+Given an array <FONT
+COLOR="RED"
+>A</FONT
+>, an index <FONT
+COLOR="RED"
+>i</FONT
+> and a value
+<FONT
+COLOR="RED"
+>v</FONT
+>, <FONT
+COLOR="RED"
+>arrayref_get_at(A, i)</FONT
+> and
+<FONT
+COLOR="RED"
+>arrayref_set_at(A, i, v)</FONT
+> can be written as <FONT
+COLOR="RED"
+>A[i]</FONT
+>
+and <FONT
+COLOR="RED"
+>A[i] := v</FONT
+>, respectively.
+</P
+><P
+>&#13;
+As an example, the following function template reverses the content of a
+given array:
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN768"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a:t@ype}
+arrayref_reverse{n:nat}
+(
+  A: arrayref (a, n), n: size_t (n)
+) : void = let
+//
+fun loop
+  {i: nat | i &#60;= n} .&#60;n-i&#62;.
+(
+  A: arrayref (a, n), n: size_t n, i: size_t i
+) : void = let
+  val n2 = half (n)
+in
+  if i &#60; n2 then let
+    val tmp = A[i]
+    val ni = pred(n)-i
+  in
+    A[i] := A[ni]; A[ni] := tmp; loop (A, n, succ(i))
+  end else () // end of [if]
+end // end of [loop]
+//
+in
+  loop (A, n, i2sz(0))
+end // end of [arrayref_reverse]
+</PRE
+><P
+></P
+></DIV
+>
+
 
 </P
 ><P
->&#13;In the following presentation, I give an implementation of a function that
-turns a given square matrix into its transpose:
+>&#13;If the test <FONT
+COLOR="RED"
+>i &#60; n2</FONT
+> is changed to <FONT
+COLOR="RED"
+>i &#60;= n2</FONT
+>, a type-error
+is to be reported. Why? The reason is that <FONT
+COLOR="RED"
+>A[n-1-i]</FONT
+> becomes
+out-of-bounds array subscripting in the case where <FONT
+COLOR="RED"
+>n</FONT
+> and
+<FONT
+COLOR="RED"
+>i</FONT
+> both equal zero. Given that it is very unlikely to encounter a
+case where an array of size 0 is involved, a bug like this, if not detected
+early, can be buried so scarily deep!
+</P
+><P
+>&#13;The careful reader may have already noticed that the sort <FONT
+COLOR="RED"
+>t@ype</FONT
+>
+is assigned to the template parameter <FONT
+COLOR="RED"
+>a</FONT
+>. In other words, the
+above implementation of <FONT
+COLOR="RED"
+>arrayref_reverse</FONT
+> cannot handle a case
+where the values stored in a given array are of some linear type. The
+reason for choosing the sort <FONT
+COLOR="RED"
+>t@ype</FONT
+> is that both
+<FONT
+COLOR="RED"
+>arrayref_get_at</FONT
+> and <FONT
+COLOR="RED"
+>arrayref_set_at</FONT
+> can only be
+applied to an array containing values of a nonlinear type. In the following
+implementation, the template parameter is given the sort <FONT
+COLOR="RED"
+>vt@ype</FONT
+>
+so that an array containing linear values, that is, values of some linear
+type can be handled:
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN784"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a:vt@ype}
+arrayref_reverse{n:nat}
+(
+  A: arrayref (a, n), n: size_t (n)
+) : void = let
+//
+fun loop
+  {i: nat | i &#60;= n} .&#60;n-i&#62;.
+(
+  A: arrayref (a, n), n: size_t n, i: size_t i
+) : void = let
+  val n2 = half (n)
+in
+  if i &#60; n2 then let
+    val () = arrayref_interchange (A, i, pred(n)-i) in loop (A, n, succ(i))
+  end else () // end of [if]
+end // end of [loop]
+//
+in
+  loop (A, n, i2sz(0))
+end // end of [arrayref_reverse]
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;
+The interface for the function template <FONT
+COLOR="RED"
+>arrayref_interchange</FONT
+> is
+given below:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN763"
+NAME="AEN788"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-extern
-fun{a:t0p}
-matrixref_transpose
-  {n:nat}
-(
-  M: matrixref (a, n, n), n: size_t (n)
-) : void // end of [matrixref_transpose]
-//
-implement{a}
-matrixref_transpose
-  {n} (M, n) = let
-//
-macdef
-mget (i, j) =
-  matrixref_get_at (M, ,(i), n, ,(j))
-macdef
-mset (i, j, x) =
-  matrixref_set_at (M, ,(i), n, ,(j), ,(x))
-//
-fun loop
-  {i,j:nat |
-   i &#60; j; j &#60;= n
-  } .&#60;n-i,n-j&#62;. 
-(
-  i: size_t (i), j: size_t (j)
-) : void =
-  if j &#60; n then let
-    val x = mget(i, j)
-    val () = mset(i, j, mget(j, i))
-    val () = mset(j, i, x)
-  in
-    loop (i, j+1)
-  end else let
-    val i1 = succ (i)
-  in
-    if i1 &#60; n then loop (i1, succ(i1)) else ()
-  end // end of [if]
-//
-in
-  if n &#62; 0 then loop (i2sz(0), i2sz(1)) else ()
-end // end of [matrixref_transpose]
+>fun{a:vt@ype}
+arrayref_interchange{n:int}
+  (A: arrayref (a, n), i: sizeLt n, j: sizeLt n):&#60;!ref&#62; void
+// end of [arrayref_interchange]
 </PRE
 ><P
 ></P
 ></DIV
 >
 
+
+Note that <FONT
+COLOR="RED"
+>arrayref_interchange</FONT
+> can not be implemented in terms
+of <FONT
+COLOR="RED"
+>arrayref_get_at</FONT
+> and <FONT
+COLOR="RED"
+>arrayref_set_at</FONT
+> (unless some
+form of type-unsafe code is employed).
+</P
+><P
+>&#13;There are various functions available for traversing an array from left to
+right or from right to left. Also, the following two functions can be conveniently
+called to traverse an array from left to right:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN794"
+></A
+><PRE
+CLASS="programlisting"
+>//
+fun{a:t0p}
+arrayref_head{n:pos} (A: arrayref (a, n)): (a) // A[0]
+fun{a:t0p}
+arrayref_tail{n:pos} (A: arrayref (a, n)): arrayref (a, n-1)
+//
+overload .head with arrayref_head
+overload .tail with arrayref_tail
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+For instance, the fold-left function for arrays can be implemented
+as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN796"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;fun{a,b:t@ype}
+arrayref_foldleft{n:int}
+(
+  f: (a, b) -&#62; a, x: a, A: arrayref (b, n), n: size_t(n)
+) : a =
+(
+if n &#62; 0
+  then arrayref_foldleft&#60;a,b&#62; (f, f (x, A.head()), A.tail(), pred(n))
+  else x
+// end of [if]
+) (* end of [arrayref_foldleft] *)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+As can be expected, <FONT
+COLOR="RED"
+>A.head</FONT
+> and <FONT
+COLOR="RED"
+>A.tail</FONT
+> translate
+into <FONT
+COLOR="RED"
+>A[0]</FONT
+> and <FONT
+COLOR="RED"
+>ptr_succ&#60;T&#62;(p0)</FONT
+>, respectively, where T
+is the type for the elements stored in A and p0 is the starting address of
+A.
 
 </P
 ><P
 >&#13;Please find <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_matrixref.dats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_arrayref.dats"
 TARGET="_top"
 >on-line</A
 > the entirety of the
@@ -295,7 +485,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c708.html"
+HREF="c715.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -313,7 +503,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c767.html"
+HREF="c804.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -323,7 +513,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Persistent Arrays-with-size</TD
+>Boxed Tuples and Records</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -337,7 +527,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Persistent Matrices-with-size</TD
+>Persistent Arrays-with-size</TD
 ></TR
 ></TABLE
 ></DIV

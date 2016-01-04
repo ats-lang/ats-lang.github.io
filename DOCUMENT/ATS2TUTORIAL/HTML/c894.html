@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Stream-Based Lazy Evaluation</TITLE
+>Persistent Hashtables</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Basic Tutorial Topics"
 HREF="p34.html"><LINK
 REL="PREVIOUS"
-TITLE="Higher-Order Functions"
-HREF="c838.html"><LINK
+TITLE="Persistent Matrices-with-size"
+HREF="c863.html"><LINK
 REL="NEXT"
-TITLE="Advanced Tutorial Topics"
-HREF="p946.html"><LINK
+TITLE="Tail-Recursion"
+HREF="c955.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c838.html"
+HREF="c863.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="p946.html"
+HREF="c955.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,65 +75,202 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="stream-based-lazy-evaluation"
+NAME="hashtable"
 ></A
->Chapter 21. Stream-Based Lazy Evaluation</H1
+>Chapter 20. Persistent Hashtables</H1
 ><P
->&#13;While the core of ATS is based on call-by-value evaluation, there is also
-direct support in ATS for lazy (that is, call-by-need) evaluation.
-
+>&#13;Hashtables are commonly used to implement finite maps. In ATSLIB/libats,
+there are hashtable implementations based on linear chaining and linear
+probing. There is also support for linear hashtables as well as persistent
+hashtables. The linear ones can be safely freed by the programmer, and the
+persistent ones (which are directly based on linear ones) can only be
+safely reclaimed through garbage collection (GC). In this chapter, I show
+how persistent hashtables can be created and operated on.
 </P
 ><P
->&#13;There is a special language construct <FONT
-COLOR="RED"
->$delay</FONT
-> for delaying or
-suspending the evaluation of an expression (by forming a thunk), and there
-is also a special function <FONT
-COLOR="RED"
->lazy_force</FONT
-> for resuming a suspended
-evaluation (represented by a thunk).  The abstract type constructor
+>&#13;Suppose that a map is needed for mapping keys of type
 <FONT
 COLOR="RED"
->lazy</FONT
-> of the sort <FONT
+>key_t</FONT
+> to items of type <FONT
 COLOR="RED"
->(t@ype) =&#62; type</FONT
-> forms a (boxed)
-type when applied to a type. Given an expression exp of type T, the value
-<FONT
-COLOR="RED"
->$delay(exp)</FONT
-> of the type <FONT
-COLOR="RED"
->lazy(T)</FONT
-> represents the
-suspended evaluation of exp. Given a value V of the type
-<FONT
-COLOR="RED"
->lazy(T)</FONT
-> for some type T, calling <FONT
-COLOR="RED"
->lazy_force</FONT
-> on V
-resumes the suspended evaluation represented by V. If the call returns,
-then the returned value is of type T. The interface for the function
-template <FONT
-COLOR="RED"
->lazy_force</FONT
-> is given as follows:
+>itm_t</FONT
+>. The following code
+essentially sets up an interface for creating and operating on such a map
+based on a hashtable implementation in ATSLIB/libats:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN907"
+NAME="AEN900"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:t@ype} lazy_force (lazyval: lazy(a)):&#60;!laz&#62; a
+>local
+
+typedef
+key = key_t and itm = itm_t
+
+in (* in-of-local *)
+
+#include "libats/ML/HATS/myhashtblref.hats"
+
+end // end of [local]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/libats/ML/HATS/myhashtblref.hats"
+TARGET="_top"
+>on-line</A
+>
+the HATS file mentioned in the code, which is just a convenience wrapper
+made to simplify programming with hashtables.
+
+</P
+><P
+>&#13;Assume that <FONT
+COLOR="RED"
+>key_t</FONT
+> is <FONT
+COLOR="RED"
+>string</FONT
+> and <FONT
+COLOR="RED"
+>itm_t</FONT
+>
+is <FONT
+COLOR="RED"
+>int</FONT
+>. The following line of code creates a hashtable with its
+initial capacity set to be 1000:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN908"
+></A
+><PRE
+CLASS="programlisting"
+>val mymap = myhashtbl_make_nil(1000)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the capacity in this case is the size of the array associated
+with the created hashtable. The underlying hashtable implementation is
+based on linear chaining, and this hashtable can store up to 5000 (5*1000)
+items without need for resizing. When resizing is indeed needed, it is done
+automatically. The following few lines insert some key/item pairs into
+<FONT
+COLOR="RED"
+>mymap</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN911"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val-~None_vt() = mymap.insert("a", 0)
+val-~Some_vt(0) = mymap.insert("a", 1)
+//
+val-~None_vt() = mymap.insert("b", 1)
+val-~Some_vt(1) = mymap.insert("b", 2)
+//
+val-~None_vt() = mymap.insert("c", 2)
+val-~Some_vt(2) = mymap.insert("c", 3)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.insert</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myhashtbl_insert</FONT
+>. Given a key and an item,
+<FONT
+COLOR="RED"
+>mymap.insert</FONT
+> inserts the key/item pair into <FONT
+COLOR="RED"
+>mymap</FONT
+>.
+If the key is in the domain of the map represented by <FONT
+COLOR="RED"
+>mymap</FONT
+>
+before insertion, then the original item associated with the key is
+returned. Otherwise, no item is returned. As can be expected, the size
+of <FONT
+COLOR="RED"
+>mymap</FONT
+> is 3 at this point:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN919"
+></A
+><PRE
+CLASS="programlisting"
+>val () = assertloc (mymap.size() = 3)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.size</FONT
+> is overloaded with a function of the name
+<FONT
+COLOR="RED"
+>myhashtbl_get_size</FONT
+>, which returns the number of key/item pairs
+stored in a given hashtable.  During the course of debugging, one may want
+to print out the key/item pairs in a given hashtable:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN923"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val () =
+  fprintln! (stdout_ref, "mymap = ", mymap)
+//
 </PRE
 ><P
 ></P
@@ -143,46 +280,25 @@ CLASS="programlisting"
 
 where the symbol <FONT
 COLOR="RED"
->!laz</FONT
-> indicates a form of effect associated
-with lazy-evaluation. Note that the special prefix operator <FONT
+>fprint</FONT
+> is overloaded with
+<FONT
 COLOR="RED"
->!</FONT
->
-in ATS is overloaded with <FONT
-COLOR="RED"
->lazy_force</FONT
->.
-
-</P
-><P
->&#13;In <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/prelude/SATS/stream.sats"
-TARGET="_top"
->prelude/SATS/stream.sats</A
->,
-the following types <FONT
-COLOR="RED"
->stream_con</FONT
-> and <FONT
-COLOR="RED"
->stream</FONT
-> are declared
-mutually recursively for representing lazy streams:
+>fprint_myhashtbl</FONT
+>. The next two lines of code show how search
+with a given key operates on a hashtable:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN916"
+NAME="AEN927"
 ></A
 ><PRE
 CLASS="programlisting"
->datatype
-stream_con (a:t@ype+) =
-  | stream_nil of ((*void*)) | stream_cons of (a, stream(a))
-where stream (a:t@ype) = lazy (stream_con(a))
+>val-~None_vt() = mymap.search("")
+val-~Some_vt(1) = mymap.search("a")
 </PRE
 ><P
 ></P
@@ -190,140 +306,19 @@ where stream (a:t@ype) = lazy (stream_con(a))
 >
 
 
-Also, a number of common functions on streams are declared in
-<A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/prelude/SATS/stream.sats"
-TARGET="_top"
->prelude/SATS/stream.sats</A
-> and
-implemented in <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/prelude/DATS/stream.dats"
-TARGET="_top"
->prelude/DATS/stream.dats</A
->.
-
-</P
-><P
->&#13;The following code gives a standard implementation of the sieve of
-Eratosthenes:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN921"
-></A
-><PRE
-CLASS="programlisting"
->//
-fun
-from (n: int): stream (int) =
-  $delay (stream_cons (n, from (n+1)))
-//
-fun sieve
-(
-  ns: stream(int)
-) :&#60;!laz&#62; stream(int) = $delay let
-//
-// [val-] means no warning message from the compiler
-//
-  val-stream_cons(n, ns) = !ns
-in
-  stream_cons (n, sieve (stream_filter_cloref&#60;int&#62; (ns, lam x =&#62; x mod n &#62; 0)))
-end // end of [$delay let] // end of [sieve]
-//
-val thePrimes = sieve(from(2))
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-A stream is constructed consisting of all the integers
-starting from 2; the first element of the stream is kept and all the
-multiples of this element are removed from the tail of stream; this process
-is then repeated on the tail of the stream recursively. Clearly, the final
-stream thus generated consists of all the prime numbers ordered
-ascendingly.
-
-</P
-><P
->&#13;The function template <FONT
+The dot-symbol <FONT
 COLOR="RED"
->stream_filter_cloref</FONT
-> is of the following
-interface:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN925"
-></A
-><PRE
-CLASS="programlisting"
->fun{a:t@ype}
-stream_filter_cloref
-  (xs: stream(a), pred: a -&#60;cloref&#62; bool):&#60;!laz&#62; stream(a)
-// end of [stream_filter_cloref]
-</PRE
-><P
-></P
-></DIV
->
-
-
-Given a stream and a predicate, <FONT
+>.search</FONT
+> is overloaded with a function of the
+name <FONT
 COLOR="RED"
->stream_filter_cloref</FONT
->
-generates another stream consisting of all the elements in the given stream
-that satisfy the given predicate.
-</P
-><P
->&#13;Let us see another example of lazy evaluation.  The follow code
-demonstrates an interesting approach to computing the Fibonacci numbers:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN929"
-></A
-><PRE
-CLASS="programlisting"
->//
-val _0_ = $UNSAFE.cast{int64}(0)
-val _1_ = $UNSAFE.cast{int64}(1)
-//
-val // the following values are defined mutually recursively
-rec theFibs_0
-  : stream(int64) = $delay (stream_cons(_0_, theFibs_1)) // fib0, fib1, ...
-and theFibs_1
-  : stream(int64) = $delay (stream_cons(_1_, theFibs_2)) // fib1, fib2, ...
-and theFibs_2
-  : stream(int64) = // fib2, fib3, fib4, ...
-(
-  stream_map2_fun&#60;int64,int64&#62;&#60;int64&#62; (theFibs_0, theFibs_1, lam (x, y) =&#62; x + y)
-) (* end of [val/and/and] *)
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-The function template <FONT
+>myhashtbl_search</FONT
+>, which returns the item associated with a
+given key if it is found. The next few lines of code remove some key/item
+pairs from <FONT
 COLOR="RED"
->stream_map2_fun</FONT
-> is assigned the following
-interface:
+>mymap</FONT
+>:
 
 <DIV
 CLASS="informalexample"
@@ -334,12 +329,13 @@ NAME="AEN932"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{
-a1,a2:t0p}{b:t0p
-} stream_map2_cloref
-(
-  xs1: stream (a1), xs2: stream (a2), f: (a1, a2) -&#60;fun&#62; b
-) :&#60;!laz&#62; stream (b) // end of [stream_map2_cloref]
+>//
+val-true = mymap.remove("a")
+val-false = mymap.remove("a")
+//
+val-~Some_vt(2) = mymap.takeout("b")
+val-~Some_vt(3) = mymap.takeout("c")
+//
 </PRE
 ><P
 ></P
@@ -347,65 +343,31 @@ a1,a2:t0p}{b:t0p
 >
 
 
-Given two streams xs1 and xs2 and a binary function f,
+The dot-symbol <FONT
+COLOR="RED"
+>.remove</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myhashtbl_remove</FONT
+> for removing a key/item pair of a given
+key. If a key/item pair is removed, then the function returns
+true. Otherwise, it returns false to indicates that no key/item pair of the
+given key is stored in the hashtable being operated on.  The dot-symbol
 <FONT
 COLOR="RED"
->stream_map2_fun</FONT
-> forms a stream xs such that xs[n] (that is,
-element n in xs), if exists, equals f(xs1[n], xs2[n]), where n ranges over
-natural numbers.
-
-</P
-><P
->&#13;Let us see yet another example of lazy evaluation.
-A Hamming number is a positive natural number whose prime factors can
-contain only 2, 3 and 5.  The following code shows a straightforward way to
-generate a stream consisting of all the Hamming numbers:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN936"
-></A
-><PRE
-CLASS="programlisting"
->//
-val
-compare_int_int =
-  lam (x1: int, x2: int): int =&#60;fun&#62; compare(x1, x2)
-//
-macdef
-merge2 (xs1, xs2) =
-  stream_mergeq_fun&#60;int&#62; (,(xs1), ,(xs2), compare_int_int)
-//
-val
-rec theHamming
-  : stream(int) = $delay
-(
-  stream_cons (1, merge2 (merge2 (theHamming2, theHamming3), theHamming5))
-) (* end of [val] *)
-
-and theHamming2
-  : stream(int) = stream_map_fun&#60;int&#62;&#60;int&#62; (theHamming, lam x =&#62; 2 * x)
-and theHamming3
-  : stream(int) = stream_map_fun&#60;int&#62;&#60;int&#62; (theHamming, lam x =&#62; 3 * x)
-and theHamming5
-  : stream(int) = stream_map_fun&#60;int&#62;&#60;int&#62; (theHamming, lam x =&#62; 5 * x)
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-The function template <FONT
+>.takeout</FONT
+> is overloaded with a function of the name
+<FONT
 COLOR="RED"
->stream_mergeq_fun</FONT
-> is given the following
-interface:
+>myhashtbl_takeout</FONT
+>, which is similar to
+<FONT
+COLOR="RED"
+>myhashtbl_remove</FONT
+> excepting for returning the removed item.
+The next few lines of code make use of several less commonly used functions
+on hashtables:
 
 <DIV
 CLASS="informalexample"
@@ -416,11 +378,17 @@ NAME="AEN939"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:t0p}
-stream_mergeq_fun
-(
-  xs1: stream (a), xs2: stream (a), (a, a) -&#60;fun&#62; int
-) :&#60;!laz&#62; stream (a) // end of [stream_mergeq_fun]
+>//
+val () = mymap.insert_any("a", 0)
+val () = mymap.insert_any("b", 1)
+val () = mymap.insert_any("c", 2)
+val kxs = mymap.listize1((*void*))
+val ((*void*)) = fprintln! (stdout_ref, "kxs = ", kxs)
+val kxs = mymap.takeout_all((*void*))
+val ((*void*)) = fprintln! (stdout_ref, "kxs = ", kxs)
+//
+val () = assertloc (mymap.size() = 0)
+//
 </PRE
 ><P
 ></P
@@ -428,37 +396,110 @@ stream_mergeq_fun
 >
 
 
-Given two streams and an ordering (represented by a function) such that the
-two streams are listed ascendingly according to the ordering,
+The dot-symbol <FONT
+COLOR="RED"
+>.insert_any</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myhashtbl_insert_any</FONT
+>, which <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>always</I
+></SPAN
+> inserts a
+given key/item pair regardless whether the key is already in use. One
+should really avoid using this function or only call it when it is
+absolutely sure that the given key is not already in use for otherwise the
+involved hashtable would be corrupted.  The dot-symbols
 <FONT
 COLOR="RED"
->stream_mergeq_fun</FONT
-> returns a stream listed ascendingly that
-represents the union of the two given streams such that any elements in the
-second stream that also occurs in the first stream are dropped.
+>.listize1</FONT
+> and <FONT
+COLOR="RED"
+>.takeout_all</FONT
+> are overloaded with two
+functions of the names <FONT
+COLOR="RED"
+>myhashtbl_listize1</FONT
+> and
+<FONT
+COLOR="RED"
+>myhashtbl_takeout_all</FONT
+>, respectively. Both of them return a list
+consisting of all the key/item pairs in a given hashtable; the former keeps
+the hashtable unchanged while the latter empties it. Last, I present as follows the
+interface for an iterator going over all the key/item pairs in a given hashtable:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN948"
+></A
+><PRE
+CLASS="programlisting"
+>//
+extern
+fun
+myhashtbl_foreach_cloref
+(
+  tbl: myhashtbl
+, fwork: (key, &#38;(itm) &#62;&#62; _) -&#60;cloref1&#62; void
+) : void // end-of-function
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+As an example, the following code prints out all the key/item
+pairs in a given hashtable:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN950"
+></A
+><PRE
+CLASS="programlisting"
+>//
+val () =
+myhashtbl_foreach_cloref
+(
+  mymap
+, lam (k, x) =&#62; fprintln! (stdout_ref, "k=", k, " and ", "x=", x)
+) (* myhashtbl_foreach_cloref *)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
 
 </P
 ><P
->&#13;With stream-based lazy evaluation, an illusion of infinite data can be
-readily created. This illusion is given a simple programming interface plus
-automatic support for memoization, enabling a programming style that can
-often be both elegant and intriguing.
-
-</P
-><P
->&#13;In general, it is difficult to estimate the time-complexity and
-space-complexity of a program based on lazy evaluation. This is regarded as
-a serious weakness. With linear stream-based lazy evalution, this weakness
-can essentially be removed.
-
-</P
-><P
->&#13;Please find <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_stream.dats"
+>&#13;Please find the entirety of the code used in this chapter
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_hashtable.dats"
 TARGET="_top"
 >on-line</A
-> the entirety of the
-code used in this chapter.
+>. Also, there is a
+hashtable-based implementation of symbol table available
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_hashtable2.dats"
+TARGET="_top"
+>on-line</A
+>.
+
 </P
 ></DIV
 ><DIV
@@ -477,7 +518,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c838.html"
+HREF="c863.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -495,7 +536,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="p946.html"
+HREF="c955.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -505,7 +546,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Higher-Order Functions</TD
+>Persistent Matrices-with-size</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -519,7 +560,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Advanced Tutorial Topics</TD
+>Tail-Recursion</TD
 ></TR
 ></TABLE
 ></DIV

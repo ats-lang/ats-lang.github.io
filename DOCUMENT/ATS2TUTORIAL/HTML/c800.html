@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Persistent Hashtables</TITLE
+>Persistent Arrays-with-size</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Basic Tutorial Topics"
 HREF="p34.html"><LINK
 REL="PREVIOUS"
-TITLE="Persistent Matrices-with-size"
-HREF="c769.html"><LINK
+TITLE="Persistent Arrays"
+HREF="c739.html"><LINK
 REL="NEXT"
-TITLE="Tail-Recursion"
-HREF="c861.html"><LINK
+TITLE="Persistent Matrices"
+HREF="c835.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c769.html"
+HREF="c739.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c861.html"
+HREF="c835.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,384 +75,66 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="hashtable"
+NAME="arrszref"
 ></A
->Chapter 19. Persistent Hashtables</H1
+>Chapter 17. Persistent Arrays-with-size</H1
 ><P
->&#13;Hashtables are commonly used to implement finite maps. In ATSLIB/libats,
-there are hashtable implementations based on linear chaining and linear
-probing. There is also support for linear hashtables as well as persistent
-hashtables. The linear ones can be safely freed by the programmer, and the
-persistent ones (which are directly based on linear ones) can only be
-safely reclaimed through garbage collection (GC). In this chapter, I show
-how persistent hashtables can be created and operated on.
-</P
-><P
->&#13;Suppose that a map is needed for mapping keys of type
-<FONT
-COLOR="RED"
->key_t</FONT
-> to items of type <FONT
-COLOR="RED"
->itm_t</FONT
->. The following code
-essentially sets up an interface for creating and operating on such a map
-based on a hashtable implementation in ATSLIB/libats:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN806"
-></A
-><PRE
-CLASS="programlisting"
->local
-
-typedef
-key = key_t and itm = itm_t
-
-in (* in-of-local *)
-
-#include "libats/ML/HATS/myhashtblref.hats"
-
-end // end of [local]
-</PRE
-><P
-></P
-></DIV
->
-
-
-Please find <A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS-Postiats/libats/ML/HATS/myhashtblref.hats"
-TARGET="_top"
->on-line</A
->
-the HATS file mentioned in the code, which is just a convenience wrapper
-made to simplify programming with hashtables.
-
-</P
-><P
->&#13;Assume that <FONT
-COLOR="RED"
->key_t</FONT
-> is <FONT
-COLOR="RED"
->string</FONT
-> and <FONT
-COLOR="RED"
->itm_t</FONT
->
-is <FONT
-COLOR="RED"
->int</FONT
->. The following line of code creates a hashtable with its
-initial capacity set to be 1000:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN814"
-></A
-><PRE
-CLASS="programlisting"
->val mymap = myhashtbl_make_nil(1000)
-</PRE
-><P
-></P
-></DIV
->
-
-
-Note that the capacity in this case is the size of the array associated
-with the created hashtable. The underlying hashtable implementation is
-based on linear chaining, and this hashtable can store up to 5000 (5*1000)
-items without need for resizing. When resizing is indeed needed, it is done
-automatically. The following few lines insert some key/item pairs into
-<FONT
-COLOR="RED"
->mymap</FONT
->:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN817"
-></A
-><PRE
-CLASS="programlisting"
->//
-val-~None_vt() = mymap.insert("a", 0)
-val-~Some_vt(0) = mymap.insert("a", 1)
-//
-val-~None_vt() = mymap.insert("b", 1)
-val-~Some_vt(1) = mymap.insert("b", 2)
-//
-val-~None_vt() = mymap.insert("c", 2)
-val-~Some_vt(2) = mymap.insert("c", 3)
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-The dot-symbol <FONT
-COLOR="RED"
->.insert</FONT
-> is overloaded with a function of the
-name <FONT
-COLOR="RED"
->myhashtbl_insert</FONT
->. Given a key and an item,
-<FONT
-COLOR="RED"
->mymap.insert</FONT
-> inserts the key/item pair into <FONT
-COLOR="RED"
->mymap</FONT
->.
-If the key is in the domain of the map represented by <FONT
-COLOR="RED"
->mymap</FONT
->
-before inserting, then the original item associated with the key is
-returned. Otherwise, no item is returned. As can be expected, the size
-of <FONT
-COLOR="RED"
->mymap</FONT
-> is 3 at this point:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN825"
-></A
-><PRE
-CLASS="programlisting"
->val () = assertloc (mymap.size = 3)
-</PRE
-><P
-></P
-></DIV
->
-
-
-The dot-symbol <FONT
-COLOR="RED"
->.size</FONT
-> is overloaded with a function of the name
-<FONT
-COLOR="RED"
->myhashtbl_get_size</FONT
->, which returns the number of key/item pairs
-stored in a given hashtable.  During the course of debugging, one may want
-to print out the key/item pairs in a given hashtable:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN829"
-></A
-><PRE
-CLASS="programlisting"
->//
-val () =
-  fprintln! (stdout_ref, "mymap = ", mymap)
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-where the symbol <FONT
-COLOR="RED"
->fprint</FONT
-> is overloaded with
-<FONT
-COLOR="RED"
->fprint_myhashtbl</FONT
->. The next two lines of code show how search
-with a given key operates on a hashtable:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN833"
-></A
-><PRE
-CLASS="programlisting"
->val-~None_vt() = mymap.search("")
-val-~Some_vt(1) = mymap.search("a")
-</PRE
-><P
-></P
-></DIV
->
-
-
-The dot-symbol <FONT
-COLOR="RED"
->.search</FONT
-> is overloaded with a function of the
-name <FONT
-COLOR="RED"
->myhashtbl_search</FONT
->, which returns the item associated with a
-given key if it is found. The next few lines of code remove some key/item
-pairs from <FONT
-COLOR="RED"
->mymap</FONT
->:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN838"
-></A
-><PRE
-CLASS="programlisting"
->//
-val-true = mymap.remove("a")
-val-false = mymap.remove("a")
-//
-val-~Some_vt(2) = mymap.takeout("b")
-val-~Some_vt(3) = mymap.takeout("c")
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-The dot-symbol <FONT
-COLOR="RED"
->.remove</FONT
-> is overloaded with a function of the
-name <FONT
-COLOR="RED"
->myhashtbl_remove</FONT
-> for removing a key/item pair of a given
-key. If a key/item pair is removed, then the function returns
-true. Otherwise, it returns false to indicates that no key/item pair of the
-given key is stored in the hashtable being operated on.  The dot-symbol
-<FONT
-COLOR="RED"
->.takeout</FONT
-> is overloaded with a function of the name
-<FONT
-COLOR="RED"
->myhashtbl_takeout</FONT
->, which is similar to
-<FONT
-COLOR="RED"
->myhashtbl_remove</FONT
-> excepting for returning the removed item.
-The next few lines of code make use of several less commonly used functions
-on hashtables:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN845"
-></A
-><PRE
-CLASS="programlisting"
->//
-val () = mymap.insert_any("a", 0)
-val () = mymap.insert_any("b", 1)
-val () = mymap.insert_any("c", 2)
-val kxs = mymap.listize1((*void*))
-val ((*void*)) = fprintln! (stdout_ref, "kxs = ", kxs)
-val kxs = mymap.takeout_all((*void*))
-val ((*void*)) = fprintln! (stdout_ref, "kxs = ", kxs)
-//
-val () = assertloc (mymap.size = 0)
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-The dot-symbol <FONT
-COLOR="RED"
->.insert_any</FONT
-> is overloaded with a function of the
-name <FONT
-COLOR="RED"
->myhashtbl_insert_any</FONT
->, which <SPAN
+>&#13;I use the name <SPAN
 CLASS="emphasis"
 ><I
 CLASS="emphasis"
->always</I
+>array-with-size</I
 ></SPAN
-> inserts a
-given key/item pair regardless whether the key is already in use. One
-should really avoid using this function or only call it when it is
-absolutely sure that the given key is not already in use for otherwise the
-involved hashtable would be corrupted.  The dot-symbols
+> to refer to a persistent
+array with attached size information.  Given a viewtype VT, the type for an
+array-with-size that contains N values of viewtype VT is
 <FONT
 COLOR="RED"
->.listize1</FONT
-> and <FONT
+>arrszref(VT, N)</FONT
+>. Essentially, such a value is a boxed pair of
+two components of types <FONT
 COLOR="RED"
->.takeout_all</FONT
-> are overloaded with two
-functions of the names <FONT
-COLOR="RED"
->myhashtbl_listize1</FONT
+>arrayref(VT, N)</FONT
 > and
 <FONT
 COLOR="RED"
->myhashtbl_takeout_all</FONT
->, respectively. Both of them return a list
-consisting of all the key/item pairs in a given hashtable; the former keeps
-the hashtable unchanged while the latter empties it. Last, I present as follows the
-interface for an iterator going over all the key/item pairs in a given hashtable:
+>size_t(N)</FONT
+>. The interfaces for various functions on persistent
+arrays-with-size can be found in
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/arrayref.sats"
+TARGET="_top"
+>prelude/SATS/arrayref.sats</A
+>.
+
+</P
+><P
+>&#13;For creating an array-with-size, the following functions
+<FONT
+COLOR="RED"
+>arrszref_make_arrpsz</FONT
+> and <FONT
+COLOR="RED"
+>arrszref_make_arrayref</FONT
+> can
+be called:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN854"
+NAME="AEN811"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-extern
-fun
-myhashtbl_foreach_cloref
-(
-  tbl: myhashtbl
-, fwork: (key, &#38;(itm) &#62;&#62; _) -&#60;cloref1&#62; void
-) : void // end-of-function
-//
-overload .foreach_cloref with myhashtbl_foreach_cloref
-//
+>fun{}
+arrszref_make_arrpsz
+  {a:vt0p}{n:int} (arrpsz (INV(a), n)): arrszref(a)
+fun{}
+arrszref_make_arrayref
+  {a:vt0p}{n:int} (arrayref (a, n), size_t(n)): arrszref(a)
+// end of [arrszref_make_arrayref]
 </PRE
 ><P
 ></P
@@ -460,25 +142,133 @@ overload .foreach_cloref with myhashtbl_foreach_cloref
 >
 
 
-As an example, the following code prints out all the key/item
-pairs in a given hashtable:
+As an example, the following code creates an array-with-size containing
+all the decimal digits:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN856"
+NAME="AEN813"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val () =
-mymap.foreach_cloref
+>val DIGITS = (arrszref)$arrpsz{int}(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>arrszref</FONT
+> is overloaded with
+<FONT
+COLOR="RED"
+>arrszref_make_arrpsz</FONT
+>.
+
+</P
+><P
+>&#13;For reading from and writing to an array-with-size, the function templates
+<FONT
+COLOR="RED"
+>arrszref_get_at</FONT
+> and <FONT
+COLOR="RED"
+>arrszref_set_at</FONT
+> can be used,
+respectively, which are assigned the following interfaces:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN820"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a:t@ype}
+arrszref_get_at (A: arrszref (a), i: size_t): (a)
+fun{a:t@ype}
+arrszref_set_at (A: arrszref (a), i: size_t, x: a): void
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Given an array-with-size A, an index i and a value v,
+<FONT
+COLOR="RED"
+>arrszref_get_at(A, i)</FONT
+> and <FONT
+COLOR="RED"
+>arrszref_set_at(A, i, v)</FONT
+>
+can be written as <FONT
+COLOR="RED"
+>A[i]</FONT
+> and <FONT
+COLOR="RED"
+>A[i] := v</FONT
+>,
+respectively. Notice that array-bounds checking is performed at run-time
+whenever <FONT
+COLOR="RED"
+>arrszref_get_at</FONT
+> or <FONT
+COLOR="RED"
+>arrszref_set_at</FONT
+> is
+called, and the exception <FONT
+COLOR="RED"
+>ArraySubscriptExn</FONT
+> is raised in case
+of out-of-bounds array access being detected.
+
+</P
+><P
+>&#13;As a simple example, the following code implements a function that
+reverses the content of the array inside a given array-with-size:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN830"
+></A
+><PRE
+CLASS="programlisting"
+>fun{a:t@ype}
+arrszref_reverse
 (
-  lam (k, x) =&#62; fprintln! (stdout_ref, "k=", k, " and ", "x=", x)
-) (* end of [val] *)
+  A: arrszref (a)
+) : void = let
 //
+val n = A.size()
+val n2 = half (n)
+//
+fun loop
+  (i: size_t): void = let
+in
+  if i &#60; n2 then let
+    val tmp = A[i]
+    val ni = pred(n)-i
+  in
+    A[i] := A[ni]; A[ni] := tmp; loop (succ(i))
+  end else () // end of [if]
+end // end of [loop]
+//
+in
+  loop (i2sz(0))
+end // end of [arrszref_reverse]
 </PRE
 ><P
 ></P
@@ -488,19 +278,20 @@ mymap.foreach_cloref
 
 </P
 ><P
->&#13;Please find the entirety of the code used in this chapter
-<A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_hashtable.dats"
+>&#13;Arrays-with-size can be a good choice over arrays in a prototype
+implementation as it is often more demanding to program with arrays. Also,
+for programmers who are yet to become familiar with dependent types, it is
+definitely easier to work with arrays-with-size than arrays. When
+programming in ATS, I often start out with arrays-with-size and then
+replace them with arrays when I can see clear benefits from doing so.
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_arrszref.dats"
 TARGET="_top"
 >on-line</A
->. Also, there is a
-hashtable-based implementation of symbol table available
-<A
-HREF="http://ats-lang.sourceforge.net/DOCUMENT/ATS2TUTORIAL/CODE/chap_hashtable2.dats"
-TARGET="_top"
->on-line</A
->.
-
+> the entirety of the
+code used in this chapter.
 </P
 ></DIV
 ><DIV
@@ -519,7 +310,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c769.html"
+HREF="c739.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -537,7 +328,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c861.html"
+HREF="c835.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -547,7 +338,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Persistent Matrices-with-size</TD
+>Persistent Arrays</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -561,7 +352,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Tail-Recursion</TD
+>Persistent Matrices</TD
 ></TR
 ></TABLE
 ></DIV
