@@ -32,8 +32,13 @@ staload
 "{$LIBATSCC2JS}/SATS/Worker/channel.sats"
 staload
 "{$LIBATSCC2JS}/DATS/Worker/channel.dats"
+staload
+"{$LIBATSCC2JS}/SATS/Worker/channel_session.sats"
+//
 #include
 "{$LIBATSCC2JS}/DATS/Worker/chanpos.dats"
+#include
+"{$LIBATSCC2JS}/DATS/Worker/chanpos_session.dats"
 //
 (* ****** ****** *)
 
@@ -41,36 +46,37 @@ staload "./introxmpl1_prtcl.sats" // for protocol
 
 (* ****** ****** *)
 
-fun
-Q (
-  chp: chanpos(Q_ssn)
-) : void = (
-//
-chanpos1_recv
-( chp
-, lam(chp, i1) => let
-  val i1 = chmsg_parse<int>(i1) in
-  chanpos1_recv
-  ( chp
-  , lam(chp, i2) => let
-    val i2 = chmsg_parse<int>(i2) in
-    chanpos1_send
-    ( chp, i1 < i2
-    , lam(chp) => chanpos1_close(chp)
-    )
-    end // end-of-let // end-of-lam
-  )
-  end // end-of-let // end-of-lam
-)
-//
-) (* end of [Q] *)
+overload :: with chanpos1_session_cons
 
+(* ****** ****** *)
+//
+fun
+Q_session
+(
+// argless
+) : chanpos_session(Q_ssn) = let
+//
+val i1_ref = ref{int}(0)
+val i2_ref = ref{int}(0)
+//
+val ss1 =
+  chanpos1_session_recv<int>(lam(i) => i1_ref[] := i)
+val ss2 =
+  chanpos1_session_recv<int>(lam(i) => i2_ref[] := i)
+val ss3 =
+  chanpos1_session_send<bool>(lam() => i1_ref[] < i2_ref[])
+//
+in
+  ss1 :: ss2 :: ss3 :: chanpos1_session_nil()
+end // end of [Q_session]
+//
 (* ****** ****** *)
 
 val () =
 {
 //
-val ((*void*)) = Q($UN.castvwtp0{chanpos(Q_ssn)}(0))
+val ((*void*)) =
+  chanpos1_session_run_close(Q_session(), $UN.castvwtp0(0))
 //
 } (* end of [val] *)
 

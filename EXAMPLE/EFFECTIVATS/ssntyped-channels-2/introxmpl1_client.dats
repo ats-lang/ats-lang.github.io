@@ -31,8 +31,13 @@ staload
 "{$LIBATSCC2JS}/SATS/Worker/channel.sats"
 staload
 "{$LIBATSCC2JS}/DATS/Worker/channel.dats"
+staload
+"{$LIBATSCC2JS}/SATS/Worker/channel_session.sats"
+//
 #include
 "{$LIBATSCC2JS}/DATS/Worker/channeg.dats"
+#include
+"{$LIBATSCC2JS}/DATS/Worker/channeg_session.dats"
 //
 (* ****** ****** *)
 //
@@ -173,74 +178,45 @@ theAction_bus.onValue
 extern fun theSession_loop((*void*)): void
 //  
 (* ****** ****** *)
-//
-(*
+
+overload :: with channeg1_session_cons
+
+(* ****** ****** *)
+  
 fun
-P (
-  i1: int, i2: int
-, chn: channeg(Q_ssn)
-) : void = (
+P_session
+(
+// argless
+) : channeg_session(Q_ssn) = let
 //
-channeg1_recv
-( chn, i1
-, lam(chn) =>
-  channeg1_recv
-  ( chn, i2
-  , lam(chn) =>
-    channeg1_send
-    ( chn
-    , lam(chn, lt) => let
-      val lt = chmsg_parse<bool>(lt)
-      (*
-      // Some code for processing [lt]
-      *)
-      in
-        channeg1_close(chn)
-      end
-    )
-  ) 
-)
+fun
+theResult_process
+  (lt: bool): void = let
+  val () = Start_output("Session over!")
+in
+  theResult_set(if lt then "true" else "false")
+end // end of [theResult_process]
 //
-) (* end of [P] *)
-*)
+val ss1 =
+  channeg1_session_recv<int>(lam() => theArg1_get())
+val ss2 =
+  channeg1_session_recv<int>(lam() => theArg2_get())
+val ss3 =
+  channeg1_session_send<bool>(lam(lt) => theResult_process(lt))
 //
+in
+  ss1 :: ss2 :: ss3 :: channeg1_session_nil((*void*))
+end // end of [P_session]
+
 (* ****** ****** *)
 //
 fun
-P (
-  chn: channeg(Q_ssn)
-) : void = let
-//
-val
-fwork0 =
-llam() =<lincloptr1> let
-//
-val i1 = theArg1_get()
-val i2 = theArg2_get()
-//
-in
-//
-channeg1_recv
-( chn, i1
-, lam(chn) =>
-  channeg1_recv
-  ( chn, i2
-  , lam(chn) =>
-    channeg1_send
-    ( chn
-    , lam(chn, lt) => let
-      val lt = chmsg_parse<bool>(lt)
-      val () = theResult_process(lt)
-      val () = Start_output("Session over!")
-      in
-        channeg1_close(chn); theSession_loop()
-      end
-    )
-  ) 
-)  
-end // end of [val]
-//
-val fwork0 = $UN.castvwtp0{int}(fwork0)
+P_thunkify
+  {ss:type}
+(
+  ssn
+: channeg_session(ss)
+) : channeg_session(ss) = let
 //
 fun
 fwork1(x: action): void =
@@ -252,13 +228,26 @@ case+ x of
 val fwork1 = lam(x) =<cloref1> fwork1(x)
 //
 in
-  $extfcall(void, "theAction_fwork01_set", fwork0, fwork1)
-end // end of [P]
 //
-and
-theResult_process
-  (lt: bool): void =
-  theResult_set(if lt then "true" else "false")
+channeg1_session_encode
+(
+lam(chn, kx0) => let
+//
+  val
+  fwork0 =
+  $UN.castvwtp0{int}
+  (
+    llam() =<lincloptr1>
+      channeg1_session_run(ssn, chn, kx0)
+    // end of [llam]
+  )
+//
+in
+  $extfcall(void, "theAction_fwork01_set", fwork0, fwork1)
+end // end of [lam]
+)
+//
+end // end of [P_thunkify]
 //
 (* ****** ****** *)
 //
@@ -275,7 +264,17 @@ chn = $UN.castvwtp0{channeg(Q_ssn)}(chn)
 //
 val
 fwork0 =
-$UN.castvwtp0{int}(llam() =<lincloptr1> P(chn))
+$UN.castvwtp0{int}
+(
+//
+llam() =<lincloptr1>
+channeg1_session_run
+(
+  P_thunkify(P_session())
+, chn, lam(chn) => (channeg1_close(chn); theSession_loop())
+)
+//
+)
 //
 fun
 fwork1(x: action): void =
