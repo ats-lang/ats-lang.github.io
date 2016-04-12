@@ -72,6 +72,9 @@ export PATH=${PATSHOME}/bin:${PATH}
 #
 ######
 #
+echo "export ATSHOME=${PWD}/${ATSPACK}" >> ${HOME}/.bashrc
+echo "export ATSHOMERELOC=ATS-${ATSVER}" >> ${HOME}/.bashrc 
+#
 echo "export PATSHOME=${PWD}/ATS2" >> ${HOME}/.bashrc
 echo "export PATSHOMERELOC=${PWD}/ATS2-contrib" >> ${HOME}/.bashrc
 echo "export PATSHOME_contrib=${PWD}/ATS2-contrib" >> ${HOME}/.bashrc
