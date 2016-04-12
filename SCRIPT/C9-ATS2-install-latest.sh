@@ -97,17 +97,16 @@ echo "export PATH=\${PATSHOME}/bin:\${PATH}" >> ${HOME}/.bashrc
 #
 # For libatsopt
 #
-(cd ATS2/src/CBOOT && make -C prelude)
-(cd ATS2/src/CBOOT && make -C libc)
-(cd ATS2/src/CBOOT && make -C libats)
-#
-(cd ATS2/utils/libatsopt && time make -f Makefile)
+# (cd ATS2/src/CBOOT && make -C prelude)
+# (cd ATS2/src/CBOOT && make -C libc)
+# (cd ATS2/src/CBOOT && make -C libats)
+# (cd ATS2/utils/libatsopt && time make -f Makefile)
 #
 ######
 #
 # For libatsynmark
 #
-(cd ATS2/utils/libatsynmark && time make -f Makefile)
+# (cd ATS2/utils/libatsynmark && time make -f Makefile)
 #
 ######
 
