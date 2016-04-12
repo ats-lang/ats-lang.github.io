@@ -27,6 +27,10 @@ sudo apt-get install -y libgmp-dev libgc-dev
 # for installing ats-anairiats
 #
 ######
+
+export GCC=gcc
+
+######
 #
 export ATSVER=0.2.12
 export ATSPACK=ats-lang-anairiats-${ATSVER}
@@ -78,7 +82,7 @@ echo "export PATH=\${PATSHOME}/bin:\${PATH}" >> ${HOME}/.bashrc
 #
 # Building patsopt + patscc
 #
-(cd ATS2 && time make -f Makefile_dev)
+(cd ATS2 && time make -f Makefile_devl)
 #
 ######
 #
@@ -88,6 +92,7 @@ echo "export PATH=\${PATSHOME}/bin:\${PATH}" >> ${HOME}/.bashrc
 #
 ######
 
+sudo apt-get install -y erlang
 sudo apt-get install -y libjson-c-dev
 
 ######
@@ -100,10 +105,6 @@ sudo apt-get install -y libjson-c-dev
 (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve-z3 && time make build)
 (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
 #
-######
-
-sudo apt-get install -y erlang
-
 ######
 #
 # For parsing C code
