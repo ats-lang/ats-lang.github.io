@@ -23,6 +23,36 @@ sudo apt-get install -y build-essential
 sudo apt-get install -y libgmp-dev libgc-dev
 
 ######
+#
+# for installing ats-anairiats
+#
+######
+#
+export ATSVER=0.2.12
+export ATSPACK=ats-lang-anairiats-${ATSVER}
+export ATSPACKTGZ=${ATSPACK}.tgz
+#
+######
+#
+export \
+ATSLANGURL_srcfg=\
+http://sourceforge.net/projects/ats-lang
+export \
+ATSLANGURL_github=http://ats-lang.github.io
+#
+######
+#
+wget -q \
+${ATSLANGURL_github}/ATS-Anairiats/${ATSPACKTGZ}
+#
+tar -zxf ${ATSPACKTGZ}
+#
+export ATSHOME=${PWD}/${ATSPACK}
+export ATSHOMERELOC=ATS-${ATSVER}
+#
+(cd ${ATSHOME} && ./configure&&make CC=${GCC} all_ngc)
+#
+######
 
 git clone https://github.com/githwxi/ATS-Postiats ATS2
 git clone https://github.com/githwxi/ATS-Postiats-contrib.git ATS2-contrib
@@ -48,8 +78,7 @@ echo "export PATH=\${PATSHOME}/bin:\${PATH}" >> ${HOME}/.bashrc
 #
 # Building patsopt + patscc
 #
-(cd ATS2 && ./configure)
-(cd ATS2 && time make all)
+(cd ATS2 && time make -f Makefile_dev)
 #
 ######
 #
