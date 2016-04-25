@@ -25,6 +25,12 @@ mainly for teaching BU-CAS-CS-520.
 In addition to C9-ATS2-install-cs520.sh, this script installs patsolve_z3,
 a Z3-based external constraint-solver for handling ATS2-typechecking constraints.
 
+## [msys2-build-ats2.sh](http://ats-lang.github.io/SCRIPT/msys2-build-ats2.sh)
+
+This script is for installing ATS2 and ATS2-contrib under MSYS2 (the
+modern rewrite of MSYS) for Windows. It is based on
+"C9-ATS2-install.sh".
+
 ## [Sortsmill-Gentoo-Overlay](https://bitbucket.org/sortsmill/sortsmill-gentoo-overlay)
 
 The sortsmill overlay for Gentoo is a collection of ebuilds related in
