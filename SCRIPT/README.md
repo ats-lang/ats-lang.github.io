@@ -25,6 +25,13 @@ mainly for teaching BU-CAS-CS-520.
 In addition to C9-ATS2-install-cs520.sh, this script installs patsolve_z3,
 a Z3-based external constraint-solver for handling ATS2-typechecking constraints.
 
+## [C9-ATS2-install-latest.sh](http://ats-lang.github.io/SCRIPT/C9-ATS2-install-latest.sh)
+
+This script first installs ATS1 and then installs ATS2 through source
+compilation (as ATS2 is implemented in ATS1). It also installs
+the libatsopt and libatsynmark library packages, which are needed for
+processing the books INT2PROGINATS and ATS2TUTORIAL.
+
 ## [msys2-build-ats2.sh](http://ats-lang.github.io/SCRIPT/msys2-build-ats2.sh)
 
 This script is for installing ATS2 and ATS2-contrib under MSYS2 (the
