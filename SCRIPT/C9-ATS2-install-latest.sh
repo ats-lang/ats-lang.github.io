@@ -56,6 +56,9 @@ export ATSHOMERELOC=ATS-${ATSVER}
 #
 (cd ${ATSHOME} && ./configure&&make CC=${GCC} all_ngc)
 #
+(cd $ATSHOME/bootstrap1 && rm -f *.o)
+(cd $ATSHOME/ccomp/runtime/GCATS && make && make clean)
+#
 ######
 
 git clone https://github.com/githwxi/ATS-Postiats ATS2
@@ -85,6 +88,7 @@ echo "export PATH=\${PATSHOME}/bin:\${PATH}" >> ${HOME}/.bashrc
 #
 # Building patsopt + patscc
 #
+(cd ATS2 && cp ${ATSHOME}/config.h .)
 (cd ATS2 && time make -f Makefile_devl)
 #
 ######
@@ -97,16 +101,22 @@ echo "export PATH=\${PATSHOME}/bin:\${PATH}" >> ${HOME}/.bashrc
 #
 # For libatsopt
 #
-# (cd ATS2/src/CBOOT && make -C prelude)
-# (cd ATS2/src/CBOOT && make -C libc)
-# (cd ATS2/src/CBOOT && make -C libats)
-# (cd ATS2/utils/libatsopt && time make -f Makefile)
+(cd ATS2/src && make cleanall)
+#
+(cd ATS2/src/CBOOT && make -C prelude)
+(cd ATS2/src/CBOOT && make -C libc)
+(cd ATS2/src/CBOOT && make -C libats)
+(cd ATS2/utils/libatsopt && time make -f Makefile)
+#
+cp ATS2/utils/libatsopt/libatsopt.a ${ATSHOME}/ccomp/lib
 #
 ######
 #
 # For libatsynmark
 #
-# (cd ATS2/utils/libatsynmark && time make -f Makefile)
+(cd ATS2/utils/libatsynmark && time make -f Makefile)
+#
+cp ATS2/utils/libatsynmark/libatsynmark.a ${ATSHOME}/ccomp/lib
 #
 ######
 
