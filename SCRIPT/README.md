@@ -1,6 +1,6 @@
 # Scripts for ATS2
 
-## [Homebrew for ATS2](https://github.com/Homebrew/homebrew/blob/master/Library/Formula/ats2-postiats.rb)
+## [Homebrew for ATS2](https://github.com/Homebrew/homebrew-core/blob/master/Formula/ats2-postiats.rb)
 
 This script is for installing ATS2 under a Mac OS. It is maintained externally.
 
