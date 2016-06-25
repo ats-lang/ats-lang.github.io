@@ -152,8 +152,12 @@ mv ${PWD}/ATS2/prelude/CATS/CODEGEN/*.cats ${PWD}/ATS2/prelude/CATS/
 #(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve && time make DATS_C)
 #
 # For building patsolve_z3
-#(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve-z3 && time make build)
-#(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
+#(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-z3 && time make build)
+#(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
+#
+# For building patsolve_smt2
+#(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-smt2 && time make build)
+#(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-smt2 && mv -f patsolve_smt2 ${PATSHOME}/bin)
 #
 ######
 #

@@ -130,8 +130,12 @@ sudo apt-get install -y libjson-c-dev
 (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve && time make DATS_C)
 #
 # For building patsolve_z3
-(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve-z3 && time make build)
-(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
+(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-z3 && time make build)
+(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
+#
+# For building patsolve_smt2
+(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-smt2 && time make build)
+(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-smt2 && mv -f patsolve_smt2 ${PATSHOME}/bin)
 #
 ######
 #
@@ -161,4 +165,4 @@ sudo apt-get install -y libjson-c-dev
 #
 ######
 #
-###### end of [C9-ATS2-install-cs520-z3.sh] ######
+###### end of [C9-ATS2-install-cs520-latest.sh] ######
