@@ -100,11 +100,11 @@ sudo apt-get install -y erlang
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2py3 && mv -f atscc2py3 ${PATSHOME}/bin)
 (cd ATS2-contrib/contrib/libatscc/libatscc2py3 && time make all && time make all_in_one)
 #
-# For building atscc2cli
+# For building atscc2clj
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2cli && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2cli && mv -f atscc2cli ${PATSHOME}/bin)
-(cd ATS2-contrib/contrib/libatscc/libatscc2cli && time make all && time make all_in_one)
+(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2clj && time make build)
+(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2clj && mv -f atscc2clj ${PATSHOME}/bin)
+(cd ATS2-contrib/contrib/libatscc/libatscc2clj && time make all && time make all_in_one)
 #
 # For building atscc2erl
 #
