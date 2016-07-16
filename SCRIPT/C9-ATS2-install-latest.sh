@@ -156,6 +156,18 @@ sudo apt-get install -y libjson-c-dev
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2py3 && mv -f atscc2py3 ${PATSHOME}/bin)
 (cd ATS2-contrib/contrib/libatscc/libatscc2py3 && time make all && time make all_in_one)
 #
+# For building atscc2scm
+#
+(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2scm && time make build)
+(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2scm && mv -f atscc2scm ${PATSHOME}/bin)
+(cd ATS2-contrib/contrib/libatscc/libatscc2scm && time make all && time make all_in_one)
+#
+# For building atscc2clj
+#
+(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2clj && time make build)
+(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2clj && mv -f atscc2clj ${PATSHOME}/bin)
+(cd ATS2-contrib/contrib/libatscc/libatscc2clj && time make all && time make all_in_one)
+#
 # For building atscc2erl
 #
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && time make build)
