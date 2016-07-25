@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>PATS2XHTML-test01</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+<style type="text/css">
+  .patsyntax {width:99%;margin:auto;}
+  .patsyntax {color:#808080;background-color:#E0E0E0;}
+  .patsyntax span.keyword {color:#000000;font-weight:bold;}
+  .patsyntax span.comment {color:#787878;font-style:italic;}
+  .patsyntax span.extcode {color:#A52A2A;}
+  .patsyntax span.neuexp  {color:#800080;}
+  .patsyntax span.staexp  {color:#0000F0;}
+  .patsyntax span.prfexp  {color:#603030;}
+  .patsyntax span.dynexp  {color:#F00000;}
+  .patsyntax span.stalab  {color:#0000F0;font-style:italic}
+  .patsyntax span.dynlab  {color:#F00000;font-style:italic}
+  .patsyntax span.dynstr  {color:#008000;font-style:normal}
+  .patsyntax span.stacstdec  {text-decoration:none;}
+  .patsyntax span.stacstuse  {color:#0000CF;text-decoration:underline;}
+  .patsyntax span.dyncstdec  {text-decoration:none;}
+  .patsyntax span.dyncstuse  {color:#B80000;text-decoration:underline;}
+  .patsyntax span.dyncst_implement  {color:#B80000;text-decoration:underline;}
+</style>
+
+<script
+ src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+</script>
+
+<script
+ src="https://ats-lang.github.io/LIBRARY/libatscc2js/libatscc2js_all.js">
+</script>
+<script
+ src="https://ats-lang.github.io/LIBRARY/ats2langweb/pats2xhtmlize_dats.js">
+</script>
+
+</head>
+
+<body>
+
+<h1>
+Pats2xhtmlization
+</h1>
+<p>
+Pats2xhtmlization
+is an on-line service for syntax-hiliting ATS code.
+</p>
+
+<hr>
+
+The tag <u>sats2xhtml</u> is for
+syntax-hiliting static ATS code, that is, code contained in a SATS file.
+Here is a simple example:
+<sats2xhtml>//
+// static interface
+//
+fun factorial (n: int): int
+//
+</sats2xhtml>
+
+<hr>
+
+The tag <u>dats2xhtml</u> is for
+syntax-hiliting dynamic ATS code, that is, code contained in a DATS file.
+Here is a simple example:
+<dats2xhtml>//
+// dynamic implementation
+//
+implement factorial(n) = if n > 0 then n*factorial(n-1) else 1
+//
+</dats2xhtml>
+
+<hr>
+
+<table>
+<tr>
+<td style="width: 100%;">
+This page is created with
+<a href="http://www.ats-lang.org">ATS</a>
+by
+<a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>
+and also maintained by
+<a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>.
+</td>
+<td style="width: 0%;"><!--pushed to the right-->
+<a href="http://sourceforge.net">
+<img
+src="http://sflogo.sourceforge.net/sflogo.php?group_id=205722&amp;type=2"
+width="120"
+height="36"
+alt="SourceForge.net Logo"
+/>
+</a>
+</td>
+</tr>
+</table>
+
+<script>
+$(document).ready(function(){pats2xhtmlize_process_all();return;});
+</script>
+
+</body>
+</html>
