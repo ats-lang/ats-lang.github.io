@@ -86,7 +86,7 @@ emit_ats_ccomp_header (out) = let
   val () = emit_text (out, "** include runtime header files\n")
   val () = emit_text (out, "*/\n")
 //
-  val () = emit_text (out, "#ifndef _ATS_CCOMP_HEADER_NONE\n")
+  val () = emit_text (out, "#ifndef _ATS_CCOMP_HEADER_NONE_\n")
 //
   val () = emit_text (out, "#include \"pats_ccomp_config.h\"\n")
   val () = emit_text (out, "#include \"pats_ccomp_basics.h\"\n")
@@ -94,12 +94,12 @@ emit_ats_ccomp_header (out) = let
   val () = emit_text (out, "#include \"pats_ccomp_instrset.h\"\n")
   val () = emit_text (out, "#include \"pats_ccomp_memalloc.h\"\n")
 //
-  val () = emit_text (out, "#ifndef _ATS_CCOMP_EXCEPTION_NONE\n")
+  val () = emit_text (out, "#ifndef _ATS_CCOMP_EXCEPTION_NONE_\n")
   val () = emit_text (out, "#include \"pats_ccomp_memalloca.h\"\n")
   val () = emit_text (out, "#include \"pats_ccomp_exception.h\"\n")
-  val () = emit_text (out, "#endif // end of [_ATS_CCOMP_EXCEPTION_NONE]\n")
+  val () = emit_text (out, "#endif // end of [_ATS_CCOMP_EXCEPTION_NONE_]\n")
 //
-  val () = emit_text (out, "#endif /* _ATS_CCOMP_HEADER_NONE */\n")
+  val () = emit_text (out, "#endif /* _ATS_CCOMP_HEADER_NONE_ */\n")
   val () = emit_newline (out)
 in
   emit_newline (out)
@@ -114,7 +114,7 @@ val () = emit_text (out, "/*\n")
 val () = emit_text (out, "** include prelude cats files\n")
 val () = emit_text (out, "*/\n")
 //
-val () = emit_text (out, "#ifndef _ATS_CCOMP_PRELUDE_NONE\n")
+val () = emit_text (out, "#ifndef _ATS_CCOMP_PRELUDE_NONE_\n")
 //
 // HX: primary prelude cats files
 //
@@ -127,15 +127,17 @@ val () = emit_text (out, "#include \"prelude/CATS/pointer.cats\"\n")
 //
 val () = emit_text (out, "#include \"prelude/CATS/bool.cats\"\n")
 val () = emit_text (out, "#include \"prelude/CATS/char.cats\"\n")
+val () = emit_text (out, "#include \"prelude/CATS/float.cats\"\n")
 val () = emit_text (out, "#include \"prelude/CATS/integer_ptr.cats\"\n")
 val () = emit_text (out, "#include \"prelude/CATS/integer_fixed.cats\"\n")
-val () = emit_text (out, "#include \"prelude/CATS/float.cats\"\n")
 //
 val () = emit_text (out, "#include \"prelude/CATS/memory.cats\"\n")
 //
 val () = emit_text (out, "#include \"prelude/CATS/string.cats\"\n")
 val () = emit_text (out, "#include \"prelude/CATS/strptr.cats\"\n")
 //
+val () = emit_text (out, "//\n")
+val () = emit_text (out, "#include \"prelude/CATS/fprintf.cats\"\n")
 val () = emit_text (out, "//\n")
 val () = emit_text (out, "#include \"prelude/CATS/filebas.cats\"\n")
 //
@@ -151,25 +153,25 @@ val () = emit_text (out, "#include \"prelude/CATS/matrix.cats\"\n")
 val () = emit_text (out, "#include \"prelude/CATS/matrixptr.cats\"\n")
 //
 val () = emit_text (out, "//\n")
-val () = emit_text (out, "#endif /* _ATS_CCOMP_PRELUDE_NONE */\n")
+val () = emit_text (out, "#endif /* _ATS_CCOMP_PRELUDE_NONE_ */\n")
 //
 val () = emit_text (out, "/*\n")
 val () = emit_text (out, "** for user-supplied prelude\n")
 val () = emit_text (out, "*/\n")
-val () = emit_text (out, "#ifdef _ATS_CCOMP_PRELUDE_USER\n")
+val () = emit_text (out, "#ifdef _ATS_CCOMP_PRELUDE_USER_\n")
 val () = emit_text (out, "//\n")
-val () = emit_text (out, "#include _ATS_CCOMP_PRELUDE_USER\n")
+val () = emit_text (out, "#include _ATS_CCOMP_PRELUDE_USER_\n")
 val () = emit_text (out, "//\n")
-val () = emit_text (out, "#endif /* _ATS_CCOMP_PRELUDE_USER */\n")
+val () = emit_text (out, "#endif /* _ATS_CCOMP_PRELUDE_USER_ */\n")
 //
 val () = emit_text (out, "/*\n")
 val () = emit_text (out, "** for user2-supplied prelude\n")
 val () = emit_text (out, "*/\n")
-val () = emit_text (out, "#ifdef _ATS_CCOMP_PRELUDE_USER2\n")
+val () = emit_text (out, "#ifdef _ATS_CCOMP_PRELUDE_USER2_\n")
 val () = emit_text (out, "//\n")
-val () = emit_text (out, "#include _ATS_CCOMP_PRELUDE_USER2\n")
+val () = emit_text (out, "#include _ATS_CCOMP_PRELUDE_USER2_\n")
 val () = emit_text (out, "//\n")
-val () = emit_text (out, "#endif /* _ATS_CCOMP_PRELUDE_USER2 */\n")
+val () = emit_text (out, "#endif /* _ATS_CCOMP_PRELUDE_USER2_ */\n")
 //
 in
   emit_newline (out)
@@ -805,7 +807,8 @@ the_tmpdeclst_stringize
 (
 ) = tostring_fprint<int>
 (
-  "postiats_tmpdeclst_", lam (out, _) => emit_the_tmpdeclst (out), 0
+  "postiats_tmpdeclst_"
+, lam (out, _) => emit_the_tmpdeclst (out), 0
 ) // end of [the_tmpdeclst_stringize]
 
 fun
@@ -813,7 +816,8 @@ the_primdeclst_stringize
 (
 ) = tostring_fprint<int>
 (
-  "postiats_primdeclst_", lam (out, _) => emit_the_primdeclst (out), 0
+  "postiats_primdeclst_"
+, lam (out, _) => emit_the_primdeclst (out), 0
 ) // end of [the_funlablst_stringize]
 
 fun
@@ -1040,16 +1044,16 @@ aux_main
 val () = emit_text (out, "\n/*\n")
 val () = emit_text (out, "** the ATS runtime")
 val () = emit_text (out, "\n*/\n")
-val () = emit_text (out, "#ifndef _ATS_CCOMP_RUNTIME_NONE\n")
+val () = emit_text (out, "#ifndef _ATS_CCOMP_RUNTIME_NONE_\n")
 val () = emit_text (out, "#include \"pats_ccomp_runtime.c\"\n")
 val () = emit_text (out, "#include \"pats_ccomp_runtime_memalloc.c\"\n")
-val () = emit_text (out, "#ifndef _ATS_CCOMP_EXCEPTION_NONE\n")
+val () = emit_text (out, "#ifndef _ATS_CCOMP_EXCEPTION_NONE_\n")
 val () = emit_text (out, "#include \"pats_ccomp_runtime2_dats.c\"\n")
-val () = emit_text (out, "#ifndef _ATS_CCOMP_RUNTIME_TRYWITH_NONE\n")
+val () = emit_text (out, "#ifndef _ATS_CCOMP_RUNTIME_TRYWITH_NONE_\n")
 val () = emit_text (out, "#include \"pats_ccomp_runtime_trywith.c\"\n")
-val () = emit_text (out, "#endif /* _ATS_CCOMP_RUNTIME_TRYWITH_NONE */\n")
-val () = emit_text (out, "#endif // end of [_ATS_CCOMP_EXCEPTION_NONE]\n")
-val () = emit_text (out, "#endif /* _ATS_CCOMP_RUNTIME_NONE */\n")
+val () = emit_text (out, "#endif /* _ATS_CCOMP_RUNTIME_TRYWITH_NONE_ */\n")
+val () = emit_text (out, "#endif // end of [_ATS_CCOMP_EXCEPTION_NONE_]\n")
+val () = emit_text (out, "#endif /* _ATS_CCOMP_RUNTIME_NONE_ */\n")
 //
 val () = emit_text (out, "\n/*\n")
 val () = emit_text (out, "** the [main] implementation")
@@ -1165,7 +1169,7 @@ emit_text (out, "*/\n");
 ) (* end of [val] *)
 //
 val () =
-emit_text (out, "#ifndef _ATS_CCOMP_EXCEPTION_NONE\n")
+emit_text (out, "#ifndef _ATS_CCOMP_EXCEPTION_NONE_\n")
 val () =
 emit_text (out, "\
 ATSextern()\n\
@@ -1176,7 +1180,7 @@ the_atsexncon_initize\n\
 ) ;\n\
 ") // end of [val]
 val () =
-emit_text (out, "#endif // end of [_ATS_CCOMP_EXCEPTION_NONE]\n")
+emit_text (out, "#endif // end of [_ATS_CCOMP_EXCEPTION_NONE_]\n")
 //
 val hids = the_exndeclst_get ()
 val ((*void*)) = loop (out, hids)
@@ -1321,6 +1325,7 @@ val () = emit_the_dyncstlst_extdec (out)
 val () = emit_the_primdeclst_valimp (out)
 //
 val () = aux_exndeclst (out)
+//
 val () = aux_saspdeclst (out)
 //
 val () = aux_extypelst (out)

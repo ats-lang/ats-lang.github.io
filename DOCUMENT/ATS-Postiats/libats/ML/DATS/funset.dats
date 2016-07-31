@@ -347,8 +347,22 @@ end // end of [funset_tabulate]
 //
 implement
 {a}(*tmp*)
-funset_listize (xs) =
-  ($effmask_wrt(list0_of_list_vt{a}($FS.funset_listize<a>(xs))))
+funset_listize
+  (xs) = (
+//
+$effmask_wrt
+(
+  list0_of_list_vt{a}($FS.funset_listize<a>(xs))
+) (* $effmask_wrt *)
+//
+) (* funset_listize *)
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+funset_streamize
+  (xs) = $effmask_wrt($FS.funset_streamize<a>(xs))
 //
 (* ****** ****** *)
 

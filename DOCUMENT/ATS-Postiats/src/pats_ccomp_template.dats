@@ -147,12 +147,11 @@ case+ env of
       s2f
     end // end of [if]
   ) // end of [IMPENVcons]
-| IMPENVnil () => let
+| IMPENVnil
+    ((*void*)) => let
     prval () = fold@ (env)
-    val s2t = s2var_get_srt (s2v)
-    val s2e = s2exp_err (s2t)
   in
-    s2exp2hnf_cast (s2e)
+    s2exp2hnf_cast(s2exp_errexp(s2var_get_srt(s2v)))
   end // end of [IMPENVnil]
 //
 end // end of [impenv_find]
@@ -202,7 +201,7 @@ s2hnf_is_err
   val s2e = s2hnf2exp (s2f)
 in
 //
-case+ s2e.s2exp_node of S2Eerr () => true | _ => false
+case+ s2e.s2exp_node of S2Eerrexp() => true | _ => false
 //
 end // end of [s2hnf_is_err]
 
@@ -223,25 +222,30 @@ impenv_make_svarlst (s2vs) = let
 in
 //
 case+ s2vs of
+| list_nil
+    ((*void*)) => IMPENVnil()
+  // end of [list_nil]
 | list_cons
     (s2v, s2vs) => let
     val s2t =
       s2var_get_srt (s2v)
     // end of [val]
-    val s2e = s2exp_err (s2t)
-    val s2f = s2exp2hnf_cast (s2e)
-    val env = impenv_make_svarlst (s2vs)
+    val s2e = s2exp_errexp(s2t)
+    val s2f = s2exp2hnf_cast(s2e)
+    val env = impenv_make_svarlst(s2vs)
   in
-    IMPENVcons (s2v, s2f, env)
+    IMPENVcons(s2v, s2f, env)
   end // end of [list_cons]
-| list_nil () => IMPENVnil ()
 //
 end // end of [impenv_make_svarlst]
 
 (* ****** ****** *)
-
+//
 extern
-fun impenv_free (env: impenv): void
+fun
+impenv_free
+  (env: impenv): void
+//
 implement
 impenv_free (env) = let
 in
@@ -250,7 +254,7 @@ case+ env of
 | ~IMPENVcons (_, _, env) => impenv_free (env) | ~IMPENVnil () => ()
 //
 end // end of [impenv_free]
-
+//
 (* ****** ****** *)
 //
 extern
@@ -681,20 +685,22 @@ end // end of [auxbndlstlst2]
 
 in (* in of [local] *)
 
+(* ****** ****** *)
+
 implement
-funlab_tmpcst_match
-  (fl0, d2c0, t2mas) = let
+funlab_tmparg_match
+  (fl0, t2mas) = let
 //
 val env = impenv_make_nil ()
-val xs = funlab_get_tmparg (fl0)
-val s2ess = list_map_fun<t2mpmarg><s2explst> (xs, lam x =<1> x.t2mpmarg_arg)
+val xs0 = funlab_get_tmparg (fl0)
+val s2ess = list_map_fun<t2mpmarg><s2explst> (xs0, lam x =<1> x.t2mpmarg_arg)
 val ans = auxmatlstlst (env, $UN.linlst2lst(s2ess), t2mas)
-val () = list_vt_free (s2ess)
 val ((*env*)) = impenv_free (env)
+val ((*freed*)) = list_vt_free (s2ess)
 //
 in
   ans
-end // end of [funlab_tmpcst_match]
+end // end of [funlab_tmparg_match]
 
 (* ****** ****** *)
 
@@ -1005,11 +1011,14 @@ val () =
 ) // end of [val]
 *)
 //
-val sub = tmpsub2stasub (tsub)
+val
+sub = tmpsub2stasub(tsub)
+val
+sfx = funlab_incget_ncopy(flab)
 //
-val sfx = funlab_incget_ncopy (flab)
+val
+flab2 = funlab_subst (sub, flab)
 //
-val flab2 = funlab_subst (sub, flab)
 val () = funlab_set_suffix (flab2, sfx)
 val () = the_funlablst_add (flab2)
 //
@@ -1019,7 +1028,10 @@ val (pfpush|()) = ccompenv_push (env)
 //
 val () = ccompenv_add_tmpsub (env, tsub)
 val () = ccompenv_inc_tmprecdepth (env)
-val fent2 = funent_subst (env, sub, flab2, fent, sfx)
+//
+val
+fent2 = funent_subst(env, sub, flab2, fent, sfx)
+//
 val () = ccompenv_dec_tmprecdepth (env)
 //
 val ((*popped*)) = ccompenv_pop (pfpush | env)
@@ -1053,13 +1065,12 @@ ccomp_tmpcstmat
 (*
 val () =
 (
-  print ("ccomp_tmpcstmat: d2c = ");
-  print_d2cst (d2c); print_newline ();
-  print ("ccomp_tmpcstmat: t2mas = ");
-  fpprint_t2mpmarglst (stdout_ref, t2mas);
-  print_newline ();
-  print ("ccomp_tmpcstmat: mat = ");
-  fprint_tmpcstmat (stdout_ref, mat); print_newline ();
+  print("ccomp_tmpcstmat: d2c = ");
+  fprint_d2cst(stdout_ref, d2c); print_newline();
+  print("ccomp_tmpcstmat: mat = ");
+  fprint_tmpcstmat(stdout_ref, mat); print_newline();
+  print("ccomp_tmpcstmat: t2mas = ");
+  fpprint_t2mpmarglst(stdout_ref, t2mas); print_newline();
 ) // end of [val]
 *)
 //
@@ -1102,7 +1113,8 @@ end // end of [ccomp_tmpcstmat_some]
 (* ****** ****** *)
 
 extern
-fun ccomp_tmpvarmat_some
+fun
+ccomp_tmpvarmat_some
 (
   env: !ccompenv
 , loc0: location, hse0: hisexp, d2v: d2var, t2mas: t2mpmarglst, mat: tmpvarmat
@@ -1118,12 +1130,11 @@ ccomp_tmpvarmat
 val () =
 (
   print ("ccomp_tmpvarmat: d2v = ");
-  print_d2var (d2v); print_newline ();
-  print ("ccomp_tmpvarmat: t2mas = ");
-  fpprint_t2mpmarglst (stdout_ref, t2mas);
-  print_newline ();
+  fprint_d2var(stdout_ref, d2v); print_newline ();
   print ("ccomp_tmpvarmat: mat = ");
   fprint_tmpvarmat (stdout_ref, mat); print_newline ();
+  print ("ccomp_tmpvarmat: t2mas = ");
+  fpprint_t2mpmarglst (stdout_ref, t2mas); print_newline ();
 ) // end of [val]
 *)
 //
@@ -1131,13 +1142,15 @@ in
 //
 case+ mat of
 | TMPVARMATsome _ =>
+  (
     ccomp_tmpvarmat_some
       (env, loc0, hse0, d2v, t2mas, mat)
     // end of [ccomp_tmpvarmat_some]
-  // end of [TMPVARMATsome]
+  ) // end of [TMPVARMATsome]
 | TMPVARMATsome2
     (d2c, s2ess, flab) =>
     primval_make2_funlab (loc0, hse0, flab)
+  // end of [TMPVARMATsome2]
 | TMPVARMATnone() =>
     primval_tmpltvarmat (loc0, hse0, d2v, t2mas, mat)
   // end of [TMPVARMATnone]
@@ -1152,8 +1165,8 @@ val-TMPVARMATsome
   (hfd, tsub, _(*knd*)) = mat
 //
 val opt = hifundec_get_funlabopt (hfd)
-val () =
-(
+val () = (
+//
 case+ opt of
 | None _ => let
     val-Some
@@ -1166,7 +1179,9 @@ case+ opt of
     hifundeclst_ccomp (env, 0(*lvl0*), knd, decarg, hfds)
   end // end of [None]
 | Some _ => ((*void*))
-)
+//
+) (* end of [val] *)
+//
 val-Some(flab) = hifundec_get_funlabopt (hfd)
 //
 in

@@ -95,15 +95,24 @@ val () =
 val ab = alphabet
 //
 implement{}
-string_tabulate$fopr (i) = let
+string_tabulate$fopr(i) = let
   val c = int2char0 (char2int0('A') + g0u2i(i))
 in
   $UN.cast{charNZ}(c) // HX: [c] cannot be NUL
 end // end of [string_tabulate$fwork]
 //
-val ab2 = string_tabulate (i2sz(26))
-val ((*void*)) = assertloc (ab = $UN.castvwtp1{string}(ab2))
+val ab2 =
+  string_tabulate(i2sz(26))
+val ((*void*)) =
+  assertloc (ab = $UN.castvwtp1{string}(ab2))
 val ((*void*)) = strnptr_free (ab2)
+//
+val ab3 =
+string_tabulate_cloref
+  (i2sz(26), lam(i) => $UN.cast{charNZ}('A'+sz2i(i)))
+//
+val ((*void*)) = assertloc (ab = $UN.castvwtp1{string}(ab3))
+val ((*void*)) = strnptr_free (ab3)
 //
 } // end of [val]
 
@@ -167,6 +176,18 @@ val () = fprint_newline (out)
 } (* end of [val] *)
 
 (* ****** ****** *)
+//
+val () = assertloc (strcmp("a", "a") = 0)
+val () = assertloc (strcmp("b", "b") = 0)
+val () = assertloc (strcmp("b", "a") > 0)
+val () = assertloc (strcmp("a", "b") < 0)
+//
+val () = assertloc (compare("a", "a") =  0)
+val () = assertloc (compare("b", "b") =  0)
+val () = assertloc (compare("b", "a") =  1)
+val () = assertloc (compare("a", "b") = ~1)
+//
+(* ****** ****** *)
 
 val () =
 {
@@ -188,6 +209,40 @@ val () = strptr_free (res)
 //
 } // end of [val]
 
+(* ****** ****** *)
+//
+val () = let
+//
+val cs0 = streamize_string_char(alphabet)
+//
+in 
+//
+assertloc
+(
+  stream_vt_length(cs0) = sz2i(length(alphabet))
+) (* assertloc *)
+//
+end // end of [val]
+//
+(* ****** ****** *)
+//
+val () = let
+//
+val out = stdout_ref
+val cs0 = streamize_string_char(alphabet)
+in
+  fprint(out, "stream_vt_fprint(cs0, out, 10) = ");
+  stream_vt_fprint<char>(cs0, out, 10); fprint_newline(out)
+end // end of [let]
+val () = let
+//
+val out = stdout_ref
+val cs0 = streamize_string_char(alphabet)
+in
+  fprint(out, "stream_vt_fprint(cs0, out, ~1) = ");
+  stream_vt_fprint<char>(cs0, out, ~1); fprint_newline(out)
+end // end of [let]
+//
 (* ****** ****** *)
 
 implement main0 () = ()

@@ -673,31 +673,33 @@ d3e0.d3exp_node of
 | D3Eempty () => hidexp_empty (loc0, hse0)
 //
 | D3Eextval (name) =>
-    hidexp_extval (loc0, hse0, name)
+    hidexp_extval(loc0, hse0, name)
+  // end of [D3Eextval]
+//
 | D3Eextfcall
     (_fun, _arg) => let
-    val _arg = d3explst_tyer (_arg)
+    val _arg = d3explst_tyer(_arg)
   in
-    hidexp_extfcall (loc0, hse0, _fun, _arg)
+    hidexp_extfcall(loc0, hse0, _fun, _arg)
   end // end of [D3Eextfcall]
 | D3Eextmcall
     (_obj, _mtd, _arg) => let
     val _obj = d3exp_tyer (_obj)
     val _arg = d3explst_tyer (_arg)
   in
-    hidexp_extmcall (loc0, hse0, _obj, _mtd, _arg)
+    hidexp_extmcall(loc0, hse0, _obj, _mtd, _arg)
   end // end of [D3Eextmcall]
 //
 | D3Econ (
     d2c, npf, d3es
   ) => let
     val lhdes =
-      d3explst_npf_tyer_labize (npf, d3es)
+      d3explst_npf_tyer_labize(npf, d3es)
     // end of [val]
-    val lhses = labhidexplst_get_type (lhdes)
-    val hse_sum = hisexp_tysum (d2c, lhses)
+    val lhses = labhidexplst_get_type(lhdes)
+    val hse_sum = hisexp_tysum(d2c, lhses)
   in
-    hidexp_con (loc0, hse0, d2c, hse_sum, lhdes)
+    hidexp_con(loc0, hse0, d2c, hse_sum, lhdes)
   end // end of [D3Econ]
 //
 | D3Etmpcst(d2c, t2mas) =>
@@ -751,6 +753,51 @@ d3e0.d3exp_node of
   in
     hidexp_sif (loc0, hse0, s2e_cond, hde_then, hde_else)
   end // end of [D3Esif]
+//
+| D3Eifcase
+    (knd, ifcls) => let
+  //
+    fun
+    auxlst
+    (
+      x0: i3fcl, xs: i3fclist
+    ) :<cloref1> hidexp =
+    (
+      case+ xs of
+      | list_nil() =>
+        (
+        if knd > 0
+          then (
+            d3exp_tyer(x0.i3fcl_body)
+          ) else let
+            val hde_cond =
+              d3exp_tyer(x0.i3fcl_test)
+            val hde_then =
+              d3exp_tyer(x0.i3fcl_body)
+            val hde_else = hidexp_empty(loc0, hse0)
+          in
+            hidexp_if(loc0, hse0, hde_cond, hde_then, hde_else)
+          end // end of [else]
+        // end of [if]
+        ) (* end of [list_nil *)
+      | list_cons(x, xs) => let
+          val hde_cond =
+            d3exp_tyer(x0.i3fcl_test)
+          val hde_then =
+            d3exp_tyer(x0.i3fcl_body)
+          val hde_else = auxlst(x, xs)
+        in
+          hidexp_if(loc0, hse0, hde_cond, hde_then, hde_else)
+        end // end of [list_cons]
+    ) (* end of [auxlst] *)
+  //
+  in
+    case+ ifcls of
+    | list_nil() =>
+        hidexp_empty (loc0, hse0)
+      // list_nil
+    | list_cons(x0, xs) => auxlst (x0, xs)
+  end // end of [D3Eifcase]
 //
 | D3Ecase (
     knd, d3es, c3ls
@@ -1046,7 +1093,7 @@ d3e0.d3exp_node of
     if not(isval) then let
       val () = prerr_warning4_loc (loc0)
       val () = prerrln! (
-        ": a non-value body for static lambda-abstraction is not supported."
+        ": a non-value body for static lam-abstraction is not supported."
       ) (* end of [val] *)
     in
 (*

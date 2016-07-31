@@ -6,7 +6,7 @@
 
 /* (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/prelude/CATS/CODEGEN/strptr.atxt
-** Time of generation: Sat Jun 27 21:39:50 2015
+** Time of generation: Wed Nov 18 01:24:32 2015
 */
 
 /* ****** ****** */
@@ -52,7 +52,7 @@
 //
 extern
 int // (sign)
-strcmp (const char *x1, const char *x2) ;
+strcmp(const char *x1, const char *x2) ;
 
 /* ****** ****** */
 
@@ -71,10 +71,11 @@ atspre_compare_strptr_strptr
 (
   atstype_strptr x1, atstype_strptr x2
 ) {
-  if (x1==0) {
+  if(x1==0)
+  {
     return (x2==0 ? 0 : -1) ;
   } else {
-    return (x2==0 ? 1 : strcmp((char*)x1, (char*)x2)) ;
+    return (x2==0 ? 1 : atspre_compare_string_string(x1, x2)) ;
   } // end of [if]
 } // end of [atspre_compare_strptr_strptr]
 
@@ -83,36 +84,6 @@ atspre_compare_strptr_strptr
 #define atspre_eq_strptr_string atspre_eq_string_string 
 #define atspre_neq_strptr_string atspre_neq_string_string 
 #define atspre_compare_strptr_string atspre_compare_string_string 
-
-/* ****** ****** */
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_strptr
-(
-  atstype_ref out, atstype_strptr x
-) {
-  int err = 0 ;
-  if (x != 0) {
-    err += fprintf((FILE*)out, "%s", (char*)x) ;
-  } else {
-    err += fprintf((FILE*)out, "%s", "(strnull)") ;
-  } // end of [if]
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_strptr] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end of [atspre_fprint_strptr]
-#define atspre_print_strptr(x) atspre_fprint_strptr(stdout, (x))
-#define atspre_prerr_strptr(x) atspre_fprint_strptr(stderr, (x))
-
-/* ****** ****** */
-
-#define atspre_fprint_strbuf atspre_fprint_strptr
-#define atspre_print_strbuf(x) atspre_fprint_strbuf(stdout, (x))
-#define atspre_prerr_strbuf(x) atspre_fprint_strbuf(stderr, (x))
 
 /* ****** ****** */
 

@@ -6,7 +6,7 @@
 
 /* (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/prelude/CATS/CODEGEN/integer.atxt
-** Time of generation: Sat Jun 27 21:39:44 2015
+** Time of generation: Tue Nov 17 16:34:22 2015
 */
 
 /* ****** ****** */
@@ -48,20 +48,7 @@
 
 /* ****** ****** */
 //
-// HX-2013-09: declared in [stdio.h]
-//
-#ifndef fprintf
-extern
-int fprintf (FILE *stream, const char *format, ...) ;
-#endif // end of [ifndef]
-#ifndef snprintf
-extern
-int snprintf (char *str, size_t size, const char *format, ...) ;
-#endif // end of [ifndef]
-//
-/* ****** ****** */
-//
-#define atspre_g0int2int_int_int(x) (x)
+#define atspre_g0int2int_int_int(x) ((atstype_int)(x))
 #define atspre_g0int2int_int_lint(x) ((atstype_lint)(x))
 #define atspre_g0int2int_int_llint(x) ((atstype_llint)(x))
 #define atspre_g0int2int_int_ssize(x) ((atstype_ssize)(x))
@@ -71,7 +58,7 @@ int snprintf (char *str, size_t size, const char *format, ...) ;
 #define atspre_g1int2int_int_ssize atspre_g0int2int_int_ssize
 //
 #define atspre_g0int2int_lint_int(x) ((atstype_int)(x))
-#define atspre_g0int2int_lint_lint(x) (x)
+#define atspre_g0int2int_lint_lint(x) ((atstype_lint)(x))
 #define atspre_g0int2int_lint_llint(x) ((atstype_llint)(x))
 #define atspre_g0int2int_lint_ssize(x) ((atstype_ssize)(x))
 #define atspre_g1int2int_lint_int atspre_g0int2int_lint_int
@@ -82,7 +69,7 @@ int snprintf (char *str, size_t size, const char *format, ...) ;
 #define atspre_g0int2int_ssize_int(x) ((atstype_int)(x))
 #define atspre_g0int2int_ssize_lint(x) ((atstype_lint)(x))
 #define atspre_g0int2int_ssize_llint(x) ((atstype_llint)(x))
-#define atspre_g0int2int_ssize_ssize(x) (x)
+#define atspre_g0int2int_ssize_ssize(x) ((atstype_ssize)(x))
 #define atspre_g1int2int_ssize_int atspre_g0int2int_ssize_int
 #define atspre_g1int2int_ssize_lint atspre_g0int2int_ssize_lint
 #define atspre_g1int2int_ssize_llint atspre_g0int2int_ssize_llint
@@ -174,68 +161,6 @@ int snprintf (char *str, size_t size, const char *format, ...) ;
 /* ****** ****** */
 //
 #define atspre_g0uint2uint_usint_uint(x) ((atstype_uint)(x))
-//
-/* ****** ****** */
-//
-ATSinline()
-atstype_string
-atspre_g0int2string_int
-  (atstype_int x)
-{
-  size_t n0 ;
-  char *res ;
-  size_t ntot ;
-  n0 = 4 ;
-  res = ATS_MALLOC(n0) ;
-  ntot = snprintf(res, n0, "%i", x) ;
-  if (ntot >= n0)
-  {
-    ATS_MFREE(res) ;
-    res = (char*)ATS_MALLOC(ntot+1) ;
-    ntot = snprintf(res, ntot+1, "%i", x) ;
-  }
-  return res ;
-}
-//
-ATSinline()
-atstype_string
-atspre_g0int2string_lint
-  (atstype_lint x)
-{
-  size_t n0 ;
-  char *res ;
-  size_t ntot ;
-  n0 = 4 ;
-  res = ATS_MALLOC(n0) ;
-  ntot = snprintf(res, n0, "%li", x) ;
-  if (ntot >= n0)
-  {
-    ATS_MFREE(res) ;
-    res = (char*)ATS_MALLOC(ntot+1) ;
-    ntot = snprintf(res, ntot+1, "%li", x) ;
-  }
-  return res ;
-}
-//
-ATSinline()
-atstype_string
-atspre_g0int2string_llint
-  (atstype_llint x)
-{
-  size_t n0 ;
-  char *res ;
-  size_t ntot ;
-  n0 = 8 ;
-  res = ATS_MALLOC(n0) ;
-  ntot = snprintf(res, n0, "%lli", x) ;
-  if (ntot >= n0)
-  {
-    ATS_MFREE(res) ;
-    res = (char*)ATS_MALLOC(ntot+1) ;
-    ntot = snprintf(res, ntot+1, "%lli", x) ;
-  }
-  return res ;
-}
 //
 /* ****** ****** */
 //
@@ -960,80 +885,6 @@ atspre_g0int_min_ssize
   (atstype_ssize x1, atstype_ssize x2) { return (x1 <= x2 ? x1 : x2) ; }
 // end of [atspre_g0int_min_ssize]
 //
-/* ****** ****** */
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_int
-(
-  atstype_ref out, atstype_int x
-) {
-  int err = 0 ;
-  err += fprintf((FILE*)out, "%i", x) ;
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_int] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end [atspre_fprint_int]
-#define atspre_print_int(x) atspre_fprint_int(stdout, (x))
-#define atspre_prerr_int(x) atspre_fprint_int(stderr, (x))
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_lint
-(
-  atstype_ref out, atstype_lint x
-) {
-  int err = 0 ;
-  err += fprintf((FILE*)out, "%li", x) ;
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_lint] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end [atspre_fprint_lint]
-#define atspre_print_lint(x) atspre_fprint_lint(stdout, (x))
-#define atspre_prerr_lint(x) atspre_fprint_lint(stderr, (x))
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_llint
-(
-  atstype_ref out, atstype_llint x
-) {
-  int err = 0 ;
-  err += fprintf((FILE*)out, "%lli", x) ;
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_llint] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end [atspre_fprint_llint]
-#define atspre_print_llint(x) atspre_fprint_llint(stdout, (x))
-#define atspre_prerr_llint(x) atspre_fprint_llint(stderr, (x))
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_ssize
-(
-  atstype_ref out, atstype_ssize x
-) {
-  int err = 0 ;
-  err += fprintf((FILE*)out, "%li", x) ;
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_ssize] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end [atspre_fprint_ssize]
-#define atspre_print_ssize(x) atspre_fprint_ssize(stdout, (x))
-#define atspre_prerr_ssize(x) atspre_fprint_ssize(stderr, (x))
-
 /* ****** ****** */
 
 #define atspre_g1int_neg_int atspre_g0int_neg_int
@@ -1765,87 +1616,6 @@ atspre_g0uint_min_size
   (atstype_size x1, atstype_size x2) { return (x1 <= x2 ? x1 : x2) ; }
 // end of [atspre_g0uint_min_size]
 //
-/* ****** ****** */
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_uint
-(
-  atstype_ref out, atstype_uint x
-) {
-  int err = 0 ;
-  err += fprintf((FILE*)out, "%u", x) ;
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_uint] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end [atspre_fprint_uint]
-
-#define atspre_print_uint(x) atspre_fprint_uint(stdout, (x))
-#define atspre_prerr_uint(x) atspre_fprint_uint(stderr, (x))
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_ulint
-(
-  atstype_ref out, atstype_ulint x
-) {
-  int err = 0 ;
-  err += fprintf((FILE*)out, "%lu", x) ;
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_ulint] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end [atspre_fprint_ulint]
-
-#define atspre_print_ulint(x) atspre_fprint_ulint(stdout, (x))
-#define atspre_prerr_ulint(x) atspre_fprint_ulint(stderr, (x))
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_ullint
-(
-  atstype_ref out, atstype_ullint x
-) {
-  int err = 0 ;
-  err += fprintf((FILE*)out, "%llu", x) ;
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_ullint] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end [atspre_fprint_ullint]
-
-#define atspre_print_ullint(x) atspre_fprint_ullint(stdout, (x))
-#define atspre_prerr_ullint(x) atspre_fprint_ullint(stderr, (x))
-
-/* ****** ****** */
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_size
-(
-  atstype_ref out, atstype_size x
-) {
-  int err = 0 ;
-  atstype_ulint x2 = x ;
-  err += fprintf((FILE*)out, "%lu", x2) ;
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_size] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end [atspre_fprint_size]
-
-#define atspre_print_size(x) atspre_fprint_size(stdout, (x))
-#define atspre_prerr_size(x) atspre_fprint_size(stderr, (x))
-
 /* ****** ****** */
 
 #define atspre_g1uint_succ_uint atspre_g0uint_succ_uint

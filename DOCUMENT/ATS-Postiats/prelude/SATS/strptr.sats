@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/strptr.atxt
-** Time of generation: Sat Jun 27 21:39:02 2015
+** Time of generation: Sun Jul 17 21:46:06 2016
 *)
 
 (* ****** ****** *)
@@ -48,26 +48,30 @@
 *)
 
 (* ****** ****** *)
-
+//
 abst@ype
-strbuf_t0ype (m:int, n:int) // HX: [m] byte size
-
+strbuf_t0ype
+  (m:int, n:int) // HX: [m] byte size
+//
 (* ****** ****** *)
-
+//
 stadef
 strbuf = strbuf_t0ype
 viewdef
-strbuf_v (l:addr, m:int, n:int) = strbuf (m, n) @ l
-
+strbuf_v
+  (l:addr, m:int, n:int) = strbuf (m, n) @ l
+//
 (* ****** ****** *)
 //
 praxi
 strbuf2bytes
-  {m,n:int} (buf: &strbuf (m, n) >> b0ytes (m)): void
+  {m,n:int}
+  (buf: &strbuf (m, n) >> b0ytes (m)): void
 //
 praxi
 strbuf2bytes_v
-  {l:addr}{m,n:int} (pf: strbuf_v (l, m, n)): b0ytes_v (l, m)
+  {l:addr}{m,n:int}
+  (pf: strbuf_v (l, m, n)): b0ytes_v (l, m)
 //
 (* ****** ****** *)
 
@@ -88,12 +92,14 @@ lemma_strnptr_param
 
 praxi
 lemma_strbuf_param
-  {l:addr}{m,n:int} (x: &strbuf (m, n)): [m>n] void
+  {l:addr}{m,n:int}
+  (x: &strbuf (m, n)): [m>n] void
 // end of [lemma_strbuf_param]
 
 praxi
 lemma_strbuf_v_param
-  {l:addr}{m,n:int} (pf: !strbuf_v (l, m, n)): [l>null;m>n] void
+  {l:addr}{m,n:int}
+  (pf: !strbuf_v (l, m, n)): [l>null;m>n] void
 // end of [lemma_strbuf_v_param]
 
 (* ****** ****** *)
@@ -103,19 +109,19 @@ strptr2ptr
   {l:addr} (x: !strptr l):<> ptr (l)
 castfn
 strnptr2ptr
-  {l:addr}{n:int} (x: !strnptr (l, n)):<> ptr (l)
+  {l:addr}{n:int} (x: !strnptr(l, n)):<> ptr(l)
 // end of [strnptr2ptr]
 
 (* ****** ****** *)
 //
 castfn
 strnptr2strptr
-  {l:addr}{n:int} (x: strnptr (l, n)):<> strptr (l)
+  {l:addr}{n:int} (x: strnptr(l, n)):<> strptr(l)
 // end of [strnptr2strptr]
 
 castfn
 strptr2strnptr
-  {l:addr} (x: strptr (l)):<> [n:int] strnptr (l, n)
+  {l:addr} (x: strptr(l)):<> [n:int] strnptr(l, n)
 // end of [strptr2strnptr]
 //
 (* ****** ****** *)
@@ -125,34 +131,39 @@ strptr2stropt
   {l:addr}
 (
   x: strptr (l)
-) :<> [n:int|(l==null&&n < 0)||(l>null&&n>=0)] stropt (n)
+) :<>
+[n:int
+|(l==null&&n < 0)||(l>null&&n>=0)
+] stropt(n)
+//
 castfn
-strptr2stropt0 (x: Strptr0):<> Stropt0
+strptr2stropt0(x: Strptr0):<> Stropt0
 castfn
-stropt2stropt1 (x: Strptr1):<> Stropt1
+stropt2stropt1(x: Strptr1):<> Stropt1
 //
 castfn
 strnptr2stropt
-  {l:addr}{n:int} (x: strnptr (l, n)):<> stropt (n)
+  {l:addr}{n:int}
+  (x: strnptr(l, n)):<> stropt(n)
 //
 (* ****** ****** *)
 //
 castfn
-strptr2string (x: Strptr1):<> String
+strptr2string(x: Strptr1):<> String
 //
 castfn
 strnptr2string
-  {l:addr}{n:nat} (x: strnptr (l, n)):<> string (n)
+  {l:addr}{n:nat}(x: strnptr(l, n)):<> string(n)
 //
 (* ****** ****** *)
 
-fun strptr_null ():<> strptr (null) = "mac#%"
+fun strptr_null():<> strptr(null) = "mac#%"
 
 (* ****** ****** *)
 
 praxi
 strptr_free_null
-   {l:addr | l <= null} (x: strptr (l)):<> void
+  {l:addr | l <= null} (x: strptr(l)):<> void
 // end of [strptr_free_null]
 
 (* ****** ****** *)
@@ -166,18 +177,22 @@ strptr_isnot_null
 
 (* ****** ****** *)
 
-fun{} strptr_is_empty (x: !Strptr1):<> bool
-fun{} strptr_isnot_empty (x: !Strptr1):<> bool
+fun{}
+strptr_is_empty(x: !Strptr1):<> bool
+fun{}
+strptr_isnot_empty(x: !Strptr1):<> bool
 
 (* ****** ****** *)
-
+//
 fun{}
 strnptr_is_null
-  {l:addr}{n:int} (x: !strnptr (l, n)):<> bool (l==null)
+  {l:addr}{n:int}
+  (x: !strnptr(l, n)):<> bool(l==null)
 fun{}
 strnptr_isnot_null
-  {l:addr}{n:int} (x: !strnptr (l, n)):<> bool (l > null)
-
+  {l:addr}{n:int}
+  (x: !strnptr(l, n)):<> bool(l > null)
+//
 (* ****** ****** *)
 
 fun lt_strptr_strptr
@@ -299,55 +314,61 @@ strnptr_length {n:int} (x: !strnptr n):<> ssize_t (n)
 
 (* ****** ****** *)
 //
-fun{
-} strptr0_copy (x: !Strptr0):<!wrt> Strptr0
-fun{
-} strptr1_copy (x: !Strptr1):<!wrt> Strptr1
-fun{
-} strnptr_copy
+fun{}
+strptr0_copy (x: !Strptr0):<!wrt> Strptr0
+fun{}
+strptr1_copy (x: !Strptr1):<!wrt> Strptr1
+fun{}
+strnptr_copy
   {n:int} (x: !strnptr (n)):<!wrt> strnptr (n)
 //
 (* ****** ****** *)
 //
-fun{
-} strptr_append (x1: !Strptr0, x2: !Strptr0):<!wrt> Strptr0
-fun{
-} strnptr_append {n1,n2:nat}
+fun{}
+strptr_append (x1: !Strptr0, x2: !Strptr0):<!wrt> Strptr0
+fun{}
+strnptr_append {n1,n2:nat}
   (x1: !strnptr n1, x2: !strnptr n2):<!wrt> strnptr (n1+n2)
 //
 (* ****** ****** *)
 
-fun{
-} strptrlst_free (xs: List_vt (Strptr0)):<!wrt> void
+fun{}
+strptrlst_free (xs: List_vt (Strptr0)):<!wrt> void
+
+(* ****** ****** *)
+
+fun{}
+strptrlst_concat (xs: List_vt (Strptr0)):<!wrt> Strptr0
 
 (* ****** ****** *)
 
 fun{
-} strptrlst_concat (xs: List_vt (Strptr0)):<!wrt> Strptr0
-
-(* ****** ****** *)
-
-fun{env:vt0p}
-strnptr_foreach$cont (c: &charNZ, env: &env): bool
-fun{env:vt0p}
-strnptr_foreach$fwork (c: &charNZ >> _, env: &env): void
+env:vt0p
+} strnptr_foreach$cont (c: &charNZ, env: &env): bool
+fun{
+env:vt0p
+} strnptr_foreach$fwork (c: &charNZ >> _, env: &env): void
 fun{}
 strnptr_foreach {n:nat} (str: !strnptr n): sizeLte(n)
-fun{env:vt0p}
-strnptr_foreach_env
+fun{
+env:vt0p
+} strnptr_foreach_env
   {n:nat} (str: !strnptr n, env: &(env) >> _): sizeLte(n)
 // end of [strnptr_foreach_env]
 
 (* ****** ****** *)
 
-fun{env:vt0p}
-strnptr_rforeach$cont (c: &charNZ, env: &env): bool
-fun{env:vt0p}
-strnptr_rforeach$fwork (c: &charNZ >> _, env: &env): void
+fun{
+env:vt0p
+} strnptr_rforeach$cont (c: &charNZ, env: &env): bool
+fun{
+env:vt0p
+} strnptr_rforeach$fwork (c: &charNZ >> _, env: &env): void
 fun{}
 strnptr_rforeach {n:nat} (str: !strnptr n): sizeLte(n)
-fun{env:vt0p}
-strnptr_rforeach_env
+fun{
+env:vt0p
+} strnptr_rforeach_env
   {n:nat} (str: !strnptr n, env: &(env) >> _): sizeLte(n)
 // end of [strnptr_rforeach_env]
 

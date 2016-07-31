@@ -6,7 +6,7 @@
 
 /* (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/prelude/CATS/CODEGEN/bool.atxt
-** Time of generation: Sat Jun 27 21:39:45 2015
+** Time of generation: Tue Nov 17 16:34:22 2015
 */
 
 /* ****** ****** */
@@ -45,13 +45,6 @@
 
 #ifndef ATSLIB_PRELUDE_CATS_BOOL
 #define ATSLIB_PRELUDE_CATS_BOOL
-
-/* ****** ****** */
-
-#ifndef fprintf
-extern
-int fprintf (FILE *stream, const char *format, ...) ;
-#endif // end of [ifndef]
 
 /* ****** ****** */
 
@@ -88,6 +81,8 @@ atspre_add_bool_bool (
   return (b1) ? atsbool_true : (b2) ;
 } // end of [atspre_add_bool_bool]
 #define atspre_add_bool0_bool0 atspre_add_bool_bool
+#define atspre_add_bool0_bool1 atspre_add_bool_bool
+#define atspre_add_bool1_bool0 atspre_add_bool_bool
 #define atspre_add_bool1_bool1 atspre_add_bool_bool
 
 ATSinline()
@@ -98,6 +93,8 @@ atspre_mul_bool_bool (
   return (b1) ? (b2) : atsbool_false ;
 } // end of [atspre_mul_bool_bool]
 #define atspre_mul_bool0_bool0 atspre_mul_bool_bool
+#define atspre_mul_bool0_bool1 atspre_mul_bool_bool
+#define atspre_mul_bool1_bool0 atspre_mul_bool_bool
 #define atspre_mul_bool1_bool1 atspre_mul_bool_bool
 
 /* ****** ****** */
@@ -192,25 +189,6 @@ atspre_bool2string (
 ) {
   return (x) ? "true" : "false" ;
 } // end of [atspre_bool2string]
-
-/* ****** ****** */
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_bool (
-  atstype_ref out, atstype_bool x
-) {
-  int err = 0 ;
-  err += fprintf((FILE*)out, "%s", atspre_bool2string(x)) ;
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_bool] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end [atspre_fprint_bool]
-#define atspre_print_bool(x) atspre_fprint_bool(stdout, (x))
-#define atspre_prerr_bool(x) atspre_fprint_bool(stderr, (x))
 
 /* ****** ****** */
 

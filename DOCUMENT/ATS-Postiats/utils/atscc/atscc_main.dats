@@ -58,25 +58,25 @@ staload _(*anon*) = "./atscc_util.dats"
 typedef ca = commarg
 
 (* ****** ****** *)
-
+//
 macdef
-unsome (opt) = stropt_unsome (,(opt))
+unsome(opt) = stropt_unsome(,(opt))
 macdef
-issome (opt) = stropt_is_some (,(opt))
-
+issome(opt) = stropt_is_some(,(opt))
+//
+(* ****** ****** *)
+//
+macdef
+isfilsats(name) = filename_test_ext(,(name), "sats")
+macdef
+isfildats(name) = filename_test_ext(,(name), "dats")
+macdef
+isfilhats(name) = filename_test_ext(,(name), "hats")
+//
 (* ****** ****** *)
 
-macdef
-isfilsats (name) = filename_test_ext (,(name), "sats")
-macdef
-isfildats (name) = filename_test_ext (,(name), "dats")
-macdef
-isfilhats (name) = filename_test_ext (,(name), "hats")
-
-(* ****** ****** *)
-
-fun{
-} argv_getopt_at
+fun{}
+argv_getopt_at
   {n:int}{i:nat}
 (
   n: int n, argv: !argv(n), i: int i
@@ -135,12 +135,11 @@ case+ 0 of
 end // end of [string_tabulate$fwork]
 //
 in
-  strnptr2string (string_tabulate(len))
+  strnptr2string(string_tabulate(len))
 end else let
 //
 val sfx = g1ofg0(sfx)
-val nsfx = string1_length (sfx)
-val len = nb+nsfx
+val len = nb+string1_length(sfx)
 //
 implement
 string_tabulate$fopr<>
@@ -161,11 +160,11 @@ case+ 0 of
 end // end of [string_tabulate$fwork]
 //
 in
-  strnptr2string (string_tabulate(len))
+  strnptr2string(string_tabulate(len))
 end // end of [if]
 ) : string // end of [val]
 //
-prval () = fpf (base) and () = fpf2 (ext)
+prval () = fpf(base) and () = fpf2(ext)
 //
 in
   res

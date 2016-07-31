@@ -31,7 +31,7 @@
 // Authoremail: hwxiATcsDOTbuDOTedu
 //
 // This one was
-// there at the very the beginning
+// there at the very beginning of ATS
 //
 (* ****** ****** *)
 //
@@ -79,15 +79,24 @@ prefix 79 & // dynamic
 infixl 70 app
 *)
 
+(* ****** ****** *)
+
 (*
 postfix 69 ?
 *)
 
 (* ****** ****** *)
+//
+// HX-2015-08-04:
+// mostly following the Fortran convention
+//
+(* ****** ****** *)
 
-prefix 61 ~
+infixr 61 ** (*exp*)
 
 (* ****** ****** *)
+//
+// multiplicative
 //
 infixl 60 * / % mod
 //
@@ -96,11 +105,15 @@ infixl 60 nmul ndiv nmod
 *)
 //
 (* ****** ****** *)
+
+prefix 51 ~ (*negative*)
+
+(* ****** ****** *)
 //
-infixl 50 + -
+infixl 50 + - (*additive*)
 //
 (*
-infixr (+) ++ (*concat*)
+infixr (+) ++ // concatenative
 *)
 //
 (* ****** ****** *)
@@ -148,7 +161,7 @@ infixl ( && ) andalso land
 (* ****** ****** *)
 
 infixl 20 ||
-infixl ( || ) orelse lor lxor
+infixl ( || ) xor orelse lor lxor
 
 (* ****** ****** *)
 

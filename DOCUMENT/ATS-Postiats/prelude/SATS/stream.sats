@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/stream.atxt
-** Time of generation: Sat Jun 27 21:39:14 2015
+** Time of generation: Sun Jul 31 10:16:07 2016
 *)
 
 (* ****** ****** *)
@@ -39,12 +39,23 @@ sortdef t0p = t@ype
 
 (* ****** ****** *)
 //
+#if(0)
+//
 // HX: lazy streams
+// It is declared in [basics_dyn]
 //
 datatype
-stream_con (a:t@ype+) =
-  | stream_nil of ((*void*)) | stream_cons of (a, stream(a))
+stream_con
+  (a:t@ype+) =
+//
+// t@ype+: covariant
+//
+  | stream_nil of ((*void*))
+  | stream_cons of (a, stream(a))
+//
 where stream (a:t@ype) = lazy (stream_con(a))
+//
+#endif // [#if(0)]
 //
 (* ****** ****** *)
 //
@@ -56,61 +67,105 @@ fun isStreamSubscriptExn (x: !exn):<> bool = "mac#isStreamSubscriptExn"
 *)
 //
 (* ****** ****** *)
+//
+fun{a:t0p}
+stream_sing(a):<> stream_con(a)
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+stream_is_nil(xs: stream(a)): bool
+fun
+{a:t0p}
+stream_is_cons(xs: stream(a)): bool
+//
+(* ****** ****** *)
+
+fun{a:t0p}
+stream_make_nil(): stream(a)
+fun{a:t0p}
+stream_make_sing(x: a): stream(a)
+
+(* ****** ****** *)
 
 fun{a:t0p}
 stream2list
-  (xs: stream (INV(a))):<!laz> List0_vt (a)
+  (xs: stream(INV(a))):<!laz> List0_vt(a)
 // end of [stream2list]
+
+(* ****** ****** *)
+//
+fun{a:t0p}
+stream_length(stream(INV(a))):<!laz> intGte(0)
+//
+(* ****** ****** *)
+
+fun{a:t0p}
+stream_head_exn(xs: stream(INV(a))):<!laz> (a)
+fun{a:t0p}
+stream_tail_exn(xs: stream(INV(a))):<!laz> stream(a)
 
 (* ****** ****** *)
 
 fun{a:t0p}
 stream_nth_exn
-  (xs: stream (INV(a)), n: intGte(0)):<!laz> a
+  (xs: stream(INV(a)), n: intGte(0)):<!laz> (a)
 // end of [stream_nth_exn]
 fun{a:t0p}
 stream_nth_opt
-  (xs: stream (INV(a)), n: intGte(0)):<!laz> Option_vt (a)
+  (xs: stream(INV(a)), n: intGte(0)):<!laz> Option_vt(a)
 // end of [stream_nth_opt]
 
 (* ****** ****** *)
 
 fun{a:t0p}
+stream_get_at_exn
+  (xs: stream(INV(a)), n: intGte(0)):<!laz> (a)
+// end of [stream_get_at_exn]
+
+(* ****** ****** *)
+
+fun{a:t0p}
 stream_take_exn{n:nat}
-  (xs: stream (INV(a)), n: int n):<!laz> list_vt (a, n)
+  (xs: stream(INV(a)), n: int n):<!laz> list_vt(a, n)
 // end of [stream_take_lte]
 
 (* ****** ****** *)
 
 fun{a:t0p}
 stream_drop_exn
-  (xs: stream (INV(a)), n: intGte(0)):<!laz> stream (a)
+  (xs: stream(INV(a)), n: intGte(0)):<!laz> stream(a)
 // end of [stream_drop_exn]
 
 (* ****** ****** *)
 //
 fun{a:t0p}
 stream_append
-  (xs: stream (INV(a)), ys: stream (a)):<!laz> stream(a)
+  (xs: stream(INV(a)), ys: stream(a)):<!laz> stream(a)
 //
 fun{a:t0p}
-stream_concat (xss: stream(stream(INV(a)))):<!laz> stream(a)
+stream_concat(xss: stream(stream(INV(a)))):<!laz> stream(a)
 //
 (* ****** ****** *)
-
+//
 fun{a:t0p}
-stream_filter$pred (x: a):<> bool
-fun{a:t0p}
-stream_filter (xs: stream (INV(a))):<!laz> stream (a)
+stream_filter
+  (xs: stream(INV(a))):<!laz> stream(a)
+//
+fun{a:t0p} stream_filter$pred (x: a):<> bool
+//
 fun{a:t0p}
 stream_filter_fun
-  (xs: stream (INV(a)), pred: (a) -<fun> bool):<!laz> stream (a)
-// end of [stream_filter_fun]
+(
+  xs: stream(INV(a)), pred: (a) -<fun> bool
+) :<!laz> stream(a) // end-of-function
 fun{a:t0p}
 stream_filter_cloref
-  (xs: stream (INV(a)), pred: (a) -<cloref> bool):<!laz> stream (a)
-// end of [stream_filter_cloref]
-
+(
+  xs: stream(INV(a)), pred: (a) -<cloref> bool
+) :<!laz> stream(a) // end-of-function
+//
 (* ****** ****** *)
 
 fun{
@@ -146,13 +201,13 @@ a:t0p}{b:t0p
 } stream_imap_fun
 (
   xs: stream(INV(a)), f: (intGte(0), a) -<fun> b
-) :<!laz> stream (b) // end-of-fun
+) :<!laz> stream(b) // end-of-fun
 fun{
 a:t0p}{b:t0p
 } stream_imap_cloref
 (
   xs: stream(INV(a)), f: (intGte(0), a) -<cloref> b
-) :<!laz> stream (b) // end-of-fun
+) :<!laz> stream(b) // end-of-fun
 //
 (* ****** ****** *)
 //
@@ -160,9 +215,9 @@ fun{
 a1,a2:t0p}{b:t0p
 } stream_map2
 (
-  xs1: stream (INV(a1))
-, xs2: stream (INV(a2))
-) :<!laz> stream (b) // end-of-fun
+  xs1: stream(INV(a1))
+, xs2: stream(INV(a2))
+) :<!laz> stream(b) // end-of-fun
 fun{
 a1,a2:t0p}{b:t0p
 } stream_map2$fopr (x1: a1, x2: a2):<> b
@@ -171,70 +226,104 @@ fun{
 a1,a2:t0p}{b:t0p
 } stream_map2_fun
 (
-  xs1: stream (INV(a1))
-, xs2: stream (INV(a2)), f: (a1, a2) -<fun> b
-) :<!laz> stream (b) // end-of-fun
+  xs1: stream(INV(a1))
+, xs2: stream(INV(a2)), f: (a1, a2) -<fun> b
+) :<!laz> stream(b) // end-of-fun
 fun{
 a1,a2:t0p}{b:t0p
 } stream_map2_cloref
 (
-  xs1: stream (INV(a1))
-, xs2: stream (INV(a2)), f: (a1, a2) -<cloref> b
-) :<!laz> stream (b) // end-of-fun
+  xs1: stream(INV(a1))
+, xs2: stream(INV(a2)), f: (a1, a2) -<cloref> b
+) :<!laz> stream(b) // end-of-fun
 //
 (* ****** ****** *)
 
-fun{a:t0p}
-stream_merge$cmp (x1: a, x2: a):<> int
+//
+fun{
+res:t0p}{x:t0p
+} stream_scan
+  (stream(INV(x)), ini: res):<!laz> stream(res)
+//
+fun{
+res:t0p}{x:t0p
+} stream_scan$fopr(res: res, x: x):<(*none*)> res
+//
+fun{
+res:t0p}{x:t0p
+} stream_scan_fun
+(
+  stream(INV(x)), ini: res, (res, x) -<fun> res
+) :<!laz> stream(res) // end-of-function
+//
+fun{
+res:t0p}{x:t0p
+} stream_scan_cloref
+(
+  stream(INV(x)), ini: res, (res, x) -<cloref> res
+) :<!laz> stream(res) // end-of-function
+//
+(* ****** ****** *)
+//
 fun{a:t0p}
 stream_merge
-  (xs1: stream (INV(a)), xs2: stream (a)):<!laz> stream (a)
+  (stream(INV(a)), stream(a)) :<!laz> stream(a)
+//
+fun{a:t0p} stream_merge$cmp (x1: a, x2: a):<> int
+//
 fun{a:t0p}
 stream_merge_fun
 (
-  xs1: stream (INV(a)), xs2: stream (a), (a, a) -<fun> int
-) :<!laz> stream (a) // end of [stream_merge_fun]
+  xs1: stream(INV(a)), xs2: stream(a), (a, a) -<fun> int
+) :<!laz> stream(a) // end of [stream_merge_fun]
 fun{a:t0p}
 stream_merge_cloref
 (
-  xs1: stream (INV(a)), xs2: stream (a), (a, a) -<cloref> int
-) :<!laz> stream (a) // end of [stream_merge_cloref]
+  xs1: stream(INV(a)), xs2: stream(a), (a, a) -<cloref> int
+) :<!laz> stream(a) // end of [stream_merge_cloref]
 
 (* ****** ****** *)
-
-fun{a:t0p}
-stream_mergeq$cmp (x1: a, x2: a):<> int
+//
 fun{a:t0p}
 stream_mergeq
-  (xs1: stream (INV(a)), xs2: stream (a)):<!laz> stream (a)
+  (stream(INV(a)), stream(a)):<!laz> stream(a)
+//
+fun{a:t0p} stream_mergeq$cmp (x1: a, x2: a):<> int
+//
 fun{a:t0p}
 stream_mergeq_fun
 (
-  xs1: stream (INV(a)), xs2: stream (a), (a, a) -<fun> int
-) :<!laz> stream (a) // end of [stream_mergeq_fun]
+  xs1: stream(INV(a)), xs2: stream(a), (a, a) -<fun> int
+) :<!laz> stream(a) // end of [stream_mergeq_fun]
 fun{a:t0p}
 stream_mergeq_cloref
 (
-  xs1: stream (INV(a)), xs2: stream (a), (a, a) -<cloref> int
-) :<!laz> stream (a) // end of [stream_mergeq_cloref]
-
+  xs1: stream(INV(a)), xs2: stream(a), (a, a) -<cloref> int
+) :<!laz> stream(a) // end of [stream_mergeq_cloref]
+//
 (* ****** ****** *)
-
+//
 fun{
 a:t0p
 } stream_tabulate (): stream(a)
 fun{
 a:t0p
 } stream_tabulate$fopr (i: intGte(0)): (a)
-
+//
 fun{
 a:t0p
 } stream_tabulate_fun (f: intGte(0) -> a): stream(a)
 fun{
 a:t0p
 } stream_tabulate_cloref (f: intGte(0) -> a): stream(a)
-
+//
 (* ****** ****** *)
+//
+fun{a:t0p}
+stream_foreach (xs: stream(a)): void
+fun{
+a:t0p}{env:vt0p
+} stream_foreach_env (xs: stream(a), &env >> _): void
 //
 fun{
 a:t0p}{env:vt0p
@@ -242,12 +331,6 @@ a:t0p}{env:vt0p
 fun{
 a:t0p}{env:vt0p
 } stream_foreach$fwork (x: a, env: &env): void
-//
-fun{a:t0p}
-stream_foreach (xs: stream (a)): void
-fun{
-a:t0p}{env:vt0p
-} stream_foreach_env (xs: stream (a), &env >> _): void
 //
 (* ****** ****** *)
 //
@@ -265,6 +348,18 @@ fprint_stream
 
 overload [] with stream_nth_exn
 
+(* ****** ****** *)
+//
+overload iseqz with stream_is_nil
+overload isneqz with stream_is_cons
+//
+(* ****** ****** *)
+//
+overload .head with stream_head_exn
+overload .tail with stream_tail_exn
+//
+overload length with stream_length
+//
 (* ****** ****** *)
 
 (* end of [stream.sats] *)

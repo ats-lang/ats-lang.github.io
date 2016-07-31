@@ -10,6 +10,11 @@
 # as it is not supported on freeBSD
 #
 ######
+
+MAKE=make
+MAKEJ4=make -j4
+
+######
 #
 all: \
   config.mk \
@@ -33,8 +38,8 @@ config.mk : configure ; @echo "Please execute './configure'." ; exit 1 ;
 #
 ######
 
-src_patsopt: ; make -j4 -C src patsopt
-bin_patsopt: src_patsopt ; cp -f src/patsopt bin/patsopt
+src_patsopt: ; $(MAKE) -j4 -C src patsopt
+bin_patsopt: src_patsopt ; $(CPF) src/patsopt bin/patsopt
 
 ######
 #
@@ -51,20 +56,19 @@ LDFLAGS=
 ######
 #
 src2_patsopt: ; \
-make -j4 -C src/CBOOT \
-  CCOMP=$(CCOMP) GCFLAG=$(GCFLAG) \
-  CFLAGS=$(CFLAGS) LDFLAGS=$(LDFLAGS) patsopt
+$(MAKEJ4) -C src/CBOOT \
+  CCOMP=$(CCOMP) GCFLAG=$(GCFLAG) LDFLAGS=$(LDFLAGS) patsopt
 #
-bin2_patsopt: src2_patsopt ; cp -f src/CBOOT/patsopt bin/patsopt
+bin2_patsopt: src2_patsopt ; $(CPF) src/CBOOT/patsopt bin/patsopt
 #
 ######
 
-utl_atscc: ; make -C utils/atscc patscc
-bin_patscc: utl_atscc ; cp -f utils/atscc/patscc bin/patscc
+utl_atscc: ; $(MAKE) -C utils/atscc patscc
+bin_patscc: utl_atscc ; $(CPF) utils/atscc/patscc bin/patscc
 
 ######
 
-ccomp/atslib/lib/libatslib.a: ; make -C ccomp/atslib atslib
+ccomp/atslib/lib/libatslib.a: ; $(MAKE) -C ccomp/atslib atslib
 
 ######
 
@@ -143,6 +147,7 @@ install_files_5: ; \
 
 ######
 
+CPF=cp -f
 RMF=rm -f
 RMRF=rm -rf
 
@@ -163,7 +168,7 @@ cleanall:: clean
 ######
 
 clean:: ; $(RMF) ccomp/atslib/output/*.o
-clean:: ; make -C src/CBOOT -f Makefile clean
+clean:: ; $(MAKE) -C src/CBOOT -f Makefile clean
 
 ######
 
@@ -183,9 +188,9 @@ cleanall:: ; $(RMF) ccomp/atslib/lib/*
 cleanall:: ; $(RMF) ccomp/atslib/lib64/*
 cleanall:: ; $(RMF) ccomp/atslib/output/*
 
-cleanall:: ; make -C src -f Makefile cleanall
-cleanall:: ; make -C src/CBOOT -f Makefile cleanall
-cleanall:: ; make -C utils/atscc -f Makefile cleanall
+cleanall:: ; $(MAKE) -C src -f Makefile cleanall
+cleanall:: ; $(MAKE) -C src/CBOOT -f Makefile cleanall
+cleanall:: ; $(MAKE) -C utils/atscc -f Makefile cleanall
 
 ######
 

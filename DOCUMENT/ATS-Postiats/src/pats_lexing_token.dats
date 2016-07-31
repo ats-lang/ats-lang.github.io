@@ -100,9 +100,20 @@ implement LLAMAT = T_LAM (VIEWT0YPE_int)
 implement MACDEF = T_MACDEF (0) // short form
 implement MACRODEF = T_MACDEF (1) // long form
 
+(* ****** ****** *)
+
+(*
+//
 implement REF = T_IDENT_alp "ref"
-// HX: ref@ for flattened reference
-implement REFAT = T_REFAT // in a boxed record
+//
+implement
+REFAT = T_REFAT // HX: flattened ref
+//
+// HX-2015-12-10: 'ref@' is removed for now
+//
+*)
+
+(* ****** ****** *)
 
 implement TKINDEF = T_TKINDEF () // for introducing tkinds
 
@@ -183,8 +194,8 @@ implement FREEAT = T_FREEAT
 
 (* ****** ****** *)
 
-implement DLRDELAY = T_DLRDELAY (TYPE_int)
-implement DLRLDELAY = T_DLRDELAY (VIEWTYPE_int)
+implement DLRDELAY = T_DLRDELAY(TYPE_int)
+implement DLRLDELAY = T_DLRDELAY(VIEWTYPE_int)
 
 (* ****** ****** *)
 //
@@ -436,6 +447,8 @@ val () = ins ("if", T_IF)
 val () = ins ("then", T_THEN)
 val () = ins ("else", T_ELSE)
 //
+val () = ins ("ifcase", T_IFCASE)
+//
 val () = ins ("in", T_IN)
 //
 val () = ins ("infix", INFIX)
@@ -490,7 +503,6 @@ val () = ins ("static", T_STATIC)
 (*
 val () = ins ("stavar", T_STAVAR)
 *)
-val () = ins ("require", T_REQUIRE)
 //
 val () = ins ("staload", T_STALOAD)
 val () = ins ("dynload", T_DYNLOAD)
@@ -532,11 +544,13 @@ val () = ins ("withview", WITHVIEW)
 val () = ins ("withvtype", WITHVIEWTYPE)
 val () = ins ("withviewtype", WITHVIEWTYPE)
 //
+val () = ins ("$delay", DLRDELAY)
+val () = ins ("$ldelay", DLRLDELAY)
+//
 val () = ins ("$arrpsz", T_DLRARRPSZ)
 val () = ins ("$arrptrsize", T_DLRARRPSZ)
 //
-val () = ins ("$delay", DLRDELAY)
-val () = ins ("$ldelay", DLRLDELAY)
+val () = ins ("$d2ctype", T_DLRD2CTYPE)
 //
 val () = ins ("$effmask", DLREFFMASK)
 val () = ins ("$effmask_ntm", DLREFFMASK_NTM)
@@ -609,17 +623,22 @@ val () = ins ("#elifndef", T_SRPELIFNDEF)
 val () = ins ("#else", T_SRPELSE)
 val () = ins ("#endif", T_SRPENDIF)
 //
-val () = ins ("#print", T_SRPPRINT)
-//
 val () = ins ("#error", T_SRPERROR)
+//
+val () = ins ("#prerr", T_SRPPRERR) // outpui to stderr
+val () = ins ("#print", T_SRPPRINT) // output to stdout
 //
 val () = ins ("#assert", T_SRPASSERT)
 //
+val () = ins ("#undef", T_SRPUNDEF)
 val () = ins ("#define", T_SRPDEFINE)
 //
 val () = ins ("#include", T_SRPINCLUDE)
+val () = ins ("#require", T_SRPREQUIRE)
 //
-val () = ins ("#undef", T_SRPUNDEF)
+val () = ins ("#pragma", T_SRPPRAGMA) // HX: general pragma
+val () = ins ("#codegen2", T_SRPCODEGEN2) // for level-2 codegen
+val () = ins ("#codegen3", T_SRPCODEGEN3) // for level-3 codegen
 //
 // HX: end of special tokens
 //

@@ -182,10 +182,13 @@ funset_tabulate_cloref
   {n:nat}(int(n), fopr: (natLt(n)) -<cloref1> a): set(a)
 //
 (* ****** ****** *)
-
+//
 fun{a:t0p}
-funset_listize (xs: set(INV(a))):<> list0 (a)
-
+funset_listize (xs: set(INV(a))):<> list0(a)
+//
+fun{a:t0p}
+funset_streamize (xs: set(INV(a))):<> stream_vt(a)
+//
 (* ****** ****** *)
 
 (* end of [funset.sats] *)

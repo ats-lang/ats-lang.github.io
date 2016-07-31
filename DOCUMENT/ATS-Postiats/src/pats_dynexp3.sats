@@ -328,6 +328,8 @@ and d3exp_node =
       s2exp(*static-value*), sc3laulst(*static-clauses*)
     ) (* end of [D3Escase] *)
 //
+  | D3Eifcase of (int(*else*), i3fclist)
+//
   | D3Elst of (* list expression *)
       (int(*lin*), s2exp(*elt*), d3explst)
   | D3Etup of (* tuple expression *)
@@ -456,6 +458,17 @@ and d3lablst = List (d3lab)
 
 (* ****** ****** *)
 
+and i3fcl = '{
+//
+  i3fcl_loc= location
+, i3fcl_test= d3exp, i3fcl_body= d3exp
+//
+} (* end of [i3fcl] *)
+
+and i3fclist = List(i3fcl)
+
+(* ****** ****** *)
+
 and gm3at = '{
   gm3at_loc= location
 , gm3at_exp= d3exp
@@ -543,27 +556,33 @@ and prv3ardec = '{
 and prv3ardeclst = List (prv3ardec)
 
 (* ****** ****** *)
-
-fun d3exp_get_type (d3e: d3exp): s2exp
-fun d3explst_get_type (d3es: d3explst): s2explst
-
-fun d3exp_set_type
-  (d3e: d3exp, s2f: s2exp): void = "patsopt_d3exp_set_type"
+//
+fun
+d3exp_get_type (d3e: d3exp): s2exp
+fun
+d3explst_get_type (d3es: d3explst): s2explst
+//
+fun
+d3exp_set_type
+  (d3e: d3exp, s2f: s2exp): void = "ext#patsopt_d3exp_set_type"
 // end of [d3exp_set_type]
 
 (* ****** ****** *)
 
 fun d3exp_is_prf (d3e: d3exp): bool
+fun d3exp_isnot_prf (d3e: d3exp): bool
 
 (* ****** ****** *)
-
-fun print_d3exp (d3e: d3exp): void
-overload print with print_d3exp
-fun prerr_d3exp (d3e: d3exp): void
-overload prerr with prerr_d3exp
+//
+fun print_d3exp(d3e: d3exp): void
+fun prerr_d3exp(d3e: d3exp): void
 fun fprint_d3exp : fprint_type (d3exp)
 fun fprint_d3explst : fprint_type (d3explst)
-
+//
+overload print with print_d3exp
+overload prerr with prerr_d3exp
+overload fprint with fprint_d3exp
+//
 (* ****** ****** *)
 
 fun d3exp_var
@@ -729,6 +748,15 @@ d3exp_sif (
 , _cond: s2exp, _then: d3exp, _else: d3exp
 ) : d3exp // end of [d3exp_sif]
 //
+(* ****** ****** *)
+
+fun
+d3exp_ifcase
+(
+  loc: location
+, s2e_if: s2exp, knd: int, ifcls: i3fclist
+) : d3exp // end of [d3exp_ifcase]
+
 (* ****** ****** *)
 //
 fun
@@ -985,6 +1013,14 @@ fun d3lab_ind (loc: location, ind: d3explst): d3lab
 fun d3lab_set_overld_app
   (d3l: d3lab, opt: d3expopt): void = "patsopt_d3lab_set_overld_app"
 // end of [d3lab_set_overld_app]
+
+(* ****** ****** *)
+
+fun
+i3fcl_make
+(
+  loc: location, test: d3exp, body: d3exp
+) : i3fcl // end of [i3fcl_make]
 
 (* ****** ****** *)
 

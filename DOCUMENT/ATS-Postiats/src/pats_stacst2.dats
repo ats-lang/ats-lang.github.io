@@ -332,24 +332,71 @@ end // end of [s2exp_agtz]
 
 implement
 s2exp_bneg (s2p) = let
-  val s2c = s2cstref_get_cst (the_neg_bool)
+  val s2c =
+    s2cstref_get_cst (the_neg_bool)
 in
   s2exp_cstapp (s2c, list_sing (s2p))
 end // end of [s2exp_bneg]
 
 implement
 s2exp_badd (s2p1, s2p2) = let
-  val s2c = s2cstref_get_cst (the_add_bool_bool)
+  val s2c =
+    s2cstref_get_cst (the_add_bool_bool)
+  // end of [val]
 in
   s2exp_cstapp (s2c, list_pair (s2p1, s2p2))
 end // end of [s2exp_badd]
 
 implement
 s2exp_bmul (s2p1, s2p2) = let
-  val s2c = s2cstref_get_cst (the_mul_bool_bool)
+  val s2c =
+    s2cstref_get_cst (the_mul_bool_bool)
+  // end of [val]
 in
   s2exp_cstapp (s2c, list_pair (s2p1, s2p2))
 end // end of [s2exp_bmul]
+
+(* ****** ****** *)
+
+implement
+s2explst_badd (s2ps) = let
+//
+fun
+aux (
+  s2p0: s2exp, s2ps: s2explst
+) : s2exp =
+(
+case+ s2ps of
+| list_nil() => s2p0
+| list_cons(s2p, s2ps) =>
+    s2exp_badd(s2p0, aux(s2p, s2ps))
+)
+//
+in
+  case+ s2ps of
+  | list_nil() => s2exp_bool(false)
+  | list_cons(s2p, s2ps) => aux(s2p, s2ps)
+end // end of [s2explst_badd]
+
+implement
+s2explst_bmul (s2ps) = let
+//
+fun
+aux (
+  s2p0: s2exp, s2ps: s2explst
+) : s2exp =
+(
+case+ s2ps of
+| list_nil() => s2p0
+| list_cons(s2p, s2ps) =>
+    s2exp_bmul(s2p0, aux(s2p, s2ps))
+)
+//
+in
+  case+ s2ps of
+  | list_nil() => s2exp_bool(true)
+  | list_cons(s2p, s2ps) => aux(s2p, s2ps)
+end // end of [s2explst_bmul]
 
 (* ****** ****** *)
 
@@ -1276,19 +1323,19 @@ s2e.s2exp_node of
 //
 | S2Ecst (s2c) => (
     case+ 0 of
-    | _ when s2cstref_equ_cst (the_effnil, s2c) => s2eff_effset (effset_nil)
-    | _ when s2cstref_equ_cst (the_effall, s2c) => s2eff_effset (effset_all)
-    | _ when s2cstref_equ_cst (the_effntm, s2c) => s2eff_effset (effset_ntm)
-    | _ when s2cstref_equ_cst (the_effexn, s2c) => s2eff_effset (effset_exn)
-    | _ when s2cstref_equ_cst (the_effref, s2c) => s2eff_effset (effset_ref)
-    | _ when s2cstref_equ_cst (the_effwrt, s2c) => s2eff_effset (effset_wrt)
+    | _ when s2cstref_equ_cst(the_effnil, s2c) => s2eff_effset(effset_nil)
+    | _ when s2cstref_equ_cst(the_effall, s2c) => s2eff_effset(effset_all)
+    | _ when s2cstref_equ_cst(the_effntm, s2c) => s2eff_effset(effset_ntm)
+    | _ when s2cstref_equ_cst(the_effexn, s2c) => s2eff_effset(effset_exn)
+    | _ when s2cstref_equ_cst(the_effref, s2c) => s2eff_effset(effset_ref)
+    | _ when s2cstref_equ_cst(the_effwrt, s2c) => s2eff_effset(effset_wrt)
     | _ => s2fe
   ) // end of [S2Ecst]
 | S2Evar (s2v) => s2fe
 | S2EVar (s2v) => s2fe
 | S2Eeff (s2fe) => s2fe
 | _ => let
-    val s2e = s2exp_err (s2rt_eff) in s2eff_exp (s2e)
+    val s2e = s2exp_errexp(s2rt_eff) in s2eff_exp(s2e)
   end // end of [_]
 //
 end (* end of [aux] *)
@@ -1297,7 +1344,7 @@ in
 //
 case+ s2fe of
 | S2EFFset _ => s2fe
-| S2EFFexp (s2e) => aux (s2fe, s2e)
+| S2EFFexp(s2e) => aux (s2fe, s2e)
 | S2EFFadd _ => s2fe
 //
 end // end of [s2eff_make_s2exp]

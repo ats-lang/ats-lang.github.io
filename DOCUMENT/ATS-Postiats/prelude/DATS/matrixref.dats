@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/matrixref.atxt
-** Time of generation: Sat Jun 27 21:39:42 2015
+** Time of generation: Sun Jul  3 11:13:27 2016
 *)
 
 (* ****** ****** *)
@@ -142,7 +142,7 @@ matrixref_copy
 val A = $UN.cast{arrayref(a,m*n)}(M)
 //
 in
-  $UN.castvwtp0{matrixptr(a,m,n)}(arrayref_copy<a> (A, m*n))
+  $UN.castvwtp0{matrixptr(a,m,n)}(arrayref_copy<a>(A, m*n))
 end // end of [matrixref_copy]
 
 (* ****** ****** *)
@@ -151,13 +151,13 @@ implement{a}
 matrixref_tabulate
   (nrow, ncol) =
 (
-  matrixptr_refize (matrixptr_tabulate<a> (nrow, ncol))
+  matrixptr_refize (matrixptr_tabulate<a>(nrow, ncol))
 ) (* end of [matrixref_tabulate] *)
 
 implement{a}
 matrixref_tabulate_cloref
   (nrow, ncol, f) =
-  matrixptr_refize (matrixptr_tabulate_cloref<a> (nrow, ncol, f))
+  matrixptr_refize (matrixptr_tabulate_cloref<a>(nrow, ncol, f))
 // end of [matrixref_tabulate_cloref]
 
 (* ****** ****** *)
@@ -180,6 +180,28 @@ matrixref_foreach_env
 in
   $effmask_ref (matrix_foreach_env<a><env> (!p, m, n, env))
 end // end of [matrixref_foreach_env]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+matrixref_foreach_cloref
+  (A, m, n, fwork) = let
+//
+implement
+{a2}{env}
+matrix_foreach$fwork
+  (x, env) = let
+  val (pf, fpf | p) = $UN.ptr_vtake{a}(addr@x)
+  val ((*void*)) = fwork(!p)
+  prval ((*void*)) = fpf(pf)
+in
+  // nothing
+end // end of [matrix_foreach$work]
+//
+in
+  matrixref_foreach<a>(A, m, n)
+end // end of [matrixref_foreach_cloref]
 
 (* ****** ****** *)
 

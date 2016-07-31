@@ -163,7 +163,7 @@ local
 
 staload FCNTL = "libc/SATS/fcntl.sats"
 
-in (*in-of-local]*)
+in (*in-of-local*)
 
 stadef fildes_v = $FCNTL.fildes_v
 
@@ -192,7 +192,7 @@ a:t@ype
 (* ****** ****** *)
 //
 fun
-ptr_as_volatile (p: ptr): void // for stoping optimization
+ptr_as_volatile (p: ptr): void // for stopping optimization
 //
 (* ****** ****** *)
 

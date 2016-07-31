@@ -142,6 +142,14 @@ key:t0p;itm:t0p
 
 fun{
 key:t0p;itm:vt0p
+} hashtbl_exchange
+  (tbl: !hashtbl (key, INV(itm)), k0: key, x0: &itm >> _): bool
+// end of [hashtbl_exchange]
+
+(* ****** ****** *)
+
+fun{
+key:t0p;itm:vt0p
 } hashtbl_takeout_all
   (tbl: !hashtbl (key, INV(itm))): List0_vt @(key, itm)
 // end of [hashtbl_takeout_all]
@@ -192,6 +200,16 @@ fun
 ;itm:vt0p}
 {env:vt0p}
 hashtbl_foreach$fwork (k: key, x: &itm >> _, &env >> _): void
+//
+(* ****** ****** *)
+//
+fun
+{key:t0p
+;itm:vt0p}
+hashtbl_foreach_cloref
+(
+  tbl: !hashtbl (key, INV(itm)), fwork: (key, &itm >> _) -<cloref1> void
+) : void // end-of-function
 //
 (* ****** ****** *)
 

@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/list_vt.atxt
-** Time of generation: Sat Jun 27 21:39:32 2015
+** Time of generation: Tue Jul 19 10:47:42 2016
 *)
 
 (* ****** ****** *)
@@ -40,8 +40,16 @@
 (* Start time: Feburary, 2012 *)
 
 (* ****** ****** *)
+//
+staload
+UN = "prelude/SATS/unsafe.sats"
+staload
+_(*anon*) = "prelude/DATS/unsafe.dats"
+//
+(* ****** ****** *)
 
-staload UN = "prelude/SATS/unsafe.sats"
+absvtype
+List0_vt_(a:vt@ype+) = List0_vt(a)
 
 (* ****** ****** *)
 //
@@ -1234,6 +1242,38 @@ list_vt_iforeach$cont (i, x, env) = true
 
 #include "./SHARE/list_vt_mergesort.dats"
 #include "./SHARE/list_vt_quicksort.dats"
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+streamize_list_vt_elt
+  (xs) = let
+//
+fun
+auxmain
+(
+  xs: List_vt(a)
+) : stream_vt(a) = $ldelay
+(
+//
+(
+case+ xs of
+| ~list_vt_nil
+    () => stream_vt_nil()
+| ~list_vt_cons
+    (x, xs) =>
+    stream_vt_cons(x, auxmain(xs))
+) : stream_vt_con(a)
+//
+,
+//
+list_vt_free(xs)
+) (* end of [auxmain] *)
+//
+in
+  $effmask_all(auxmain(xs))
+end (* end of [streamize_list_vt_elt] *)
 
 (* ****** ****** *)
 

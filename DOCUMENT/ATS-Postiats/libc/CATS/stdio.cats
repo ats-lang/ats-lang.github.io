@@ -6,7 +6,7 @@
 
 /* (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/libc/CATS/CODEGEN/stdio.atxt
-** Time of generation: Sat Jun 27 21:39:58 2015
+** Time of generation: Mon Nov 30 19:46:10 2015
 */
 
 /* ****** ****** */
@@ -85,7 +85,11 @@ atslib_clearerr(p) clearerr(((FILE*)p))
 
 /* ****** ****** */
 //
+#define atslib_fflush fflush
+#define atslib_fflush0 atslib_fflush
+#define atslib_fflush1 atslib_fflush
 #define atslib_fflush0_exn atslib_fflush_exn
+#define atslib_fflush1_exn atslib_fflush_exn
 //
 #define atslib_fflush_all() atslib_fclose_exn((FILE*)0)
 #define atslib_fflush_stdout() atslib_fclose_exn(stdout)
@@ -200,6 +204,11 @@ atslib_ferror(p) ferror(((FILE*)p))
 
 #define atslib_pclose0_exn atslib_pclose_exn
 #define atslib_pclose1_exn atslib_pclose_exn
+
+/* ****** ****** */
+
+#define atslib_remove remove
+#define atslib_rename rename
 
 /* ****** ****** */
 

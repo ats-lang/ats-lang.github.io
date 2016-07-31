@@ -151,7 +151,8 @@ fun
 d2exp_trup_arg_body
 (
   loc0: loc_t
-, fc0: funclo, lin: int, npf: int, p2ts: p2atlst, d2e: d2exp
+, fc0: funclo
+, lin: int, npf: int, p2ts: p2atlst, d2e: d2exp
 ) : (s2exp, p3atlst, d3exp)
 
 (* ****** ****** *)
@@ -165,41 +166,55 @@ d2exp_trup_letwhere
 (* ****** ****** *)
 
 extern
-fun d2exp_trup_lam_dyn (d2e0: d2exp): d3exp
+fun
+d2exp_trup_lam_dyn (d2e0: d2exp): d3exp
 extern
-fun d2exp_trup_laminit_dyn (d2e0: d2exp): d3exp
+fun
+d2exp_trup_laminit_dyn (d2e0: d2exp): d3exp
 extern
-fun d2exp_trup_lam_sta (d2e0: d2exp): d3exp
+fun
+d2exp_trup_lam_sta (d2e0: d2exp): d3exp
 extern
-fun d2exp_trup_lam_met (d2e0: d2exp): d3exp
+fun
+d2exp_trup_lam_met (d2e0: d2exp): d3exp
 
 (* ****** ****** *)
 
-extern fun d2exp_trup_fix (d2e0: d2exp): d3exp
+extern
+fun d2exp_trup_fix (d2e0: d2exp): d3exp
 
 (* ****** ****** *)
 
-extern fun d2exp_trup_delay (d2e0: d2exp): d3exp
-extern fun d2exp_trup_ldelay (d2e0: d2exp): d3exp
+extern
+fun d2exp_trup_delay (d2e0: d2exp): d3exp
+extern
+fun d2exp_trup_ldelay (d2e0: d2exp): d3exp
 
 (* ****** ****** *)
 
-extern fun d2exp_trup_for (d2e0: d2exp): d3exp
-extern fun d2exp_trup_while (d2e0: d2exp): d3exp
+extern
+fun d2exp_trup_for (d2e0: d2exp): d3exp
+extern
+fun d2exp_trup_while (d2e0: d2exp): d3exp
 
 (* ****** ****** *)
 
-extern fun d2exp_trup_trywith (d2e0: d2exp): d3exp
+extern
+fun d2exp_trup_trywith (d2e0: d2exp): d3exp
 
 (* ****** ****** *)
 
-extern fun d2exp_trup_mac (d2e0: d2exp): d3exp
-extern fun d2exp_trup_macsyn (d2e0: d2exp): d3exp
+extern
+fun d2exp_trup_mac (d2e0: d2exp): d3exp
+extern
+fun d2exp_trup_macsyn (d2e0: d2exp): d3exp
 
 (* ****** ****** *)
   
-extern fun d2exp_trup_solassert (d2e0: d2exp): d3exp
-extern fun d2exp_trup_solverify (d2e0: d2exp): d3exp
+extern
+fun d2exp_trup_solassert (d2e0: d2exp): d3exp
+extern
+fun d2exp_trup_solverify (d2e0: d2exp): d3exp
   
 (* ****** ****** *)
 
@@ -374,6 +389,24 @@ of // case+
     d2exp_trdn_sifhead (d2e0, s2f_sif)
   end // end of [D2Esifhead]
 //
+| D2Eifcasehd
+    (knd, _, _) => let
+    val
+    s2e_if =
+    (
+      if knd = 0
+        then
+        s2exp_void_t0ype()
+        else
+        s2exp_Var_make_srt(loc0, s2rt_t0ype)
+      // end of [if]
+    ) : s2exp // end of [val]
+    val
+    s2f_if = s2exp2hnf_cast(s2e_if)
+  in
+    d2exp_trdn_ifcasehd (d2e0, s2f_if)
+  end // end of [D2Eifhead]
+//
 | D2Ecasehead _ => let
     val
     s2e_case =
@@ -479,7 +512,7 @@ of // case+
             case+ opt of
             | ~Some_vt(s2i) => (s2i_asz := s2i)
             | ~None_vt((*void*)) =>
-                let val s2i = s2exp_err(s2rt_int) in s2i_asz := s2i end
+                let val s2i = s2exp_errexp(s2rt_int) in s2i_asz := s2i end
               // end of [None_vt]
           end // end of [let] // end of [val]
         } (* end of [Some] *)
@@ -564,13 +597,13 @@ of // case+
 | D2Esolassert _ => d2exp_trup_solassert (d2e0)
 | D2Esolverify _ => d2exp_trup_solverify (d2e0)
 //
-| D2Eerrexp () => d3exp_errexp (loc0) // : [s2exp_t0ype_err]
+| D2Eerrexp((*error*)) => d3exp_errexp (loc0) // : [s2exp_t0ype_err]
 //
 | _(*unspported*) => let
     val () = prerr_interror_loc(loc0)
     val () = prerrln! (": d2exp_trup: d2e0 = ", d2e0)
   in
-    exitloc (1)
+    exitloc(1)
   end // end of [_(*unsupported*)]
 //
 ) : d3exp // end of [val]
@@ -1121,8 +1154,10 @@ d2exp_trup_tmpcst
 //
 val locarg =
   $LOC.location_rightmost (loc0)
+//
 val s2qs = d2cst_get_decarg (d2c)
 val s2e_d2c = d2cst_get_type (d2c)
+//
 var err: int = 0
 val (s2e_tmp, t2mas) =
   s2exp_tmp_instantiate_tmpmarglst (s2e_d2c, locarg, s2qs, t2mas, err)
@@ -1157,7 +1192,8 @@ val-D2Etmpid (d2e_id, t2mas) = d2e0.d2exp_node
 in
 //
 case+
-  d2e_id.d2exp_node of
+d2e_id.d2exp_node
+of (* case+ *)
 | D2Ecst (d2c) =>
     d2exp_trup_tmpcst (loc0, d2c, t2mas)
 | D2Evar (d2v) =>
@@ -1621,7 +1657,8 @@ in
 //
 case+ d2es of
 | list_cons (d2e, d2es) => let
-    var s2e_res: s2exp // uninitialized
+    var
+    s2e_res: s2exp // uninitized
     val d3es = aux (d2e, d2es, s2e_res, s2e_void)
   in
     d3exp_seq (loc0, s2e_res, d3es)

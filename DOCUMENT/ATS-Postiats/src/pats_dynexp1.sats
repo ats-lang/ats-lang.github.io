@@ -45,9 +45,8 @@ datatype p1at_node =
   | P1Tany2 of () // wildcard: (_) // non-expandable
 //
   | P1Tide of symbol // variable
-  | P1Tdqid of // constructor (qualified) / variable (unqualified)
-      (d0ynq, symbol)
-    (* end of [P1Tdqid] *)
+    // qua: constructor // unqua: variable
+  | P1Tdqid of (d0ynq, symbol) // constructor/variable
 //
   | P1Tint of (int) // int constant
   | P1Tintrep of string(*rep*) // int constant
@@ -175,11 +174,12 @@ fun fprint_labp1at : fprint_type (labp1at)
 fun fprint_labp1atlst : fprint_type (labp1atlst)
 
 (* ****** ****** *)
-
+//
 fun p1at_make_v1al (loc: location, v: v1al): p1at
 fun p1at_make_e1xp (loc: location, e: e1xp): p1at
+//
 fun e1xp_make_p1at (loc: location, p1t: p1at): e1xp
-
+//
 (* ****** ****** *)
 
 typedef
@@ -240,8 +240,11 @@ d1ecl_node =
       i0delst
   | D1Coverload of (i0de, dqi0de, int(*pval*)) // overloading
 //
-  | D1Ce1xpdef of (symbol, e1xp)
-  | D1Ce1xpundef of (symbol, e1xp) // HX: undefining
+  | D1Ce1xpdef of (symbol, e1xp) // HX: #define
+  | D1Ce1xpundef of (symbol, e1xp) // HX: #undef
+//
+  | D1Cpragma of (e1xplst) // HX: meta-programming
+  | D1Ccodegen of (int(*kind*), e1xplst) // HX: meta-programming
 //
   | D1Cdatsrts of d1atsrtdeclst // datasorts
   | D1Csrtdefs of s1rtdeflst // sort definitions
@@ -357,7 +360,10 @@ and d1exp_node =
   | D1Eifhead of
       (i1nvresstate, d1exp, d1exp, d1expopt)
   | D1Esifhead of
-      (i1nvresstate, s1exp, d1exp, d1exp) // HX: no dangling else-branch
+      (i1nvresstate, s1exp, d1exp, d1exp(*else*))
+//
+  | D1Eifcasehd of (i1nvresstate, i1fclist) // for ifcase-expressions
+//
   | D1Ecasehead of (* case-expression *)
       (caskind, i1nvresstate, d1explst, c1laulst)
   | D1Escasehead of (i1nvresstate, s1exp, sc1laulst)
@@ -462,22 +468,40 @@ and labd1explst = List (labd1exp)
 
 (* ****** ****** *)
 
-and d1lab = '{
-  d1lab_loc= location, d1lab_node= d1lab_node
+and
+d1lab = '{
+  d1lab_loc= location
+, d1lab_node= d1lab_node
 }
 and d1lablst = List (d1lab)
 
 (* ****** ****** *)
 
-and gm1at = '{
-  gm1at_loc= location, gm1at_exp= d1exp, gm1at_pat= p1atopt
-} // end of [gm1at]
+and
+i1fcl = '{
+//
+  i1fcl_loc= location
+//
+, i1fcl_test= d1exp, i1fcl_body= d1exp
+//
+} (* end of [i1fcl] *)
 
-and gm1atlst = List gm1at
+and i1fclist = List(i1fcl)
 
 (* ****** ****** *)
 
-and c1lau = '{
+and
+gm1at = '{
+  gm1at_loc= location
+, gm1at_exp= d1exp, gm1at_pat= p1atopt
+} // end of [gm1at]
+
+and gm1atlst = List(gm1at)
+
+(* ****** ****** *)
+
+and
+c1lau = '{
   c1lau_loc= location
 , c1lau_pat= p1at
 , c1lau_gua= gm1atlst
@@ -486,11 +510,12 @@ and c1lau = '{
 , c1lau_body= d1exp
 } // end of [c1lau]
 
-and c1laulst = List c1lau
+and c1laulst = List(c1lau)
 
 (* ****** ****** *)
 
-and sc1lau = '{
+and
+sc1lau = '{
   sc1lau_loc= location
 , sc1lau_pat= sp1at
 , sc1lau_body= d1exp
@@ -500,7 +525,8 @@ and sc1laulst = List sc1lau
 
 (* ****** ****** *)
 
-and m1acdef = '{
+and
+m1acdef = '{
   m1acdef_loc= location
 , m1acdef_sym= symbol
 , m1acdef_arg= m1acarglst
@@ -511,7 +537,8 @@ and m1acdeflst = List m1acdef
 
 (* ****** ****** *)
 
-and f1undec = '{
+and
+f1undec = '{
   f1undec_loc= location
 , f1undec_sym= symbol
 , f1undec_sym_loc= location
@@ -523,7 +550,8 @@ and f1undeclst = List f1undec
 
 (* ****** ****** *)
 
-and v1aldec = '{
+and
+v1aldec = '{
   v1aldec_loc= location
 , v1aldec_pat= p1at
 , v1aldec_def= d1exp
@@ -534,7 +562,8 @@ and v1aldeclst = List (v1aldec)
 
 (* ****** ****** *)
 
-and v1ardec = '{
+and
+v1ardec = '{
   v1ardec_loc= location
 , v1ardec_knd= int (* knd=0/1:var/ptr *)
 , v1ardec_sym= symbol
@@ -548,7 +577,8 @@ and v1ardeclst = List v1ardec
 
 (* ****** ****** *)
 
-and i1mpdec = '{
+and
+i1mpdec = '{
   i1mpdec_loc= location
 , i1mpdec_qid= impqi0de
 , i1mpdec_tmparg= t1mpmarglst
@@ -659,30 +689,41 @@ fun d1exp_list
 //
 (* ****** ****** *)
 
-fun d1exp_ifhead (
+fun
+d1exp_ifhead (
   loc: location
 , inv: i1nvresstate
 , _cond: d1exp
-, _then: d1exp
-, _else: d1expopt
+, _then: d1exp, _else: d1expopt
 ) : d1exp // end of [d1exp_if]
 
-fun d1exp_sifhead (
+fun
+d1exp_sifhead (
   loc: location
 , inv: i1nvresstate
-, _cond: s1exp
-, _then: d1exp
-, _else: d1exp
+, _cond: s1exp, _then: d1exp, _else: d1exp
 ) : d1exp // end of [d1exp_if]
 
-fun d1exp_casehead (
+(* ****** ****** *)
+
+fun
+d1exp_ifcasehd
+(
+    loc: location, inv: i1nvresstate, ifcls: i1fclist
+) : d1exp // end of [d1exp_ifcasehd]
+
+(* ****** ****** *)
+
+fun
+d1exp_casehead (
   loc: location
 , knd: caskind
 , inv: i1nvresstate
 , d1es: d1explst, c1las: c1laulst
 ) : d1exp // end of [d1exp_casehead]
 
-fun d1exp_scasehead (
+fun
+d1exp_scasehead (
   loc: location
 , inv: i1nvresstate
 , s1e: s1exp, c1las: sc1laulst
@@ -789,7 +830,9 @@ fun d1exp_delay (loc: location, knd: int, d1e: d1exp): d1exp
 
 (* ****** ****** *)
 
-fun d1exp_trywith (
+fun
+d1exp_trywith
+(
   loc: location, inv: i1nvresstate, d1e: d1exp, handler: c1laulst
 ) : d1exp // end of [d1exp_trywith]
 
@@ -871,10 +914,13 @@ fun fprint_labd1explst : fprint_type (labd1explst)
 
 fun d1exp_is_metric (d1e: d1exp): bool
 
+(* ****** ****** *)
+//
 fun d1exp_make_v1al (loc: location, v: v1al): d1exp
 fun d1exp_make_e1xp (loc: location, e: e1xp): d1exp
+//
 fun e1xp_make_d1exp (loc: location, d1e: d1exp): e1xp
-
+//
 (* ****** ****** *)
 
 fun d1lab_lab (loc: location, lab: label): d1lab
@@ -882,6 +928,14 @@ fun d1lab_ind (loc: location, ind: d1explst): d1lab
 
 fun fprint_d1lab : fprint_type (d1lab)
 
+(* ****** ****** *)
+//
+fun
+i1fcl_make
+(
+  loc: location, test: d1exp, body: d1exp
+) : i1fcl // end of [i1fcl_make]
+//
 (* ****** ****** *)
 
 fun gm1at_make
@@ -952,18 +1006,36 @@ i1mpdec_make
 fun d1ecl_none (loc: location): d1ecl
 fun d1ecl_list (loc: location, ds: d1eclist): d1ecl
 
+(* ****** ****** *)
+
 fun d1ecl_packname (opt: Stropt): d1ecl
+
+(* ****** ****** *)
 
 fun d1ecl_symintr (loc: location, ids: i0delst): d1ecl
 fun d1ecl_symelim (loc: location, ids: i0delst): d1ecl
+
+(* ****** ****** *)
+
 fun d1ecl_overload
   (loc: location, id: i0de, qid: dqi0de, pval: int): d1ecl
 // end of [d1ecl_overload]
 
-fun d1ecl_e1xpdef
-  (loc: location, id: symbol, def: e1xp): d1ecl
-fun d1ecl_e1xpundef
-  (loc: location, id: symbol, def: e1xp): d1ecl
+(* ****** ****** *)
+//
+fun
+d1ecl_e1xpdef(loc: location, id: symbol, def: e1xp): d1ecl
+fun
+d1ecl_e1xpundef(loc: location, id: symbol, def: e1xp): d1ecl
+//
+(* ****** ****** *)
+//
+fun
+d1ecl_pragma(loc: location, e1xps: e1xplst): d1ecl
+fun
+d1ecl_codegen(loc: location, knd: int, xs: e1xplst): d1ecl
+//
+(* ****** ****** *)
 
 fun d1ecl_datsrts (loc: location, ds: d1atsrtdeclst): d1ecl
 

@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/list.atxt
-** Time of generation: Sat Jun 27 21:39:36 2015
+** Time of generation: Sun Jul 31 10:16:08 2016
 *)
 
 (* ****** ****** *)
@@ -43,6 +43,38 @@
 
 staload UN = "prelude/SATS/unsafe.sats"
 
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+stream_sing(x) =
+  stream_cons{a}(x, $delay(stream_nil))
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+stream_is_nil(xs) =
+(
+case+ !xs of
+| stream_nil _ => true | stream_cons _ => false
+)
+implement
+{a}(*tmp*)
+stream_is_cons(xs) = not(stream_is_nil<a>(xs))
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+stream_make_nil() =
+  $delay(stream_nil{a}())
+//
+implement
+{a}(*tmp*)
+stream_make_sing(x) =
+  $delay(stream_cons{a}(x, $delay(stream_nil)))
+//
 (* ****** ****** *)
 
 implement
@@ -77,6 +109,50 @@ end // end of [stream2list]
 
 implement
 {a}(*tmp*)
+stream_length
+  (xs) = loop(xs, 0) where
+{
+//
+fun
+loop
+(
+  xs: stream(a), j: intGte(0)
+) :<!laz> intGte(0) =
+(
+case+ !xs of
+| stream_nil() => j | stream_cons(_, xs) => loop(xs, j+1)
+)
+//
+} (* end of [stream_length] *)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+stream_head_exn(xs) =
+(
+//
+case+ !xs of
+| stream_cons(x, _) => x
+| stream_nil() => $raise StreamSubscriptExn()
+//
+) // end of [stream_head_exn]
+
+implement
+{a}(*tmp*)
+stream_tail_exn(xs) =
+(
+//
+case+ !xs of
+| stream_cons(_, xs) => xs
+| stream_nil() => $raise StreamSubscriptExn()
+//
+) // end of [stream_tail_exn]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
 stream_nth_exn
   (xs, n) = let
 in
@@ -85,19 +161,31 @@ in
       (x, xs) =>
     (
       if n > 0
-        then stream_nth_exn<a> (xs, pred(n)) else (x)
+        then stream_nth_exn<a> (xs, pred(n))
+        else (x)
       // end of [if]
-    )
+    ) (* stream_cons *)
   | stream_nil () => $raise StreamSubscriptExn()
 end // end of [stream_nth_exn]
+
+(* ****** ****** *)
 
 implement
 {a}(*tmp*)
 stream_nth_opt
   (xs, n) = let
 in
-  try Some_vt(stream_nth_exn<a> (xs, n)) with ~StreamSubscriptExn() => None_vt()
+//
+try
+Some_vt(stream_nth_exn<a>(xs, n)) with ~StreamSubscriptExn() => None_vt()
+//
 end // end of [stream_nth_opt]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+stream_get_at_exn(xs, n) = stream_nth_exn<a>(xs, n)
 
 (* ****** ****** *)
 
@@ -431,6 +519,64 @@ end // end of [stream_map2_cloref]
 
 (* ****** ****** *)
 
+implement
+{res}{x}
+stream_scan
+  (xs, ini) = let
+//
+fun aux
+(
+  xs: stream(x), ini: res
+) :<!laz> stream (res) = $delay
+(
+case+ !xs of
+| stream_nil
+    () => stream_nil ()
+  // end of [stream_nil]
+| stream_cons(x, xs) =>
+  stream_cons{res}
+    (stream_scan$fopr<res><x> (ini, x), aux (xs, ini))
+  // end of [stream_cons]
+) : stream_con(res) // end of [$delay]
+//
+in
+  aux (xs, ini)
+end // end of [stream_scan]
+
+(* ****** ****** *)
+
+implement
+{res}{x}
+stream_scan_fun
+  (xs, ini, f) = let
+//
+implement
+{res2}{x2}
+stream_scan$fopr
+  (ini, x) =
+  $UN.cast{res2}(f($UN.cast{res}(ini), $UN.cast{x}(x)))
+//
+in
+  stream_scan<res><x> (xs, ini)
+end // end of [stream_scan_fun]
+
+implement
+{res}{x}
+stream_scan_cloref
+  (xs, ini, f) = let
+//
+implement
+{res2}{x2}
+stream_scan$fopr
+  (ini, x) =
+  $UN.cast{res2}(f($UN.cast{res}(ini), $UN.cast{x}(x)))
+//
+in
+  stream_scan<res><x> (xs, ini)
+end // end of [stream_scan_cloref]
+
+(* ****** ****** *)
+
 local
 
 #define :: stream_cons
@@ -617,13 +763,12 @@ end // end of [stream_tabulate_cloref]
 (* ****** ****** *)
 
 implement
-{a}{env}
-stream_foreach$cont (x, env) = true
-
-implement
 {a}(*tmp*)
-stream_foreach (xs) = let
-  var env: void = () in stream_foreach_env<a><void> (xs, env)
+stream_foreach
+  (xs) = let
+  var env: void = ()
+in
+  stream_foreach_env<a><void>(xs, env)
 end // end of [stream_foreach]
 
 implement
@@ -661,6 +806,9 @@ case+ !xs of
 in
   loop (xs, env)
 end (* end of [stream_foreach_env] *)
+
+implement(a,env)
+stream_foreach$cont<a><env>(x0, env) = true(*cont*)
 
 (* ****** ****** *)
 

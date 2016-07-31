@@ -132,20 +132,27 @@ LIBATSCC2JS_targetloc
 "$PATSHOMERELOC/contrib/libatscc/libatscc2js"
 //
 #define
-LIBATSCC2ERL_targetloc
-"$PATSHOMERELOC/contrib/libatscc/libatscc2erl"
-//
-#define
-LIBATSCC2PHP_targetloc
-"$PATSHOMERELOC/contrib/libatscc/libatscc2php"
-//
-#define
 LIBATSCC2PL_targetloc
 "$PATSHOMERELOC/contrib/libatscc/libatscc2pl"
 //
 #define
-LIBATSCC2PY_targetloc
-"$PATSHOMERELOC/contrib/libatscc/libatscc2py"
+LIBATSCC2PY3_targetloc
+"$PATSHOMERELOC/contrib/libatscc/libatscc2py3"
+//
+#define
+LIBATSCC2ERL_targetloc
+"$PATSHOMERELOC/contrib/libatscc/libatscc2erl"
+//
+#define
+LIBATSCC2SCM_targetloc
+"$PATSHOMERELOC/contrib/libatscc/libatscc2scm"
+#define
+LIBATSCC2CLJ_targetloc
+"$PATSHOMERELOC/contrib/libatscc/libatscc2clj"
+//
+#define
+LIBATSCC2PHP_targetloc
+"$PATSHOMERELOC/contrib/libatscc/libatscc2php"
 //
 (* ****** ****** *)
 //
@@ -180,10 +187,12 @@ LIBATS_HWXI_targetloc "$PATSHOMERELOC/contrib/libats-/hwxi"
 #define LINUX_targetloc "$PATSHOMERELOC/contrib/linux"
 //
 (* ****** ****** *)
-
+//
+// For exporting constraints for solving externally
+//
 #define EXTSOLVE_sourceloc "$ATSLANGWEBLIB/contrib/extsolve"
 #define EXTSOLVE_targetloc "$PATSHOMERELOC/contrib/extsolve"
-
+//
 (* ****** ****** *)
 
 (* end of [atspre_define_pkgreloc.hats] *)

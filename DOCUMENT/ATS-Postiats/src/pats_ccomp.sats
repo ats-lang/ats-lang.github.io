@@ -645,7 +645,7 @@ and primval_node =
   | PMVtmpltcstmat of (d2cst, t2mpmarglst, tmpcstmat) // for matched template constants
   | PMVtmpltvarmat of (d2var, t2mpmarglst, tmpvarmat) // for matched template variables
 //
-  | PMVerr of ()
+  | PMVerror of ()
 // end of [primval_node]
 
 and primlab_node =
@@ -1011,7 +1011,7 @@ fun primval_tmpltvarmat
 
 (* ****** ****** *)
 
-fun primval_err (loc: loc_t, hse: hisexp): primval
+fun primval_error (loc: loc_t, hse: hisexp): primval
 
 (* ****** ****** *)
 
@@ -1720,10 +1720,19 @@ fun ccompenv_inc_tailcalenv_fnx (env: !ccompenv, fls: funlablst_vt): void
 //
 fun ccompenv_find_tailcalenv (env: !ccompenv, fl: funlab): int
 //
-fun ccompenv_find_tailcalenv_cst
+fun
+ccompenv_find_tailcalenv_cst
   (env: !ccompenv, d2c: d2cst): funlabopt_vt
-fun ccompenv_find_tailcalenv_tmpcst
+fun
+ccompenv_find_tailcalenv_var
+  (env: !ccompenv, d2v: d2var, ntl: &int): funlabopt_vt
+//
+fun
+ccompenv_find_tailcalenv_tmpcst
   (env: !ccompenv, d2c: d2cst, t2mas: t2mpmarglst): funlabopt_vt
+fun
+ccompenv_find_tailcalenv_tmpvar
+  (env: !ccompenv, d2v: d2var, t2mas: t2mpmarglst, ntl: &int): funlabopt_vt
 //
 (* ****** ****** *)
 
@@ -1762,18 +1771,20 @@ fun ccompenv_add_vbindmapenv (env: !ccompenv, d2v: d2var, pmv: primval): void
 fun ccompenv_find_vbindmapenv (env: !ccompenv, d2v: d2var): Option_vt (primval)
 //
 (* ****** ****** *)
-
-absview ccompenv_push_v
-
-fun ccompenv_push
+//
+absview
+ccompenv_push_v
+//
+fun
+ccompenv_push
   (env: !ccompenv): (ccompenv_push_v | void)
-
+//
 fun ccompenv_pop
   (pfpush: ccompenv_push_v | env: !ccompenv): void
-
+//
 fun ccompenv_localjoin
   (pf1: ccompenv_push_v, pf2: ccompenv_push_v | env: !ccompenv): void
-
+//
 (* ****** ****** *)
 
 fun ccompenv_add_vbindmapall
@@ -1968,11 +1979,11 @@ fun hifundeclst_ccomp
 (* ****** ****** *)
 
 fun hidecl_ccomp
-  (env: !ccompenv, hdc: hidecl): primdec
+  (env: !ccompenv, hid: hidecl): primdec
 fun hideclist_ccomp
-  (env: !ccompenv, hdcs: hideclist): primdeclst
+  (env: !ccompenv, hids: hideclist): primdeclst
 
-fun hideclist_ccomp0 (hdcs: hideclist): primdeclst
+fun hideclist_ccomp0 (hids: hideclist): primdeclst
 
 (* ****** ****** *)
 //
@@ -2125,21 +2136,23 @@ fun emit_tmpdeclst (out: FILEref, tmps: tmpvarlst): void
 abstype hitype_type
 typedef hitype = hitype_type
 typedef hitypelst = List (hitype)
-
+//
 fun print_hitype (hit: hitype): void
-overload print with print_hitype
 fun prerr_hitype (hit: hitype): void
-overload prerr with prerr_hitype
 fun fprint_hitype : fprint_type (hitype)
 fun fprint_hitypelst : fprint_type (hitypelst)
+//
+overload print with print_hitype
+overload prerr with prerr_hitype
 overload fprint with fprint_hitype
 overload fprint with fprint_hitypelst
-
+//
 (* ****** ****** *)
 //
 // HX: flag=0/1: flatten/regular
 //
-fun hisexp_typize (flag: int, hse: hisexp): hitype
+fun
+hisexp_typize(flag: int, hse: hisexp): hitype
 //
 (* ****** ****** *)
 
@@ -2156,9 +2169,15 @@ fun emit_hisexp_sel (out: FILEref, hse: hisexp): void
 
 (* ****** ****** *)
 
+(*
+//
+// HX-2016-01-01:
+// It is commented out as it is no in use
+//
 fun emit_funtype_arg_res
   (out: FILEref, _arg: hisexplst, _res: hisexp): void
 // end of [emit_funtype_arg_res]
+*)
 
 (* ****** ****** *)
 
@@ -2233,11 +2252,21 @@ fun emit_funent_implmnt (out: FILEref, fent: funent): void
 fun emit_primdeclst (out: FILEref, pmds: primdeclst): void
 
 (* ****** ****** *)
-
+//
+fun
+funlab_tmparg_match
+  (fl0: funlab, t2mas: t2mpmarglst) : bool
+(*
 fun funlab_tmpcst_match
   (fl: funlab, d2c: d2cst, t2mas: t2mpmarglst): bool
 // end of [funlab_tmpcst_match]
-
+*)
+(*
+fun funlab_tmpvar_match
+  (fl: funlab, d2v: d2var, t2mas: t2mpmarglst): bool
+// end of [funlab_tmpvar_match]
+*)
+//
 (* ****** ****** *)
 //
 fun
@@ -2349,7 +2378,7 @@ fun the_toplevel_getref_primdeclst (): Ptr1
 
 fun ccomp_main
 (
-  out: FILEref, flag: int, infil: filename, hdcs: hideclist
+  out: FILEref, flag: int, infil: filename, hids: hideclist
 ) : void // end of [ccomp_main]
 
 (* ****** ****** *)

@@ -158,7 +158,7 @@ end // end of [p_s0taconseq]
 (* ****** ****** *)
 
 (*
-s0tacst ::= si0de a0msrtseq COLON s0rt
+s0tacst ::= si0de a0msrtseq COLON s0rt extnamopt
 *)
 fun
 p_s0tacst (
@@ -179,10 +179,11 @@ val ent3 =
   pif_fun (buf, bt, err, p_COLON, err0)
 // end of [val]
 val ent4 = pif_fun (buf, bt, err, p_s0rt, err0)
+val ent5 = pif_fun (buf, bt, err, p_extnamopt, err0)
 //
 in
   if err = err0
-    then s0tacst_make (ent1, (l2l)ent2, ent4)
+    then s0tacst_make (ent1, (l2l)ent2, ent4, ent5)
     else let
       val () = list_vt_free (ent2) in tokbuf_set_ntok_null (buf, ntok0)
     end // end of [else]
@@ -796,9 +797,10 @@ d0ecl
   | SYMELIM s0ymseq
   | SRPUNDEF i0de
   | SRPDEFINE i0de e0xpopt
-  | SRPASSERT e0xp
   | SRPERROR e0xp
+  | SRPPRERR e0xp
   | SRPPRINT e0xp
+  | SRPASSERT e0xp
   | DATASORT d0atsrtdecseq
   | STA s0tacstseq
 (*
@@ -884,52 +886,54 @@ case+ tok.token_node of
     // end of [if]
   end (* T_OVERLOAD *)
 //
-| T_SRPDEFINE () => let
-    val bt = 0
-    val () = incby1 ()
-    val ent2 = p_i0de (buf, bt, err)
-    val ent3 = (
-      if err = err0
-        then popt_fun {e0xp} (buf, bt, p_e0xp) else None_vt ()
-      // end of [if]
-    ) : Option_vt (e0xp) // end of [val]
-  in
-    if err = err0
-      then let
-        val ent3 = option_of_option_vt (ent3)
-      in
-        d0ecl_e0xpdef (tok, ent2, ent3)
-      end // end of [then]
-      else let
-        val () = option_vt_free (ent3) in synent_null ()
-      end // end of [else]
-    // end of [if]
-  end
 | T_SRPUNDEF () => let
     val bt = 0
     val () = incby1 ()
     val ent2 = p_i0de (buf, bt, err)
   in
     if err = err0
-      then d0ecl_e0xpundef (tok, ent2) else synent_null ()
-    // end of [if]
-  end
-| T_SRPASSERT () => let
+    then d0ecl_e0xpundef(tok, ent2) else synent_null()
+  end // end of [#undef]
+| T_SRPDEFINE
+    ((*void*)) => let
     val bt = 0
     val () = incby1 ()
-    val ent2 = p_e0xp (buf, bt, err)
+    val ent2 = p_i0de (buf, bt, err)
+    val ent3 = (
+      if err = err0
+      then popt_fun{e0xp}(buf, bt, p_e0xp) else None_vt()
+    ) : Option_vt (e0xp) // end of [val]
   in
     if err = err0
-      then d0ecl_e0xpact_assert (tok, ent2) else synent_null ()
+      then let
+        val ent3 =
+          option_of_option_vt (ent3)
+        // end of [val]
+      in
+        d0ecl_e0xpdef (tok, ent2, ent3)
+      end // end of [then]
+      else let
+        val () = option_vt_free(ent3) in synent_null()
+      end // end of [else]
     // end of [if]
-  end
+  end // end of [#define]
+//
 | T_SRPERROR () => let
     val bt = 0
     val () = incby1 ()
     val ent2 = p_e0xp (buf, bt, err)
   in
     if err = err0
-      then d0ecl_e0xpact_error (tok, ent2) else synent_null ()
+      then d0ecl_e0xpact_error(tok, ent2) else synent_null()
+    // end of [if]
+  end
+| T_SRPPRERR () => let
+    val bt = 0
+    val () = incby1 ()
+    val ent2 = p_e0xp (buf, bt, err)
+  in
+    if err = err0
+      then d0ecl_e0xpact_prerr(tok, ent2) else synent_null()
     // end of [if]
   end
 | T_SRPPRINT () => let
@@ -938,8 +942,65 @@ case+ tok.token_node of
     val ent2 = p_e0xp (buf, bt, err)
   in
     if err = err0
-      then d0ecl_e0xpact_print (tok, ent2) else synent_null ()
+      then d0ecl_e0xpact_print(tok, ent2) else synent_null()
     // end of [if]
+  end
+//
+| T_SRPASSERT () => let
+    val bt = 0
+    val () = incby1 ()
+    val ent2 = p_e0xp (buf, bt, err)
+  in
+    if err = err0
+      then d0ecl_e0xpact_assert(tok, ent2) else synent_null()
+    // end of [if]
+  end
+//
+| T_SRPREQUIRE () => let
+    val bt = 0
+    val () = incby1 ()
+    val ent2 = p_s0tring (buf, bt, err)
+  in
+    if err = err0 then d0ecl_require (tok, ent2) else synent_null()
+    // end of [if]
+  end // end of [T_SRPREQUIRE]
+//
+| T_SRPPRAGMA
+    ((*void*)) => let
+    val bt = 0
+    val () = incby1 ()
+    val ent2 = p_LPAREN (buf, bt, err)
+    val ent3 =
+      pif_fun (buf, bt, err, p_e0xpseq, err0)
+    // end of [val]
+    val ent4 = pif_fun (buf, bt, err, p_RPAREN, err0)
+  in
+    if err = err0
+      then d0ecl_pragma(ent2, ent3, ent4) else synent_null()
+    // end of [if]
+  end // end of [T_SRPCODEGEN2]
+//
+| T_SRPCODEGEN2
+    ((*void*)) => let
+    val bt = 0
+    val () = incby1 ()
+    val ent2 = p_LPAREN (buf, bt, err)
+    val ent3 =
+      pif_fun (buf, bt, err, p_e0xpseq, err0)
+    // end of [val]
+    val ent4 = pif_fun (buf, bt, err, p_RPAREN, err0)
+  in
+    if err = err0
+      then d0ecl_codegen2(ent2, ent3, ent4) else synent_null()
+    // end of [if]
+  end // end of [T_SRPCODEGEN2]
+//
+| T_SORTDEF () => let
+    val bt = 0
+    val () = incby1 ()
+    val ent2 = p_s0rtdefseq (buf, bt, err)
+  in
+    if err = err0 then d0ecl_srtdefs (tok, ent2) else synent_null ()
   end
 | T_DATASORT () => let
     val bt = 0
@@ -947,13 +1008,6 @@ case+ tok.token_node of
     val ent2 = p_d0atsrtdecseq (buf, bt, err)
   in
     if err = err0 then d0ecl_datsrts (tok, ent2) else synent_null ()
-  end
-| T_SORTDEF () => let
-    val bt = 0
-    val () = incby1 ()
-    val ent2 = p_s0rtdefseq (buf, bt, err)
-  in
-    if err = err0 then d0ecl_srtdefs (tok, ent2) else synent_null ()
   end
 //
 | T_STACST () => let
@@ -1040,7 +1094,7 @@ case+ tok.token_node of
     val ent3 = pif_fun (buf, bt, err, p_colons0expopt, err0)
   in
     if err = err0
-      then d0ecl_classdec (tok, ent1, ent3) else synent_null ()
+      then d0ecl_classdec (tok, ent1, ent3) else synent_null()
     // end of [if]
   end
 //
@@ -1048,11 +1102,11 @@ case+ tok.token_node of
     val bt = 0
     val () = incby1 ()
     var _ent: synent?
-    val isrec = ptest_fun (buf, p_REC, _ent)
+    val isr = ptest_fun (buf, p_REC, _ent)
     val ent3 = pstar_fun1_AND {m0acdef} (buf, bt, err, p_m0acdef)
   in
     if err = err0
-      then d0ecl_macdefs (knd, isrec, tok, (l2l)ent3)
+      then d0ecl_macdefs (knd, isr, tok, (l2l)ent3)
       else let
         val () = list_vt_free (ent3) in synent_null ()
       end (* end of [else] *)
@@ -1066,19 +1120,12 @@ case+ tok.token_node of
     p_staload_tok (buf, bt, err, tok)
   end
 //
-| T_REQUIRE () => let
-    val bt = 0
-    val () = incby1 ()
-    val ent2 = p_s0tring (buf, bt, err)
-  in
-    if err = err0 then d0ecl_require (tok, ent2) else synent_null ()
-  end // end of [T_REQUIRE]
-//
-| _ => let
-    val () = err := err + 1 in synent_null ()
-  end (* end of [_] *)
+| _ (*rest-of-tokens*) =>
+    let val () = err := err + 1 in synent_null () end
 // end of [case]
 end // end of [p_d0ecl_tok]
+
+(* ****** ****** *)
 
 implement
 p_d0ecl
@@ -1229,7 +1276,8 @@ d0ecl_sta
   | srpifkind guad0ecl_sta
 *)
 
-fun p_d0ecl_sta_tok (
+fun
+p_d0ecl_sta_tok (
   buf: &tokbuf, bt: int, err: &int, tok: token
 ) : d0ecl = let
   val err0 = err
@@ -1483,20 +1531,25 @@ case+ tok.token_node of
 end // end of [p_i0mparg]
 
 (* ****** ****** *)
-
+//
 (*
-impqi0de ::= dqi0de | tmpqi0de tmps0expseq_gtlt GT
+impqi0de ::=
+| dqi0de
+| tmpqi0de tmps0expseq_gtlt GT
 *)
+//
 fun
 p_impqi0de (
   buf: &tokbuf, bt: int, err: &int
 ) : impqi0de = let
 //
-val err0 = err
-val ntok0 = tokbuf_get_ntok (buf)
+val
+err0 = err
+val
+ntok0 = tokbuf_get_ntok (buf)
 //
 val tok = tokbuf_get_token (buf)
-var ent: synent? // uninitialized
+var ent: synent? // uninitized
 //
 in
 case+ 0 of
@@ -1504,8 +1557,8 @@ case+ 0 of
     ptest_fun (
     buf, p_dqi0de, ent
   ) => let
-    val qid = synent_decode {dqi0de} (ent) in impqi0de_make_none (qid)
-  end
+    val qid = synent_decode{dqi0de}(ent) in impqi0de_make_none(qid)
+  end // end of [dqi0de]
 | _ when
     ptest_fun (
     buf, p_tmpqi0de, ent
@@ -1519,23 +1572,25 @@ case+ 0 of
     if err = err0
       then impqi0de_make_some (ent1, (l2l)ent2, ent3)
       else let
-        val () = list_vt_free (ent2) in tokbuf_set_ntok_null (buf, ntok0)
+        val () = list_vt_free (ent2) in tokbuf_set_ntok_null(buf, ntok0)
       end (* end of [else] *)
     // end of [if]
-  end
-| _ => let
+  end // end of [tmpqi0de]
+| _ (*rest-of-token*) => let
     val () = err := err + 1
     val () = the_parerrlst_add_ifnbt (bt, tok.token_loc, PE_impqi0de)
   in
-    synent_null ()
+    synent_null((*void*))
   end
 end // end of [p_impqi0de]
 
 (* ****** ****** *)
-
+//
 (*
-i0mpdec ::= impqi0de f0arg2seq colons0expopt EQ d0exp
+i0mpdec ::=
+| impqi0de f0arg2seq colons0expopt EQ d0exp
 *)
+//
 fun p_i0mpdec (
   buf: &tokbuf, bt: int, err: &int
 ) : i0mpdec = let
@@ -1565,7 +1620,7 @@ in
 end // end of [p_i0mpdec]
 
 (* ****** ****** *)
-
+//
 (*
 d0ec_dyn
   | d0ec
@@ -1584,7 +1639,7 @@ d0ec_dyn
   | LOCAL d0ecseq_dyn IN d0ecseq_dyn END
   | srpifkind guad0ec_dyn
 *)
-
+//
 fun
 p_d0ecl_dyn_tok
 (

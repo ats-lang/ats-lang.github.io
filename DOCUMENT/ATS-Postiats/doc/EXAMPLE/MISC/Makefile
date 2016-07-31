@@ -124,6 +124,14 @@ clean:: ; $(RMF) hanoi_dats.o
 clean:: ; $(RMF) hanoi_dats.c
 cleanall:: ; $(RMF) hanoi hanoi.exe
 
+all:: monad_list
+monad_list: monad_list.exe
+monad_list.exe: monad_list_dats.c ;   $(CCOPT) -D_GNU_SOURCE -O2     -I$(PATSHOMEQ) -I$(PATSHOMEQ)/ccomp/runtime -DATS_MEMALLOC_LIBC -o $@ $< 
+monad_list_dats.c: monad_list.dats ;   $(PATSOPT) -IATS$(PATSHOMEQ)/contrib --output monad_list_dats.c --dynamic monad_list.dats
+clean:: ; $(RMF) monad_list_dats.o
+clean:: ; $(RMF) monad_list_dats.c
+cleanall:: ; $(RMF) monad_list monad_list.exe
+
 all:: monad_maybe
 monad_maybe: monad_maybe.exe
 monad_maybe.exe: monad_maybe_dats.c ;   $(CCOPT) -D_GNU_SOURCE -O2     -I$(PATSHOMEQ) -I$(PATSHOMEQ)/ccomp/runtime -DATS_MEMALLOC_LIBC -o $@ $< 
@@ -147,6 +155,14 @@ morse_enum_dats.c: morse_enum.dats ;   $(PATSOPT) -IATS$(PATSHOMEQ)/contrib --ou
 clean:: ; $(RMF) morse_enum_dats.o
 clean:: ; $(RMF) morse_enum_dats.c
 cleanall:: ; $(RMF) morse_enum morse_enum.exe
+
+all:: memoization
+memoization: memoization.exe
+memoization.exe: memoization_dats.c ;   $(CCOPT) -D_GNU_SOURCE -O2     -I$(PATSHOMEQ) -I$(PATSHOMEQ)/ccomp/runtime -DATS_MEMALLOC_LIBC -o $@ $< 
+memoization_dats.c: memoization.dats ;   $(PATSOPT) -IATS$(PATSHOMEQ)/contrib --output memoization_dats.c --dynamic memoization.dats
+clean:: ; $(RMF) memoization_dats.o
+clean:: ; $(RMF) memoization_dats.c
+cleanall:: ; $(RMF) memoization memoization.exe
 
 all:: mysendmailist
 mysendmailist: mysendmailist.exe
@@ -179,6 +195,22 @@ queens_loop_dats.c: queens_loop.dats ;   $(PATSOPT) -IATS$(PATSHOMEQ)/contrib --
 clean:: ; $(RMF) queens_loop_dats.o
 clean:: ; $(RMF) queens_loop_dats.c
 cleanall:: ; $(RMF) queens_loop queens_loop.exe
+
+all:: queens_comb
+queens_comb: queens_comb.exe
+queens_comb.exe: queens_comb_dats.c ;   $(CCOPT) -D_GNU_SOURCE -O2     -I$(PATSHOMEQ) -I$(PATSHOMEQ)/ccomp/runtime -DATS_MEMALLOC_LIBC -o $@ $< 
+queens_comb_dats.c: queens_comb.dats ;   $(PATSOPT) -IATS$(PATSHOMEQ)/contrib --output queens_comb_dats.c --dynamic queens_comb.dats
+clean:: ; $(RMF) queens_comb_dats.o
+clean:: ; $(RMF) queens_comb_dats.c
+cleanall:: ; $(RMF) queens_comb queens_comb.exe
+
+all:: queens_lincomb
+queens_lincomb: queens_lincomb.exe
+queens_lincomb.exe: queens_lincomb_dats.c ;   $(CCOPT) -D_GNU_SOURCE -O2     -I$(PATSHOMEQ) -I$(PATSHOMEQ)/ccomp/runtime -DATS_MEMALLOC_LIBC -o $@ $< 
+queens_lincomb_dats.c: queens_lincomb.dats ;   $(PATSOPT) -IATS$(PATSHOMEQ)/contrib --output queens_lincomb_dats.c --dynamic queens_lincomb.dats
+clean:: ; $(RMF) queens_lincomb_dats.o
+clean:: ; $(RMF) queens_lincomb_dats.c
+cleanall:: ; $(RMF) queens_lincomb queens_lincomb.exe
 
 all:: randerlin
 randerlin: randerlin.exe

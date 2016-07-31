@@ -257,12 +257,21 @@ end // end of [local]
 (* ****** ****** *)
 
 implement
-s0tacst_tr (d) = let
-  val fil = $FIL.filename_get_current ()
-  val arg = a0msrtlst_tr (d.s0tacst_arg)
-  val res: s1rt = s0rt_tr (d.s0tacst_res)
+s0tacst_tr
+  (d0c) = let
+  val loc = d0c.s0tacst_loc
+  val sym = d0c.s0tacst_sym
+  val fil = $FIL.filename_get_current()
+  val arg = a0msrtlst_tr(d0c.s0tacst_arg)
+  val res: s1rt = s0rt_tr(d0c.s0tacst_res)
+  val extdef =
+    scstextdef_tr(d0c, sym, d0c.s0tacst_extopt)
+  // end of [val]
 in
-  s1tacst_make (d.s0tacst_loc, fil, d.s0tacst_sym, arg, res)
+//
+s1tacst_make
+  (loc, fil, d0c.s0tacst_sym, arg, res, extdef)
+//
 end // end of [s0tacst_tr]
 
 (* ****** ****** *)
@@ -491,7 +500,7 @@ d0exp_tr_lams_dyn
 //
 val () =
 if isrec then
-  termination_metric_check (loc, d1exp_is_metric d1e_def, efcopt)
+  termet_check (loc, d1exp_is_metric d1e_def, efcopt)
 // end of [if] // end of [val]
 //
 val ann = witht0ype_tr (d.f0undec_ann)
@@ -605,12 +614,19 @@ case+ opt of
     val srcloc = 
       $GLOB.the_PKGRELOC_get ()
     val () =
-    if srcloc = 0 then {
+    if (
+    srcloc = 0
+    ) then {
       val () =
       prerr_error1_loc (loc0)
       val () =
-      prerrln! (": the file [", given, "] is not available for inclusion.")
+      prerrln!
+      (
+        ": the file [", given, "] is not available for inclusion."
+      ) (* prerrln! *)
+//
       val () = the_trans1errlst_add (T1E_i0nclude_tr (d0c0))
+//
 (*
       val () = $ERR.abort{void}((*reachable*)) // HX: it is meaningful to continue
 *)
@@ -620,7 +636,9 @@ case+ opt of
   end // end of [None_vt]
 ) : filename // end of [val]
 //
-val d0cs = $PAR.parse_from_filename_toplevel2 (stadyn, fil)
+val
+d0cs =
+$PAR.parse_from_filename_toplevel2(stadyn, fil)
 //
 val (
   pfpush | isexi
@@ -767,12 +785,22 @@ fun auxload
   fil: filename, ldflag: &int >> int
 ) : d1eclist = let
 //
-val pname =
+val
+pname =
   $FIL.filename_get_partname (fil)
-val isdats = string_suffix_is_dats (pname)
 //
-val flag = (if isdats then 1(*dyn*) else 0(*sta*)): int
-val d0cs = $PAR.parse_from_filename_toplevel2 (flag, fil)
+val
+isdats = string_suffix_is_dats (pname)
+//
+val
+flag =
+(
+  if isdats then 1(*dyn*) else 0(*sta*)
+) : int // end of [val]
+//
+val
+d0cs =
+$PAR.parse_from_filename_toplevel2(flag, fil)
 //
 val (pfsave | ()) = the_trans1_env_save ()
 //
@@ -827,17 +855,24 @@ val opt = $FIL.filenameopt_make_relative (given)
 val fil =
 (
 case+ opt of
-| ~Some_vt (fil) => fil
-| ~None_vt ((*void*)) => let
+| ~Some_vt(fil) => fil
+| ~None_vt((*void*)) => let
     val srcloc =
-      $GLOB.the_PKGRELOC_get ()
+      $GLOB.the_PKGRELOC_get()
     val () =
-    if srcloc = 0 then {
+    if (
+    srcloc = 0
+    ) then {
       val () =
       prerr_error1_loc (loc0)
       val () =
-      prerrln! (": the file [", given, "] is not available for staloading.")
+      prerrln!
+      (
+        ": the file [", given, "] is not available for staloading."
+      ) (* prerrln! *)
+//
       val () = the_trans1errlst_add (T1E_s0taload_tr (d0c0))
+//
 (*
       val () = $ERR.abort{void}((*reachable*)) // HX: it is meaningful to continue
 *)
@@ -1034,7 +1069,8 @@ case+ d0c0.d0ecl_node of
     (id, qid, pval) => d1ecl_overload (loc0, id, qid, pval)
   // end of [D0Coverload]
 //
-| D0Ce0xpdef (id, def) => let
+| D0Ce0xpdef
+    (id, def) => let
     val def = (
       case+ def of
       | Some e0xp => e0xp_tr e0xp | None () => e1xp_none (loc0)
@@ -1052,23 +1088,46 @@ case+ d0c0.d0ecl_node of
     d1ecl_e1xpundef (loc0, id, def)
   end // end of [D0Ce0xpundef]
 //
-| D0Ce0xpact (knd, e0xp) => let
+| D0Ce0xpact
+    (knd, e0xp) => let
     val e1xp = e0xp_tr (e0xp)
 (*
     val () =
-      println! ("d0ecl_tr: D0Ce0xpact: e1xp = ", e1xp)
+    println!
+      ("d0ecl_tr: D0Ce0xpact: e1xp = ", e1xp)
     // end of [val]
 *)
     val v1al = e1xp_valize (e1xp)
-    val () = (case+ knd of
-      | E0XPACTassert () =>
+    val () =
+    ( case+ knd of
+      | E0XPACTerror() =>
+          do_e0xpact_error(e0xp.e0xp_loc, v1al)
+        // end of [E0XPACTerror]
+      | E0XPACTprerr() => do_e0xpact_prerr(v1al)
+      | E0XPACTprint() => do_e0xpact_print(v1al)
+      | E0XPACTassert() =>
           do_e0xpact_assert (e0xp.e0xp_loc, v1al)
-      | E0XPACTerror () => do_e0xpact_error (e0xp.e0xp_loc, v1al)
-      | E0XPACTprint () => do_e0xpact_prerr (v1al)
+        // end of [E0XPACTassert]
     ) : void // end of [val]
   in
     d1ecl_none (loc0)
   end // end of [D0Ce0xpact]
+//
+| D0Cpragma
+    (e0xps) => let
+    val
+    e1xps =
+    e0xplst_tr(e0xps)
+  in
+    d1ecl_pragma(loc0, e1xps)
+  end // end of [D0Cpragma]
+| D0Ccodegen
+    (knd, e0xps) => let
+    val
+    e1xps = e0xplst_tr(e0xps)
+  in
+    d1ecl_codegen(loc0, knd, e1xps)
+  end // end of [D0Ccodegen]
 //
 | D0Cdatsrts (d0cs) => let
     val d1cs =
@@ -1334,12 +1393,16 @@ val () = the_trans1errlst_finalize ()
 
 local
 
-fn intrep2int
+fun
+intrep2int
   (rep: string): int = let
-  val x = $UT.llint_make_string (rep) in int_of_llint (x)
+//
+val x = $UT.llint_make_string (rep) in int_of_llint (x)
+//
 end // end of [intrep2int]
 
-fun aux_dynloadflag (): void = let
+fun
+aux_dynloadflag(): void = let
   val opt = the_e1xpenv_find (ATS_DYNLOADFLAG)
 in
 //
@@ -1352,7 +1415,7 @@ case+ opt of
       $GLOB.the_DYNLOADFLAG_set (intrep2int(rep))
   | _ => let
       val () =
-        prerr_error1_loc (e.e1xp_loc)
+      prerr_error1_loc (e.e1xp_loc)
       val () = prerr ": non-integer definition for [ATS_DYNLOADFLAG]."
       val () = prerr_newline ((*void*))
     in
@@ -1366,7 +1429,8 @@ case+ opt of
 //
 end // end of [aux_dynloadflag]
 
-fun aux_dynloadname (): void = let
+fun
+aux_dynloadname(): void = let
   val opt = the_e1xpenv_find (ATS_DYNLOADNAME)
 in
 //
@@ -1377,7 +1441,7 @@ case+ opt of
       $GLOB.the_DYNLOADNAME_set (x)
   | _ => let
       val () =
-        prerr_error1_loc (e.e1xp_loc)
+      prerr_error1_loc (e.e1xp_loc)
       val () = prerr ": non-string definition for [ATS_DYNLOADNAME]."
       val () = prerr_newline ((*void*))
     in
@@ -1391,7 +1455,8 @@ case+ opt of
 //
 end // end of [aux_dynloadname]
 
-fun aux_mainatsflag (): void = let
+fun
+aux_mainatsflag(): void = let
   val opt = the_e1xpenv_find (ATS_MAINATSFLAG)
 in
 //
@@ -1404,7 +1469,7 @@ case+ opt of
       $GLOB.the_MAINATSFLAG_set (intrep2int(rep))
   | _ => let
       val () =
-        prerr_error1_loc (e.e1xp_loc)
+      prerr_error1_loc (e.e1xp_loc)
       val () = prerr ": non-integer definition for [ATS_MAINATSFLAG]."
       val () = prerr_newline ((*void*))
     in
@@ -1418,7 +1483,8 @@ case+ opt of
 //
 end // end of [aux_mainatsflag]
 
-fun aux_static_prefix (): void = let
+fun
+aux_static_prefix(): void = let
   val opt = the_e1xpenv_find (ATS_STATIC_PREFIX)
 in
 //
@@ -1465,16 +1531,15 @@ end // end of [local]
 %{$
 
 ats_bool_type
-patsopt_extnam_ismac (
+patsopt_extnam_ismac
+(
   ats_ptr_type ext, ats_ptr_type ext_new
 ) {
   int sgn ;
   char* p ; int len ; 
-/*
-  sgn = strncmp ((char*)ext, "#", 1) ;
-  if (sgn) sgn = strncmp ((char*)ext, "mac#", 4) ;
-*/
-  sgn = strncmp ((char*)ext, "mac#", 4) ;
+//
+  sgn =
+  strncmp((char*)ext, "mac#", 4) ;
 //
   if (sgn == 0) {
     p = strchr ((char*)ext, '#') ;
@@ -1486,12 +1551,14 @@ patsopt_extnam_ismac (
 } // end of [patsopt_extnam_ismac]
 
 ats_bool_type
-patsopt_extnam_issta (
+patsopt_extnam_issta
+(
   ats_ptr_type ext, ats_ptr_type ext_new
 ) {
   int sgn ;
   char* p ; int len ; 
-  sgn = strncmp ((char*)ext, "sta#", 4) ;
+  sgn =
+  strncmp((char*)ext, "sta#", 4) ;
   if (sgn == 0) {
     p = strchr ((char*)ext, '#') ;
     len = strlen (p) ;
@@ -1502,12 +1569,14 @@ patsopt_extnam_issta (
 } // end of [patsopt_extnam_issta]
 
 ats_bool_type
-patsopt_extnam_isext (
+patsopt_extnam_isext
+(
   ats_ptr_type ext, ats_ptr_type ext_new
 ) {
   int sgn ;
   char* p ; int len ; 
-  sgn = strncmp ((char*)ext, "ext#", 4) ;
+  sgn =
+  strncmp((char*)ext, "ext#", 4) ;
   if (sgn == 0) {
     p = strchr ((char*)ext, '#') ;
     len = strlen (p) ;

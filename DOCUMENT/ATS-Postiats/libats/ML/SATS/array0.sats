@@ -148,7 +148,7 @@ overload array0_get_at with array0_get_at_gint
 overload array0_get_at with array0_get_at_guint
 //
 (* ****** ****** *)
-
+//
 fun{a:t0p}
 array0_set_at_size
   (A: array0 (a), i: size_t, x: a):<!exnrefwrt> void
@@ -164,7 +164,7 @@ overload array0_set_at with array0_set_at_gint
 overload array0_set_at with array0_set_at_guint
 //
 (* ****** ****** *)
-
+//
 fun{a:vt0p}
 array0_exch_at_size
   (A: array0 (a), i: size_t, x: &a >> _):<!exnrefwrt> void
@@ -196,72 +196,91 @@ array0_subcirculate
 (* ****** ****** *)
 //
 fun{a:vt0p}
-print_array0 (A: array0 (a)): void
+print_array0 (A: array0(a)): void
 fun{a:vt0p}
-prerr_array0 (A: array0 (a)): void
+prerr_array0 (A: array0(a)): void
 //
 (*
 fun{}
 fprint_array$sep (out: FILEref): void
 *)
 fun{a:vt0p}
-fprint_array0 (out: FILEref, A: array0 (a)): void
+fprint_array0
+  (out: FILEref, A: array0(a)): void
 fun{a:vt0p}
 fprint_array0_sep
-  (out: FILEref, A: array0 (a), sep: string): void
+  (out: FILEref, A: array0(a), sep: string): void
 //
 (* ****** ****** *)
 
 fun{a:t0p}
-array0_copy (A: array0 (a)):<!refwrt> array0 (a)
+array0_copy(A: array0 (a)):<!refwrt> array0(a)
 
 (* ****** ****** *)
-
+//
 fun{a:t0p}
 array0_append
-  (A1: array0 (a), A2: array0 (a)):<!refwrt> array0 (a)
+  (array0 (a), array0 (a)):<!refwrt> array0(a)
 // end of [array0_append]
-
+//
 (* ****** ****** *)
-
+//
 fun{
 a:vt0p}{b:vt0p
 } array0_map
-  (A: array0 (a), f: (&a) -<cloref1> b): array0 (b)
-// end of [array0_map]
-
-fun{
-a:vt0p}{b:vt0p
-} array0_mapopt
-  (A: array0 (a), f: (&a) -<cloref1> Option_vt (b)): array0 (b)
-// end of [array0_mapopt]
-
+(
+  A: array0(a), fopr: (&a) -<cloref1> b
+) : array0(b) // end of [array0_map]
+//
 (* ****** ****** *)
 
 fun{a:vt0p}
 array0_tabulate
-  (asz: size_t, f: (size_t) -<cloref1> a): array0 (a)
+  (asz: size_t, fopr: (size_t) -<cloref1> a): array0(a)
 // end of [array0_tabulate]
 
 (* ****** ****** *)
-
+//
 fun{a:vt0p}
 array0_foreach
-  (A: array0 (a), f: (&a >> _) -<cloref1> void): void
+  (A: array0(a), fwork: (&a >> _) -<cloref1> void): void
 // end of [array0_foreach]
-
+//
+fun{a:vt0p}
+array0_foreach_method
+  (A: array0(a)) (fwork: (&a >> _) -<cloref1> void): void
+// end of [array0_foreach_methon]
+//
+overload .foreach with array0_foreach_method
+//
+(* ****** ****** *)
+//
 fun{a:vt0p}
 array0_iforeach
-  (A: array0 (a), f: (size_t, &a >> _) -<cloref1> void): void
+  (A: array0(a), fwork: (size_t, &a >> _) -<cloref1> void): void
 // end of [array0_iforeach]
-
+//
+fun{a:vt0p}
+array0_iforeach_method
+  (A: array0(a)) (fwork: (size_t, &a >> _) -<cloref1> void): void
+// end of [array0_iforeach_method]
+//
+overload .iforeach with array0_iforeach_method
+//
 (* ****** ****** *)
-
+//
 fun{a:vt0p}
 array0_rforeach
-  (A: array0 (a), f: (&a >> _) -<cloref1> void): void
+  (A: array0(a), fwork: (&a >> _) -<cloref1> void): void
 // end of [array0_rforeach]
-
+//
+fun{a:vt0p}
+array0_rforeach_method
+  (A: array0(a)) (fwork: (&a >> _) -<cloref1> void): void
+// end of [array0_rforeach]
+//
+overload .rforeach with array0_rforeach_method
+//
 (* ****** ****** *)
 
 (*
@@ -274,34 +293,65 @@ array0_find_exn
 
 fun{a:vt0p}
 array0_find_opt
-  (A: array0 (a), p: (&a) -<cloref1> bool): option0 (size_t)
+  (A: array0 (a), p: (&a) -<cloref1> bool): option0(size_t)
 // end of [array0_find_opt]
 
 (* ****** ****** *)
-
+//
 fun{
 res:vt0p}{a:vt0p
 } array0_foldleft
 (
-  A: array0 (a), ini: res, f: (res, &a) -<cloref1> res
+  A: array0 (a), ini: res, fopr: (res, &a) -<cloref1> res
 ) : res // end of [array0_foldleft]
-
+//
+fun{
+res:vt0p}{a:vt0p
+} array0_foldleft_method
+(
+  A: array0 (a), TYPE(res)) (ini: res, fopr: (res, &a) -<cloref1> res
+) : res // end of [array0_foldleft_method]
+//
+overload .foldleft with array0_foldleft_method
+//
+(* ****** ****** *)
+//
 fun{
 res:vt0p}{a:vt0p
 } array0_ifoldleft
 (
-  A: array0 (a), ini: res, f: (res, size_t, &a) -<cloref1> res
+  A: array0 (a), ini: res, fopr: (res, size_t, &a) -<cloref1> res
 ) : res // end of [array0_ifoldleft]
-
+//
+fun{
+res:vt0p}{a:vt0p
+} array0_ifoldleft_method
+(
+  A: array0 (a), TYPE(res)) (ini: res, fopr: (res, size_t, &a) -<cloref1> res
+) : res // end of [array0_ifoldleft_method]
+//
+overload .ifoldleft with array0_ifoldleft_method
+//
 (* ****** ****** *)
-
+//
+// HX: this one is tail-recursive!
+//
 fun{
 a:vt0p}{res:vt0p
 } array0_foldright
 (
-  A: array0 (a), f: (&a, res) -<cloref1> res, snk: res
+  A: array0 (a), fopr: (&a, res) -<cloref1> res, snk: res
 ) : res // end of [array0_foldright]
-
+//
+fun{
+a:vt0p}{res:vt0p
+} array0_foldright_method
+(
+  A: array0 (a), TYPE(res)) (fopr: (&a, res) -<cloref1> res, snk: res
+) : res // end of [array0_foldright_method]
+//
+overload .foldright with array0_foldright_method
+//
 (* ****** ****** *)
 //
 fun

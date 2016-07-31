@@ -133,7 +133,10 @@ token_node =
   | T_FOR of () // for
   | T_FORSTAR of () // for*
   | T_FUN of (funkind) // fn, fnx, fun, prfn and prfun
+//
   | T_IF of () // (dynamic) if
+  | T_IFCASE of () // (dynamic) ifcase
+//
   | T_IMPLEMENT of
       (int) // 0/1/2: implmnt/implement/primplmnt
   | T_IMPORT of () // import (for packages)
@@ -147,10 +150,14 @@ token_node =
   | T_OF of () // of
   | T_OP of () // op // HX: taken from ML
   | T_REC of () // rec
-  | T_REFAT of () // ref@
-  | T_REQUIRE of () // require
-  | T_SCASE of () // scase
-  | T_SIF of () // sif for static if
+//
+(*
+  | T_REFAT of () // HX-2015-12-10: 'ref@' removed
+*)
+//
+  | T_SIF of () // static if
+  | T_SCASE of () // static case
+//
   | T_SORTDEF of () // sortdef
   | T_STACST of () // stacst
   | T_STADEF of () // stadef
@@ -183,9 +190,12 @@ token_node =
   | T_FREEAT of () // free@
   | T_VIEWAT of () // view@
 //
-  | T_DLRARRPSZ of () // $arrpsz // $arrptrsize
+  | T_DLRDELAY of
+      (int(*lin*)) // $delay/$ldelay
 //
-  | T_DLRDELAY of (int(*lin*)) // $delay(type)/$ldelay(vtype)
+  | T_DLRARRPSZ of () // $arrpsz/$arrptrsize
+//
+  | T_DLRD2CTYPE of () // $d2ctype(foo)/foo<...>)
 //
   | T_DLREFFMASK of () // $effmask
   | T_DLREFFMASK_ARG of (int) // ntm(0), exn(1), ref(2), wrt(3), all(4)
@@ -237,13 +247,20 @@ token_node =
   | T_SRPENDIF of () // #endif
 //
   | T_SRPERROR of () // #error
+  | T_SRPPRERR of () // #prerr
   | T_SRPPRINT of () // #print
 //
   | T_SRPASSERT of () // #assert
-  | T_SRPDEFINE of () // #define
-  | T_SRPINCLUDE of () // #include
 //
   | T_SRPUNDEF of () // #undef
+  | T_SRPDEFINE of () // #define
+//
+  | T_SRPINCLUDE of () // #include
+  | T_SRPREQUIRE of () // #require
+//
+  | T_SRPPRAGMA of () // #pragma
+  | T_SRPCODEGEN2 of () // #codegen2
+  | T_SRPCODEGEN3 of () // #codegen3
 //
   | T_IDENT_alp of string // alnum
   | T_IDENT_sym of string // symbol
@@ -377,8 +394,15 @@ val LLAMAT : tnode
 val MACDEF  : tnode
 val MACRODEF : tnode
 
+(*
+//
 val REF : tnode
+//
 val REFAT : tnode
+//
+// HX-2015-12-10: 'ref@' removed
+//
+*)
 
 val TKINDEF : tnode
 

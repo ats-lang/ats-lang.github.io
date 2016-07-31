@@ -914,64 +914,103 @@ implement
 s0exp_tyarr (
   t_beg, elt, dim
 ) = let
-  val loc = t_beg.token_loc + dim.s0arrdim_loc
+//
+val loc =
+  t_beg.token_loc + dim.s0arrdim_loc
+//
 in '{
-  s0exp_loc= loc, s0exp_node= S0Etyarr (elt, dim.s0arrdim_dim)
+  s0exp_loc= loc
+, s0exp_node= S0Etyarr(elt, dim.s0arrdim_dim)
 } end // end of [s0exp_tyarr]
+
+(* ****** ****** *)
 
 implement
 s0exp_tytup (
   knd, t_beg, npf, xs, t_end
 ) = let
-  val loc = t_beg.token_loc + t_end.token_loc
+//
+val loc =
+  t_beg.token_loc + t_end.token_loc
+//
 in '{
-  s0exp_loc= loc, s0exp_node= S0Etytup (knd, npf, xs)
+  s0exp_loc= loc, s0exp_node= S0Etytup(knd, npf, xs)
 } end // end of [s0exp_tytup]
+
+(* ****** ****** *)
 
 implement
 s0exp_tyrec (
   knd, t_beg, npf, xs, t_end
 ) = let
-  val loc = t_beg.token_loc + t_end.token_loc
+//
+val loc =
+  t_beg.token_loc + t_end.token_loc
+//
 in '{
-  s0exp_loc= loc, s0exp_node= S0Etyrec (knd, npf, xs)
+  s0exp_loc= loc, s0exp_node= S0Etyrec(knd, npf, xs)
 } end // end of [s0exp_tyrec]
 
 implement
 s0exp_tyrec_ext (
   name, t_beg, npf, xs, t_end
 ) = let
-  val loc = t_beg.token_loc + t_end.token_loc
+//
+val loc =
+  t_beg.token_loc + t_end.token_loc
+//
 in '{
-  s0exp_loc= loc, s0exp_node= S0Etyrec_ext (name, npf, xs)
+  s0exp_loc= loc, s0exp_node= S0Etyrec_ext(name, npf, xs)
 } end // end of [s0exp_tyrec]
+
+(* ****** ****** *)
 
 implement
 s0exp_uni (
   t_beg, xs, t_end
 ) = let
-  val loc = t_beg.token_loc + t_end.token_loc
+//
+val loc =
+  t_beg.token_loc + t_end.token_loc
+//
 in '{
-  s0exp_loc= loc, s0exp_node= S0Euni (xs)
+  s0exp_loc= loc, s0exp_node= S0Euni(xs)
 } end // end of [s0exp_uni]
 
 implement
 s0exp_exi (
   funres, t_beg, xs, t_end
 ) = let
-  val loc = t_beg.token_loc + t_end.token_loc
+//
+val loc =
+  t_beg.token_loc + t_end.token_loc
+//
 in '{
-  s0exp_loc= loc, s0exp_node= S0Eexi (funres, xs)
+  s0exp_loc= loc, s0exp_node= S0Eexi(funres, xs)
 } end // end of [s0exp_exi]
 
 (* ****** ****** *)
 
 implement
-s0exp_ann (x1, x2) = let
-  val loc = x1.s0exp_loc + x2.s0rt_loc
+s0exp_ann(s0e, s0t) = let
+//
+val loc = s0e.s0exp_loc + s0t.s0rt_loc
+//
 in '{
-  s0exp_loc= loc, s0exp_node= S0Eann (x1, x2)
+  s0exp_loc= loc, s0exp_node= S0Eann(s0e, s0t)
 } end // end of [s0exp_ann]
+
+(* ****** ****** *)
+
+implement
+s0exp_d2ctype
+  (t_beg, d2ctp, t_end) = let
+//
+val loc = t_beg.token_loc + t_end.token_loc
+//
+in '{
+  s0exp_loc= loc, s0exp_node= S0Ed2ctype(d2ctp)
+} end // end of [s0exp_d2ctype]
 
 (* ****** ****** *)
 
@@ -1065,18 +1104,24 @@ in '{
 } end // end of [s0tacon_make_some_some]
 
 (* ****** ****** *)
-
+//
 implement
 s0tacst_make
-  (id, arg, s0t) = let
+(
+  id, arg, s0t, extopt
+) = let
   val loc = id.i0de_loc + s0t.s0rt_loc
 in '{
+//
   s0tacst_loc= loc
 , s0tacst_sym= id.i0de_sym
 , s0tacst_arg= arg
 , s0tacst_res= s0t
+//
+, s0tacst_extopt= extopt
+//
 } end // end of [s0tacst_make]
-
+//
 (* ****** ****** *)
 
 (*
@@ -1167,16 +1212,24 @@ in '{
 implement
 d0atcon_make
   (qua, id, ind, arg) = let
-  val loc_hd = (case+ qua of
-    | list_cons (x, _) => x.q0marg_loc
-    | list_nil () => id.i0de_loc
-  ) : location
-  val loc = (case+ arg of
-    | Some s0e => loc_hd + s0e.s0exp_loc
-    | None () => begin case+ ind of
+//
+val
+loc_hd = (
+  case+ qua of
+  | list_nil() => id.i0de_loc
+  | list_cons(x, _) => x.q0marg_loc
+) : location
+//
+val loc = (
+  case+ arg of
+  | Some s0e => loc_hd + s0e.s0exp_loc
+  | None () =>
+    (
+      case+ ind of
       | Some s0e => loc_hd + s0e.s0exp_loc | _ => loc_hd
-      end // end of [None]
-  ) : location // end of [val]
+    ) (* end of [None] *)
+) : location // end of [val]
+//
 in '{
   d0atcon_loc= loc
 , d0atcon_sym= id.i0de_sym
@@ -1546,13 +1599,13 @@ f0arg_met
   (t_beg, s0es, t_end) = let
   val loc = t_beg.token_loc + t_end.token_loc
 in '{
-  f0arg_loc= loc, f0arg_node= F0ARGmet (s0es)
+  f0arg_loc= loc, f0arg_node= F0ARGmet3 (s0es)
 } end // end of [f0arg_met]
 
 implement
 f0arg_met_nil (tok) = '{
-  f0arg_loc= tok.token_loc, f0arg_node= F0ARGmet (list_nil)
-} // end of [f0arg_met_nil]
+  f0arg_loc= tok.token_loc, f0arg_node= F0ARGmet3 (list_nil)
+} (* end of [f0arg_met_nil] *)
 
 (* ****** ****** *)
 
@@ -1948,6 +2001,24 @@ in '{
   d0exp_loc= loc
 , d0exp_node= D0Esifhead (hd, _cond, _then, _else)
 } end // end of [d0exp_sifhead]
+
+(* ****** ****** *)
+
+implement
+d0exp_ifcasehd
+  (ifhd, ifcls) = let
+  val tok =
+    ifhd.ifhead_tok
+  // end of [val]
+  val loc = tok.token_loc
+  val opt = list_last_opt<i0fcl> (ifcls)
+  val loc = (
+    case+ opt of
+    | ~Some_vt x => (loc + x.i0fcl_loc) | ~None_vt() => loc
+  ) : location // end of [val]
+in '{
+  d0exp_loc= loc, d0exp_node= D0Eifcasehd (ifhd, ifcls)
+} end // end of [d0exp_ifcasehd]
 
 (* ****** ****** *)
 
@@ -2409,6 +2480,8 @@ in '{
   guap0at_loc= loc, guap0at_pat= p0t, guap0at_gua= xs
 } end // end of [guap0at_make_some]
 
+(* ****** ****** *)
+
 implement
 c0lau_make
   (gp0t, seq, neg, body) = let
@@ -2436,6 +2509,21 @@ sc0lau_make (sp0t, d0e) = let
 in '{
   sc0lau_loc= loc, sc0lau_pat= sp0t, sc0lau_body= d0e
 } end // end of [sc0lau_make]
+
+(* ****** ****** *)
+
+implement
+i0fcl_make
+  (test, body) = let
+//
+val loc =
+  test.d0exp_loc + body.d0exp_loc
+//
+in '{
+  i0fcl_loc= loc
+, i0fcl_test= test
+, i0fcl_body= body
+} end // end of [i0fcl_make]
 
 (* ****** ****** *)
 
@@ -2569,18 +2657,30 @@ in (* in of [local] *)
 implement
 d0ecl_fixity
   (tok, prec, ids) = let
-  val-T_FIXITY (knd) = tok.token_node
-  val fxty = (case+ knd of
-    | FXK_infix () => F0XTYinf (prec, $FIX.ASSOCnon ())
-    | FXK_infixl () => F0XTYinf (prec, $FIX.ASSOClft ())
-    | FXK_infixr () => F0XTYinf (prec, $FIX.ASSOCrgt ())
-    | FXK_prefix () => F0XTYpre (prec)
-    | FXK_postfix () => F0XTYpos (prec)
-  ) : f0xty // end of [val]
-  val loc = (case+ ids of
-    | list_cons (id, ids) => loop (tok, id, ids)
-    | list_nil () => tok.token_loc
-  ) : location // end of [val]
+//
+val-
+T_FIXITY(knd) = tok.token_node
+//
+val fxty =
+( case+ knd of
+  | FXK_infix() =>
+    F0XTYinf(prec, $FIX.ASSOCnon())
+  | FXK_infixl() =>
+    F0XTYinf(prec, $FIX.ASSOClft())
+  | FXK_infixr() =>
+    F0XTYinf(prec, $FIX.ASSOCrgt())
+//
+  | FXK_prefix() => F0XTYpre (prec)
+  | FXK_postfix() => F0XTYpos (prec)
+//
+) : f0xty // end of [val]
+//
+val loc =
+( case+ ids of
+  | list_cons (id, ids) => loop (tok, id, ids)
+  | list_nil () => tok.token_loc
+) : location // end of [val]
+//
 in '{
   d0ecl_loc= loc, d0ecl_node= D0Cfixity (fxty, ids)
 } end // end of [d0ecl_infix]
@@ -2667,8 +2767,10 @@ implement
 d0ecl_e0xpdef
   (tok, ent2, ent3) = let
   val loc = tok.token_loc
-  val loc = (case+ ent3 of
-    | Some x => loc + x.e0xp_loc | None () => loc + ent2.i0de_loc
+  val loc = (
+    case+ ent3 of
+    | Some x => loc + x.e0xp_loc
+    | None() => loc + ent2.i0de_loc
   ) : location // end of [val]
   val def = (case+ ent3 of
     | Some x => let
@@ -2683,8 +2785,11 @@ in '{
   d0ecl_loc= loc, d0ecl_node= D0Ce0xpdef (ent2.i0de_sym, def)
 } end // end of [d0ecl_e0xpdef]
 
+(* ****** ****** *)
+
 implement
-d0ecl_e0xpundef (tok, ent2) = let
+d0ecl_e0xpundef
+  (tok, ent2) = let
   val loc = tok.token_loc + ent2.i0de_loc
 in '{
   d0ecl_loc= loc, d0ecl_node= D0Ce0xpundef (ent2.i0de_sym)
@@ -2695,35 +2800,196 @@ in '{
 implement
 d0ecl_e0xpact_assert
   (tok, ent2) = let
-  val loc = tok.token_loc + ent2.e0xp_loc
+//
+val loc =
+  tok.token_loc + ent2.e0xp_loc
+//
 in '{
-  d0ecl_loc= loc, d0ecl_node= D0Ce0xpact (E0XPACTassert, ent2)
+  d0ecl_loc= loc
+, d0ecl_node= D0Ce0xpact(E0XPACTassert, ent2)
 } end // end of [d0ecl_e0xpact_assert]
 
-implement
-d0ecl_e0xpact_print
-  (tok, ent2) = let
-  val loc = tok.token_loc + ent2.e0xp_loc
-in '{
-  d0ecl_loc= loc, d0ecl_node= D0Ce0xpact (E0XPACTprint, ent2)
-} end // end of [d0ecl_e0xpact_print]
+(* ****** ****** *)
 
 implement
 d0ecl_e0xpact_error
   (tok, ent2) = let
-  val loc = tok.token_loc + ent2.e0xp_loc
+//
+val loc =
+  tok.token_loc + ent2.e0xp_loc
+//
 in '{
-  d0ecl_loc= loc, d0ecl_node= D0Ce0xpact (E0XPACTerror, ent2)
+  d0ecl_loc= loc
+, d0ecl_node= D0Ce0xpact(E0XPACTerror, ent2)
 } end // end of [d0ecl_e0xpact_error]
+
+(* ****** ****** *)
+
+implement
+d0ecl_e0xpact_prerr
+  (tok, ent2) = let
+//
+val loc =
+  tok.token_loc + ent2.e0xp_loc
+//
+in '{
+  d0ecl_loc= loc
+, d0ecl_node= D0Ce0xpact(E0XPACTprerr, ent2)
+} end // end of [d0ecl_e0xpact_prerr]
+
+(* ****** ****** *)
+
+implement
+d0ecl_e0xpact_print
+  (tok, ent2) = let
+//
+val loc =
+  tok.token_loc + ent2.e0xp_loc
+//
+in '{
+  d0ecl_loc= loc
+, d0ecl_node= D0Ce0xpact(E0XPACTprint, ent2)
+} end // end of [d0ecl_e0xpact_print]
+
+(* ****** ****** *)
+
+implement
+d0ecl_pragma
+(
+  tok1, xs, tok2
+) = let
+//
+val () = d0ecl_pragma_process(xs)
+//
+val loc = tok1.token_loc + tok2.token_loc
+//
+in '{
+  d0ecl_loc= loc, d0ecl_node= D0Cpragma(xs)
+} end // end of [d0ecl_pragma]
+
+(* ****** ****** *)
+
+local
+
+typedef
+locpragma = $LOC.locpragma
+
+fun
+e0xp_is_location
+  (e0: e0xp): bool = let
+//
+val cat =
+(
+case+ e0.e0xp_node of
+| E0XPide(id) =>
+  $SYM.symbol_get_name(id)
+| E0XPstring(tok) => str where
+  {
+    val-$LEX.T_STRING(str) = tok.token_node
+  }
+| _(*rest-of-e0xp*) => ""
+) : string // end of [val]
+//
+in
+  if cat = "location" then true else false
+end // end of [e0xp_is_location]
+
+fun
+e2s(e0: e0xp): string =
+(
+case+ e0.e0xp_node of
+| E0XPide(id) =>
+  $SYM.symbol_get_name(id)
+| E0XPstring(tok) => str where
+  {
+    val-$LEX.T_STRING(str) = tok.token_node
+  }
+| _(*rest-of-e0xp*) => "??????"
+)
+
+fun
+locpragma_process0
+  (xs: e0xplst): locpragma =
+(
+case+ xs of
+| list_nil() => $LOC.locpragma0_make()
+| list_cons(x1, xs) => locpragma_process1 (x1, xs)
+)
+
+and
+locpragma_process1
+  (x1: e0xp, xs: e0xplst): locpragma =
+(
+case+ xs of
+| list_nil() => $LOC.locpragma1_make(e2s(x1))
+| list_cons(x2, xs) => $LOC.locpragma2_make(e2s(x1), e2s(x2))
+)
+
+in (* in-of-local *)
+
+implement
+d0ecl_pragma_process
+  (xs) = let
+(*
+val () = println! ("d0ecl_pragma_process")
+*)
+in
+//
+case+ xs of
+| list_nil() => ()
+| list_cons(x, xs) =>
+  (
+    case+ 0 of
+    | _ when
+        e0xp_is_location(x) =>
+      (
+        $LOC.the_location_pragma_set(locpragma_process0(xs))
+      )
+    | _ => ((*nothing*))
+  ) (* end of [list_cons] *)
+//
+end // end of [d0ecl_pragma_process]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+implement
+d0ecl_codegen2
+(
+  tok1, xs, tok2
+) = let
+//
+val loc = tok1.token_loc + tok2.token_loc
+//
+in '{
+  d0ecl_loc= loc, d0ecl_node= D0Ccodegen(2(*knd*), xs)
+} end // end of [d0ecl_codegen2]
+
+implement
+d0ecl_codegen3
+(
+  tok1, xs, tok2
+) = let
+//
+val loc = tok1.token_loc + tok2.token_loc
+//
+in '{
+  d0ecl_loc= loc, d0ecl_node= D0Ccodegen(3(*knd*), xs)
+} end // end of [d0ecl_codegen3]
+
+(* ****** ****** *)
 
 implement
 d0ecl_datsrts
   (tok, xs) = let
-  val loc = tok.token_loc
-  val loc = (case+
-    list_last_opt<d0atsrtdec> (xs) of
-    | ~Some_vt x => loc + x.d0atsrtdec_loc | ~None_vt _ => loc
-  ) : location // end of [val]
+//
+val loc = tok.token_loc
+val loc = (case+
+  list_last_opt<d0atsrtdec> (xs) of
+  | ~Some_vt x => loc + x.d0atsrtdec_loc | ~None_vt _ => loc
+) : location // end of [val]
+//
 in '{
   d0ecl_loc= loc, d0ecl_node= D0Cdatsrts (xs)
 } end // end of [d0ecl_datsrts]

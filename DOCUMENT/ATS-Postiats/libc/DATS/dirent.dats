@@ -32,27 +32,33 @@
 // Start Time: March, 2013
 //
 (* ****** ****** *)
-
-#define ATS_DYNLOADFLAG 0 // no need for dynloading at run-time
-#define ATS_EXTERN_PREFIX "atslib_" // prefix for external names
-
+//
+#define
+ATS_DYNLOADFLAG 0 // no need for dynloading at run-time
+//
+#define
+ATS_EXTERN_PREFIX "atslib_" // prefix for external names
+//
 (* ****** ****** *)
-
+//
 staload
-UN = "prelude/SATS/unsafe.sats"
-
+UN =
+"prelude/SATS/unsafe.sats"
+//
 (* ****** ****** *)
-
+//
 staload "libc/SATS/dirent.sats"
-
+//
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+dirent$PC_NAME_MAX((*void*)) = 256
+//
 (* ****** ****** *)
 
-implement{}
-dirent$PC_NAME_MAX ((*void*)) = 256
-
-(* ****** ****** *)
-
-implement{}
+implement
+{}(*tmp*)
 dirent_get_d_name_gc
   (ent) = let
 //
@@ -66,7 +72,8 @@ in
   str2
 end // end of [dirent_get_d_name_gc]
 
-implement{}
+implement
+{}(*tmp*)
 direntp_get_d_name_gc
   (entp) = let
 //
@@ -82,9 +89,11 @@ end // end of [direntp_get_d_name_gc]
 
 (* ****** ****** *)
 
-implement{}
+implement
+{}(*tmp*)
 compare_dirent_string
-  (ent1, str2) = let
+  (ent1, str2) = sgn where
+{
 //
 val
 (
@@ -93,9 +102,7 @@ val
 val sgn = compare_string_string ($UN.strptr2string(str1), str2)
 prval () = fpf1 (str1)
 //
-in
-  sgn
-end // end of [compare_dirent_string]
+} (* end of [compare_dirent_string] *)
 
 (* ****** ****** *)
 
@@ -143,24 +150,87 @@ val ofs = $extfcall
 , $extval (int, "d_name")
 )
 //
-val bsz = ofs + i2sz(dirent$PC_NAME_MAX()+1)
-val [l:addr] (pf, pfgc | p) = malloc_gc (bsz)
-prval pf = $UN.castview0{(dirent?)@l}(pf)
+val bsz =
+  ofs + i2sz(dirent$PC_NAME_MAX()+1)
+//
+val
+[l:addr](pf, pfgc | p) = malloc_gc(bsz)
+//
+prval(pf) =
+  $UN.castview0{(dirent?)@l}(pf)
 var res: ptr
 val err = readdir_r (dirp, !p, res)
 //
 in
 //
-if res > 0 then
-  $UN.castvwtp0{Direntp1}@(pf, pfgc | p)
+if
+res > 0
+then (
+//
+$UN.castvwtp0{Direntp1}@(pf, pfgc | p)
+//
+) (* end of [then] *)
 else let
-  prval () = opt_clear{dirent}(!p)
-  val () = ptr_free{dirent?}(pfgc, pf | p)
+  prval() = opt_clear{dirent}(!p)
+  val ((*freed*)) = ptr_free{dirent?}(pfgc, pf | p)
 in
   $UN.castvwtp0{Direntp0}(the_null_ptr)
-end (* end of [if] *)
+end (* end of [else] *)
 //
 end // end of [readdir_r_gc]
+
+(* ****** ****** *)
+//
+// HX-2016-07-17: Extension
+//
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+streamize_DIRptr_dirent
+  (dirp) = auxmain(dirp) where
+{
+//
+fun
+auxmain
+(
+  dirp: DIRptr1
+) : stream_vt(dirent) = $ldelay
+(
+let
+//
+val x0_con =
+  stream_vt_cons{dirent}(_, _)
+//
+val+stream_vt_cons(ent, xs) = x0_con
+//
+var res: ptr
+val err = readdir_r (dirp, ent, res)
+//
+in
+//
+if
+res > 0
+then let
+  prval() = opt_unsome(ent)
+in
+  xs := auxmain(dirp); fold@(x0_con); x0_con
+end // end of [then]
+else let
+  prval() = opt_unnone(ent)
+in
+  free@(x0_con); closedir_exn(dirp); stream_vt_nil((*void*))
+end // end of [else]
+//
+end : stream_vt_con(dirent) // end of [let]
+//
+,
+//
+closedir_exn(dirp)
+//
+) (* end of [auxmain] *)
+//
+} (* end of [streamize_DIRptr_dirent] *)
 
 (* ****** ****** *)
 

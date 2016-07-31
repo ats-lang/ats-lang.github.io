@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/filebas.atxt
-** Time of generation: Sat Jun 27 21:39:27 2015
+** Time of generation: Sun Jul  3 11:13:24 2016
 *)
 
 (* ****** ****** *)
@@ -890,7 +890,7 @@ end // end of [local]
 
 implement
 {}(*tmp*)
-fileref_foreach$bufsize () = i2sz(4 * 1024)
+fileref_foreach$bufsize() = i2sz(4*1024)
 
 (* ****** ****** *)
 
@@ -901,14 +901,98 @@ fileref_foreach$fworkv
 //
 implement
 {a}{env}
-array_foreach$cont (x, env) = true
+array_foreach$cont(x, env) = true
 implement
 array_foreach$fwork<char><env>
   (x, env) = fileref_foreach$fwork<env> (x, env)
 //
 in
-  ignoret (arrayref_foreach_env<char><env> (A, n, env))
+  ignoret(arrayref_foreach_env<char><env> (A, n, env))
 end // end of [fileref_foreach$fworkv]
+
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+streamize_fileref_char
+  (inp) = auxmain(inp) where
+{
+//
+typedef elt = char
+//
+fun
+auxmain
+(
+  inp
+: FILEref
+) : stream_vt(elt)= $ldelay
+(
+//
+let
+  val c0 = fileref_getc(inp)
+in
+  if c0 >= 0
+    then (
+      stream_vt_cons(int2char0(c0), auxmain(inp))
+    ) else (
+      fileref_close(inp); stream_vt_nil((*void*))
+    ) (* else *)
+  // end of [[if]
+end : stream_vt_con(elt)
+//
+,
+//
+fileref_close(inp) // called when the stream is freed
+//
+) (* end of [auxmain] *)
+//
+} (* end of [streamize_fileref_char] *)
+
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+streamize_fileref_line
+  (inp) = auxmain(inp) where
+{
+//
+vtypedef elt = Strptr1
+//
+fun
+auxmain
+(
+  inp
+: FILEref
+) : stream_vt(elt)= $ldelay
+(
+//
+let
+  val iseof = fileref_is_eof(inp)
+in
+  if iseof
+    then let
+      val () =
+        fileref_close(inp)
+      // end of [val]
+    in
+      stream_vt_nil((*void*))
+    end // end of [then]
+    else let
+      val line =
+        fileref_get_line_string(inp)
+      // end of [val]
+    in
+      stream_vt_cons(line, auxmain(inp))
+    end // end of [else]
+end : stream_vt_con(elt)
+//
+,
+//
+fileref_close(inp) // called when the stream is freed
+//
+) (* end of [auxmain] *)
+//
+} (* end of [streamize_fileref_line] *)
 
 (* ****** ****** *)
 

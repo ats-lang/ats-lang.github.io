@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/integer_ptr.atxt
-** Time of generation: Sat Jun 27 21:39:03 2015
+** Time of generation: Sun Jul  3 11:13:15 2016
 *)
 
 (* ****** ****** *)
@@ -49,8 +49,8 @@ sortdef tk = tkind
 
 (* ****** ****** *)
 
-typedef SHR(a:type) = a // for commenting purpose
-typedef NSH(a:type) = a // for commenting purpose
+typedef SHR(a:t@ype) = a // for commenting purpose
+typedef NSH(a:t@ype) = a // for commenting purpose
 
 (* ****** ****** *)
 //
@@ -108,13 +108,12 @@ fun g0int_min_intptr (x: intptr, y: intptr):<> intptr = "mac#%"
 //
 (* ****** ****** *)
 //
-fun fprint_intptr
-  : fprint_type (intptr) = "mac#%"
-overload fprint with fprint_intptr
-fun print_intptr (x: intptr): void = "mac#%"
-fun prerr_intptr (x: intptr): void = "mac#%"
+fun print_intptr (intptr): void = "mac#%"
+fun prerr_intptr (intptr): void = "mac#%"
+fun fprint_intptr : fprint_type (intptr) = "mac#%"
 overload print with print_intptr
 overload prerr with prerr_intptr
+overload fprint with fprint_intptr
 //
 (* ****** ****** *)
 //
@@ -147,13 +146,12 @@ fun g0uint_min_uintptr (x: uintptr, y: uintptr):<> uintptr = "mac#%"
 //
 (* ****** ****** *)
 //
-fun fprint_uintptr
-  : fprint_type (uintptr) = "mac#%"
-overload fprint with fprint_uintptr
-fun print_uintptr (x: uintptr): void = "mac#%"
-fun prerr_uintptr (x: uintptr): void = "mac#%"
+fun print_uintptr (uintptr): void = "mac#%"
+fun prerr_uintptr (uintptr): void = "mac#%"
+fun fprint_uintptr : fprint_type (uintptr) = "mac#%"
 overload print with print_uintptr
 overload prerr with prerr_uintptr
+overload fprint with fprint_uintptr
 //
 (* ****** ****** *)
 //

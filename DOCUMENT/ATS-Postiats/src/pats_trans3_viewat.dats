@@ -144,7 +144,7 @@ case+ ctxtopt of
 | None ((*void*)) => let
     val (
     ) = auxerr_context
-      (loc0, s2e_elt, d3ls) in s2exp_err (s2rt_view)
+      (loc0, s2e_elt, d3ls) in s2exp_errexp(s2rt_view)
   end // end of [None]
 //
 end // end of [auxmain]
@@ -158,10 +158,10 @@ s2addr_viewat_deref
 in
 //
 case+ opt of
-| ~Some_vt (pfobj) =>
-    auxmain (loc0, pfobj, d3ls)
-| ~None_vt () => let
-    val () = auxerr_pfobj (loc0, s2l) in s2exp_err (s2rt_view)
+| ~Some_vt(pfobj) =>
+    auxmain(loc0, pfobj, d3ls)
+| ~None_vt((*void*)) => let
+    val () = auxerr_pfobj(loc0, s2l) in s2exp_errexp(s2rt_view)
   end (* end of [None_vt] *)
 end // end of [s2addr_viewat_deref]
 
@@ -238,13 +238,15 @@ fun auxck_addreq
 (
   loc0: loc_t, s2e1, d3ls, s2e2
 ) : void = let
-  val s2e2 = s2exp_hnfize (s2e2)
-  var s2ls: s2lablst // uninitialized
-  val s2e2_rt = s2addr_get_root (s2e2, s2ls)
-  val rooteq = s2exp_syneq (s2e1, s2e2_rt)
-  val addreq = (
-    if rooteq then eq_dlablst_slablst (d3ls, s2ls) else false
-  ) : bool // end of [val]
+//
+val s2e2 = s2exp_hnfize (s2e2)
+var s2ls: s2lablst // uninitized
+val s2e2_rt = s2addr_get_root (s2e2, s2ls)
+val rooteq = s2exp_syneq (s2e1, s2e2_rt)
+val addreq = (
+  if rooteq then eq_dlablst_slablst (d3ls, s2ls) else false
+) : bool // end of [val]
+//
 in
 //
 if ~addreq then let

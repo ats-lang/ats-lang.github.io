@@ -343,9 +343,11 @@ val (pf1box | p1) = arrayref_get_viewptr (A1)
 and (pf2box | p2) = arrayref_get_viewptr (A2)
 //
 extern
-praxi unbox : {v:view} vbox (v) -<prf> (v, v -<lin,prf> void)
+praxi unbox
+  : {v:view} vbox(v) -<prf> (v, v -<lin,prf> void)
 //
-prval (pf1, fpf1) = unbox (pf1box) and (pf2, fpf2) = unbox (pf2box)
+prval (pf1, fpf1) = unbox (pf1box)
+prval (pf2, fpf2) = unbox (pf2box)
 //
 val asz = asz1 + asz2
 val (pfarr, pfgc | q) = array_ptr_alloc<a> (asz)
@@ -459,7 +461,11 @@ val _(*asz*) = arrayref_foreach<a> (A, asz)
 in
   // nothing
 end // end of [array0_foreach]
-
+//
+implement
+{a}(*tmp*)
+array0_foreach_method(A0) = lam(f) => array0_foreach<a>(A0, f)
+//
 (* ****** ****** *)
 
 implement
@@ -484,7 +490,11 @@ val _(*asz*) = arrayref_iforeach<a> (A, asz)
 in
   // nothing
 end // end of [array0_iforeach]
-
+//
+implement
+{a}(*tmp*)
+array0_iforeach_method(A0) = lam(f) => array0_iforeach<a>(A0, f)
+//
 (* ****** ****** *)
 
 implement
@@ -509,7 +519,11 @@ val _(*asz*) = arrayref_rforeach<a> (A, asz)
 in
   // nothing
 end // end of [array0_rforeach]
-
+//
+implement
+{a}(*tmp*)
+array0_rforeach_method(A0) = lam(f) => array0_rforeach<a>(A0, f)
+//
 (* ****** ****** *)
 
 implement
@@ -531,12 +545,18 @@ array_foreach$fwork<a><res> (x, env) = env := f (env, x)
 //
 var
 result: res = ini
-val _(*asz*) = arrayref_foreach_env<a><res> (A, asz, result)
+val _(*asz*) =
+  arrayref_foreach_env<a><res> (A, asz, result)
 //
 in
   result
 end // end of [array0_foldleft]
-
+//
+implement
+{res}{a}
+array0_foldleft_method(A0, _) =
+  lam(ini, fopr) => array0_foldleft<res><a>(A0, ini, fopr)
+//
 (* ****** ****** *)
 
 implement
@@ -558,12 +578,18 @@ array_iforeach$fwork<a><res> (i, x, env) = (env := f (env, i, x))
 //
 var
 result: res = ini
-val _(*asz*) = arrayref_iforeach_env<a><res> (A, asz, result)
+val _(*asz*) =
+  arrayref_iforeach_env<a><res> (A, asz, result)
 //
 in
   result
 end // end of [array0_ifoldleft]
-
+//
+implement
+{res}{a}
+array0_ifoldleft_method(A0, _) =
+  lam(ini, fopr) => array0_ifoldleft<res><a>(A0, ini, fopr)
+//
 (* ****** ****** *)
 
 implement
@@ -585,12 +611,18 @@ array_rforeach$fwork<a><res> (x, env) = env := f (x, env)
 //
 var
 result: res = snk
-val _(*asz*) = arrayref_rforeach_env<a><res> (A, asz, result)
+val _(*asz*) =
+  arrayref_rforeach_env<a><res> (A, asz, result)
 //
 in
   result
 end // end of [array0_foldright]
-
+//
+implement
+{a}{res}
+array0_foldright_method(A0, _) =
+  lam(fopr, snk) => array0_foldright<a><res>(A0, fopr, snk)
+//
 (* ****** ****** *)
 
 implement

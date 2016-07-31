@@ -56,7 +56,7 @@ prerr_FILENAME<> () = prerr "pats_ccomp_dynexp"
 (* ****** ****** *)
 //
 staload
-GLOB = "./pats_global.sats"
+GLOBAL = "./pats_global.sats"
 //  
 (* ****** ****** *)
 
@@ -123,10 +123,12 @@ val opt = ccompenv_find_vbindmapall (env, d2v)
 //
 in
 case+ opt of
-| ~Some_vt (pmv) =>
-    d2var_ccomp_some (env, loc0, hse0, d2v, pmv)
-| ~None_vt () =>
-    primval_err (loc0, hse0) // HX-2013-04: deadcode?!
+| ~Some_vt(pmv) =>
+    d2var_ccomp_some(env, loc0, hse0, d2v, pmv)
+  // end of [Some_vt]
+| ~None_vt((*void*)) =>
+    primval_error (loc0, hse0) // HX-2013-04: deadcode?!
+  // end of [None_vt]
 //
 end // end of [d2var_ccomp]
 
@@ -334,7 +336,7 @@ case+ hde0.hidexp_node of
 //
 | HDElet (hids, hde_scope) => let
 //
-    val (pfpush | ()) = ccompenv_push (env)
+    val (pfpush|()) = ccompenv_push (env)
 //
     val pmds = hideclist_ccomp (env, hids)
     val ins_push = instr_letpush (loc0, pmds)
@@ -345,7 +347,7 @@ case+ hde0.hidexp_node of
     val ins_pop = instr_letpop (loc0)
     val () = instrseq_add (res, ins_pop)
 //
-    val ((*void*)) = ccompenv_pop (pfpush | env)
+    val ((*popped*)) = ccompenv_pop (pfpush | env)
 //
   in
     pmv_scope
@@ -415,7 +417,7 @@ case+ hde0.hidexp_node of
       (": [sif] is not supported after proof-erasure.")
     // end of [val]
   in
-    primval_err (loc0, hse0)
+    primval_error (loc0, hse0)
   end (* end of [HDEsif] *)
 //
 | _(*unspported*) => let
@@ -459,10 +461,14 @@ case+ hdes of
     (hde, hdes) => let
     val pmv =
       hidexp_ccomp (env, res, hde)
-    val () = pmvs := list_vt_cons {..}{0} (pmv, ?)
+    // end of [val]
+    val () =
+    (
+      pmvs := list_vt_cons {..}{0} (pmv, ?)
+    ) (* end of [val] *)
     val list_vt_cons (_, !p_pmvs) = pmvs
     val () = loop (env, res, hdes, !p_pmvs)
-    val () = fold@ (pmvs)
+    prval ((*folded*)) = fold@ (pmvs)
   in
     // nothing
   end // end of [list_cons]
@@ -503,7 +509,7 @@ case+ hdes of
     val () = pmvs := list_vt_cons {..}{0} (pmv, ?)
     val list_vt_cons (_, !p_pmvs) = pmvs
     val () = loop (env, res, hdes, !p_pmvs)
-    val () = fold@ (pmvs)
+    prval ((*folded*)) = fold@ (pmvs)
   in
     // nothing
   end // end of [list_cons]
@@ -525,33 +531,59 @@ end // end of [hidexplst_ccompv]
 (* ****** ****** *)
 
 extern
-fun labhidexplst_ccomp
-  (env: !ccompenv, res: !instrseq, lhdes: labhidexplst): labprimvalist
-// end of [labhidexplst_ccomp]
+fun
+labhidexplst_ccomp
+(
+  env: !ccompenv, res: !instrseq, lhdes: labhidexplst
+) : labprimvalist // end of [labhidexplst_ccomp]
 
 implement
 labhidexplst_ccomp
   (env, res, lhdes) = let
 //
-fun loop (
+fun
+loop
+(
   env: !ccompenv
 , res: !instrseq
 , lhdes: labhidexplst
 , lpmvs: &labprimvalist_vt? >> labprimvalist_vt
 ) : void = let
+//
+(*
+val () =
+println! ("labhidexplst_ccomp: loop")
+*)
+//
 in
 //
 case+ lhdes of
 | list_cons
     (lhde, lhdes) => let
-    val LABHIDEXP (lab, hde) = lhde
+//
+    val LABHIDEXP(lab, hde) = lhde
+//
+(*
+    val () =
+      println! ("loop: hde = ", hde)
+    // end of [val]
+    val () =
+      println! ("loop: hde.type = ", hde.hidexp_type)
+    // end of [val]
+*)
+//
     val pmv =
       hidexp_ccomp (env, res, hde)
+    // end of [val]
+//
     val lpmv = LABPRIMVAL (lab, pmv)
-    val () = lpmvs := list_vt_cons {..}{0} (lpmv, ?)
-    val list_vt_cons (_, !p_lpmvs) = lpmvs
+    val () =
+    (
+      lpmvs := list_vt_cons{..}{0}(lpmv, ?)
+    ) (* end of [val] *)
+    val+list_vt_cons(_, !p_lpmvs) = lpmvs
     val () = loop (env, res, lhdes, !p_lpmvs)
-    val () = fold@ (lpmvs)
+    prval ((*folded*)) = fold@ (lpmvs)
   in
     // nothing
   end // end of [list_cons]
@@ -872,11 +904,11 @@ in
 //
 case+ 0 of
 | _ when
-    d2cst_is_sizeof (d2c) => let
-    val-list_cons (t2ma, _) = t2mas
+    d2cst_is_sizeof(d2c) => let
+    val-list_cons(t2ma, _) = t2mas
     val tloc = t2ma.t2mpmarg_loc
-    val-list_cons (targ, _) = t2ma.t2mpmarg_arg
-    val hselt = $TYER.s2exp_tyer_shallow (tloc, targ)
+    val-list_cons(targ, _) = t2ma.t2mpmarg_arg
+    val hselt = $TYER.s2exp_tyer_shallow(tloc, targ)
   in
     primval_make_sizeof (loc0, hselt)
   end // ...
@@ -1222,7 +1254,7 @@ var added: int = 0
 //
 val
 tlcalopt =
-  $GLOB.the_CCOMPATS_tlcalopt_get()
+  $GLOBAL.the_CCOMPATS_tlcalopt_get()
 //
 val isret =
 (
@@ -1242,7 +1274,9 @@ case+
 pmv_fun.primval_node of
 //
 | PMVcst (d2c) => let
-    val opt = ccompenv_find_tailcalenv_cst (env, d2c)
+    val opt =
+      ccompenv_find_tailcalenv_cst (env, d2c)
+    // end of [val]
   in
     case+ opt of
     | ~Some_vt (fl) => let
@@ -1298,13 +1332,18 @@ pmv_fun.primval_node of
     | _ (*ntl < 0*) => ((*void*))
   end // end of [PMVd2vfunlab]
 //
-| PMVtmpltcst (d2c, t2mas) => let
-    val opt = ccompenv_find_tailcalenv_tmpcst (env, d2c, t2mas)
+| PMVtmpltcst
+    (d2c, t2mas) => let
+    val opt =
+      ccompenv_find_tailcalenv_tmpcst (env, d2c, t2mas)
+    // end of [val]
   in
     case+ opt of
     | ~Some_vt (fl) => let
         val ntl = 0
-        val ins = instr_fcall2 (loc0, tmpret, fl, ntl, hse_fun, pmvs_arg)
+        val ins =
+          instr_fcall2 (loc0, tmpret, fl, ntl, hse_fun, pmvs_arg)
+        // end of [val]
         val () = added := added + 1
         val () = instrseq_add (res, ins)
       in
@@ -1313,7 +1352,26 @@ pmv_fun.primval_node of
     | ~None_vt ((*void*)) => ((*void*))
   end // end of [PMVtmpltcst]
 //
+| PMVtmpltvar
+    (d2v, t2mas) => let
+    var ntl: int = 0
+    val opt =
+      ccompenv_find_tailcalenv_tmpvar (env, d2v, t2mas, ntl)
+    // end of [val]
+  in
+    case+ opt of
+    | ~Some_vt (fl) => let
+        val ins = instr_fcall2 (loc0, tmpret, fl, ntl, hse_fun, pmvs_arg)
+        val () = added := added + 1
+        val () = instrseq_add (res, ins)
+      in
+        // nothing
+      end // end of [Some_vt]
+    | ~None_vt ((*void*)) => ((*void*))
+  end // end of [PMVtmpltvar]
+//
 | _ (*non-tail-recursive*) => () // HX: [INSfcall] is to be added
+//
 ) (* end of [if] *)
 //
 (*
@@ -1610,11 +1668,13 @@ auxlst
 //
 case+ hdes_elt of
 | list_cons _ => let
-    val pmvs_elt = hidexplst_ccompv (env, res, hdes_elt)
+    val
+    pmvs_elt =
+    hidexplst_ccompv (env, res, hdes_elt)
   in
     auxlst2 (env, res, arrp, hse_elt, pmvs_elt, asz, pmvs_elt)
   end // end of [list_cons]
-| list_nil ((*void*)) => () // HX: uninitialized array
+| list_nil((*void*)) => () // HX: uninitized array
 //
 ) (* end of [auxlst] *)
 

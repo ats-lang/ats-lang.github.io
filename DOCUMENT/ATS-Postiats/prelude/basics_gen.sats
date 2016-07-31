@@ -105,13 +105,6 @@ tostrptr_ref (x: &INV(a)):<!wrt> Strptr1
 
 (* ****** ****** *)
 
-fun{a:t0p}
-fprint_val (out: FILEref, x: a): void
-fun{a:vt0p}
-fprint_ref (out: FILEref, x: &INV(a)): void
-
-(* ****** ****** *)
-
 (*
 //
 fun{a:t0p}
@@ -126,6 +119,20 @@ prerr_ref (x: &INV(a)): void // = fprint_ref (stderr_ref, x)
 //
 *)
 
+(* ****** ****** *)
+//
+fun{a:t0p}
+fprint_val (out: FILEref, x: a): void
+fun{a:vt0p}
+fprint_ref (out: FILEref, x: &INV(a)): void
+//
+(* ****** ****** *)
+//
+fun
+{src:vt0p}
+{elt:vt0p}
+streamize_val (source: src): stream_vt(elt)
+//
 (* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then

@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/integer_fixed.atxt
-** Time of generation: Sat Jun 27 21:39:26 2015
+** Time of generation: Sun Jul  3 11:13:23 2016
 *)
 
 (* ****** ****** *)
@@ -50,6 +50,17 @@
 //
 staload UN = "prelude/SATS/unsafe.sats"
 //
+(* ****** ****** *)
+
+implement
+g0int2int<int8knd,intknd> = g0int2int_int8_int
+implement
+g0int2int<int16knd,intknd> = g0int2int_int16_int
+implement
+g0int2int<int32knd,intknd> = g0int2int_int32_int
+implement
+g0int2int<int64knd,intknd> = g0int2int_int64_int
+
 (* ****** ****** *)
 
 implement g0int_neg<int8knd> = g0int_neg_int8
@@ -171,6 +182,35 @@ implement g0int_max<int64knd> = g0int_max_int64
 implement g0int_min<int64knd> = g0int_min_int64
 //
 implement fprint_val<int64> (out, x) = fprint_int64 (out, x)
+//
+(* ****** ****** *)
+//
+implement
+g0int2uint<int8knd,uintknd> = g0int2uint_int8_uint
+implement
+g0int2uint<int16knd,uintknd> = g0int2uint_int16_uint
+implement
+g0int2uint<int32knd,uintknd> = g0int2uint_int32_uint
+implement
+g0int2uint<int64knd,uintknd> = g0int2uint_int64_uint
+//
+implement
+g0uint2int<uint8knd,intknd> = g0uint2int_uint8_int
+implement
+g0uint2int<uint16knd,intknd> = g0uint2int_uint16_int
+implement
+g0uint2int<uint32knd,intknd> = g0uint2int_uint32_int
+implement
+g0uint2int<uint64knd,intknd> = g0uint2int_uint64_int
+//
+implement
+g0uint2uint<uint8knd,uintknd> = g0uint2uint_uint8_uint
+implement
+g0uint2uint<uint16knd,uintknd> = g0uint2uint_uint16_uint
+implement
+g0uint2uint<uint32knd,uintknd> = g0uint2uint_uint32_uint
+implement
+g0uint2uint<uint64knd,uintknd> = g0uint2uint_uint64_uint
 //
 (* ****** ****** *)
 

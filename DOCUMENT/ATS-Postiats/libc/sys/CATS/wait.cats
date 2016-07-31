@@ -6,7 +6,7 @@
 
 /* (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/libc/sys/CATS/CODEGEN/wait.atxt
-** Time of generation: Fri Dec 19 13:34:40 2014
+** Time of generation: Wed Jun  1 19:08:18 2016
 */
 
 /* ****** ****** */
@@ -52,7 +52,8 @@
 //
 /* ****** ****** */
 //
-// HX: it is yet empty
+#define atslib_wait_void() wait((int*)0)
+#define atslib_wait_status(x) wait((int*)x)
 //
 /* ****** ****** */
 

@@ -44,9 +44,11 @@ UN =
 "prelude/SATS/unsafe.sats"
 //
 (* ****** ****** *)
-
+//
 staload "./pats_jsonize.sats"
-
+staload
+_(*anon*) = "./pats_jsonize.dats"
+//
 (* ****** ****** *)
 
 staload "./pats_staexp2.sats"
@@ -54,7 +56,7 @@ staload "./pats_dynexp2.sats"
 
 (* ****** ****** *)
 
-staload "./pats_synent2_jsonize.sats"
+staload "./pats_jsonize_synent2.sats"
 
 (* ****** ****** *)
 
@@ -68,10 +70,10 @@ staload "./pats_constraint3.sats"
 #define cons list_cons
 
 (* ****** ****** *)
-
+//
 macdef
 jsonize_loc (x) = jsonize_location (,(x))
-
+//
 (* ****** ****** *)
 
 (*
@@ -213,10 +215,10 @@ end // end of [jsonize_s3itm]
 //
 implement
 jsonize_s3itmlst
-  (s3is) = jsonize_list_fun (s3is, jsonize_s3itm)
+  (s3is) = jsonize_list_fun<s3itm>(s3is, jsonize_s3itm)
 implement
 jsonize_s3itmlstlst
-  (s3iss) = jsonize_list_fun (s3iss, jsonize_s3itmlst)
+  (s3iss) = jsonize_list_fun<s3itmlst>(s3iss, jsonize_s3itmlst)
 //
 (* ****** ****** *)
 
@@ -309,7 +311,9 @@ val c3t0 = auxmain (c3t0)
 in
 //
 jsonval_labval3
-  ("c3nstr_loc", loc0, "c3nstr_kind", ctk0, "c3nstr_node", c3t0)
+(
+  "c3nstr_loc", loc0, "c3nstr_kind", ctk0, "c3nstr_node", c3t0
+) (* jsonval_labval3 *) 
 //
 end // end of [jsonize_c3nstr]
 
@@ -317,8 +321,113 @@ end // end of [jsonize_c3nstr]
 
 implement
 jsonize_c3nstropt
-  (opt) = jsonize_option_fun (opt, jsonize_c3nstr)
+  (opt) = jsonize_option_fun<c3nstr>(opt, jsonize_c3nstr)
 // end of [jsonize_c3nstropt]
+
+(* ****** ****** *)
+
+local
+//
+typedef s2tds = s2rtdatset
+//
+fun
+aux_s2rt
+(
+  s2t0: s2rt, res: s2tds
+) : s2tds =
+(
+case+ s2t0 of
+| S2RTbas(s2tb) => aux_s2rtbas(s2tb, res)
+| S2RTfun(s2ts, s2t) => let
+    val res = aux_s2rtlst(s2ts, res) in aux_s2rt(s2t, res)
+  end // end of [S2RTfun]
+| S2RTtup(s2ts) => aux_s2rtlst(s2ts, res)
+| S2RTVar _ => res
+| S2RTerr _ => res
+)
+//
+and
+aux_s2rtlst
+(
+  s2ts: s2rtlst, res: s2tds
+) : s2tds =
+(
+case+ s2ts of
+| list_nil() => res
+| list_cons(s2t, s2ts) => let
+    val res = aux_s2rt(s2t, res) in aux_s2rtlst(s2ts, res)
+  end // end of [list_cons]
+)
+//
+and
+aux_s2rtbas
+(
+  s2tb: s2rtbas, res: s2tds
+) : s2tds =
+(
+case+ s2tb of
+| S2RTBASpre _ => res
+| S2RTBASimp _ => res
+| S2RTBASdef(s2td) => s2rtdatset_add(res, s2td)
+)
+//
+fun
+aux_s2cst
+(
+  s2c: s2cst, res: s2tds
+) : s2tds =
+(
+  aux_s2rt(s2cst_get_srt(s2c), res)
+)
+fun
+aux_s2cstlst
+(
+  s2cs: s2cstlst, res: s2tds
+) : s2tds =
+(
+case+ s2cs of
+| list_nil() => res
+| list_cons(s2c, s2cs) =>
+    aux_s2cstlst(s2cs, aux_s2cst(s2c, res))
+  // end of [list_cons]
+)
+//
+fun
+aux_s2var
+(
+  s2v: s2var, res: s2tds
+) : s2tds =
+(
+  aux_s2rt(s2var_get_srt(s2v), res)
+)
+fun
+aux_s2varlst
+(
+  s2vs: s2varlst, res: s2tds
+) : s2tds =
+(
+case+ s2vs of
+| list_nil() => res
+| list_cons(s2v, s2vs) =>
+    aux_s2varlst(s2vs, aux_s2var(s2v, res))
+  // end of [list_cons]
+)
+//
+in (* in-of-local *)
+
+fun
+c3nstr_get_s2rtdatlst
+(
+  s2cs: s2cstlst, s2vs: s2varlst
+) : List_vt(s2rtdat) = let
+  val res = s2rtdatset_nil()
+  val res = aux_s2cstlst(s2cs, res)
+  val res = aux_s2varlst(s2vs, res)
+in
+  s2rtdatset_listize(res)
+end // end of [c3nstr_get_s2rtdatlst]
+
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -334,13 +443,25 @@ val
 val s2cs = s2cstset_vt_listize_free (s2cs)
 val s2vs = s2varset_vt_listize_free (s2vs)
 //
-val jsv_s2cs =
-  jsonize_list_fun{s2cst}($UN.linlst2lst(s2cs), jsonize_s2cst_long)
-val () = list_vt_free (s2cs)
+val
+jsv_s2cs =
+jsonize_list_fun<s2cst>($UN.linlst2lst(s2cs), jsonize_s2cst_long)
+val
+jsv_s2vs =
+jsonize_list_fun<s2var>($UN.linlst2lst(s2vs), jsonize_s2var_long)
 //
-val jsv_s2vs =
-  jsonize_list_fun{s2var}($UN.linlst2lst(s2vs), jsonize_s2var_long)
+val
+s2tds =
+c3nstr_get_s2rtdatlst
+  ($UN.linlst2lst(s2cs), $UN.linlst2lst(s2vs))
+//
+val
+jsv_s2tds =
+jsonize_list_fun<s2rtdat>($UN.linlst2lst(s2tds), jsonize_s2rtdat_long)
+//
+val () = list_vt_free (s2cs)
 val () = list_vt_free (s2vs)
+val () = list_vt_free (s2tds)
 //
 val jsv_c3t0 = jsonize_c3nstr (c3t0)
 //
@@ -354,6 +475,12 @@ val () =
   fprint_string (out, ",\n\"s2varmap\":\n")
 //
 val ((*void*)) = fprint_jsonval (out, jsv_s2vs)
+val ((*void*)) = fprint_newline (out)
+//
+val () =
+  fprint_string (out, ",\n\"s2rtdatmap\":\n")
+//
+val ((*void*)) = fprint_jsonval (out, jsv_s2tds)
 val ((*void*)) = fprint_newline (out)
 //
 val () =

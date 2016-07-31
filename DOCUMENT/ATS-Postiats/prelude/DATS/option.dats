@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/option.atxt
-** Time of generation: Sat Jun 27 21:39:36 2015
+** Time of generation: Sun Jul  3 11:13:25 2016
 *)
 
 (* ****** ****** *)
@@ -46,24 +46,28 @@ implement{a} option_none ( ) = None ( )
 
 (* ****** ****** *)
 
-implement{}
+implement
+{}(*tmp*)
 option_is_some (opt) =
   case+ opt of Some _ => true | None _ => false
 // end of [option_is_some]
 
-implement{}
+implement
+{}(*tmp*)
 option_is_none (opt) =
   case+ opt of Some _ => false | None _ => true
 // end of [option_is_none]
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 option_unsome
   (opt) = x where { val+Some (x) = opt }
 // end of [option_unsome]
 
-implement{a}
+implement
+{a}(*tmp*)
 option_unsome_exn
   (opt) = (
   case+ opt of
@@ -92,7 +96,8 @@ case+ opt1 of
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 fprint_option
   (out, opt) = let
 in

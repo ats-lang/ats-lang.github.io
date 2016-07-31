@@ -245,29 +245,38 @@ p3t0.p3at_node of
 end // end of [local]
 
 (* ****** ****** *)
-
+//
 implement
-d3exp_get_type (d3e) = d3e.d3exp_type
-// end of [implement]
-
+d3exp_get_type(d3e) = d3e.d3exp_type
+//
 implement
-d3explst_get_type (d3es) = let
-  val s2es = list_map_fun (d3es, d3exp_get_type)
+d3explst_get_type
+  (d3es) = let
+  val s2es =
+    list_map_fun (d3es, d3exp_get_type)
+  // end of [val]
 in
   list_of_list_vt (s2es)
 end // end of [d3explst_get_type]
-
+//
 (* ****** ****** *)
-
+//
 implement
 d3exp_is_prf (d3e) = let
-  val s2e = d3exp_get_type (d3e) in s2exp_is_prf (s2e)
+  val s2e =
+    d3exp_get_type(d3e) in s2exp_is_prf(s2e)
+  // end of [val]
 end // end of [d3exp_is_prf]
-
+//
+implement
+d3exp_isnot_prf (d3e) =
+  (if d3exp_is_prf(d3e) then false else true)
+//
 (* ****** ****** *)
 
 implement
-d3exp_cst (
+d3exp_cst
+(
   loc, s2f, d2c
 ) = '{
   d3exp_loc= loc
@@ -278,7 +287,8 @@ d3exp_cst (
 (* ****** ****** *)
 
 implement
-d3exp_var (
+d3exp_var
+(
   loc, s2f, d2v
 ) = '{
   d3exp_loc= loc
@@ -645,6 +655,17 @@ d3exp_sif (
 , d3exp_type= s2e_sif
 , d3exp_node= D3Esif (_cond, _then, _else)
 } // end of [d3exp_sif]
+
+(* ****** ****** *)
+
+implement
+d3exp_ifcase (
+  loc, s2e_if, knd, ifcls
+) = '{
+  d3exp_loc= loc
+, d3exp_type= s2e_if
+, d3exp_node= D3Eifcase (knd, ifcls)
+} // end of [d3exp_ifcase]
 
 (* ****** ****** *)
 
@@ -1084,6 +1105,17 @@ d3lab_ind
 , d3lab_overld= None(*void*)
 , d3lab_overld_app= None(*void*)
 } (* end of [d3lab_ind] *)
+
+(* ****** ****** *)
+
+implement
+i3fcl_make
+(
+  loc, test, body
+) = '{
+  i3fcl_loc= loc
+, i3fcl_test= test, i3fcl_body= body
+} (* end of [i3fcl_make] *)
 
 (* ****** ****** *)
 

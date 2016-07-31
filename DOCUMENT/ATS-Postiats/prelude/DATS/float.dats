@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/float.atxt
-** Time of generation: Sat Jun 27 21:39:24 2015
+** Time of generation: Sun Jul  3 11:13:22 2016
 *)
 
 (* ****** ****** *)
@@ -44,6 +44,13 @@
 #define ATS_DYNLOADFLAG 0 // no dynloading at run-time
 
 (* ****** ****** *)
+//
+(* ****** ****** *)
+//
+staload UN = "prelude/SATS/unsafe.sats"
+//
+(* ****** ****** *)
+
 
 (* ****** ****** *)
 
@@ -160,6 +167,44 @@ implement fprint_val<float> = fprint_float
 implement fprint_val<double> = fprint_double
 implement fprint_val<ldouble> = fprint_ldouble
 //
+(* ****** ****** *)
+
+implement
+{tk}(*tk*)
+g0float_npow
+  (x, n) = let
+//
+typedef gfloat = g0float(tk)
+//
+fun
+loop
+(
+  x: gfloat, res: gfloat, n: int
+) : gfloat = (
+//
+if
+(n > 1)
+then let
+  val n2 = n >> 1
+  val b0 = n - (n2 << 1)
+  val xx = x * x
+in
+  if b0 = 0
+    then loop(xx, res, n2) else loop(xx, x * res, n2)
+  // end of [if]
+end // end of [then]
+else (
+  if n > 0 then x * res else res
+) (* end of [else] *)
+//
+) (* end of [loop] *)
+//
+val res = $UN.cast{gfloat}(1.0)
+//
+in
+  $effmask_all(loop(x, res, n))
+end // end of [g0float_npow]
+
 (* ****** ****** *)
 
 (* end of [float.dats] *)

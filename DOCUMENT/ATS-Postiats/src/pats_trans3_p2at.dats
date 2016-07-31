@@ -261,29 +261,47 @@ in (* in-of-local *)
 
 implement
 p2atlst_trup_arg
-  (npf, p2ts) = res where {
-  fun loop (
-    npf: int, p2ts: p2atlst
-  , res: &p3atlst? >> p3atlst
-  ) : void =
-    case+ p2ts of
-    | list_cons (p2t, p2ts) => let
-        val () =
-          if npf > 0 then p2at_proofize (p2t)
-        // end of [val]
-        val p3t = p2at_trup_arg (p2t)
-        val () = res := list_cons {p3at}{0} (p3t, ?)
-        val+list_cons (_, !p_res) = res
-        val () = loop (npf-1, p2ts, !p_res)
-        prval () = fold@ (res)
-      in
-        // nothing
-      end // end of [list_cons]
-    | list_nil () => (res := list_nil)
-  // end of [loop]
-  var res: p3atlst // uninitialized
-  val () = loop (npf, p2ts, res)
-} // end of [p2atlst_trup_arg]
+  (npf, p2ts) = res where
+{
+//
+fun
+loop
+(
+  npf: int, p2ts: p2atlst
+, res: &p3atlst? >> p3atlst
+) : void = (
+//
+case+ p2ts of
+| list_nil() =>
+    (res := list_nil)
+| list_cons
+    (p2t, p2ts) => let
+//
+    val () =
+    if npf > 0
+      then p2at_proofize (p2t)
+    // end of [if]
+//
+    val p3t = p2at_trup_arg (p2t)
+//
+    val () =
+    res := list_cons {p3at}{0} (p3t, ?)
+//
+    val+list_cons (_, !p_res) = res
+//
+    val () = loop (npf-1, p2ts, !p_res)
+//
+    prval ((*folded*)) = fold@ (res)
+  in
+    // nothing
+  end // end of [list_cons]
+//
+) (* end of [loop] *)
+//
+var res: p3atlst // uninitized
+val ((*void*)) = loop (npf, p2ts, res)
+//
+} (* end of [p2atlst_trup_arg] *)
 
 (* ****** ****** *)
 
@@ -345,13 +363,20 @@ p2at_trdn_arg_refarg_err
 (
   p2t0: p2at, s2e0: s2exp
 ) : p3at = let
-  val loc0 = p2t0.p2at_loc
-  val () = prerr_error3_loc (loc0)
-  val () = prerr ": the pattern is expected to be a variable."
-  val () = prerr_newline ()
+//
+  val
+  loc0 = p2t0.p2at_loc
+//
+  val () =
+  prerr_error3_loc(loc0)
+//
+  val () =
+  prerrln! (": the pattern is expected to be a variable.")
+//
   val () = the_trans3errlst_add (T3E_p2at_trdn (p2t0, s2e0))
+//
 in
-  p3at_errpat (loc0, s2e0)
+  p3at_errpat(loc0, s2e0)
 end // end of [p2at_trdn_arg_refarg_err]
 
 in (* in-of-local *)
@@ -371,15 +396,19 @@ println!
 *)
 in
 //
-case+ s2e0.s2exp_node of
+case+
+s2e0.s2exp_node
+of // case+
 | S2Erefarg _ => (
-  case+ p2t0.p2at_node of
+  case+
+  p2t0.p2at_node of
   | P2Tvar _ =>
-      p2at_trdn_arg_refarg_var (p2t0, s2e0)
+      p2at_trdn_arg_refarg_var(p2t0, s2e0)
   | _ (*non-P2Tvar*) =>
-      p2at_trdn_arg_refarg_err (p2t0, s2e0)
-  )
-| _ (*non-S2Erefarg*) => p2at_trdn (p2t0, s2e0)
+      p2at_trdn_arg_refarg_err(p2t0, s2e0)
+  ) (* S2Erefarg *)
+//
+| _ (*non-S2Erefarg*) => p2at_trdn(p2t0, s2e0)
 //
 end // end of [p2at_trdn_arg]
 
@@ -1418,8 +1447,8 @@ case+ s2vs1 of
       val () = if
         not(ismat) then {
         val () = err := err + 1
-        val () = auxerr1 (loc0, s2v1, s2v2)
-        val () = s2e1 := s2exp_err (s2t2) // for [s2v2]
+        val () = auxerr1(loc0, s2v1, s2v2)
+        val () = s2e1 := s2exp_errexp(s2t2) // for [s2v2]
       } // end of [val]
       val () = stasub_add (sub, s2v2, s2e1)
     in

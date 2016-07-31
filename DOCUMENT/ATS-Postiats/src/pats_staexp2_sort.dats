@@ -48,6 +48,8 @@ overload = with $SYM.eq_symbol_symbol
 (* ****** ****** *)
 
 staload STMP = "./pats_stamp.sats"
+typedef stamp = $STMP.stamp
+overload compare with $STMP.compare_stamp_stamp
 
 (* ****** ****** *)
 
@@ -64,7 +66,7 @@ s2rtdat_struct = @{
   s2rtdat_sym= symbol // name
 , s2rtdat_sconlst= s2cstlst
 , s2rtdat_stamp= stamp // unique stamp
-} // end of [s2rtdat_struct]
+} (* end of [s2rtdat_struct] *)
 
 (* ****** ****** *)
 
@@ -91,42 +93,56 @@ end // end of [s2rtdat_make]
 
 implement
 s2rtdat_get_sym (s2td) = let
-  val (vbox pf | p) = ref_get_view_ptr (s2td) in p->s2rtdat_sym
+  val (vbox pf | p) = ref_get_view_ptr(s2td) in p->s2rtdat_sym
 end // end of [s2rtdat_get_sym]
 
 implement
 s2rtdat_get_sconlst (s2td) = let
-  val (vbox pf | p) = ref_get_view_ptr (s2td) in p->s2rtdat_sconlst
+  val (vbox pf | p) = ref_get_view_ptr(s2td) in p->s2rtdat_sconlst
 end // end of [s2rtdat_get_sconlst]
 implement
 s2rtdat_set_sconlst (s2td, s2cs) = let
-  val (vbox pf | p) = ref_get_view_ptr (s2td) in p->s2rtdat_sconlst := s2cs
+  val (vbox pf | p) = ref_get_view_ptr(s2td) in p->s2rtdat_sconlst := s2cs
 end // end of [s2rtdat_set_sconlst]
 
 implement
 s2rtdat_get_stamp (s2td) = let
-  val (vbox pf | p) = ref_get_view_ptr (s2td) in p->s2rtdat_stamp
+  val (vbox pf | p) = ref_get_view_ptr(s2td) in p->s2rtdat_stamp
 end // end of [s2rtdat_get_stamp]
-
-implement
-eq_s2rtdat_s2rtdat
-  (x1, x2) = p1 = p2 where {
-  val p1 = ref_get_ptr (x1) and p2 = ref_get_ptr (x2)
-} // end of [eq_s2rtdat_s2rtdat]
 
 end // end of [local]
 
+(* ****** ****** *)
+//
+implement
+eq_s2rtdat_s2rtdat
+(
+  x1, x2
+) = (compare_s2rtdat_s2rtdat (x1, x2) = 0)
+//
+implement
+compare_s2rtdat_s2rtdat
+(
+  x1, x2
+) =
+$effmask_all
+(
+  compare(s2rtdat_get_stamp(x1), s2rtdat_get_stamp(x2))
+) (* end of [compare_s2rtdat_s2rtdat] *)
+//
 (* ****** ****** *)
 
 local
 //
 val s2tb_int: s2rtbas = S2RTBASpre ($SYM.symbol_INT)
-val s2tb_bool: s2rtbas = S2RTBASpre ($SYM.symbol_BOOL)
 val s2tb_addr: s2rtbas = S2RTBASpre ($SYM.symbol_ADDR)
+val s2tb_bool: s2rtbas = S2RTBASpre ($SYM.symbol_BOOL)
 //
 (*
 val s2tb_char: s2rtbas = S2RTBASpre ($SYM.symbol_CHAR)
 *)
+//
+val s2tb_real: s2rtbas = S2RTBASpre ($SYM.symbol_REAL)
 //
 val s2tb_float: s2rtbas = S2RTBASpre ($SYM.symbol_FLOAT)
 val s2tb_string: s2rtbas = S2RTBASpre ($SYM.symbol_STRING)
@@ -143,12 +159,14 @@ val s2tb_tkind
 in // in of [local]
 //
 implement s2rt_int = S2RTbas s2tb_int
-implement s2rt_bool = S2RTbas s2tb_bool
 implement s2rt_addr = S2RTbas s2tb_addr
+implement s2rt_bool = S2RTbas s2tb_bool
 //
 (*
 implement s2rt_char = S2RTbas s2tb_char
 *)
+//
+implement s2rt_real = S2RTbas s2tb_real
 //
 implement s2rt_float = S2RTbas s2tb_float
 implement s2rt_string = S2RTbas s2tb_string
@@ -339,13 +357,13 @@ case+ s2t of
 (* ****** ****** *)
 
 implement
-s2rt_is_fun (s2t) =
+s2rt_is_fun(s2t) =
 (
   case+ s2t of S2RTfun _ => true | _ => false
 ) // end of [s2rt_is_fun]
 
 implement
-s2rt_is_prf (s2t) =
+s2rt_is_prf(s2t) =
 (
 case+ s2t of
 | S2RTbas s2tb => (
@@ -355,22 +373,34 @@ case+ s2t of
 | _ => false // end of [_]
 ) // end of [s2rt_is_prf]
 
+(* ****** ****** *)
+
 implement
-s2rt_is_lin (s2t) =
+s2rt_is_lin(s2t) =
 (
 case+ s2t of
 | S2RTbas s2tb => (
   case+ s2tb of
-  | S2RTBASimp (knd, _) => test_linkind (knd) | _ => false
+  | S2RTBASimp (knd, _) => test_linkind(knd) | _ => false
   ) // end of [S2RTbas]
 | _ => false // end of [_]
 ) // end of [s2rt_is_lin]
 
 implement
-s2rt_is_nonlin (s2t) = not (s2rt_is_lin (s2t))
+s2rt_is_nonlin(s2t) =
+(
+case+ s2t of
+| S2RTbas s2tb => (
+  case+ s2tb of
+  | S2RTBASimp (knd, _) => not(test_linkind(knd)) | _ => false
+  ) // end of [S2RTbas]
+| _ => false // end of [_]
+) // end of [s2rt_is_nonlin]
+
+(* ****** ****** *)
 
 implement
-s2rt_is_flat (s2t) =
+s2rt_is_flat(s2t) =
 (
 case+ s2t of
 | S2RTbas s2tb => (
@@ -381,7 +411,7 @@ case+ s2t of
 ) // end of [s2rt_is_flat]
 
 implement
-s2rt_is_boxed (s2t) =
+s2rt_is_boxed(s2t) =
 (
 case+ s2t of
 | S2RTbas s2tb => (
@@ -391,8 +421,10 @@ case+ s2t of
 | _ => false // end of [_]
 ) // end of [s2rt_is_boxed]
 
+(* ****** ****** *)
+
 implement
-s2rt_is_prgm (s2t) =
+s2rt_is_prgm(s2t) =
 (
 case+ s2t of
 | S2RTbas s2tb => (
@@ -402,8 +434,10 @@ case+ s2t of
 | _ => false // end of [_]
 ) // end of [s2rt_is_prgm]
 
+(* ****** ****** *)
+
 implement
-s2rt_is_impred (s2t) =
+s2rt_is_impred(s2t) =
 (
 case+ s2t of
 | S2RTbas s2tb => (
@@ -432,13 +466,16 @@ case+ s2t of
 
 local
 
-fun s2rt_test_fun
-  (s2t: s2rt, f: s2rt -> bool): bool = (
+fun
+s2rt_test_fun
+(
+  s2t: s2rt, f: s2rt -> bool
+): bool = (
   case+ s2t of
   | S2RTfun (_, s2t) => s2rt_test_fun (s2t, f) | _ => f (s2t)
 ) // end of [s2rt_test_fun]
 
-in // in of [local]
+in (* in-of-local *)
 
 implement
 s2rt_is_lin_fun
@@ -497,7 +534,7 @@ local
 //
 assume s2rtVar = ref (s2rtnul)
 //
-in // in of [local]
+in (* in-of-local *)
 
 implement
 eq_s2rtVar_s2rtVar
@@ -522,77 +559,115 @@ end // end of [s2rtVar_make]
 
 implement
 s2rt_delink (s2t0) = let
-  fun aux (s2t0: s2rt): s2rt =
-    case+ s2t0 of
-    | S2RTVar ref => let
-        val s2t = !ref
-        val test = s2rtnul_isnot_null (s2t)
+//
+fun
+aux
+(
+  s2t0: s2rt
+) : s2rt =
+(
+case+ s2t0 of
+| S2RTVar ref => let
+    val s2t = !ref
+    val test =
+      s2rtnul_isnot_null(s2t)
+    // end of [val]
+  in
+    if test
+      then let
+        val s2t =
+          s2rtnul_unsome(s2t)
+        val s2t = aux (s2t)
+        val ((*void*)) =
+          !ref := s2rtnul_some(s2t)
       in
-        if test then let
-          val s2t = s2rtnul_unsome (s2t)
-          val s2t = aux (s2t)
-          val () = !ref := s2rtnul_some (s2t)
-        in
-          s2t
-        end else s2t0
-      end (* S2RTVar *)
-    | _ => s2t0 // end of [_]
-  // end of [aux]
+        s2t
+      end // end of [then]
+      else s2t0 // end of [else]
+    // end of [if]
+  end (* S2RTVar *)
+| _ (*non-S2RTVar*) => s2t0
+) (* end of [aux] *)
+//
 in
   aux (s2t0)
 end // end of [s2rt_delink]
 
 implement
-s2rt_delink_all (s2t0) = let
+s2rt_delink_all
+  (s2t0) = let
 //
-  fun aux (
-    s2t0: s2rt, flag: &int
-  ) : s2rt =
-    case+ s2t0 of
-    | S2RTfun (s2ts, s2t) => let
-        val flag0 = flag
-        val s2ts = auxlst (s2ts, flag)
+fun
+aux (
+  s2t0: s2rt, flag: &int
+) : s2rt =
+(
+case+ s2t0 of
+| S2RTfun
+    (s2ts, s2t) => let
+    val
+    flag0 = flag
+    val s2t = aux(s2t, flag)
+    val s2ts = auxlst(s2ts, flag)
+  in
+    if flag > flag0
+      then S2RTfun (s2ts, s2t) else s2t0
+    // end of [if]
+  end
+| S2RTtup(s2ts) => let
+    val
+    flag0 = flag
+    val s2ts = auxlst (s2ts, flag)
+  in
+    if flag > flag0 then S2RTtup (s2ts) else s2t0
+  end
+| S2RTVar (ref) => let
+    val s2t = !ref
+    val isnotnull =
+      s2rtnul_isnot_null (s2t)
+    // end of [val]
+  in
+    if isnotnull
+      then let
+        val s2t =
+          s2rtnul_unsome(s2t)
         val s2t = aux (s2t, flag)
+        val ((*void*)) =
+          !ref := s2rtnul_some(s2t)
+        // end of [val]
       in
-        if flag > flag0 then S2RTfun (s2ts, s2t) else s2t0
-      end
-    | S2RTtup (s2ts) => let
-        val flag0 = flag
-        val s2ts = auxlst (s2ts, flag)
-      in
-        if flag > flag0 then S2RTtup (s2ts) else s2t0
-      end
-    | S2RTVar ref => let
-        val s2t = !ref
-        val isnotnull = s2rtnul_isnot_null (s2t)
-      in
-        if isnotnull then let
-          val s2t = s2rtnul_unsome (s2t)
-          val s2t = aux (s2t, flag)
-          val () = !ref := s2rtnul_some (s2t)
-          val () = flag := flag + 1
-        in
-          s2t
-        end else s2t0 // end of [if]
-      end (* S2RTVar *)
-    | _ => s2t0
-  (* end of [aux] *)
+        flag := flag + 1; s2t
+      end // end of [then]
+      else s2t0 // end of [else]
+    // end of [if]
+  end (* S2RTVar *)
+| _ (*rest-of-s2rt*) => s2t0
+) (* end of [aux] *)
 //
-  and auxlst (
-    s2ts0: s2rtlst, flag: &int
-  ) : s2rtlst =
-    case+ s2ts0 of
-    | list_cons (s2t, s2ts) => let
-        val flag0 = flag
-        val s2t = aux (s2t, flag)
-        val s2ts = auxlst (s2ts, flag)
-      in
-        if flag > flag0 then list_cons (s2t, s2ts) else s2ts0
-      end
-    | list_nil () => list_nil ()
-  (* end if [auxlst] *)
+and
+auxlst
+(
+  s2ts0: s2rtlst, flag: &int
+) : s2rtlst = (
 //
-  var flag: int = 0
+case+ s2ts0 of
+| list_nil
+    ((*void*)) => list_nil()
+| list_cons
+    (s2t, s2ts) => let
+    val
+    flag0 = flag
+    val s2t = aux (s2t, flag)
+    val s2ts = auxlst (s2ts, flag)
+  in
+    if flag > flag0
+      then list_cons(s2t, s2ts) else s2ts0
+    // end of [if]
+  end // end of [list_cons]
+//
+) (* end if [auxlst] *)
+//
+var flag: int = 0
 //
 in
   aux (s2t0, flag)
@@ -690,24 +765,32 @@ implement
 s2rt_err () = S2RTerr () // HX: error indication
 
 (* ****** ****** *)
-
+//
 extern
-fun lte_s2rtbas_s2rtbas
+fun
+lte_s2rtbas_s2rtbas
   (s2tb1: s2rtbas, s2tb2: s2rtbas): bool
+//
 overload <= with lte_s2rtbas_s2rtbas
-
+//
 implement
-lte_s2rtbas_s2rtbas (s2tb1, s2tb2) = begin
-  case+ (s2tb1, s2tb2) of
-  | (S2RTBASpre id1, S2RTBASpre id2) => (id1 = id2)
-  | (S2RTBASimp (knd1, id1),
-     S2RTBASimp (knd2, id2)) => lte_impkind_impkind (knd1, knd2)
-  | (S2RTBASdef s2td1, S2RTBASdef s2td2) => (s2td1 = s2td2)
-  | (_, _) => false
-end // end of [lte_s2rtbas_s2rtbas]
-
+lte_s2rtbas_s2rtbas
+  (s2tb1, s2tb2) =
+(
+case+
+(s2tb1, s2tb2)
+of // case+
+| (S2RTBASpre id1,
+   S2RTBASpre id2) => (id1 = id2)
+| (S2RTBASimp (knd1, id1),
+   S2RTBASimp (knd2, id2)) => lte_impkind_impkind (knd1, knd2)
+| (S2RTBASdef s2td1,
+   S2RTBASdef s2td2) => (s2td1 = s2td2)
+| (_, _) => false
+) (* end of [lte_s2rtbas_s2rtbas] *)
+//
 (* ****** ****** *)
-
+//
 (*
 ** HX: knd=0/1: dry-run / real-run
 *)
@@ -715,7 +798,7 @@ extern
 fun s2rt_ltmat (knd: int, s2t1: s2rt, s2t2: s2rt): bool
 extern
 fun s2rtlst_ltmat (knd: int, xs1: s2rtlst, xs2: s2rtlst): bool
-
+//
 implement
 s2rt_ltmat
   (knd, s2t1, s2t2) = let
@@ -763,7 +846,7 @@ case+ s2t1 of
 | S2RTerr ((*void*)) => false
 //
 end // end of [s2rt_ltmat]
-
+//
 (* ****** ****** *)
 
 implement
@@ -783,8 +866,45 @@ s2rtlst_ltmat
 
 (* ****** ****** *)
 
-implement s2rt_ltmat0 (x1, x2) = s2rt_ltmat (0, x1, x2)
-implement s2rt_ltmat1 (x1, x2) = s2rt_ltmat (1, x1, x2)
+implement s2rt_ltmat0(x1, x2) = s2rt_ltmat(0, x1, x2)
+implement s2rt_ltmat1(x1, x2) = s2rt_ltmat(1, x1, x2)
+
+(* ****** ****** *)
+
+local
+//
+staload
+FS = "libats/SATS/funset_avltree.sats"
+staload
+_(*FS*) = "libats/DATS/funset_avltree.dats"
+//
+val
+cmp =
+lam (
+  x1: s2rtdat, x2: s2rtdat
+) : int =<cloref>
+  compare_s2rtdat_s2rtdat (x1, x2)
+// end of [val]
+//
+assume s2rtdatset_type = $FS.set (s2rtdat)
+//
+in (* in-of-local *)
+
+implement
+s2rtdatset_nil
+  ((*void*)) = $FS.funset_make_nil ()
+
+implement
+s2rtdatset_add
+  (xs, x) = xs where {
+  var xs = xs
+  val _(*rplced*) = $FS.funset_insert (xs, x, cmp)
+} (* end of [s2rtdatset_add] *)
+
+implement
+s2rtdatset_listize (xs) = $FS.funset_listize (xs)
+
+end // end of [local]
 
 (* ****** ****** *)
 

@@ -104,7 +104,10 @@ fprint_token
   | T_FOR () => fprintf (out, "FOR()", @())
   | T_FORSTAR () => fprintf (out, "FORSTAR()", @())
   | T_FUN (x) => fprintf (out, "FUN(...)", @())
+//
   | T_IF () => fprintf (out, "IF()", @())
+  | T_IFCASE () => fprintf (out, "IFCASE()", @())
+//
   | T_IMPLEMENT (k) => fprintf (out, "IMPLEMENT(%i)", @(k))
   | T_IMPORT () => fprintf (out, "IMPORT()", @())
   | T_IN () => fprintf (out, "IN()", @())
@@ -117,10 +120,11 @@ fprint_token
   | T_OF () => fprintf (out, "OF()", @())
   | T_OP () => fprintf (out, "OP()", @())
   | T_REC () => fprintf (out, "REC()", @())
+(*
   | T_REFAT () => fprintf (out, "REFAT()", @())
-  | T_REQUIRE () => fprintf (out, "REQUIRE()", @())
-  | T_SCASE () => fprintf (out, "SCASE()", @())
+*)
   | T_SIF () => fprintf (out, "SIF()", @())
+  | T_SCASE () => fprintf (out, "SCASE()", @())
   | T_SORTDEF () => fprintf (out, "SORTDEF()", @())
   | T_STACST () => fprintf (out, "STACST()", @())
   | T_STADEF () => fprintf (out, "STADEF()", @())
@@ -150,12 +154,11 @@ fprint_token
   | T_FREEAT () => fprintf (out, "FREEAT()", @()) // free@
   | T_VIEWAT () => fprintf (out, "VIEWAT()", @()) // view@
 //
+  | T_DLRDELAY (x) => fprintf (out, "DLRDELAY(%i)", @(x))
+//
   | T_DLRARRPSZ () => fprintf (out, "DLRARRPSZ()", @())
 //
-  | T_DLRSOLASSERT () => fprintf (out, "DLRSOLASSERT()", @())
-  | T_DLRSOLVERIFY () => fprintf (out, "DLRSOLVERIFY()", @())
-//
-  | T_DLRDELAY (x) => fprintf (out, "DLRDELAY(%i)", @(x))
+  | T_DLRD2CTYPE () => fprintf (out, "DLRD2CTYPE()", @())
 //
   | T_DLREFFMASK () => fprintf (out, "DLREFFMASK()", @())
   | T_DLREFFMASK_ARG (x) => fprintf (out, "DLREFFMASK(%i)", @(x))
@@ -190,21 +193,34 @@ fprint_token
 //
   | T_DLRTEMPENVER () => fprintf (out, "DLRTEMPENVER()", @())
 //
-  | T_SRPASSERT () => fprintf (out, "SRPASSERT()", @())
-  | T_SRPDEFINE () => fprintf (out, "SRPDEFINE()", @())
-  | T_SRPELIF () => fprintf (out, "SRPELIF()", @())
-  | T_SRPELIFDEF () => fprintf (out, "SRPELIFDEF()", @())
-  | T_SRPELIFNDEF () => fprintf (out, "SRPELIFNDEF()", @())
-  | T_SRPELSE () => fprintf (out, "SRPELSE()", @())
-  | T_SRPENDIF () => fprintf (out, "SRPENDIF()", @())
-  | T_SRPERROR () => fprintf (out, "SRPERROR()", @())
+  | T_DLRSOLASSERT () => fprintf (out, "DLRSOLASSERT()", @())
+  | T_DLRSOLVERIFY () => fprintf (out, "DLRSOLVERIFY()", @())
+//
   | T_SRPIF () => fprintf (out, "SRPIF()", @())
   | T_SRPIFDEF () => fprintf (out, "SRPIFDEF()", @())
   | T_SRPIFNDEF () => fprintf (out, "SRPIFNDEF()", @())
-  | T_SRPINCLUDE () => fprintf (out, "SRPINCLUDE()", @())
-  | T_SRPPRINT () => fprintf (out, "SRPPRINT()", @())
   | T_SRPTHEN () => fprintf (out, "SRPTHEN()", @())
+  | T_SRPELSE () => fprintf (out, "SRPELSE()", @())
+  | T_SRPELIF () => fprintf (out, "SRPELIF()", @())
+  | T_SRPELIFDEF () => fprintf (out, "SRPELIFDEF()", @())
+  | T_SRPELIFNDEF () => fprintf (out, "SRPELIFNDEF()", @())
+  | T_SRPENDIF () => fprintf (out, "SRPENDIF()", @())
+//
+  | T_SRPERROR () => fprintf (out, "SRPERROR()", @())
+  | T_SRPPRERR () => fprintf (out, "SRPPRERR()", @())
+  | T_SRPPRINT () => fprintf (out, "SRPPRINT()", @())
+//
+  | T_SRPASSERT () => fprintf (out, "SRPASSERT()", @())
+//
   | T_SRPUNDEF () => fprintf (out, "SRPUNDEF()", @())
+  | T_SRPDEFINE () => fprintf (out, "SRPDEFINE()", @())
+//
+  | T_SRPINCLUDE () => fprintf (out, "SRPINCLUDE()", @())
+  | T_SRPREQUIRE () => fprintf (out, "SRPREQUIRE()", @())
+//
+  | T_SRPPRAGMA () => fprintf (out, "SRPPRAGMA()", @())
+  | T_SRPCODEGEN2 () => fprintf (out, "SRPCODEGEN2()", @())
+  | T_SRPCODEGEN3 () => fprintf (out, "SRPCODEGEN3()", @())
 //
   | T_IDENT_alp (x) => fprintf (out, "IDENT_alp(%s)", @(x))
   | T_IDENT_sym (x) => fprintf (out, "IDENT_sym(%s)", @(x))

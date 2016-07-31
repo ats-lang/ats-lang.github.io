@@ -44,12 +44,9 @@ staload "libats/ML/SATS/basis.sats"
 
 (* ****** ****** *)
 //
-// HX: for maps of elements of type (a)
-//
-abstype
-hashtbl_type(key:t@ype, itm:t0ype) = ptr
 typedef
-hashtbl(key:t0p, itm:t0p) = hashtbl_type(key, itm)
+hashtbl // introduced in [basis.sats]
+(key:t@ype, itm:t@ype) = hashtbl(key, itm)
 //
 (* ****** ****** *)
 //
@@ -135,6 +132,15 @@ fun{}
 fprint_hashtbl$sep (out: FILEref): void // default: fprint("; ")
 fun{}
 fprint_hashtbl$mapto (out: FILEref): void // default: fprint("->")
+//
+(* ****** ****** *)
+//
+fun{
+key,itm:t@ype
+} fprint_hashtbl_sep_mapto
+(
+  out: FILEref, tbl: hashtbl(key, itm), sep: string, mapto: string
+) : void // end of [fprint_hashtbl_sep_mapto]
 //
 (* ****** ****** *)
 //

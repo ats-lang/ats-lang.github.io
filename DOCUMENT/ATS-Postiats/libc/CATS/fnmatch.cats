@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/libc/CATS/CODEGEN/fnmatch.atxt
-** Time of generation: Sat Jun 27 21:39:55 2015
+** Time of generation: Wed Sep 23 16:09:11 2015
 */
 
 /* ****** ****** */

@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/unsafe.atxt
-** Time of generation: Sat Jun 27 21:39:07 2015
+** Time of generation: Sun Jul  3 11:13:15 2016
 *)
 
 (* ****** ****** *)
@@ -52,6 +52,9 @@ sortdef t0p = t@ype and vt0p = viewt@ype
 //
 praxi
 prop_assert{b:bool}((*void*)): [b] void
+//
+praxi
+proof_assert{proof:prop}((*void*)): proof
 //
 praxi
 eqint_assert{i1,i2:int}((*void*)): EQINT(i1,i2)
@@ -108,14 +111,16 @@ castfn cast2uintptr {a:t0p} (x: INV(a)):<> uintptr
 //
 (* ****** ****** *)
 
-praxi cast2void {a:vt0p} (x: INV(a)):<prf> void
+praxi cast2void{a:vt0p}(x: INV(a)):<prf> void
 
 (* ****** ****** *)
 //
 praxi castview0 {to:view}{from:view} (pf: from):<prf> to
 praxi castview1 {to:view}{from:view} (pf: !INV(from)):<prf> to
 //
-praxi castview2void {to:vt0p}{from:vt0p} (x: !INV(from) >> to):<prf> void
+praxi castview2void {to:view}{from:view} (x: !INV(from) >> to):<prf> void
+//
+praxi castvwtp2void {to:vt0p}{from:vt0p} (x: !INV(from) >> to):<prf> void
 //
 (* ****** ****** *)
 

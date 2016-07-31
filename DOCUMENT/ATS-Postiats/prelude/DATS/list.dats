@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/list.atxt
-** Time of generation: Sat Jun 27 21:39:32 2015
+** Time of generation: Sat Jul 30 11:27:18 2016
 *)
 
 (* ****** ****** *)
@@ -40,13 +40,16 @@
 (* Start time: Feburary, 2012 *)
 
 (* ****** ****** *)
-
-staload UN = "prelude/SATS/unsafe.sats"
-staload _(*anon*) = "prelude/DATS/unsafe.dats"
-
+//
+staload
+UN = "prelude/SATS/unsafe.sats"
+staload
+_(*anon*) = "prelude/DATS/unsafe.dats"
+//
 (* ****** ****** *)
 
-abstype List0_(a:t@ype+) = List0(a)
+abstype
+List0_(a:t@ype+) = List0(a)
 
 (* ****** ****** *)
 
@@ -63,15 +66,17 @@ implement
 {x}(*tmp*)
 list_make_elt
   {n} (n, x) = let
-  fun loop
-    {i:nat | i <= n} .<i>.
-  (
-    i: int i, x: x, res: list_vt (x, n-i)
-  ) :<> list_vt (x, n) = (
-    if i > 0 then
-      loop (pred(i), x, list_vt_cons (x, res)) else res
-    // end of [if]
-  ) // end of [loop]
+//
+fun loop
+  {i:nat | i <= n} .<i>.
+(
+  i: int i, x: x, res: list_vt (x, n-i)
+) :<> list_vt (x, n) = (
+  if i > 0 then
+    loop (pred(i), x, list_vt_cons (x, res)) else res
+  // end of [if]
+) // end of [loop]
+//
 in
   loop (n, x, list_vt_nil ())
 end // end of [list_make_elt]
@@ -114,8 +119,10 @@ implement
 list_make_array
   {n} (A, n) = let
 //
-prval () = lemma_array_param (A)
-vtypedef res (n:int) = list_vt (a, n)
+prval() = lemma_array_param(A)
+//
+vtypedef res(n:int) = list_vt(a, n)
+//
 fun loop
   {l:addr}
   {n:nat} .<n>. (
@@ -161,9 +168,12 @@ list_make_arrpsz
 var asz: size_t
 val A = arrpsz_get_ptrsize (A0, asz)
 val p = arrayptr2ptr (A)
-prval pfarr = arrayptr_takeout (A)
+//
+prval
+pfarr = arrayptr_takeout (A)
 val res = list_make_array (!p, asz)
-prval () = arrayptr_addback (pfarr | A)
+prval() = arrayptr_addback (pfarr | A)
+//
 val () = arrayptr_free (A)
 //
 in
@@ -358,7 +368,7 @@ case+ xs of
   // end of [list_vt_cons]
 ) (* end of [loop] *)
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param (xs)
 //
 in
   loop (xs, i)
@@ -415,24 +425,43 @@ fun loop{n:int}
 , i: int i, x: a
 , res: &ptr? >> list (a, n+1)
 ) :<!wrt> void =
-  if i > 0 then let
-    val+list_cons (x1, xs1) = xs
-    val () = res :=
-      list_cons{a}{0}(x1, _(*?*))
-    val+list_cons
-      (_, res1) = res // res1 = res.1
-    val () = loop (xs1, i-1, x, res1)
-    prval () = fold@ (res)
-  in
-    // nothing
-  end else res := list_cons (x, xs)
 //
-var res: ptr
-val () = $effmask_wrt (loop (xs, i, x, res))
+if
+i > 0
+then let
+  val+list_cons(x1, xs1) = xs
+  val () = res :=
+    list_cons{a}{0}(x1, _(*?*))
+  val+list_cons
+    (_, res1) = res // res1 = res.1
+  val () = loop (xs1, i-1, x, res1)
+  prval () = fold@ (res)
+in
+  // nothing
+end // end of [then]
+else res := list_cons (x, xs)
+//
+var
+res: ptr
+val () =
+  $effmask_wrt(loop(xs, i, x, res))
 //
 in
   res
 end // end of [list_insert_at]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+list_remove_at
+  (xs, i) = let
+//
+var x0: a // uninitized
+//
+in
+  $effmask_wrt(list_takeout_at(xs, i, x0))
+end // end of [list_remove_at]
 
 (* ****** ****** *)
 
@@ -455,7 +484,9 @@ in
 //
 if i > 0 then let
   val () =
-    res := list_cons{a}{0}(x, _(*?*))
+    res :=
+    list_cons{a}{0}(x, _(*?*))
+  // end of [val]
   val+list_cons
     (_, res1) = res // res1 = res.1
   val () = loop (xs, i-1, x0, res1)
@@ -483,7 +514,7 @@ implement
 {x}(*tmp*)
 list_length (xs) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param (xs)
 //
 fun loop
   {i,j:nat} .<i>. (
@@ -504,8 +535,10 @@ implement
 list_copy
   (xs) = res where {
 //
+prval() =
+  lemma_list_param(xs)
+//
 vtypedef res = List0_vt (x)
-prval () = lemma_list_param (xs)
 //
 fun loop
   {n:nat} .<n>.
@@ -567,8 +600,8 @@ implement
 list_append2_vt
   {m,n} (xs, ys) = let
 //
-prval () = lemma_list_param (xs)
-prval () = lemma_list_vt_param (ys)
+prval() = lemma_list_param (xs)
+prval() = lemma_list_vt_param (ys)
 //
 fun loop
   {m:nat} .<m>. (
@@ -640,9 +673,10 @@ implement
 list_reverse_append1_vt
   {m,n} (xs, ys) = let
 //
-prval (
-) = lemma_list_vt_param (xs)
-prval () = lemma_list_param (ys)
+prval() =
+  lemma_list_vt_param(xs)
+//
+prval() = lemma_list_param(ys)
 //
 fun loop{m,n:nat} .<m>.
 (
@@ -675,8 +709,8 @@ implement
 list_reverse_append2_vt
   (xs, ys) = let
 //
-prval () = lemma_list_param (xs)
-prval () = lemma_list_vt_param (ys)
+prval() = lemma_list_param(xs)
+prval() = lemma_list_vt_param(ys)
 //
 fun loop
   {m,n:nat} .<m>.
@@ -698,7 +732,7 @@ implement
 {a}(*tmp*)
 list_concat (xss) = let
 //
-prval () = lemma_list_param (xss)
+prval() = lemma_list_param(xss)
 //
 typedef T = List (a)
 fun aux {n:nat} .<n>.
@@ -706,7 +740,7 @@ fun aux {n:nat} .<n>.
   xs0: T
 , xss: list (T, n)
 ) :<!wrt> List0_vt (a) = let
-  prval () = lemma_list_param (xs0)
+  prval() = lemma_list_param(xs0)
 in
   case+ xss of
   | list_cons
@@ -765,7 +799,7 @@ implement
 list_take_exn
   {n}{i} (xs, i) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
 fun loop
   {n:nat}
@@ -841,7 +875,7 @@ implement
 list_drop_exn
   (xs, i) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
 fun loop
   {n:nat}{i:nat} .<i>. (
@@ -901,27 +935,124 @@ end // end of [list_split_at]
 
 implement
 {x}(*tmp*)
-list_exists (xs) = let
-in
+list_exists
+  (xs) = loop(xs) where
+{
+//
+fun
+loop :
+$d2ctype(list_exists<x>) = lam(xs) =>
 //
 case+ xs of
-| list_cons (x, xs) =>
-    if list_exists$pred<x> (x) then true else list_exists<x> (xs)
-| list_nil () => false
+| list_nil() => false
+| list_cons(x, xs) =>
+    if list_exists$pred<x> (x) then true else loop(xs)
+  // end of [list_cons]
 //
-end // end of [list_exists]
+} (* end of [list_exists] *)
 
 implement
 {x}(*tmp*)
-list_forall (xs) = let
+list_exists_cloref
+  (xs, pred) = let
+//
+implement(x2)
+list_exists$pred<x2>(x2) = pred($UN.cast{x}(x2))
+//
 in
+  list_exists<x> (xs)
+end // end of [list_exists_cloref]
+
+(* ****** ****** *)
+
+implement
+{x}(*tmp*)
+list_iexists_cloref
+  {n}(xs, pred) = let
+//
+prval() = lemma_list_param(xs)
+//
+fun
+loop
+{ i,j:nat
+| i+j == n
+} .<n-i>.
+(
+  i: int(i), xs: list(x, j)
+) :<> bool =
+(
+  case+ xs of
+  | list_nil() => false
+  | list_cons(x, xs) =>
+      if pred(i, x) then true else loop(i+1, xs)
+    // end of [list_cons]
+)
+//
+in
+  loop(0, xs)
+end // end of [list_iexists_cloref]
+
+(* ****** ****** *)
+
+implement
+{x}(*tmp*)
+list_forall
+  (xs) = loop(xs) where
+{
+fun
+loop :
+$d2ctype(list_forall<x>) = lam(xs) =>
 //
 case+ xs of
-| list_cons (x, xs) =>
-    if list_forall$pred<x> (x) then list_forall<x> (xs) else false
-| list_nil () => true
+| list_nil() => true
+| list_cons(x, xs) =>
+    if list_forall$pred<x> (x) then loop(xs) else false
+  // end of [list_cons]
 //
-end // end of [list_forall]
+} (* end of [list_forall] *)
+
+(* ****** ****** *)
+
+implement
+{x}(*tmp*)
+list_forall_cloref
+  (xs, pred) = let
+//
+implement(x2)
+list_forall$pred<x2>(x2) = pred($UN.cast{x}(x2))
+//
+in
+  list_forall<x> (xs)
+end // end of [list_forall_cloref]
+
+(* ****** ****** *)
+
+implement
+{x}(*tmp*)
+list_iforall_cloref
+  {n}(xs, pred) = let
+//
+prval() = lemma_list_param(xs)
+//
+fun
+loop
+{ i,j:nat
+| i+j == n
+} .<n-i>.
+(
+  i: int(i), xs: list(x, j)
+) :<> bool =
+(
+  case+ xs of
+  | list_nil() => true
+  | list_cons(x, xs) =>
+      if pred(i, x) then loop(i+1, xs) else false
+    // end of [list_cons]
+)
+//
+in
+  loop(0, xs)
+end // end of [list_iforall_cloref]
 
 (* ****** ****** *)
 
@@ -932,53 +1063,124 @@ list_equal$eqfn = gequal_val_val<a>
 implement
 {x}(*tmp*)
 list_equal
-  (xs1, xs2) = let
-in
+(
+  xs1, xs2
+) = loop(xs1, xs2) where
+{
+fun
+loop :
+$d2ctype
+(
+  list_equal<x>
+) = lam(xs1, xs2) =>
 //
 case+ xs1 of
-| list_cons (x1, xs1) =>
+| list_nil((*void*)) =>
   (
     case+ xs2 of
-    | list_cons
-        (x2, xs2) => let
-        val iseq = list_equal$eqfn<x> (x1, x2)
-      in
-        if iseq then list_equal<x> (xs1, xs2) else false
-      end
-    | list_nil () => false
-  ) // end of [list_cons]
-| list_nil ((*void*)) =>
-  (
-    case+ xs2 of list_cons _ => false | list_nil () => true
+    | list_nil _ => true
+    | list_cons _ => false
   ) // end of [list_nil]
+| list_cons(x1, xs1) =>
+  (
+    case+ xs2 of
+    | list_nil() => false
+    | list_cons(x2, xs2) => let
+        val test =
+          list_equal$eqfn<x> (x1, x2)
+        // end of [val]
+      in
+        if test then loop(xs1, xs2) else false
+      end // end of [list_cons]
+  ) (* end of [list_cons] *)
 //
-end // end of [list_equal]
+} (* end of [list_equal] *)
+
+implement
+{x}(*tmp*)
+list_equal_cloref
+  (xs1, xs2, eqfn) =
+  list_equal<x>(xs1, xs2) where
+{
+//
+implement{y}
+list_equal$eqfn(x1, x2) = eqfn($UN.cast(x1), $UN.cast(x2))
+//
+} (* end of [list_equal_cloref] *)
 
 (* ****** ****** *)
 
 implement
 {x}(*tmp*)
-list_find_exn (xs) = let
-in
+list_find
+  {n}(xs, x0) = let
 //
+prval() = lemma_list_param(xs)
+//
+fun
+loop
+{ i:nat
+| i <= n
+} .<n-i>.
+(
+  xs: list(x, n-i)
+, i: int(i), x0: &x? >> opt(x, i >= 0)
+) :<!wrt> #[i:int | i < n] int(i) =
+(
 case+ xs of
-| list_cons (x, xs) =>
-    if list_find$pred<x> (x) then x else list_find_exn<x> (xs)
-| list_nil () => $raise NotFoundExn()
+| list_nil() =>
+  (
+    opt_none(x0); ~1
+  ) (* list_nil *)
+| list_cons(x, xs) =>
+  (
+    if list_find$pred<x>(x)
+      then (x0 := x; opt_some(x0); i) else loop(xs, i+1, x0)
+    // end of [if]
+  ) (* list_cons *)
+) (* end of [loop] *)
 //
-end // end of [list_find_exn]
+in
+  loop(xs, 0, x0)
+end // end of [list_find]
+
+(* ****** ****** *)
 
 implement
 {x}(*tmp*)
-list_find_opt (xs) = let
-in
+list_find_exn
+  (xs) = loop(xs) where
+{
+//
+fun
+loop :
+$d2ctype(list_find_exn<x>) = lam(xs) =>
 //
 case+ xs of
-| list_cons (x, xs) =>
-    if list_find$pred<x> (x) then Some_vt{x}(x) else list_find_opt<x> (xs)
-| list_nil () => None_vt(*void*)
+| list_nil() =>
+    $raise NotFoundExn()
+| list_cons(x, xs) =>
+    if list_find$pred<x>(x) then x else loop(xs)
 //
-end // end of [list_find_opt]
+} (* end of [list_find_exn] *)
+
+implement
+{x}(*tmp*)
+list_find_opt
+  (xs) = loop(xs) where
+{
+//
+fun
+loop :
+$d2ctype(list_find_opt<x>) = lam(xs) =>
+//
+case+ xs of
+| list_nil() =>
+    None_vt((*void*))
+| list_cons(x, xs) =>
+    if list_find$pred<x>(x) then Some_vt{x}(x) else loop(xs)
+//
+} (* end of [list_find_opt] *)
 
 (* ****** ****** *)
 
@@ -1013,7 +1215,7 @@ fun loop
       // end of [if]
     end // end of [list_cons]
   | list_nil ((*void*)) =>
-      let prval () = opt_none{itm}(x0) in false end 
+      let prval() = opt_none{itm}(x0) in false end 
     // end of [list_nil]
 ) (* end of [loop] *)
 //
@@ -1033,10 +1235,10 @@ in
 //
 if ans
   then let
-    prval () = opt_unsome{itm}(x0) in x0
+    prval() = opt_unsome{itm}(x0) in x0
   end // end of [then]
   else let
-    prval () = opt_unnone{itm}(x0) in $raise NotFoundExn()
+    prval() = opt_unnone{itm}(x0) in $raise NotFoundExn()
   end // end of [else]
 //
 end // end of [list_assoc_exn]
@@ -1053,10 +1255,10 @@ in
 //
 if ans
   then let
-    prval () = opt_unsome{itm}(x0) in Some_vt{itm}(x0)
+    prval() = opt_unsome{itm}(x0) in Some_vt{itm}(x0)
   end // end of [then]
   else let
-    prval () = opt_unnone{itm}(x0) in None_vt((*void*))
+    prval() = opt_unnone{itm}(x0) in None_vt((*void*))
   end // end of [else]
 //
 end // end of [list_assoc_opt]
@@ -1065,9 +1267,9 @@ end // end of [list_assoc_opt]
 
 implement
 {x}(*tmp*)
-list_filter {n} (xs) = let
+list_filter{n}(xs) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
 fun loop
   {n:nat} .<n>. (
@@ -1109,7 +1311,8 @@ list_labelize
   (xs) = res where {
 //
 typedef ix = @(int, x)
-prval () = lemma_list_param (xs)
+//
+prval() = lemma_list_param(xs)
 //
 fun loop
   {n:nat} .<n>. (
@@ -1141,7 +1344,7 @@ implement
 {x}(*tmp*)
 list_app (xs) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
 fun
 loop{n:nat} .<n>. (xs: list (x, n)): void =
@@ -1161,7 +1364,7 @@ implement
 {x}(*tmp*)
 list_app_fun(xs, f) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
 fun
 loop{n:nat} .<n>.
@@ -1183,7 +1386,7 @@ implement
 {x}(*tmp*)
 list_app_cloref(xs, f) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
 fun
 loop{n:nat} .<n>.
@@ -1207,7 +1410,7 @@ implement
 {x}{y}(*tmp*)
 list_map{n}(xs) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
 fun loop
   {n:nat} .<n>. (
@@ -1242,11 +1445,12 @@ end // end of [list_map]
 implement
 {x}{y}(*tmp*)
 list_map_fun
-  (xs, f) = let
+  (xs, fopr) = let
 //
 implement
 {x2}{y2}
-list_map$fopr (x2) = $UN.castvwtp0{y2}(f($UN.cast{x}(x2)))
+list_map$fopr(x2) =
+  $UN.castvwtp0{y2}(fopr($UN.cast{x}(x2)))
 //
 in
   list_map<x><y> (xs)
@@ -1255,13 +1459,15 @@ end // end of [list_map_fun]
 implement
 {x}{y}(*tmp*)
 list_map_clo
-  (xs, f) = let
+  (xs, fopr) = let
 //
-val f = $UN.cast{(x) -<cloref1> y}(addr@f)
+val fopr =
+  $UN.cast{(x) -<cloref1> y}(addr@fopr)
 //
 implement
 {x2}{y2}
-list_map$fopr (x2) = $UN.castvwtp0{y2}(f($UN.cast{x}(x2)))
+list_map$fopr(x2) =
+  $UN.castvwtp0{y2}(fopr($UN.cast{x}(x2)))
 //
 in
   list_map<x><y> (xs)
@@ -1270,11 +1476,12 @@ end // end of [list_map_clo]
 implement
 {x}{y}(*tmp*)
 list_map_cloref
-  (xs, f) = let
+  (xs, fopr) = let
 //
 implement
 {x2}{y2}
-list_map$fopr (x2) = $UN.castvwtp0{y2}(f($UN.cast{x}(x2)))
+list_map$fopr(x2) =
+  $UN.castvwtp0{y2}(fopr($UN.cast{x}(x2)))
 //
 in
   list_map<x><y> (xs)
@@ -1289,11 +1496,11 @@ list_map_funenv
   {v}{vt}{n}{fe}
   (pfv | xs, f, env) = let
 //
-viewtypedef ys = List0_vt (y)
+prval() =
+  lemma_list_param(xs)
 //
-prval () =
-  lemma_list_param (xs) // prove [n >= 0]
-// end of [prval]
+vtypedef ys = List0_vt(y)
+//
 fun loop {n:nat} .<n>. (
   pfv: !v
 | xs: list (x, n)
@@ -1335,7 +1542,7 @@ implement
 {x}{y}
 list_imap{n}(xs) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
 fun loop
   {n:nat}{i:nat} .<n>.
@@ -1373,7 +1580,7 @@ implement
 {x}{y}
 list_mapopt{n}(xs) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
 fun loop
   {n:nat} .<n>. (
@@ -1421,11 +1628,11 @@ list_mapopt_funenv
   {v}{vt}{n}{fe}
   (pfv | xs, f, env) = let
 //
-viewtypedef ys = List0_vt (y)
+prval() =
+  lemma_list_param(xs)
 //
-prval () =
-  lemma_list_param (xs) // prove [n >= 0]
-// end of [prval]
+vtypedef ys = List0_vt(y)
+//
 fun loop {n:nat} .<n>. (
   pfv: !v
 | xs: list (x, n)
@@ -1467,11 +1674,12 @@ end // end of [list_mapopt_funenv]
 (* ****** ****** *)
 
 implement
-{x1,x2}{y}(*tmp*)
-list_map2{n1,n2}(xs1, xs2) = let
+{x1,x2}{y}
+list_map2
+  {n1,n2}(xs1, xs2) = let
 //
-prval () = lemma_list_param (xs1)
-prval () = lemma_list_param (xs2)
+prval() = lemma_list_param(xs1)
+prval() = lemma_list_param(xs2)
 //
 fun
 loop{n1,n2:nat}
@@ -1597,8 +1805,8 @@ implement
 list_zipwith
   (xs, ys) = let
 //
-prval () = lemma_list_param (xs)
-prval () = lemma_list_param (ys)
+prval() = lemma_list_param(xs)
+prval() = lemma_list_param(ys)
 //
 fun loop
   {m,n:nat} .<m>. (
@@ -1652,10 +1860,11 @@ end // end of [list_cross]
 
 implement
 {x,y}{xy}
-list_crosswith (xs, ys) = let
+list_crosswith
+  (xs, ys) = let
 //
-prval () = lemma_list_param (xs)
-prval () = lemma_list_param (ys)
+prval() = lemma_list_param(xs)
+prval() = lemma_list_param(ys)
 //
 fnx loop1
   {m,n:nat} .<m,0,0>.
@@ -1691,7 +1900,7 @@ case+ ys2 of
       list_vt_cons{xy}{0}(xy, _(*?*))
     val+list_vt_cons (_, res1) = res
     val () = loop2 (xs, ys, x, ys2, res1)
-    prval () = mul_gte_gte_gte {m,n} ()
+    prval () = mul_gte_gte_gte{m,n}()
   in
     fold@ (res)
   end // end of [list_cons]
@@ -1710,36 +1919,43 @@ end // end of [list_crosswith]
 
 implement
 {x}(*tmp*)
-list_foreach (xs) = let
-  var env: void = () in list_foreach_env<x><void> (xs, env)
+list_foreach(xs) = let
+//
+var env: void = () in list_foreach_env<x><void>(xs, env)
+//
 end // end of [list_foreach]
+
+(* ****** ****** *)
 
 implement
 {x}{env}
 list_foreach_env
   (xs, env) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
-fun loop
-  {n:nat} .<n>. (
+fun
+loop
+{n:nat} .<n>.
+(
   xs: list (x, n), env: &env
 ) : void = let
 in
 //
 case+ xs of
-| list_cons (x, xs) => let
+| list_nil() => ()
+| list_cons(x, xs) => let
     val test =
       list_foreach$cont<x><env> (x, env)
     // end of [val]
   in
     if test then let
-      val () = list_foreach$fwork<x><env> (x, env)
+      val () =
+      list_foreach$fwork<x><env> (x, env)
     in
       loop (xs, env)
     end else () // end of [if]
   end // end of [list_cons]
-| list_nil ((*void*)) => ()
 //
 end // end of [loop]
 //
@@ -1770,6 +1986,47 @@ in
   $effmask_all (loop (xs))
 end // end of [list_foreach_fun]
 
+(* ****** ****** *)
+//
+implement
+{x}(*tmp*)
+list_foreach_clo
+  (xs, f) =
+(
+$effmask_all
+  (list_foreach_cloref<x>(xs, $UN.cast(addr@f)))
+) (* list_foreach_clo *)
+implement
+{x}(*tmp*)
+list_foreach_vclo
+  (pf | xs, f) =
+(
+$effmask_all
+  (list_foreach_cloref<x>(xs, $UN.cast(addr@f)))
+) (* list_foreach_vclo *)
+//
+(* ****** ****** *)
+
+implement
+{x}(*tmp*)
+list_foreach_cloptr
+  (xs, f) =
+(
+$effmask_all
+  (list_foreach_cloref<x>(xs, $UN.castvwtp1(f)))
+) (* list_foreach_cloptr *)
+
+implement
+{x}(*tmp*)
+list_foreach_vcloptr
+  (pf | xs, f) =
+(
+$effmask_all
+  (list_foreach_cloref<x>(xs, $UN.castvwtp1(f)))
+) (* list_foreach_vcloptr *)
+
+(* ****** ****** *)
+
 implement
 {x}(*tmp*)
 list_foreach_cloref
@@ -1793,20 +2050,24 @@ list_foreach_funenv
   {v}{vt}{fe}
   (pfv | xs, f, env) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
-fun loop {n:nat} .<n>. (
+fun
+loop{n:nat} .<n>.
+(
   pfv: !v
 | xs: list (x, n)
 , f: (!v | x, !vt) -<fun,fe> void
 , env: !vt
 ) :<fe> void =
+(
   case+ xs of
-  | list_cons (x, xs) => let
+  | list_nil() => ()
+  | list_cons(x, xs) => let
       val () = f (pfv | x, env) in loop (pfv | xs, f, env)
     end // end of [list_cons]
-  | list_nil ((*void*)) => ()
-// end of [loop]
+) (* end of [loop] *)
+//
 in
   loop (pfv | xs, f, env)
 end // end of [list_foreach_funenv]
@@ -1815,7 +2076,7 @@ end // end of [list_foreach_funenv]
 
 implement
 {x,y}(*tmp*)
-list_foreach2 (xs, ys) = let
+list_foreach2(xs, ys) = let
   var env: void = () in list_foreach2_env<x,y><void> (xs, ys, env)
 end // end of [list_foreach2]
 
@@ -1824,8 +2085,8 @@ implement
 list_foreach2_env
   (xs, ys, env) = let
 //
-prval () = lemma_list_param (xs)
-prval () = lemma_list_param (ys)
+prval() = lemma_list_param(xs)
+prval() = lemma_list_param(ys)
 //
 fun loop
   {m,n:nat} .<m>. (
@@ -1834,8 +2095,8 @@ fun loop
 in
 //
 case+ xs of
-| list_cons
-    (x, xs) => (
+| list_nil() => ()
+| list_cons(x, xs) => (
   case+ ys of
   | list_cons (y, ys) => let
       val test =
@@ -1849,8 +2110,7 @@ case+ xs of
       end else () // end of [if]
     end // end of [list_cons]
   | list_nil () => ()
-  ) // end of [list_cons]
-| list_nil () => ()
+  ) (* end of [list_cons] *)
 //
 end // end of [loop]
 //
@@ -1868,7 +2128,7 @@ list_foreach2$cont (x, y, env) = true
 
 implement
 {x}(*tmp*)
-list_iforeach (xs) = let
+list_iforeach(xs) = let
   var env: void = () in list_iforeach_env<x><void> (xs, env)
 end // end of [list_iforeach]
 
@@ -1877,29 +2137,30 @@ implement
 list_iforeach_env
   (xs, env) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
-fun loop
-  {n:nat}
-  {i:nat} .<n>.
+fun
+loop
+{n:nat}{i:nat} .<n>.
 (
   i: int i, xs: list (x, n), env: &env
-) : intBtwe(i,n+i) =
-  case+ xs of
-  | list_cons
-      (x, xs) => let
-      val test =
-        list_iforeach$cont<x><env> (i, x, env)
-      // end of [test]
+) : intBtwe(i,n+i) = (
+//
+case+ xs of
+| list_nil() => (i)
+| list_cons(x, xs) => let
+    val test =
+      list_iforeach$cont<x><env> (i, x, env)
+    // end of [test]
+  in
+    if test then let
+      val () = list_iforeach$fwork<x><env> (i, x, env)
     in
-      if test then let
-        val () = list_iforeach$fwork<x><env> (i, x, env)
-      in
-        loop (succ(i), xs, env)
-      end else (i) // end of [if]
-    end // end of [list_cons]
-  | list_nil () => (i) // number of processed elements
-// end of [loop]
+      loop (succ(i), xs, env)
+    end else (i) // end of [if]
+  end // end of [list_cons]
+//
+) (* end of [loop] *)
 //
 in
   loop (0, xs, env)
@@ -1909,7 +2170,34 @@ end // end of [list_iforeach_env]
 
 implement
 {x}{env}(*tmp*)
-list_iforeach$cont (i, x, env) = true
+list_iforeach$cont(i, x, env) = true
+
+(* ****** ****** *)
+
+implement
+{x}(*tmp*)
+list_iforeach_cloref
+  {n}(xs, fwork) = let
+//
+prval() = lemma_list_param(xs)
+//
+fun
+loop
+{
+  i,j:nat
+| i+j == n
+} .<n-i>.
+(
+  i: int(i), xs: list(x, j)
+) : void =
+//
+case+ xs of
+| list_nil () => ()
+| list_cons (x, xs) => (fwork (i, x); loop (i+1, xs))
+//
+in
+  loop (0, xs)
+end // end of [list_iforeach_cloref]
 
 (* ****** ****** *)
 
@@ -1917,26 +2205,34 @@ implement
 {x}(*tmp*)
 list_iforeach_funenv
   {v}{vt}{n}{fe}
-  (pfv | xs, f, env) = let
+(
+  pfv | xs, fwork, env
+) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
-fun loop
-  {i:nat | i <= n} .<n-i>. (
+fun
+loop
+{ i:nat
+| i <= n
+} .<n-i>.
+(
   pfv: !v
 | i: int i
 , xs: list (x, n-i)
-, f: (!v | natLt(n), x, !vt) -<fun,fe> void
+, fwork: (!v | natLt(n), x, !vt) -<fun,fe> void
 , env: !vt
-) :<fe> int n =
-  case+ xs of
-  | list_cons (x, xs) => let
-      val () = f (pfv | i, x, env) in loop (pfv | i+1, xs, f, env)
-    end // end of [list_cons]
-  | list_nil () => i // = size(xs)
-// end of [loop]
+) :<fe> int n = (
+//
+case+ xs of
+| list_nil() => i
+| list_cons(x, xs) => let
+    val () = fwork (pfv | i, x, env) in loop (pfv | i+1, xs, fwork, env)
+  end // end of [list_cons]
+) (* end of [loop] *)
+//
 in
-  loop (pfv | 0, xs, f, env)
+  loop (pfv | 0, xs, fwork, env)
 end // end of [list_iforeach_funenv]
 
 (* ****** ****** *)
@@ -1955,8 +2251,8 @@ implement
 list_iforeach2_env
   (xs, ys, env) = let
 //
-prval () = lemma_list_param (xs)
-prval () = lemma_list_param (ys)
+prval() = lemma_list_param(xs)
+prval() = lemma_list_param(ys)
 //
 fun loop
   {m,n:nat}{i:nat} .<m>.
@@ -1966,22 +2262,26 @@ fun loop
 in
 //
 case+ xs of
-| list_cons (x, xs) => (
+| list_nil() => i // the number of processed elements
+| list_cons(x, xs) => (
   case+ ys of
-  | list_cons (y, ys) => let
+  | list_nil() => (i)
+  | list_cons(y, ys) => let
       val test =
         list_iforeach2$cont<x,y><env> (i, x, y, env)
       // end of [val]
     in
-      if test then let
-        val () = list_iforeach2$fwork<x,y><env> (i, x, y, env)
-      in
-        loop (succ(i), xs, ys, env)
-      end else (i) // end of [if]
+      if test
+        then let
+          val ((*void*)) =
+            list_iforeach2$fwork<x,y><env> (i, x, y, env)
+          // end of [val]
+        in
+          loop(succ(i), xs, ys, env)
+        end // end of [then]
+        else (i) // end of [else]
     end // end of [list_cons]
-  | list_nil () => i // the number of processed elements
-  ) // end of [list_cons]
-| list_nil () => i // the number of processed elements
+  ) (* end of [list_cons] *)
 //
 end // end of [loop]
 //
@@ -1993,15 +2293,16 @@ end // end of [list_iforeach2_env]
 
 implement
 {x,y}{env}
-list_iforeach2$cont (i, x, y, env) = true
+list_iforeach2$cont(i, x, y, env) = true
 
 (* ****** ****** *)
 
 implement
 {res}{x}
-list_foldleft (xs, ini) = let
+list_foldleft
+  (xs, ini) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
 fun loop
   {n:nat} .<n>.
@@ -2027,9 +2328,10 @@ end // end of [list_foldleft]
 
 implement
 {x}{res}
-list_foldright (xs, snk) = let
+list_foldright
+  (xs, snk) = let
 //
-prval () = lemma_list_param (xs)
+prval() = lemma_list_param(xs)
 //
 fun aux
   {n:nat} .<n>.
@@ -2037,8 +2339,8 @@ fun aux
   xs: list (x, n), acc: res
 ) : res =
   case+ xs of
-  | list_nil () => acc
-  | list_cons (x, xs) =>
+  | list_nil() => acc
+  | list_cons(x, xs) =>
       list_foldright$fopr<x><res> (x, aux (xs, acc))
     // end of [list_cons]
 // end of [aux]
@@ -2154,6 +2456,63 @@ end // end of [list_quicksort$cmp]
 in
   list_quicksort<a> (xs)
 end // end of [list_quicksort_fun]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+streamize_list_elt
+  (xs) = let
+//
+fun
+auxmain
+(
+  xs: List(a)
+) : stream_vt(a) = $ldelay
+(
+  case+ xs of
+  | list_nil() => stream_vt_nil()
+  | list_cons(x, xs) => stream_vt_cons(x, auxmain(xs))
+) : stream_vt_con(a) // $ldelay
+//
+in
+  $effmask_all(auxmain(xs))
+end // end of [streamize_list_elt]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+streamize_list_choose2
+  (xs) = let
+//
+typedef a2 = @(a, a)
+//
+fun
+auxmain
+(
+  xs: List(a)
+) : stream_vt(a2) = $ldelay
+(
+  case+ xs of
+  | list_nil() => stream_vt_nil()
+  | list_cons(x, xs) => !(auxmain2(x, xs))
+) : stream_vt_con(@(a, a)) // $ldelay
+//
+and
+auxmain2
+(
+  x0: a, xs: List(a)
+) : stream_vt(a2) = $ldelay
+(
+  case+ xs of
+  | list_nil() => !(auxmain(xs))
+  | list_cons(x, xs) => stream_vt_cons((x0, x), auxmain2(x0, xs))
+) : stream_vt_con(@(a, a)) // $ldelay
+//
+in
+  $effmask_all(auxmain(xs))
+end // end of [streamize_list_choose2]
 
 (* ****** ****** *)
 

@@ -34,6 +34,12 @@
 (* ****** ****** *)
 //
 staload
+UN =
+"prelude/SATS/unsafe.sats"
+//
+(* ****** ****** *)
+//
+staload
 ATSPRE = "./pats_atspre.dats"
 //
 (* ****** ****** *)
@@ -93,9 +99,196 @@ staload "./pats_trans1_env.sats"
 staload "./pats_e1xpval.sats"
 
 (* ****** ****** *)
+//
+macdef
+l2l(x) = list_of_list_vt(,(x))
+macdef
+list_sing(x) = list_cons(,(x), list_nil())
+//
+(* ****** ****** *)
 
-#define l2l list_of_list_vt
-macdef list_sing (x) = list_cons (,(x), list_nil ())
+overload fprint with fprint_s0exp
+
+(* ****** ****** *)
+
+local
+//
+staload
+UN = "prelude/SATS/unsafe.sats"
+staload
+_(*anon*) = "prelude/DATS/unsafe.dats"
+//
+fun
+extprfx_add
+(
+  sym: symbol, pext: Ptr1
+) : string = let
+//
+val ext2 =
+  $UN.cast{string}(pext+1)
+val ext2 = (
+  if string_is_empty(ext2)
+    then symbol_get_name (sym) else ext2
+  // end of [if]
+) : string // end of [val]
+//
+val opt =
+  the_EXTERN_PREFIX_get()
+// end of [val]
+val
+issome = stropt_is_some(opt)
+//
+in
+//
+if
+issome
+then let
+  val prfx =
+    stropt_unsome(opt)
+  val prfxext2 =
+    sprintf ("%s%s", @(prfx, ext2))
+  // end of [val]
+in
+  string_of_strptr(prfxext2)
+end // end of [then]
+else let
+(*
+// HX-2015-05:
+// Should a warning/error be reported?
+*)
+  val prfxext2 =
+    sprintf ("__ATS_EXTERN_PREFIX__%s", @(ext2))
+  // end of [val]
+in
+  string_of_strptr(prfxext2)
+end // end of [else]
+//
+end // end of [extprfx_add]
+
+in (* in of [local] *)
+
+implement
+proc_extdef
+  (sym, ext) = let
+//
+#define NUL '\000'
+//
+fun isemp
+  (p: Ptr1): bool = $UN.ptrget<char> (p) = NUL
+fun isperc
+  (p: Ptr1): bool = $UN.ptrget<char> (p) = '%'
+//
+val pext = $UN.cast2Ptr1 (ext)
+//
+in
+//
+case+ 0 of
+| _ when isemp(pext) => symbol_get_name(sym)
+| _ when isperc(pext) => extprfx_add(sym, pext)
+| _ (*non-special*) => ext // HX: no processing
+//
+end // end of [proc_extdef]
+
+end // end of [local]
+
+(* ****** ****** *)
+
+local
+//
+extern
+fun
+ismac
+(
+  ext: string, ext_new: &string
+) : bool = "patsopt_extnam_ismac"
+extern
+fun
+issta
+(
+  ext: string, ext_new: &string
+) : bool = "patsopt_extnam_issta"
+extern
+fun
+isext
+(
+  ext: string, ext_new: &string
+) : bool = "patsopt_extnam_isext"
+//
+in (* in of [local] *)
+
+implement
+scstextdef_tr
+  (s0c, sym, extopt) = let
+//
+(*
+//
+val () =
+  print ("scstextdef_tr: sym = ...")
+val () =
+  print ("scstextdef_tr: extopt = ...")
+//
+*)
+//
+macdef f(x) =
+  proc_extdef(sym, ,(x))
+//
+in
+//
+case+ extopt of
+//
+| None () => SCSTEXTDEFnone()
+//
+| Some (s0) => let
+    val-$LEX.T_STRING(ext) = s0.token_node
+    var ext2: string = (ext) // removing mac#, ext#, sta#
+  in
+    case+ 0 of
+    | _ when
+        isext(ext, ext2) => SCSTEXTDEFsome(f(ext2))
+    | _ (* rest-of-case *) => SCSTEXTDEFsome(f(ext2)) // no (recognized) prefix
+  end // end of [_ when ...]
+//
+end // end of [scstextdef_tr]
+
+implement
+dcstextdef_tr
+  (d0c, sym, extopt) = let
+//
+(*
+//
+val () =
+  print ("dcstextdef_tr: sym = ...")
+val () =
+  print ("dcstextdef_tr: extopt = ...")
+//
+*)
+//
+macdef f(x) =
+  proc_extdef(sym, ,(x))
+//
+in
+//
+case+ extopt of
+//
+| None () => DCSTEXTDEFnone(1) // extern
+//
+| Some (s0) => let
+    val-$LEX.T_STRING(ext) = s0.token_node
+    var ext2: string = (ext) // removing mac#, ext#, sta#
+  in
+    case+ 0 of
+    | _ when
+        ismac(ext, ext2) => DCSTEXTDEFsome_mac(f(ext2))
+    | _ when
+        issta(ext, ext2) => DCSTEXTDEFsome_sta(f(ext2))
+    | _ when
+        isext(ext, ext2) => DCSTEXTDEFsome_ext(f(ext2))
+    | _ (* rest-of-case *) => DCSTEXTDEFsome_ext(f(ext2)) // no (recognized) prefix
+  end // end of [_ when ...]
+//
+end // end of [dcstextdef_tr]
+
+end // end of [local]
 
 (* ****** ****** *)
 
@@ -152,8 +345,8 @@ fn appf (
   val loc = _fun.s1exp_loc + loc_arg
   val xs_arg = (
     case+ _arg.s1exp_node of
-    | S1Elist (npf, s1es) => s1es // HX: should npf <= 0 be enforced?
-    | _ => list_sing (_arg)
+    | S1Elist(npf, s1es) => s1es // HX: should npf <= 0 be enforced?
+    | _ (* non-S1Elist *) => list_sing (_arg)
   ) : s1explst // end of [val]
   val s1e_app = s1exp_app (loc, _fun, loc_arg, xs_arg)
 in
@@ -244,9 +437,12 @@ val loc0 = s0e0.s0exp_loc
 //
 in
 //
-case+ s0e0.s0exp_node of
+case+
+s0e0.s0exp_node
+of (* case+ *)
 //
-  | S0Eide id when id = AMPERSAND => let
+  | S0Eide id
+      when id = AMPERSAND => let
       fn f (
         s1e: s1exp
       ) :<cloref1> s1expitm = let
@@ -257,7 +453,8 @@ case+ s0e0.s0exp_node of
     in
       FXITMopr (loc0, FXOPRpre (invar_prec_sta, f))
     end // end of [S0Eide when ...]
-  | S0Eide id when id = AMPERQMARK => let
+  | S0Eide id
+      when id = AMPERQMARK => let
       fn f (
         s1e: s1exp
       ) :<cloref1> s1expitm = let
@@ -268,7 +465,8 @@ case+ s0e0.s0exp_node of
     in
       FXITMopr (loc0, FXOPRpre (invar_prec_sta, f))
     end // end of [S0Eide when ...]
-  | S0Eide id when id = AMPERBANG => let
+  | S0Eide id
+      when id = AMPERBANG => let
       fn f (
         s1e: s1exp
       ) :<cloref1> s1expitm = let
@@ -280,8 +478,12 @@ case+ s0e0.s0exp_node of
       FXITMopr (loc0, FXOPRpre (invar_prec_sta, f))
     end // end of [S0Eide when ...]
  //
-  | S0Eide id when id = BACKSLASH => s1expitm_backslash (loc0)
-  | S0Eide id when id = BANG => let
+  | S0Eide id
+      when id = BACKSLASH => s1expitm_backslash (loc0)
+    // end of [BACKSLASH]
+//
+  | S0Eide id
+      when id = BANG => let
       fn f (
         s1e: s1exp
       ) :<cloref1> s1expitm = let
@@ -293,7 +495,8 @@ case+ s0e0.s0exp_node of
       FXITMopr (loc0, FXOPRpre (invar_prec_sta, f))
     end // end of [S0Eide when ...]
 //
-  | S0Eide id when id = QMARK => let
+  | S0Eide id
+      when id = QMARK => let
       fn f (
         s1e: s1exp
       ) :<cloref1> s1expitm = let
@@ -304,7 +507,8 @@ case+ s0e0.s0exp_node of
     in
       FXITMopr (loc0, FXOPRpos (qmark_prec_sta, f))
     end // end of [S0Eide when ...]
-  | S0Eide id when id = QMARKBANG => let
+  | S0Eide id
+      when id = QMARKBANG => let
       fn f (
         s1e: s1exp
       ) :<cloref1> s1expitm = let
@@ -316,9 +520,11 @@ case+ s0e0.s0exp_node of
       FXITMopr (loc0, FXOPRpos (qmarkbang_prec_sta, f))
     end // end of [S0Eide when ...]
 //
-  | S0Eide id when id = GTGT => let
+  | S0Eide id
+      when id = GTGT => let
       fn f (
-        s1e1: s1exp, s1e2: s1exp
+        s1e1: s1exp
+      , s1e2: s1exp
       ) :<cloref1> s1expitm = let
         val loc = s1e1.s1exp_loc + s1e2.s1exp_loc
       in
@@ -329,7 +535,10 @@ case+ s0e0.s0exp_node of
     end // end of [S0Eide when ...]
 //
   | S0Eide (id) => let
-      val s1e = s1exp_ide (loc0, id) in
+      val s1e =
+        s1exp_ide (loc0, id)
+      // end of [val]
+    in
       case+ the_fxtyenv_find id of
       | ~Some_vt f => s1exp_make_opr (s1e, f) | ~None_vt () => FXITMatm (s1e)
       // end of [case]
@@ -379,19 +588,29 @@ case+ s0e0.s0exp_node of
       FXITMatm (s1e_lam)
     end // end of [S0Elam]
   | S0Eimp tags => let
-      val (ofc, lin, prf, efc) = e0fftaglst_tr (tags)
-      val fc = (case+ ofc of
-        | Some fc => fc | None => FUNCLOfun () // default is [function]
+      val
+      (
+        ofc, lin, prf, efc
+      ) = e0fftaglst_tr (tags)
+//
+      val fc =
+      (
+        case+ ofc of
+        | Some(fc) => fc | None() => FUNCLOfun () // default is [function]
       ) : funclo // end of [val]
 (*
       val () = begin
         print "s0exp_tr: S0Eimp: efc = "; print_effcst efc; print_newline ()
       end // end of [val]
 *)
-      val-~Some_vt (f) = the_fxtyenv_find (MINUSGT)
-      val s1e_imp = s1exp_imp (loc0, fc, lin, prf, Some efc)
+//
+      val-
+      ~Some_vt(f) =
+      the_fxtyenv_find(MINUSGT)
+      val s1e_imp = s1exp_imp(loc0, fc, lin, prf, Some efc)
+//
     in
-      s1exp_make_opr (s1e_imp, f)
+      s1exp_make_opr(s1e_imp, f)
     end // end of [S0Eimp]
 //
   | S0Elist (s0es) => let
@@ -426,6 +645,17 @@ case+ s0e0.s0exp_node of
       FXITMatm (s1exp_tyrec_ext (loc0, name, npf, ls1es))
     end // end of [S0Etyrec]
 //
+  | S0Euni (s0qs) => let
+      val s1qs = s0qualst_tr s0qs
+      fn f (
+        body: s1exp
+      ) :<cloref1> s1expitm = let
+        val loc = loc0 + body.s1exp_loc in
+        FXITMatm (s1exp_uni (loc, s1qs, body))
+      end // end of [f]
+    in
+      FXITMopr (loc0, FXOPRpre (uni_prec_sta, f))
+    end // end of [S0Euni]
   | S0Eexi
     (
       knd(*funres*), s0qs
@@ -440,17 +670,6 @@ case+ s0e0.s0exp_node of
     in
       FXITMopr (loc0, FXOPRpre (exi_prec_sta, f))
     end // end of [S0Eexi]
-  | S0Euni (s0qs) => let
-      val s1qs = s0qualst_tr s0qs
-      fn f (
-        body: s1exp
-      ) :<cloref1> s1expitm = let
-        val loc = loc0 + body.s1exp_loc in
-        FXITMatm (s1exp_uni (loc, s1qs, body))
-      end // end of [f]
-    in
-      FXITMopr (loc0, FXOPRpre (uni_prec_sta, f))
-    end // end of [S0Euni]
 //
   | S0Eann (s0e, s0t) => let
       val s1t = s0rt_tr (s0t)
@@ -458,9 +677,14 @@ case+ s0e0.s0exp_node of
     in
       FXITMatm (s1exp_ann (loc0, s1e, s1t))
     end // end of [S0Eann]
+//
+  | S0Ed2ctype (d2ctp) => let
+      val d2ctp = S0Ed2ctype_tr(d2ctp)
+    in
+      FXITMatm (s1exp_d2ctype(loc0, d2ctp))
+    end // end of [S0Ed2ctype]
 (*
-  | _ => let
-      val () = prerr_interror_loc (loc0)
+  | _ (*rest-of-s0exp*) => let
       val () =
       fprintln! (
         stdout_ref, "s0exp_tr: aux_item: s0e0 = ", s0e0
@@ -636,12 +860,13 @@ end // end of [m0acarglst_tr]
 (* ****** ****** *)
 
 implement
-d0atcon_tr (d0c) = let
+d0atcon_tr(d0c) = let
 //
 val sym = d0c.d0atcon_sym
 val qua = d0c.d0atcon_qua
 val qua = q0marglst_tr (qua)
 (*
+//
 val () =
 (
   print "d0atcon_tr: id = ";
@@ -649,17 +874,27 @@ val () =
   print "d0atcon_tr: qua = ";
   fprint_q1marglst (stdout_ref, qua); print_newline ();
 ) (* end of [val] *)
+//
 *)
 var npf0: int = ~1 // HX: default
 val arg = (
-  case+ d0c.d0atcon_arg of
-  | Some s0e => let
-      val s1e = s0exp_tr s0e in
-      case+ s1e.s1exp_node of
-      | S1Elist (npf, s1es) => (npf0 := npf; s1es)
-      | _ => list_cons (s1e, list_nil ())
-    end // end of [Some]
-  | None () => list_nil ()
+//
+case+
+d0c.d0atcon_arg
+of // case+
+//
+| Some s0e => let
+    val s1e = s0exp_tr s0e
+  in
+    case+
+    s1e.s1exp_node
+    of // case+
+    | S1Elist(npf, s1es) => (npf0 := npf; s1es)
+    | _ (* non-S1Elist *) => list_cons(s1e, list_nil())
+  end // end of [Some]
+//
+| None((*void*)) => list_nil()
+//
 ) : s1explst
 //
 val ind = d0c.d0atcon_ind
@@ -670,8 +905,12 @@ val ind = (
         case+ s0e.s0exp_node of
         | S0Elist (s0es) => s0explst_tr (s0es)
         | _(*non-S0Elist*) => let
-            val () = prerr_interror ()
-            val () = prerrln! (": d0atcon_tr: index is required to be a list.")
+            val () =
+              prerr_interror()
+            // end of [val]
+            val () =
+              prerrln!(": d0atcon_tr: index is required to be a list.")
+            // end of [val]
           in
             $ERR.abort_interr{s1explst}((*reachable*))
           end // end of [_]
@@ -683,150 +922,8 @@ val ind = (
 ) : s1explstopt // end of [val]
 //
 in
-  d1atcon_make (d0c.d0atcon_loc, sym, qua, npf0, arg, ind)
+  d1atcon_make(d0c.d0atcon_loc, sym, qua, npf0, arg, ind)
 end // end of [d0atcon_tr]
-
-(* ****** ****** *)
-//
-extern
-fun
-proc_extdef
-(
-  d0c: d0cstdec, sym: symbol, ext: string
-) : string // end of [proc_extdef]
-//
-(* ****** ****** *)
-
-local
-
-staload UN = "prelude/SATS/unsafe.sats"
-staload _(*anon*) = "prelude/DATS/unsafe.dats"
-
-fun
-extprfx_add
-(
-  d0c: d0cstdec
-, sym: symbol, pext: Ptr1
-) : string = let
-//
-val ext2 =
-  $UN.cast{string}(pext+1)
-val ext2 = (
-  if string_is_empty(ext2)
-    then symbol_get_name (sym) else ext2
-  // end of [if]
-) : string // end of [val]
-//
-val opt =
-  the_EXTERN_PREFIX_get()
-// end of [val]
-val
-issome = stropt_is_some(opt)
-//
-in
-//
-if
-issome
-then let
-  val prfx =
-    stropt_unsome(opt)
-  val prfxext2 =
-    sprintf ("%s%s", @(prfx, ext2))
-  // end of [val]
-in
-  string_of_strptr(prfxext2)
-end // end of [then]
-else let
-(*
-// HX-2015-05:
-// Should a warning/error be reported?
-*)
-  val prfxext2 =
-    sprintf ("__ATS_EXTERN_PREFIX__%s", @(ext2))
-  // end of [val]
-in
-  string_of_strptr(prfxext2)
-end // end of [else]
-//
-end // end of [extprfx_add]
-
-in (* in of [local] *)
-
-implement
-proc_extdef
-  (d0c, sym, ext) = let
-//
-#define NUL '\000'
-//
-fun isemp
-  (p: Ptr1): bool = $UN.ptrget<char> (p) = NUL
-fun isperc
-  (p: Ptr1): bool = $UN.ptrget<char> (p) = '%'
-//
-val pext = $UN.cast2Ptr1 (ext)
-//
-in
-//
-case+ 0 of
-| _ when isemp (pext) => symbol_get_name (sym)
-| _ when isperc (pext) => extprfx_add (d0c, sym, pext)
-| _ (*non-special*) => ext // HX: no processing
-//
-end // end of [proc_extdef]
-
-end // end of [local]
-
-(* ****** ****** *)
-
-local
-//
-extern
-fun ismac
-  (ext: string, ext_new: &string): bool = "patsopt_extnam_ismac"
-extern
-fun issta
-  (ext: string, ext_new: &string): bool = "patsopt_extnam_issta"
-extern
-fun isext
-  (ext: string, ext_new: &string): bool = "patsopt_extnam_isext"
-//
-in (* in of [local] *)
-
-implement
-dcstextdef_tr
-  (d0c, sym, extopt) = let
-//
-(*
-//
-val () =
-  print ("dcstextdef_tr: sym = ...")
-val () =
-  print ("dcstextdef_tr: extopt = ...")
-//
-*)
-//
-macdef f (x) = proc_extdef (d0c, sym, ,(x))
-//
-in
-//
-case+ extopt of
-//
-| None () => DCSTEXTDEFnone (1) // extern
-//
-| Some (s0) => let
-    val-$LEX.T_STRING (ext) = s0.token_node
-    var ext2: string = (ext) // removing mac#, ext#, sta#
-  in
-    case+ 0 of
-    | _ when ismac (ext, ext2) => DCSTEXTDEFsome_mac (f(ext2))
-    | _ when issta (ext, ext2) => DCSTEXTDEFsome_sta (f(ext2))
-    | _ when isext (ext, ext2) => DCSTEXTDEFsome_ext (f(ext2))
-    | _ => DCSTEXTDEFsome_ext (f(ext2)) // no (recognized) prefix
-  end // end of [_ when ...]
-//
-end // end of [dcstextdef_tr]
-
-end // end of [local]
 
 (* ****** ****** *)
 

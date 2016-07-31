@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/float.atxt
-** Time of generation: Sat Jun 27 21:39:01 2015
+** Time of generation: Sun Jul  3 11:13:13 2016
 *)
 
 (* ****** ****** *)
@@ -143,31 +143,31 @@ overload mod with g0float_mod of 0
 (* ****** ****** *)
 
 fun{tk:tk}
-g0float_isltz (x: g0float (tk)):<> bool
+g0float_isltz (x: g0float(tk)):<> bool
 overload isltz with g0float_isltz of 0
 fun{tk:tk}
-g0float_isltez (x: g0float (tk)):<> bool
+g0float_isltez (x: g0float(tk)):<> bool
 overload isltez with g0float_isltez of 0
 fun{tk:tk}
-g0float_isgtz (x: g0float (tk)):<> bool
+g0float_isgtz (x: g0float(tk)):<> bool
 overload isgtz with g0float_isgtz of 0
 fun{tk:tk}
-g0float_isgtez (x: g0float (tk)):<> bool
+g0float_isgtez (x: g0float(tk)):<> bool
 overload isgtez with g0float_isgtez of 0
 fun{tk:tk}
-g0float_iseqz (x: g0float (tk)):<> bool
+g0float_iseqz (x: g0float(tk)):<> bool
 overload iseqz with g0float_iseqz of 0
 fun{tk:tk}
-g0float_isneqz (x: g0float (tk)):<> bool
+g0float_isneqz (x: g0float(tk)):<> bool
 overload isneqz with g0float_isneqz of 0
 
 (* ****** ****** *)
-
+//
 typedef
 g0float_cmp_type (tk:tk) =
-  (g0float (tk), g0float (tk)) -<fun0> bool
+  (g0float(tk), g0float(tk)) -<fun0> bool
 // end of [g0float_cmp_type]
-
+//
 fun
 {tk:tk}
 g0float_lt : g0float_cmp_type(tk)
@@ -193,25 +193,27 @@ fun
 g0float_neq : g0float_cmp_type(tk)
 overload != with g0float_neq of 0
 overload <> with g0float_neq of 0
-
+//
 (* ****** ****** *)
-
+//
 typedef
-g0float_compare_type (tk:tk) =
-  (g0float (tk), g0float (tk)) -<fun0> (int)
+g0float_compare_type
+  (tk:tk) =
+  (g0float(tk), g0float(tk)) -<fun0> (int)
 // end of [g0float_compare_type]
-
+//
 fun{tk:tk}
-g0float_compare : g0float_compare_type (tk)
+g0float_compare : g0float_compare_type(tk)
+//
 overload compare with g0float_compare of 0
-
+//
 (* ****** ****** *)
 
 fun{tk:tk}
-g0float_max : g0float_aop_type (tk)
+g0float_max : g0float_aop_type(tk)
 overload max with g0float_max of 0
 fun{tk:tk}
-g0float_min : g0float_aop_type (tk)
+g0float_min : g0float_aop_type(tk)
 overload min with g0float_min of 0
 
 (* ****** ****** *)
@@ -348,47 +350,44 @@ fun g0float_min_ldouble
 
 (* ****** ****** *)
 //
-fun fprint_float
-  : fprint_type (float) = "mac#%"
-overload fprint with fprint_float
-fun print_float (x: float): void = "mac#%"
-fun prerr_float (x: float): void = "mac#%"
+fun print_float (float): void = "mac#%"
+fun prerr_float (float): void = "mac#%"
+fun fprint_float : fprint_type (float) = "mac#%"
 overload print with print_float
 overload prerr with prerr_float
+overload fprint with fprint_float
 //
-fun fprint_double
-  : fprint_type (double) = "mac#%"
-overload fprint with fprint_double
-fun print_double (x: double): void = "mac#%"
-fun prerr_double (x: double): void = "mac#%"
+fun print_double (double): void = "mac#%"
+fun prerr_double (double): void = "mac#%"
+fun fprint_double : fprint_type (double) = "mac#%"
 overload print with print_double
 overload prerr with prerr_double
+overload fprint with fprint_double
 //
-fun fprint_ldouble
-  : fprint_type (ldouble) = "mac#%"
-overload fprint with fprint_ldouble
-fun print_ldouble (x: ldouble): void = "mac#%"
-fun prerr_ldouble (x: ldouble): void = "mac#%"
+fun print_ldouble (ldouble): void = "mac#%"
+fun prerr_ldouble (ldouble): void = "mac#%"
+fun fprint_ldouble : fprint_type (ldouble) = "mac#%"
 overload print with print_ldouble
 overload prerr with prerr_ldouble
+overload fprint with fprint_ldouble
 //
 (* ****** ****** *)
 //
 fun
 add_int_float
-  (x: int, y: float): float = "mac#%"
+  (x: int, y: float):<> float = "mac#%"
 fun
 add_float_int
-  (x: float, y: int): float = "mac#%"
+  (x: float, y: int):<> float = "mac#%"
 overload + with add_int_float of 0
 overload + with add_float_int of 0
 //
 fun
 add_int_double
-  (x: int, y: double): double = "mac#%"
+  (x: int, y: double):<> double = "mac#%"
 fun
 add_double_int
-  (x: double, y: int): double = "mac#%"
+  (x: double, y: int):<> double = "mac#%"
 overload + with add_int_double of 0
 overload + with add_double_int of 0
 //
@@ -396,19 +395,19 @@ overload + with add_double_int of 0
 //
 fun
 sub_int_float
-  (x: int, y: float): float = "mac#%"
+  (x: int, y: float):<> float = "mac#%"
 fun
 sub_float_int
-  (x: float, y: int): float = "mac#%"
+  (x: float, y: int):<> float = "mac#%"
 overload - with sub_int_float of 0
 overload - with sub_float_int of 0
 //
 fun
 sub_int_double
-  (x: int, y: double): double = "mac#%"
+  (x: int, y: double):<> double = "mac#%"
 fun
 sub_double_int
-  (x: double, y: int): double = "mac#%"
+  (x: double, y: int):<> double = "mac#%"
 overload - with sub_int_double of 0
 overload - with sub_double_int of 0
 //
@@ -416,19 +415,19 @@ overload - with sub_double_int of 0
 //
 fun
 mul_int_float
-  (x: int, y: float): float = "mac#%"
+  (x: int, y: float):<> float = "mac#%"
 fun
 mul_float_int
-  (x: float, y: int): float = "mac#%"
+  (x: float, y: int):<> float = "mac#%"
 overload * with mul_int_float of 0
 overload * with mul_float_int of 0
 //
 fun
 mul_int_double
-  (x: int, y: double): double = "mac#%"
+  (x: int, y: double):<> double = "mac#%"
 fun
 mul_double_int
-  (x: double, y: int): double = "mac#%"
+  (x: double, y: int):<> double = "mac#%"
 overload * with mul_int_double of 0
 overload * with mul_double_int of 0
 //
@@ -436,21 +435,30 @@ overload * with mul_double_int of 0
 //
 fun
 div_int_float
-  (x: int, y: float): float = "mac#%"
+  (x: int, y: float):<> float = "mac#%"
 fun
 div_float_int
-  (x: float, y: int): float = "mac#%"
+  (x: float, y: int):<> float = "mac#%"
 overload / with div_int_float of 0
 overload / with div_float_int of 0
 //
 fun
 div_int_double
-  (x: int, y: double): double = "mac#%"
+  (x: int, y: double):<> double = "mac#%"
 fun
 div_double_int
-  (x: double, y: int): double = "mac#%"
+  (x: double, y: int):<> double = "mac#%"
 overload / with div_int_double of 0
 overload / with div_double_int of 0
+//
+(* ****** ****** *)
+//
+fun
+{tk:tk}
+g0float_npow
+  (x: g0float(tk), n: intGte(0)):<> g0float(tk)
+//
+overload ** with g0float_npow of 0
 //
 (* ****** ****** *)
 

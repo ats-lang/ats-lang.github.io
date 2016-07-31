@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -29,7 +29,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/intrange.atxt
-** Time of generation: Sat Jun 27 21:39:08 2015
+** Time of generation: Sun Jul  3 11:13:16 2016
 *)
 
 (* ****** ****** *)
@@ -105,6 +105,13 @@ intrange2_foreach_env
 //
 fun{env:vt0p}
 intrange2_foreach$fwork (i: int, j: int, env: &env >> _): void
+//
+(* ****** ****** *)
+//
+fun{}
+streamize_intrange_l(m: int): stream_vt(int)
+fun{}
+streamize_intrange_lr(m: int, n: int): stream_vt(int)
 //
 (* ****** ****** *)
 

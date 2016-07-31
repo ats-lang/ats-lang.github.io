@@ -558,6 +558,71 @@ d2exp_sifhead (
 
 (* ****** ****** *)
 
+local
+
+fun
+i2fcl_is_else
+  (ifcl: i2fcl): bool = let
+//
+val test = ifcl.i2fcl_test
+//
+in
+//
+case+ test.d2exp_node of
+  | D2Etop _ => true | _ => false
+//
+end // end of [i2fcl_is_else]
+
+fun
+i2fclist_is_else
+  (ifcls: i2fclist): bool = let
+//
+fun
+aux
+(
+  x: i2fcl, xs: i2fclist
+) : bool =
+  case+ xs of
+  | list_nil() => i2fcl_is_else(x)
+  | list_cons(x, xs) => aux(x, xs)
+//
+in
+//
+case+ ifcls of
+| list_nil() => true
+| list_cons(x, xs) => aux(x, xs)
+//
+end // end of [i2fclist_is_else]
+
+in (* in-of-local *)
+
+implement
+d2exp_ifcasehd (
+  loc, r2es, ifcls
+) = let
+//
+val opt =
+  i2fclist_is_else(ifcls)
+//
+val knd = (if opt then 1 else 0): int
+//
+(*
+val () =
+println!
+  ("d2exp_ifcasehd: knd = ", knd)
+*)
+//
+in
+//
+d2exp_make_node
+  (loc, D2Eifcasehd(knd, r2es, ifcls))
+//
+end // end of [d2exp_ifcasehd]
+
+end // end of [local]
+
+(* ****** ****** *)
+
 implement
 d2exp_casehead (
   loc, knd, inv, d2es, c2ls
@@ -568,7 +633,7 @@ d2exp_casehead (
 implement
 d2exp_scasehead (
   loc, inv, s2f, sc2ls
-) = d2exp_make_node (loc, D2Escasehead (inv, s2f, sc2ls))
+) = d2exp_make_node(loc, D2Escasehead (inv, s2f, sc2ls))
 
 (* ****** ****** *)
 //
@@ -737,42 +802,44 @@ d2exp_exist
 // end of [d2exp_exist]
 
 (* ****** ****** *)
-
+//
 implement
-d2exp_lam_dyn (
+d2exp_lam_dyn
+(
   loc, knd, npf, arg, body
-) = d2exp_make_node (loc, D2Elam_dyn (knd, npf, arg, body))
-
+) = d2exp_make_node
+    (loc, D2Elam_dyn (knd, npf, arg, body))
+//
 implement
-d2exp_laminit_dyn (
+d2exp_laminit_dyn
+(
   loc, knd, npf, arg, body
-) = d2exp_make_node (loc, D2Elaminit_dyn (knd, npf, arg, body))
-
-implement
-d2exp_lam_met
-  (loc, ref, met, body) =
-  d2exp_make_node (loc, D2Elam_met (ref, met, body))
-// end of [d2exp_lam_met]
-
-implement
-d2exp_lam_met_new
-  (loc, met, body) = let
-  val ref = ref<d2varlst> (list_nil)
-in
-  d2exp_lam_met (loc, ref, met, body)
-end // end of [d2exp_lam_met_new]
-
+) = d2exp_make_node
+    (loc, D2Elaminit_dyn (knd, npf, arg, body))
+//
 implement
 d2exp_lam_sta
   (loc, s2vs, s2ps, body) =
   d2exp_make_node (loc, D2Elam_sta (s2vs, s2ps, body))
 // end of [d2exp_lam_sta]
-
+//
+implement
+d2exp_lam_met
+  (loc, ref, met, body) =
+  d2exp_make_node (loc, D2Elam_met (ref, met, body))
+// end of [d2exp_lam_met]
+//
+implement
+d2exp_lam_met_new
+  (loc, met, body) = let
+  val ref = ref<d2varlst> (list_nil) in d2exp_lam_met (loc, ref, met, body)
+end // end of [d2exp_lam_met_new]
+//
 implement
 d2exp_fix (
   loc, knd, d2v_fun, d2e_body
 ) = d2exp_make_node (loc, D2Efix (knd, d2v_fun, d2e_body))
-
+//
 (* ****** ****** *)
 
 implement
@@ -999,6 +1066,15 @@ loopi2nv_make (
 (* ****** ****** *)
 
 implement
+i2fcl_make
+  (loc, test, body) = '{
+  i2fcl_loc= loc
+, i2fcl_test= test, i2fcl_body= body
+} (* end of [i2fcl_make] *)
+
+(* ****** ****** *)
+
+implement
 gm2at_make
   (loc, d2e, p2topt) = '{
   gm2at_loc= loc, gm2at_exp= d2e, gm2at_pat= p2topt
@@ -1093,33 +1169,40 @@ prv2ardec_make (
 } // end of [prv2ardec_make]
 
 (* ****** ****** *)
-
+//
 extern
-fun d2ecl_make_node
-  (loc: location, node: d2ecl_node): d2ecl
+fun
+d2ecl_make_node
+(
+  loc: location, node: d2ecl_node
+) : d2ecl // end-of-function
 implement
 d2ecl_make_node
   (loc, node) = '{
   d2ecl_loc= loc, d2ecl_node= node
 }
-
+//
 (* ****** ****** *)
-
+//
 implement
-d2ecl_none (loc) = d2ecl_make_node (loc, D2Cnone ())
-
+d2ecl_none(loc) =
+  d2ecl_make_node (loc, D2Cnone())
+//
 implement
-d2ecl_list (loc, xs) = d2ecl_make_node (loc, D2Clist (xs))
-
+d2ecl_list(loc, xs) =
+  d2ecl_make_node (loc, D2Clist(xs))
+//
 (* ****** ****** *)
 
 implement
 d2ecl_symintr
-  (loc, ids) = d2ecl_make_node (loc, D2Csymintr (ids))
+  (loc, ids) =
+  d2ecl_make_node (loc, D2Csymintr (ids))
 // end of [d2ecl_symintr]
 implement
 d2ecl_symelim
-  (loc, ids) = d2ecl_make_node (loc, D2Csymelim (ids))
+  (loc, ids) =
+  d2ecl_make_node (loc, D2Csymelim (ids))
 // end of [d2ecl_symelim]
 
 (* ****** ****** *)
@@ -1128,18 +1211,21 @@ implement
 d2ecl_overload
 (
   loc, id, pval, def
-) = d2ecl_make_node (loc, D2Coverload (id, pval, def))
+) = d2ecl_make_node(loc, D2Coverload(id, pval, def))
 // end of [d2ecl_overload]
 
 (* ****** ****** *)
-
-(*
+//
 implement
-d2ecl_stavars
-  (loc, xs) = d2ecl_make_node (loc, D2Cstavars (xs))
-// end of [d2ecl_stavars]
-*)
-
+d2ecl_pragma
+  (loc, e1xps) =
+  d2ecl_make_node(loc, D2Cpragma(e1xps))
+//
+implement
+d2ecl_codegen
+  (loc, knd, xs) =
+  d2ecl_make_node(loc, D2Ccodegen(knd, xs))
+//
 (* ****** ****** *)
 //
 implement
@@ -1151,6 +1237,15 @@ d2ecl_stacons
   (loc, knd, s2cs) =
   d2ecl_make_node (loc, D2Cstacons (knd, s2cs))
 //
+(* ****** ****** *)
+
+(*
+implement
+d2ecl_stavars
+  (loc, xs) = d2ecl_make_node (loc, D2Cstavars (xs))
+// end of [d2ecl_stavars]
+*)
+
 (* ****** ****** *)
 //
 implement
@@ -1172,25 +1267,26 @@ d2ecl_extcode (loc, knd, pos, code) =
 (* ****** ****** *)
 //
 implement
-d2ecl_datdecs (loc, knd, s2cs) =
-  d2ecl_make_node (loc, D2Cdatdecs (knd, s2cs))
-//
-implement
 d2ecl_exndecs (loc, d2cs) =
  d2ecl_make_node (loc, D2Cexndecs (d2cs))
 //
-(* ****** ****** *)
-
 implement
-d2ecl_dcstdecs (loc, knd, dck, d2cs) =
-  d2ecl_make_node (loc, D2Cdcstdecs (knd, dck, d2cs))
-
+d2ecl_datdecs (loc, knd, s2cs) =
+  d2ecl_make_node (loc, D2Cdatdecs (knd, s2cs))
+//
 (* ****** ****** *)
-
+//
+implement
+d2ecl_dcstdecs
+  (loc, knd, dck, d2cs) =
+  d2ecl_make_node (loc, D2Cdcstdecs (knd, dck, d2cs))
+//
+(* ****** ****** *)
+//
 implement
 d2ecl_fundecs (loc, knd, decarg, f2ds) =
   d2ecl_make_node (loc, D2Cfundecs (knd, decarg, f2ds))
-
+//
 (* ****** ****** *)
 
 implement

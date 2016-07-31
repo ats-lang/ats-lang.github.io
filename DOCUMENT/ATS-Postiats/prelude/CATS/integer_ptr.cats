@@ -6,7 +6,7 @@
 
 /* (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/prelude/CATS/CODEGEN/integer_ptr.atxt
-** Time of generation: Sat Jun 27 21:39:44 2015
+** Time of generation: Tue Nov 17 16:34:23 2015
 */
 
 /* ****** ****** */
@@ -54,13 +54,6 @@
 
 typedef intptr_t atstype_intptr ;
 typedef uintptr_t atstype_uintptr ;
-
-/* ****** ****** */
-
-#ifndef fprintf
-extern
-int fprintf (FILE *stream, const char *format, ...) ;
-#endif // end of [ifndef]
 
 /* ****** ****** */
 //
@@ -217,22 +210,6 @@ atspre_g0int_neq_intptr
 /* ****** ****** */
 
 ATSinline()
-atsvoid_t0ype
-atspre_fprint_intptr
-(
-  atstype_ref r, atstype_intptr x
-) {
-  int err ;
-  err = fprintf((FILE*)r, "%lli", (atstype_llint)x) ;
-  return ;
-} // end [atspre_fprint_intptr]
-
-#define atspre_print_intptr(x) atspre_fprint_intptr(stdout, (x))
-#define atspre_prerr_intptr(x) atspre_fprint_intptr(stderr, (x))
-
-/* ****** ****** */
-
-ATSinline()
 atstype_uintptr
 atspre_g0uint_succ_uintptr
   (atstype_uintptr x) { return (x + 1) ; }
@@ -369,22 +346,6 @@ atspre_g0uint_neq_uintptr
   return (x1 != x2 ? atsbool_true : atsbool_false) ;
 } // end of [atspre_g0uint_neq_uintptr]
 //
-/* ****** ****** */
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_uintptr
-(
-  atstype_ref r, atstype_uintptr x
-) {
-  int err ;
-  err = fprintf((FILE*)r, "%llu", (atstype_ullint)x) ;
-  return ;
-} // end [atspre_fprint_uintptr]
-
-#define atspre_print_uintptr(x) atspre_fprint_uintptr(stdout, (x))
-#define atspre_prerr_uintptr(x) atspre_fprint_uintptr(stderr, (x))
-
 /* ****** ****** */
 
 #endif // ifndef ATSLIB_PRELUDE_CATS_INTEGER_PTR

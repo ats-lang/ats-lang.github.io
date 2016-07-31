@@ -387,15 +387,16 @@ in
 case+ xs of
 | list_cons
     (x, xs) => let
-    val () = emit_text (out, "ATSINSmove(")
+    val () =
+    emit_text (out, "ATSINSmove(")
     val () = emit_tmpvar (out, x.1)
     val () = emit_text (out, ", ")
     val () = emit_tmprimval (out, x.0)
-    val () = emit_text (out, ") ;")
+    val () = emit_text (out, ") ; ")
   in
     auxlst (out, i+1, xs)
   end // end of [list_cons]
-| list_nil () => ()
+| list_nil((*void*)) => ((*void*))
 //
 end // end of [auxlst]
 //
@@ -1288,7 +1289,8 @@ end // end of [local]
 
 (* ****** ****** *)
 //
-extern fun
+extern
+fun
 emit_funlab_funarg
   (out: FILEref, flab: funlab): void
 //
@@ -1309,7 +1311,9 @@ case+ hses of
     // end of [val]
 (*
     val isvoid = hisexp_is_void (hse)
-    val () = if isvoid then emit_text (out, "_void")
+    val ((*void*)) =
+      if isvoid then emit_text (out, "_void")
+    // end of [val]
 *)
     val () = (
       emit_funarg (out, i); emit_text (out, ", "); emit_hisexp (out, hse)
@@ -1330,7 +1334,8 @@ end // end of [emit_funlab_funarg]
 //
 (* ****** ****** *)
 //
-extern fun
+extern
+fun
 emit_funlab_funapy
   (out: FILEref, flab: funlab): void
 //
@@ -1338,7 +1343,8 @@ implement
 emit_funlab_funapy
   (out, flab) = let
 //
-fun auxlst
+fun
+auxlst
 (
   out: FILEref, hses: hisexplst, i: int
 ) : void = let
@@ -1348,20 +1354,23 @@ case+ hses of
 | list_cons
     (hse, hses) => let
     val () =
-      emit_text (out, "ATStmpdec(")
+      emit_text(out, "ATStmpdec(")
     // end of [val]
 (*
     val isvoid = hisexp_is_void (hse)
-    val () = if isvoid then emit_text (out, "_void")
+    val ((*void*)) =
+      if isvoid then emit_text (out, "_void")
+    // end of [val]
 *)
-    val () = (
-      emit_funapy (out, i); emit_text (out, ", "); emit_hisexp (out, hse)
+    val () =
+    (
+      emit_funapy(out, i); emit_text(out, ", "); emit_hisexp(out, hse)
     ) (* end of [val] *)
-    val () = emit_text (out, ") ;\n")
+    val () = emit_text(out, ") ;\n")
   in
-    auxlst (out, hses, i+1)
+    auxlst(out, hses, i+1)
   end // end of [list_cons]
-| list_nil ((*void*)) => ()
+| list_nil((*void*)) => ()
 //
 end // end of [auxlst]
 //
@@ -1381,17 +1390,17 @@ implement
 emit_funent_fundec
   (out, fent) = let
 //
-val flab = funent_get_lab (fent)
+val flab = funent_get_lab(fent)
 //
-val tmpret = funent_get_tmpret (fent)
-val ntlcal = tmpvar_get_tailcal (tmpret)
+val tmpret = funent_get_tmpret(fent)
+val ntlcal = tmpvar_get_tailcal(tmpret)
 //
 val () = emit_text (out, "/* tmpvardeclst(beg) */\n")
 //
 val () =
-  if ntlcal >= 2 then emit_funlab_funapy (out, flab)
+  if ntlcal >= 2 then emit_funlab_funapy(out, flab)
 //
-val () = emit_tmpdeclst (out, funent_get_tmpvarlst (fent))
+val () = emit_tmpdeclst(out, funent_get_tmpvarlst(fent))
 //
 val () = emit_text (out, "/* tmpvardeclst(end) */\n")
 //
@@ -1433,12 +1442,14 @@ in
 end // end of [emit_funent_funbody]
 
 (* ****** ****** *)
-
+//
 extern
-fun emit_funent_fnxdeclst (out: FILEref, fent0: funent): void
+fun
+emit_funent_fnxdeclst (out: FILEref, fent0: funent): void
 extern
-fun emit_funent_fnxbodylst (out: FILEref, fent0: funent): void
-
+fun
+emit_funent_fnxbodylst (out: FILEref, fent0: funent): void
+//
 (* ****** ****** *)
 
 local
@@ -1491,13 +1502,13 @@ implement
 emit_funent_fnxdeclst
   (out, fent0) = let
 //
-val fls = funent_get_fnxlablst (fent0)
+val fls = funent_get_fnxlablst(fent0)
 //
 val () = (
 case+ fls of
 | list_cons _ =>
-  emit_text (out, "/*\nemit_funent_fnxdeclst:\n*/\n")
-| _ => ((*void*))
+  emit_text(out, "/*\nemit_funent_fnxdeclst:\n*/\n")
+| list_nil((*void*)) => ((*void*))
 ) : void // end of [val]
 //
 in
@@ -1506,7 +1517,7 @@ case+ fls of
 | list_cons
     (fl0, fls) => auxflist (out, fent0, fls, 2(*i*))
   // end of [list_cons]
-| list_nil ((*void*)) => ()
+| list_nil((*void*)) => ((*void*))
 //
 end // end of [emit_funent_fnxdeclst]
 
@@ -1522,14 +1533,14 @@ fun auxfl
 , fent0: funent, fl: funlab
 ) : void = let
 //
-val opt = funlab_get_funent (fl)
+val opt = funlab_get_funent(fl)
 //
 in
 //
 case+ opt of
 | Some (fent) =>
-    emit_funent_funbody (out, fent)
-| None ((*void*)) => ()
+    emit_funent_funbody(out, fent)
+| None ((*void*)) => ((*void*))
 //
 end // end of [auxfl]
 
@@ -1616,13 +1627,21 @@ implement
 emit_funent_implmnt
   (out, fent) = let
 (*
-val () = fprintln! (stdout_ref, "emit_funent_implmnt: fent = ", fent)
+val () =
+fprintln!
+( stdout_ref
+, "emit_funent_implmnt: fent = ", fent
+)
 *)
 val loc0 = funent_get_loc (fent)
 val flab = funent_get_lab (fent)
 val d2es = funent_eval_d2envlst (fent)
 (*
-val () = fprintln! (stdout_ref, "emit_funent_implmnt: d2es = ", d2es)
+val () =
+fprintln!
+( stdout_ref
+, "emit_funent_implmnt: d2es = ", d2es
+)
 *)
 val () = emit_text (out, "/*\n")
 val () = $LOC.fprint_location (out, loc0)
@@ -1705,6 +1724,7 @@ val () = emit_text (out, "] */\n")
 val () = funent_varbindmap_uninitize (fent)
 //
 in
+  // nothing
 end // end of [emit_funent_implmnt]
 
 end // end of [local]

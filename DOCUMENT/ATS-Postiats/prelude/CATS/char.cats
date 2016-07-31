@@ -6,7 +6,7 @@
 
 /* (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/prelude/CATS/CODEGEN/char.atxt
-** Time of generation: Sat Jun 27 21:39:45 2015
+** Time of generation: Tue Nov 17 16:34:22 2015
 */
 
 /* ****** ****** */
@@ -69,14 +69,6 @@ extern int toascii (int c) ; // _XOPEN_SOURCE
 #endif // end of [#ifdef(__CYGWIN__)]
 
 /* ****** ****** */
-
-#ifndef fprintf
-extern
-int
-fprintf(FILE *stream, const char *format, ...) ;
-#endif // end of [ifndef]
-
-/* ****** ****** */
 //
 ATSinline()
 atstype_char
@@ -113,6 +105,10 @@ atspre_uchar2int
 #define atspre_char2int0 atspre_char2int
 #define atspre_schar2int0 atspre_schar2int
 #define atspre_uchar2int0 atspre_uchar2int
+//
+#define atspre_char2int1 atspre_char2int
+#define atspre_schar2int1 atspre_schar2int
+#define atspre_uchar2int1 atspre_uchar2int
 //
 /* ****** ****** */
 //
@@ -284,48 +280,6 @@ atspre_compare_int_int
 
 #define atspre_compare_char0_int0(c, i) atspre_compare_int_int(c, i)
 #define atspre_compare_int0_char0(i, c) atspre_compare_int_int(i, c)
-
-/* ****** ****** */
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_char
-(
-  atstype_ref out, atstype_char c
-) {
-  int err = 0 ;
-  err += fprintf ((FILE*)out, "%c", c) ;
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_char] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end of [atspre_fprint_char]
-#define atspre_print_char(c) atspre_fprint_char(stdout, (c))
-#define atspre_prerr_char(c) atspre_fprint_char(stderr, (c))
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_uchar
-(
-  atstype_ref out, atstype_uchar c
-) {
-  atspre_fprint_char (out, (atstype_char)c) ; return ;
-} // end of [atspre_fprint_uchar]
-#define atspre_print_uchar(c) atspre_fprint_uchar(stdout, (c))
-#define atspre_prerr_uchar(c) atspre_fprint_uchar(stderr, (c))
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_schar
-(
-  atstype_ref out, atstype_schar c
-) {
-  atspre_fprint_char (out, (atstype_char)c) ; return ;
-} // end of [atspre_fprint_schar]
-#define atspre_print_schar(c) atspre_fprint_schar(stdout, (c))
-#define atspre_prerr_schar(c) atspre_fprint_schar(stderr, (c))
 
 /* ****** ****** */
 //

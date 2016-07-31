@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/arrayref.atxt
-** Time of generation: Sat Jun 27 21:39:13 2015
+** Time of generation: Tue Jul 19 09:44:06 2016
 *)
 
 (* ****** ****** *)
@@ -147,10 +147,10 @@ arrayref_make_rlist{n:int}
 //
 fun{a:t0p}
 arrayref_head
-  {n:pos} (A: arrayref (a, n)):<!ref> (a) // A[0]
+  {n:pos} (A: arrayref(a, n)):<!ref> (a) // A[0]
 fun{a:t0p}
 arrayref_tail
-  {n:pos} (A: arrayref (a, n)):<!ref> arrayref (a, n-1)
+  {n:pos} (A: arrayref(a, n)):<!ref> arrayref(a, n-1)
 //
 (* ****** ****** *)
 //
@@ -159,7 +159,7 @@ a:t0p}{tk:tk
 } arrayref_get_at_gint
   {n:int}{i:nat | i < n}
 (
-  A: arrayref (a, n), i: g1int (tk, i)
+  A: arrayref(a, n), i: g1int(tk, i)
 ) :<!ref> a // end of [arrayref_get_at_gint]
 //
 fun{
@@ -167,7 +167,7 @@ a:t0p}{tk:tk
 } arrayref_get_at_guint
   {n:int}{i:nat | i < n}
 (
-  A: arrayref (a, n), i: g1uint (tk, i)
+  A: arrayref(a, n), i: g1uint(tk, i)
 ) :<!ref> a // end of [arrayref_get_at_guint]
 //
 symintr arrayref_get_at
@@ -275,33 +275,45 @@ array_foreach$cont (x: &a, env: &env): void
 fun{a:vt0p}{env:vt0p}
 array_foreach$fwork (x: &a >> a, env: &(env) >> _): void
 *)
-fun{
-a:vt0p
-} arrayref_foreach{n:int} (
-  A: arrayref (a, n), asz: size_t (n)
+fun
+{a:vt0p}
+arrayref_foreach{n:int}
+(
+  A: arrayref(a, n), asz: size_t(n)
 ) : sizeLte(n) // end of [arrayref_foreach]
-fun{
-a:vt0p}{env:vt0p
-} arrayref_foreach_env{n:int} (
-  A: arrayref (a, n), asz: size_t (n), env: &(env)>>env
+fun
+{a:vt0p}
+{env:vt0p}
+arrayref_foreach_env{n:int}
+(
+  A: arrayref(a, n), asz: size_t(n), env: &env >> _
 ) : sizeLte(n) // end of [arrayref_foreach_env]
 
 (* ****** ****** *)
 
 (*
-fun{a:vt0p}{env:vt0p}
-array_iforeach$cont (i: size_t, x: &a, env: &env): void
-fun{a:vt0p}{env:vt0p}
-array_iforeach$fwork (i: size_t, x: &a >> a, env: &(env) >> _): void
+fun
+{a:vt0p}
+{env:vt0p}
+array_iforeach$cont
+  (i: size_t, x: &a, env: &env): void
+fun
+{a:vt0p}
+{env:vt0p}
+array_iforeach$fwork
+  (i: size_t, x: &a >> a, env: &(env) >> _): void
 *)
-fun{
-a:vt0p
-} arrayref_iforeach{n:int} (
+fun
+{a:vt0p}
+arrayref_iforeach{n:int}
+(
   A: arrayref (INV(a), n), asz: size_t (n)
 ) : sizeLte(n) // end of [arrayref_iforeach]
-fun{
-a:vt0p}{env:vt0p
-} arrayref_iforeach_env{n:int} (
+fun
+{a:vt0p}
+{env:vt0p}
+arrayref_iforeach_env{n:int}
+(
   A: arrayref (INV(a), n), asz: size_t (n), env: &(env)>>env
 ) : sizeLte(n) // end of [arrayref_iforeach_env]
 

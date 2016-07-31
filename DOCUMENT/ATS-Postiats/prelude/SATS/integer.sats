@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/integer.atxt
-** Time of generation: Sat Jun 27 21:38:59 2015
+** Time of generation: Sun Jul  3 11:13:12 2016
 *)
 
 (* ****** ****** *)
@@ -49,8 +49,8 @@ sortdef tk = tkind
 
 (* ****** ****** *)
 
-typedef SHR(a:type) = a // for commenting purpose
-typedef NSH(a:type) = a // for commenting purpose
+typedef SHR(a:t@ype) = a // for commenting purpose
+typedef NSH(a:t@ype) = a // for commenting purpose
 
 (* ****** ****** *)
 //
@@ -88,6 +88,9 @@ fun g0int2int_ssize_ssize (x: int):<> ssize_t = "mac#%"
 fun g0int2int_sint_int (x: sint):<> int = "mac#%"
 //
 (* ****** ****** *)
+//
+// HX-2015-09-20:
+// These functions are implemented in prelude/string.cats:
 //
 fun{tk:tk}
 g0int2string (x: g0int (tk)):<!wrt> Strptr1
@@ -197,37 +200,52 @@ overload * with mul_int1_size0 of 11
 overload * with mul_size0_int1 of 11
 
 (* ****** ****** *)
-
+//
 fun
 {tk:tk}
-g0int_asl (x: g0int (tk), n: intGte(0)):<> g0int (tk)
-overload << with g0int_asl
+g0int_asl
+  (x: g0int(tk), n: intGte(0)):<> g0int(tk)
 fun
 {tk:tk}
-g0int_asr (x: g0int (tk), n: intGte(0)):<> g0int (tk)
-overload >> with g0int_asr
-
+g0int_asr
+  (x: g0int(tk), n: intGte(0)):<> g0int(tk)
+//
+overload << with g0int_asl of 0
+overload >> with g0int_asr of 0
+//
 (* ****** ****** *)
-
+//
+fun
+{tk:tk}
+g0int_npow
+  (x: g0int(tk), n: intGte(0)):<> g0int(tk)
+//
+overload ** with g0int_npow of 0
+//
+(* ****** ****** *)
+//
 fun{tk:tk}
 g0int_isltz (x: g0int (tk)):<> bool
-overload isltz with g0int_isltz of 0
 fun{tk:tk}
 g0int_isltez (x: g0int (tk)):<> bool
-overload isltez with g0int_isltez of 0
+//
 fun{tk:tk}
 g0int_isgtz (x: g0int (tk)):<> bool
-overload isgtz with g0int_isgtz of 0
 fun{tk:tk}
 g0int_isgtez (x: g0int (tk)):<> bool
-overload isgtez with g0int_isgtez of 0
+//
 fun{tk:tk}
 g0int_iseqz (x: g0int (tk)):<> bool
-overload iseqz with g0int_iseqz of 0
 fun{tk:tk}
 g0int_isneqz (x: g0int (tk)):<> bool
+//
+overload isltz with g0int_isltz of 0
+overload isltez with g0int_isltez of 0
+overload isgtz with g0int_isgtz of 0
+overload isgtez with g0int_isgtez of 0
+overload iseqz with g0int_iseqz of 0
 overload isneqz with g0int_isneqz of 0
-
+//
 (* ****** ****** *)
 
 typedef
@@ -655,12 +673,12 @@ typedef
 g1int_gt_type
   (tk:tk) =
   {i,j:int}
-  (g1int (tk, i), g1int (tk, j)) -<fun0> bool (i > j)
+  (g1int(tk, i), g1int(tk, j)) -<fun0> bool(i > j)
 typedef
 g1int_gte_type
   (tk:tk) =
   {i,j:int}
-  (g1int (tk, i), g1int (tk, j)) -<fun0> bool (i >= j)
+  (g1int(tk, i), g1int(tk, j)) -<fun0> bool(i >= j)
 //
 fun
 {tk:tk}
@@ -677,12 +695,12 @@ typedef
 g1int_eq_type
   (tk:tk) =
   {i,j:int}
-  (g1int (tk, i), g1int (tk, j)) -<fun0> bool (i == j)
+  (g1int(tk, i), g1int(tk, j)) -<fun0> bool(i == j)
 typedef
 g1int_neq_type
   (tk:tk) =
   {i,j:int}
-  (g1int (tk, i), g1int (tk, j)) -<fun0> bool (i != j)
+  (g1int(tk, i), g1int(tk, j)) -<fun0> bool(i != j)
 //
 fun
 {tk:tk}
@@ -700,7 +718,7 @@ typedef
 g1int_compare_type
   (tk:tk) =
   {i,j:int}
-  (g1int (tk, i), g1int (tk, j)) -<fun0> int (sgn(i-j))
+  (g1int(tk, i), g1int(tk, j)) -<fun0> int(sgn(i-j))
 //
 fun{tk:tk}
 g1int_compare : g1int_compare_type(tk)
@@ -712,7 +730,7 @@ typedef
 g1int_max_type
   (tk:tk) =
   {i,j:int}
-  (g1int (tk, i), g1int (tk, j)) -<fun0> g1int (tk, max(i, j))
+  (g1int(tk, i), g1int(tk, j)) -<fun0> g1int(tk, max(i, j))
 //
 fun
 {tk:tk}
@@ -723,7 +741,7 @@ typedef
 g1int_min_type
   (tk:tk) =
   {i,j:int}
-  (g1int (tk, i), g1int (tk, j)) -<fun0> g1int (tk, min(i, j))
+  (g1int(tk, i), g1int(tk, j)) -<fun0> g1int(tk, min(i, j))
 //
 fun
 {tk:tk}
@@ -1496,37 +1514,33 @@ fun g0int_min_ssize (x: ssize_t, y: ssize_t):<> ssize_t = "mac#%"
 //
 (* ****** ****** *)
 //
-fun fprint_int
-  : fprint_type (int) = "mac#%"
-overload fprint with fprint_int
-fun print_int (x: int): void = "mac#%"
-fun prerr_int (x: int): void = "mac#%"
+fun print_int (int): void = "mac#%"
+fun prerr_int (int): void = "mac#%"
+fun fprint_int : fprint_type (int) = "mac#%"
 overload print with print_int
 overload prerr with prerr_int
+overload fprint with fprint_int
 //
-fun fprint_lint
-  : fprint_type (lint) = "mac#%"
-overload fprint with fprint_lint
-fun print_lint (x: lint): void = "mac#%"
-fun prerr_lint (x: lint): void = "mac#%"
+fun print_lint (lint): void = "mac#%"
+fun prerr_lint (lint): void = "mac#%"
+fun fprint_lint : fprint_type (lint) = "mac#%"
 overload print with print_lint
 overload prerr with prerr_lint
+overload fprint with fprint_lint
 //
-fun fprint_llint
-  : fprint_type (llint) = "mac#%"
-overload fprint with fprint_llint
-fun print_llint (x: llint): void = "mac#%"
-fun prerr_llint (x: llint): void = "mac#%"
+fun print_llint (llint): void = "mac#%"
+fun prerr_llint (llint): void = "mac#%"
+fun fprint_llint : fprint_type (llint) = "mac#%"
 overload print with print_llint
 overload prerr with prerr_llint
+overload fprint with fprint_llint
 //
-fun fprint_ssize
-  : fprint_type (ssize_t) = "mac#%"
-overload fprint with fprint_ssize
-fun print_ssize (x: ssize_t): void = "mac#%"
-fun prerr_ssize (x: ssize_t): void = "mac#%"
+fun print_ssize (ssize_t): void = "mac#%"
+fun prerr_ssize (ssize_t): void = "mac#%"
+fun fprint_ssize : fprint_type (ssize_t) = "mac#%"
 overload print with print_ssize
 overload prerr with prerr_ssize
+overload fprint with fprint_ssize
 //
 (* ****** ****** *)
 //
@@ -1640,37 +1654,33 @@ fun g0uint_min_size (x: size_t, y: size_t):<> size_t = "mac#%"
 //
 (* ****** ****** *)
 //
-fun fprint_uint
-  : fprint_type (uint) = "mac#%"
-overload fprint with fprint_uint
-fun print_uint (x: uint): void = "mac#%"
-fun prerr_uint (x: uint): void = "mac#%"
+fun print_uint (uint): void = "mac#%"
+fun prerr_uint (uint): void = "mac#%"
+fun fprint_uint : fprint_type (uint) = "mac#%"
 overload print with print_uint
 overload prerr with prerr_uint
+overload fprint with fprint_uint
 //
-fun fprint_ulint
-  : fprint_type (ulint) = "mac#%"
-overload fprint with fprint_ulint
-fun print_ulint (x: ulint): void = "mac#%"
-fun prerr_ulint (x: ulint): void = "mac#%"
+fun print_ulint (ulint): void = "mac#%"
+fun prerr_ulint (ulint): void = "mac#%"
+fun fprint_ulint : fprint_type (ulint) = "mac#%"
 overload print with print_ulint
 overload prerr with prerr_ulint
+overload fprint with fprint_ulint
 //
-fun fprint_ullint
-  : fprint_type (ullint) = "mac#%"
-overload fprint with fprint_ullint
-fun print_ullint (x: ullint): void = "mac#%"
-fun prerr_ullint (x: ullint): void = "mac#%"
+fun print_ullint (ullint): void = "mac#%"
+fun prerr_ullint (ullint): void = "mac#%"
+fun fprint_ullint : fprint_type (ullint) = "mac#%"
 overload print with print_ullint
 overload prerr with prerr_ullint
+overload fprint with fprint_ullint
 //
-fun fprint_size
-  : fprint_type (size_t) = "mac#%"
-overload fprint with fprint_size
-fun print_size (x: size_t): void = "mac#%"
-fun prerr_size (x: size_t): void = "mac#%"
+fun print_size (size_t): void = "mac#%"
+fun prerr_size (size_t): void = "mac#%"
+fun fprint_size : fprint_type (size_t) = "mac#%"
 overload print with print_size
 overload prerr with prerr_size
+overload fprint with fprint_size
 //
 (* ****** ****** *)
 //

@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/integer.atxt
-** Time of generation: Sat Jun 27 21:39:20 2015
+** Time of generation: Sun Jul  3 11:13:21 2016
 *)
 
 (* ****** ****** *)
@@ -187,6 +187,44 @@ implement fprint_val<ssize_t> (out, x) = fprint_ssize (out, x)
 
 implement{} mul_int1_size0 (i, j) = i2sz(i) * j
 implement{} mul_size0_int1 (i, j) = i * i2sz(j)
+
+(* ****** ****** *)
+
+implement
+{tk}(*tk*)
+g0int_npow
+  (x, n) = let
+//
+typedef gint = g0int(tk)
+//
+fun
+loop
+(
+  x: gint, res: gint, n: int
+) : gint = (
+//
+if
+(n > 1)
+then let
+  val n2 = n >> 1
+  val b0 = n - (n2 << 1)
+  val xx = x * x
+in
+  if b0 = 0
+    then loop(xx, res, n2) else loop(xx, x * res, n2)
+  // end of [if]
+end // end of [then]
+else (
+  if n > 0 then x * res else res
+) (* end of [else] *)
+//
+) (* end of [loop] *)
+//
+val res = $UN.cast{gint}(1)
+//
+in
+  $effmask_all(loop(x, res, n))
+end // end of [g0int_npow]
 
 (* ****** ****** *)
 

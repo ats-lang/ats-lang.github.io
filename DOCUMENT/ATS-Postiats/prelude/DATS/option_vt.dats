@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/option_vt.atxt
-** Time of generation: Sat Jun 27 21:39:36 2015
+** Time of generation: Sun Jul  3 11:13:25 2016
 *)
 
 (* ****** ****** *)
@@ -46,7 +46,8 @@ implement{a} option_vt_none ( ) = None_vt ( )
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 option_vt_make_opt
   (b, x) = (
   if b then let
@@ -58,7 +59,8 @@ option_vt_make_opt
 
 (* ****** ****** *)
 
-implement{}
+implement
+{}(*tmp*)
 option_vt_is_some
   (opt) = case+ opt of
   | Some_vt _ => true | None_vt _ => false
@@ -72,19 +74,22 @@ option_vt_is_none
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 option_vt_unsome
   (opt) = x where { val+ ~Some_vt (x) = opt }
 // end of [option_unsome]
 
-implement{a}
+implement
+{a}(*tmp*)
 option_vt_unnone
   (opt) = () where { val+ ~None_vt () = opt }
 // end of [option_unnone]
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 option_vt_free (opt) =
 (
 case+ opt of ~Some_vt _ => () | ~None_vt () => ()
@@ -92,7 +97,8 @@ case+ opt of ~Some_vt _ => () | ~None_vt () => ()
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 fprint_option_vt
   (out, opt) = let
 in

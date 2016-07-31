@@ -6,7 +6,7 @@
 
 /* (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/prelude/CATS/CODEGEN/float.atxt
-** Time of generation: Sat Jun 27 21:39:49 2015
+** Time of generation: Tue Nov 17 16:34:23 2015
 */
 
 /* ****** ****** */
@@ -45,13 +45,6 @@
 
 #ifndef ATSLIB_PRELUDE_CATS_FLOAT
 #define ATSLIB_PRELUDE_CATS_FLOAT
-
-/* ****** ****** */
-
-#ifndef fprintf
-extern
-int fprintf (FILE *stream, const char *format, ...) ;
-#endif // end of [ifndef]
 
 /* ****** ****** */
 
@@ -444,62 +437,6 @@ atstype_ldouble
 atspre_g0float_max_ldouble
   (atstype_ldouble f1, atstype_ldouble f2) { return (f1 >= f2 ? f1 : f2) ; }
 // end of [atspre_g0float_max_ldouble]
-
-/* ****** ****** */
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_float (
-  atstype_ref r, atstype_float x
-) {
-  int err = 0 ;
-  err += fprintf((FILE*)r, "%f", x) ;
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_float] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end [atspre_fprint_float]
-
-#define atspre_print_float(x) atspre_fprint_float(stdout, (x))
-#define atspre_prerr_float(x) atspre_fprint_float(stderr, (x))
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_double (
-  atstype_ref r, atstype_double x
-) {
-  int err = 0 ;
-  err += fprintf((FILE*)r, "%f", x) ;
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_double] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end [atspre_fprint_double]
-
-#define atspre_print_double(x) atspre_fprint_double(stdout, (x))
-#define atspre_prerr_double(x) atspre_fprint_double(stderr, (x))
-
-ATSinline()
-atsvoid_t0ype
-atspre_fprint_ldouble (
-  atstype_ref r, atstype_ldouble x
-) {
-  int err = 0 ;
-  err += fprintf((FILE*)r, "%Lf", x) ;
-/*
-  if (err < 0) {
-    fprintf(stderr, "exit(ATS): [fprint_ldouble] failed.") ; exit(1) ;
-  } // end of [if]
-*/
-  return ;
-} // end [atspre_fprint_ldouble]
-
-#define atspre_print_ldouble(x) atspre_fprint_ldouble(stdout, (x))
-#define atspre_prerr_ldouble(x) atspre_fprint_ldouble(stderr, (x))
 
 /* ****** ****** */
 

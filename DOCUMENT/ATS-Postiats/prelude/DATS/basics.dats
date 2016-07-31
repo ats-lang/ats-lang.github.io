@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/basics.atxt
-** Time of generation: Tue Jul 21 21:16:36 2015
+** Time of generation: Sun Jul  3 11:13:24 2016
 *)
 
 (* ****** ****** *)
@@ -133,16 +133,23 @@ argv_get_at
 *)
 
 (* ****** ****** *)
-
+//
 implement{}
-assertexn_bool0 (b) = if not(b) then $raise AssertExn()
+assertexn_bool0 (b) =
+  if not(b) then $raise AssertExn()
+//
 implement{}
-assertexn_bool1 (b) = if not(b) then $raise AssertExn()
-
+assertexn_bool1 (b) =
+  if not(b) then $raise AssertExn()
+//
 (* ****** ****** *)
 
-implement{a} gidentity (x) = x
-implement{a} gidentity_vt (x) = x
+implement
+{a}(*tmp*)
+gidentity (x) = (x)
+implement
+{a}(*tmp*)
+gidentity_vt (x) = (x)
 
 (* ****** ****** *)
 

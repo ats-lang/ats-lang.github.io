@@ -73,6 +73,8 @@ typedef c0har = $SYN.c0har
 typedef f0loat = $SYN.f0loat
 typedef s0tring = $SYN.s0tring
 //
+typedef scstextdef = $SYN.scstextdef
+//
 typedef sl0abeled (a:type) = $SYN.sl0abeled (a)
 //
 (* ****** ****** *)
@@ -175,22 +177,41 @@ absvtype d2conset_vtype
 vtypedef d2conset_vt = d2conset_vtype
 //
 (* ****** ****** *)
-
+//
 abstype s2rtdat_type
 typedef s2rtdat = s2rtdat_type
-
+//
+(* ****** ****** *)
+//
 fun s2rtdat_make (id: symbol): s2rtdat
-
+//
 fun s2rtdat_get_sym (s2td: s2rtdat): symbol
+fun s2rtdat_get_stamp (s2td: s2rtdat): stamp
+//
 fun s2rtdat_get_sconlst (s2td: s2rtdat): s2cstlst
 fun s2rtdat_set_sconlst (s2td: s2rtdat, s2cs: s2cstlst): void
-fun s2rtdat_get_stamp (s2td: s2rtdat): stamp
-
-fun eq_s2rtdat_s2rtdat (s2td1: s2rtdat, s2td2: s2rtdat): bool
+//
+fun
+eq_s2rtdat_s2rtdat (s2td1: s2rtdat, s2td2: s2rtdat):<> bool
+fun
+compare_s2rtdat_s2rtdat (s2td1: s2rtdat, s2td2: s2rtdat):<> int
+//
 overload = with eq_s2rtdat_s2rtdat
-
+overload compare with compare_s2rtdat_s2rtdat
+//
+fun print_s2rtdat : (s2rtdat) -> void
+and prerr_s2rtdat : (s2rtdat) -> void
 fun fprint_s2rtdat : fprint_type (s2rtdat)
-
+//
+(* ****** ****** *)
+//
+abstype s2rtdatset_type
+typedef s2rtdatset = s2rtdatset_type
+//
+fun s2rtdatset_nil (): s2rtdatset
+fun s2rtdatset_add (xs: s2rtdatset, x: s2rtdat): s2rtdatset
+fun s2rtdatset_listize (xs: s2rtdatset): List_vt(s2rtdat)
+//
 (* ****** ****** *)
 
 datatype s2rtbas =
@@ -254,12 +275,14 @@ fun fprint_s2rtlst : fprint_type (s2rtlst)
 // pre-defined predicative sorts
 //
 val s2rt_int : s2rt // integers
-val s2rt_bool : s2rt // booleans
 val s2rt_addr : s2rt // addresses
+val s2rt_bool : s2rt // booleans
 //
 (*
 val s2rt_char : s2rt // = s2rt_int
 *)
+//
+val s2rt_real : s2rt // real numbers
 //
 val s2rt_float : s2rt // floating-point
 val s2rt_string : s2rt // string constants
@@ -513,7 +536,7 @@ s2exp_node =
 //
   | S2Ewthtype of (s2exp, wths2explst) // the result part of a fun type
 //
-  | S2Eerr of () // HX: placeholder for indicating error or something else
+  | S2Eerrexp of ((*void*)) // HX: placeholder for indicating error or something else
 //
 // end of [s2exp_node]
 
@@ -530,16 +553,16 @@ and s2eff =
 and s2rtext = (* extended sort *)
   | S2TEsrt of s2rt
   | S2TEsub of (s2var, s2rt, s2explst)
-  | S2TEerr of ()
+  | S2TEerr of ((*void*))
 // end of [s2rtext]
 
 and labs2exp = SLABELED of (label, Option(string), s2exp)
 
 and wths2explst =
   | WTHS2EXPLSTnil of ()
+  | WTHS2EXPLSTcons_none of wths2explst
   | WTHS2EXPLSTcons_invar of (int(*refval*), s2exp, wths2explst)
   | WTHS2EXPLSTcons_trans of (int(*refval*), s2exp, wths2explst)
-  | WTHS2EXPLSTcons_none of wths2explst
 // end of [wths2explst]
 
 where
@@ -590,31 +613,32 @@ fun prerr_s2qualst (xs: s2qualst): void
 fun fprint_s2qualst : fprint_type (s2qualst)
 //
 (* ****** ****** *)
-
+//
 fun
-s2cst_make (
+s2cst_make
+(
   id: symbol
 , loc: location
 , fil: filename
 , s2t: s2rt // the sort
-, isabs: Option (s2expopt)
+, isabs: Option(s2expopt)
 , iscon: bool
 , isrec: bool
 , isasp: bool
-, islst: Option @(d2con(*nil*), d2con(*cons*))
-, argsrtss: List (syms2rtlst) // HX: containing info on arg variances
-, def: s2expopt
+, islst: Option@(d2con(*nil*), d2con(*cons*))
+, argsrtss: List(syms2rtlst) // HX: containing info on arg variances
+, s2cstdef: s2expopt
 ) : s2cst // end of [s2cst_make]
-
+//
 fun
-s2cst_make_dat (
+s2cst_make_dat
+(
   id: symbol
 , loc: location
-, s2ts_arg: s2rtlstlst
-, s2t_res: s2rt
-, argsrtss: List (syms2rtlst) // HX: containing info on arg variances
+, s2ts_arg: s2rtlstlst, s2t_res: s2rt
+, argsrtss: List(syms2rtlst) // HX: containing info on arg variances
 ) : s2cst // end of [s2cst_make_dat]
-
+//
 (* ****** ****** *)
 
 fun s2cst_get_sym (x: s2cst): symbol
@@ -664,6 +688,11 @@ fun s2cst_set_dstag (x: s2cst, tag: int): void
 
 fun s2cst_get_stamp (x: s2cst): stamp
 
+(* ****** ****** *)
+//
+fun s2cst_get_extdef(x: s2cst): scstextdef
+fun s2cst_set_extdef(x: s2cst, xdef: scstextdef): void
+//
 (* ****** ****** *)
 
 fun lt_s2cst_s2cst (x1: s2cst, x2: s2cst):<> bool
@@ -1208,7 +1237,7 @@ fun s2exp_wthtype (_res: s2exp, _with: wths2explst): s2exp
 
 (* ****** ****** *)
 
-fun s2exp_err (s2t: s2rt): s2exp // HX: error indication
+fun s2exp_errexp (s2t: s2rt): s2exp // HX: error indication
 fun s2exp_s2rt_err (): s2exp // HX: s2exp_err (s2rt_err ())
 fun s2exp_t0ype_err (): s2exp // HX: s2exp_err (s2rt_t0ype)
 

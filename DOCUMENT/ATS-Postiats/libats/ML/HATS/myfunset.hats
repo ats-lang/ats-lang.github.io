@@ -93,6 +93,21 @@ overload .size with myfunset_size
 //
 extern
 fun
+myfunset_is_nil(myset): bool
+extern
+fun
+myfunset_isnot_nil(myset): bool
+//
+overload is_nil with myfunset_is_nil
+overload isnot_nil with myfunset_isnot_nil
+//
+overload .is_nil with myfunset_is_nil
+overload .isnot_nil with myfunset_isnot_nil
+//
+(* ****** ****** *)
+//
+extern
+fun
 myfunset_is_member(myset, elt): bool
 and
 myfunset_isnot_member(myset, elt): bool
@@ -257,10 +272,19 @@ overload .tabulate with myfunset_tabulate_method
 //
 extern
 fun
-myfunset_listize(myset): List0(elt)
+myfunset_listize(myset): list0(elt)
 //
 overload listize with myfunset_listize
 overload .listize with myfunset_listize
+//
+(* ****** ****** *)
+//
+extern
+fun
+myfunset_streamize(myset): stream_vt(elt)
+//
+overload streamize with myfunset_streamize
+overload .streamize with myfunset_streamize
 //
 (* ****** ****** *)
 
@@ -297,7 +321,10 @@ myfunset_make_sing
 //
 implement
 myfunset_make_list
-  (xs) = funset_make_list<elt>(g0ofg1(xs))
+  (xs) =
+(
+funset_make_list<elt>(g0ofg1_list(xs))
+)
 //
 (* ****** ****** *)
 //
@@ -310,6 +337,13 @@ fprint_myfunset
 implement
 myfunset_size(xs) = funset_size<elt>(xs)
 //
+(* ****** ****** *)
+
+implement
+myfunset_is_nil(xs) = funset_is_nil(xs)
+implement
+myfunset_isnot_nil(xs) = funset_isnot_nil(xs)
+
 (* ****** ****** *)
 //
 implement
@@ -443,8 +477,12 @@ myfunset_tabulate_method
 (* ****** ****** *)
 //
 implement
-myfunset_listize
-  (xs) = g1ofg0_list(funset_listize<elt>(xs))
+myfunset_listize(xs) = funset_listize<elt>(xs)
+//
+(* ****** ****** *)
+//
+implement
+myfunset_streamize(xs) = funset_streamize<elt>(xs)
 //
 (* ****** ****** *)
 

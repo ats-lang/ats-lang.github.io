@@ -51,46 +51,58 @@ macdef :=* (x, a) = let val v = ,(x) in ,(x) := v * ,(a) end
 macdef :=/ (x, a) = let val v = ,(x) in ,(x) := v / ,(a) end
 //
 (* ****** ****** *)
-
+//
+macdef
+println(x) = (print(,(x)); print_newline())
+macdef
+prerrln(x) = (prerr(,(x)); prerr_newline())
+//
+macdef
+fprintln(out, x) = (fprint(,(out), ,(x)); fprint_newline(,(out)))
+//
+(* ****** ****** *)
 (*
-
 //
 // HX-2012-08:
 //
 // this example makes use of recursive macrodef
 //
+*)
+(*
+//
 local
-
+//
 macrodef
 rec
 auxlist
   (xs, y) =
 (
 //
-if iscons! (xs) then
-  `(print ,(car! xs); ,(auxlist (cdr! xs, y)))
-else y // end of [if]
+if
+iscons! (xs)
+then `(print ,(car! xs); ,(auxlist (cdr! xs, y))) else y
+// end of [if]
 //
-) // end of [auxlist]
-
-in // in of [local]
+) (* end of [auxlist] *)
+//
+in (* in of [local] *)
 
 macdef
 print_mac (x) =
 ,(
   if islist! (x) then auxlist (x, `()) else `(print ,(x))
-) // end of [print_mac]
+) (* end of [print_mac] *)
 
 macdef
 println_mac (x) =
 ,(
   if islist! (x)
-    then auxlist (x, `(print_newline())) else `(print ,(x))
+    then auxlist (x, `(print_newline())) else `(print ,(x); print_newline())
   // end of [if]
-) // end of [println_mac]
+) (* end of [println_mac] *)
 
 end // end of [local]
-
+//
 *)
 
 (* ****** ****** *)

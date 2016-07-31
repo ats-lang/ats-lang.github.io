@@ -6,7 +6,7 @@
 
 (*
 ** ATS/Postiats - Unleashing the Potential of Types!
-** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** Copyright (C) 2010-2015 Hongwei Xi, ATS Trustful Software, Inc.
 ** All rights reserved
 **
 ** ATS is free software;  you can  redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/matrixref.atxt
-** Time of generation: Sat Jun 27 21:39:14 2015
+** Time of generation: Sun Jul  3 11:13:19 2016
 *)
 
 (* ****** ****** *)
@@ -235,23 +235,32 @@ a:vt0p
 (
   A: matrixref (a, m, n), m: size_t m, n: size_t n
 ) : void // end of [matrixref_foreach]
+//
 fun{
 a:vt0p}{env:vt0p
 } matrixref_foreach_env{m,n:int}
 (
   A: matrixref (a, m, n), m: size_t m, n: size_t n, env: &(env) >> _
 ) : void // end of [matrixref_foreach_env]
-
+//
+fun{
+a:vt0p
+} matrixref_foreach_cloref{m,n:int}
+(
+  A: matrixref(a, m, n), m: size_t(m), n: size_t(n), fwork: (&(a) >> _) -<cloref1> void 
+) : void // end of [mtrxszref_foreach_cloref]
+//
 (* ****** ****** *)
 //
 // mtrxszref: a reference to a matrix with size information attached
 //
 (* ****** ****** *)
-
+//
 abstype // in-variant
-mtrxszref_vt0ype_type (a: vt@ype) = ptr
+mtrxszref_vt0ype_type(a:vt@ype) = ptr
+//
 stadef mtrxszref = mtrxszref_vt0ype_type
-
+//
 (* ****** ****** *)
 
 fun{}
