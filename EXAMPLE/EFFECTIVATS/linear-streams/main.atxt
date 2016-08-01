@@ -5,6 +5,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <title>EFFECTIVATS-linear-streams</title>
 ##patsyntax()
+##thePage_style()
 </head>
 
 <body>
@@ -428,6 +429,15 @@ each block consists of 3 consecutive words.
 
 """)##comment("para")
 
+##para("""
+If we try to call ##dyncode("qsolve_vt(N)") for a large N (e.g., choosing
+N to be 100), then we can see that the run-time execution of the call immediately
+reaches a steady state of memory consumption. While the call itself can never return
+(due to the algorithm for ##dyncode(qsolve_vt) being exponential in terms of N), its
+execution goes on smoothly without causing any dreadful page faults. This is
+really a thing of beauty to observe!
+""")##comment("para")
+
 <h2>Compiling and Testing</h2>
 
 ##para("""\
@@ -448,8 +458,9 @@ and testing the code.\
 """)
 
 <hr size="2">
-
+<p>
 This article is written by <a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>.
-
+</p>
+##thePage_script()
 </body>
 </html>

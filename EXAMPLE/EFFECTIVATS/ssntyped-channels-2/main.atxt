@@ -1,8 +1,7 @@
-%{
-#include "./../ATEXT/atextfun.hats"
-%}
-
 <!DOCTYPE html>
+%{
+#include "./../MYTEXT/mytextfun.hats"
+%}
 <html>
 
 <head>
@@ -11,6 +10,7 @@
  content="text/html; charset=UTF-8" />
 <title>EFFECTIVATS-ssntyped-channels-session-combinators</title>
 #patscode_style()
+#patspage_style()
 </head>
 
 <body>
@@ -470,7 +470,7 @@ typedef
 ss_test_loop = ssrepeat_conj(ss_test_one)
 ')</pre>
 
-Notice that the client decides wether a fresh round of test should
+Notice that the client decides whether a fresh round of test should
 take place.
 </p>
 
@@ -649,8 +649,10 @@ combinators (e.g., those for combining services together conveniently).
 
 <hr size="2">
 
+<p>
 This article is written by <a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>.
-
+</p>
+#patspage_script()
 </body>
 </html>
 

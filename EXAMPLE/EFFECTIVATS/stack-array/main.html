@@ -1,8 +1,6 @@
+<!DOCTYPE html>
 
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
@@ -24,6 +22,106 @@
   .patsyntax span.dyncstdec  {text-decoration:none;}
   .patsyntax span.dyncstuse  {color:#B80000;text-decoration:underline;}
   .patsyntax span.dyncst_implement  {color:#B80000;text-decoration:underline;}
+</style>
+
+<style type="text/css">
+  @import url("https://fonts.googleapis.com/css?family=Lato:400,300,700");
+
+  body {
+    margin: 0 auto;
+    width: 66%;
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    font-size: 15pt;
+    color: #2E2E2E;
+    padding-left: 2em;
+    padding-right: 2em;
+    border-left: 1px solid #acacac;
+    border-right: 1px solid #acacac;
+  }
+  pre, .patsyntax {
+    color: black;
+    background-color: #FEFFEC;
+    border: 1px solid #acacac;
+    border-left: 5px solid #BCBCBC;
+    padding: 20px;
+    margin: 1.5em 0;
+    font-family: monospace;
+    font-size: 0.75em;
+    overflow: auto;
+    line-height: 1.3em;
+  }
+  h1, h2, h3 {
+    font-family: "Lato", sans-serif;
+  }
+  h1 {
+    border: 1px solid #8c8c8c;
+    font-size: 1.2em;
+    padding: 5px;
+    background-color: #EEF;
+    box-shadow: 1px 1px 2px #999;
+    text-align: center;
+  }
+  h2 {
+    border-bottom: 1px solid #8C8C8C;
+    padding: 5px;
+    margin-top: 1em;
+    font-size: 1.2em;
+    text-align: left;
+  }
+  h4 {
+    border-bottom: 1px dashed #8C8C8C;
+  }
+  ol, ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  li:first-child {
+    border-top: 1px solid #EEF;
+  }
+  li:hover {
+    background-color: #EEF;
+  }
+  li {
+    border-bottom: 1px solid #EEF;
+    border-left: 1px solid #EEF;
+    border-right: 1px solid #EEF;
+  }
+  li a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+  }
+
+  a:hover {
+    color: black;
+  }
+  a:visited {
+    color: #7D7D7D;
+  }
+  a {
+    text-decoration: none;
+    color: #0062BB;
+  }
+
+  @media print {
+  body {
+    margin: 0 auto;
+    width: 90%;
+    font-size: 12pt;
+    border-left: 0;
+    border-right: 0;
+  }
+  pre, .patsyntax {
+    color: black;
+    padding: 10px;
+    font-size: 10pt;
+  }
+  h1 {
+    box-shadow: none;
+  }
+  }
 </style>
 
 </head>
@@ -66,12 +164,12 @@ class="patsyntax">
 <span class="staexp">stkarray <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">stkarray_vtype</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
 </pre>
 
-Given a type T, an integer M and another integer N, the type [stkarray(T,
-M, N)] is for an array-based stack such that (1) the elements stored in the
-stack are of type T, (2) the capacity of the stack is M, and (3) the
-current size of the stack is N.  Clearly, M >= N and N >= 0 holds, and this
-property is encoded into the type of the following proof function
-[lemma_stkarray_param]:
+Given a type T, an integer M and another integer N, the type
+<span style="color: #0000F0;">stkarray(T, M, N)</span> is for an array-based stack such that
+(1) the elements stored in the stack are of type T, (2) the capacity
+of the stack is M, and (3) the current size of the stack is N.
+Clearly, M >= N and N >= 0 holds, and this property is encoded into
+the type of the following proof function <span style="color: #F00000;">lemma_stkarray_param</span>:
   
 <pre
 class="patsyntax">
@@ -99,10 +197,11 @@ stkarray_free<span class="staexp"><span class="keyword">{</span>a<span class="ke
 <span class="comment">//</span>
 </pre>
 
-Given a size M, [stkarray_make_cap] creates an empty stack of capacity M.
-As linear elements stored in a stack are leaked after the stack is freed,
-the type of [stkarray_free] indicates that the function can only be applied
-to a stack containing no elements.
+Given a size M, <span style="color: #F00000;">stkarray_make_cap</span> creates an empty stack
+of capacity M.  As linear elements stored in a stack are leaked after
+the stack is freed, the type of <span style="color: #F00000;">stkarray_free</span> indicates
+that the function can only be applied to a stack containing no
+elements.
 
 <p>
 
@@ -118,10 +217,10 @@ stkarray_insert
 <span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// endfun</span>
 </pre>
 
-Note that [stkarray_insert] can only be called on a stack if its current
-size is strictly less than its capacity. The type of [stkarray_insert]
-states that the size of a stack argument is increased by 1 after an
-element is inserted into it.
+Note that <span style="color: #F00000;">stkarray_insert</span> can only be called on a stack if
+its current size is strictly less than its capacity. The type of
+<span style="color: #F00000;">stkarray_insert</span> states that the size of a stack argument
+is increased by 1 after an element is inserted into it.
 
 <p>
 
@@ -136,9 +235,10 @@ stkarray_takeout
 <span class="comment">// end of [stkarray_takeout]</span>
 </pre>
 
-Note that [stkarray_takeout] can only be called on a stack if its current
-size is positive. The type of [stkarray_takeout] states that the size of a
-stack is decreased by 1 after an element is taken out of it.
+Note that <span style="color: #F00000;">stkarray_takeout</span> can only be called on a stack
+if its current size is positive. The type of
+<span style="color: #F00000;">stkarray_takeout</span> states that the size of a stack is
+decreased by 1 after an element is taken out of it.
 
 <h2>
 Implementation of Array-Based Stacks
@@ -156,15 +256,16 @@ struct {
 } atslib_stkarray_struct ;
 </pre>
 
-The pointers [stkarray_beg] and [stkarray_end] point to the beginning and
-end of the base array while the pointer [stkarray_cur] points the top of
-the current stack. Note that the beginning of the base array is the bottom
-of the represented stack.
+The pointers <span style="color: #F00000;">stkarray_beg</span> and <span style="color: #F00000;">stkarray_end</span>
+point to the beginning and end of the base array while the pointer
+<span style="color: #F00000;">stkarray_cur</span> points the top of the current stack. Note
+that the beginning of the base array is the bottom of the represented
+stack.
 
 <p>
 
 Let us introduce the folllowing two functions for getting and setting
-the pointer [stkarray_cur]:
+the pointer <span style="color: #F00000;">stkarray_cur</span>:
 
 <pre
 class="patsyntax">
@@ -177,12 +278,13 @@ stkarray_set_ptrcur<span class="staexp"><span class="keyword">{</span>a<span cla
 </pre>
 
 As can be expected, these two functions are to be implemented in C
-directly. The following implementation of [stkarray_insert] makes use of
-these two functions as well as an unsafe function of the name [ptr0_set]:
+directly. The following implementation of <span style="color: #F00000;">stkarray_insert</span>
+makes use of these two functions as well as an unsafe function of the
+name <span style="color: #F00000;">ptr0_set</span>:
 
 <pre
 class="patsyntax">
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 stkarray_insert
   <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>stk<span class="keyword">,</span> x0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -201,27 +303,29 @@ __assert <span class="keyword">(</span>stk<span class="keyword">)</span> <span c
 <span class="keyword">end</span></span></span> <span class="comment">// end of [stkarray_insert]</span>
 </pre>
 
-Note that [ptr0_set] writes a value (its 2nd argument) to a given memory
-location (its 1st argument) without requiring a proof (of some at-view)
-associated with the location. In other words, [ptr0_set] performs a memory
-update precisely in the same way as it is done in C. Also note that a proof
-function [__assert] is introduced so as to make it possible for the
-implementation to pass typechecking. The keyword [praxi] means that the
-introduced proof function should be treated as an assertion and no
-implementation for it is expected.
+Note that <span style="color: #F00000;">ptr0_set</span> writes a value (its 2nd argument) to a
+given memory location (its 1st argument) without requiring a proof (of
+some at-view) associated with the location. In other words,
+<span style="color: #F00000;">ptr0_set</span> performs a memory update precisely in the same
+way as it is done in C. Also note that a proof function
+<span style="color: #F00000;">__assert</span> is introduced so as to make it possible for the
+implementation to pass typechecking. The keyword <span style="color:#000000;font-weight:bold;">praxi</span>
+means that the introduced proof function should be treated as an
+assertion and no implementation for it is expected.
 
 <p>
 
-The following implementation of [stkarray_takeout] makes use of [ptr0_get],
-which reads through a given pointer without requiring a proof (of some
-at-view) associated with the location. Also, just like in the
-implementation of [stkarray_insert], a proof function is asserted for the
-sole purpose of making the implementation of [stkarray_takeout] pass
-typechecking.
+The following implementation of <span style="color: #F00000;">stkarray_takeout</span> makes use
+of <span style="color: #F00000;">ptr0_get</span>, which reads through a given pointer without
+requiring a proof (of some at-view) associated with the
+location. Also, just like in the implementation of
+<span style="color: #F00000;">stkarray_insert</span>, a proof function is asserted for the sole
+purpose of making the implementation of <span style="color: #F00000;">stkarray_takeout</span>
+pass typechecking.
 
 <pre
 class="patsyntax">
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 stkarray_takeout
   <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>stk<span class="keyword">)</span> <span class="keyword">=</span> x0 <span class="keyword">where</span>
 <span class="keyword">{</span>
@@ -240,8 +344,8 @@ __assert <span class="keyword">(</span>stk<span class="keyword">)</span> <span c
 <span class="keyword">}</span></span> <span class="comment">// end of [stkarray_takeout]</span>
 </pre>
 
-The C code implementing [stkarray_get_ptrcur] and [stkarray_set_ptrcur] is
-given below:
+The C code implementing <span style="color: #F00000;">stkarray_get_ptrcur</span> and
+<span style="color: #F00000;">stkarray_set_ptrcur</span> is given below:
 
 <pre>
 ATSinline()
@@ -261,9 +365,10 @@ atslib_stkarray_set_ptrcur
 } // end of [atslib_stkarray_set_ptrcur]
 </pre>
 
-The C-names for [stkarray_get_ptrcur] and [stkarray_set_ptrcur] are
-chosen to be [atslib_stkarray_get_ptrcur] and [atslib_stkarray_set_ptrcur],
-respectively.
+The C-names for <span style="color: #F00000;">stkarray_get_ptrcur</span> and
+<span style="color: #F00000;">stkarray_set_ptrcur</span> are chosen to be
+<span style="color: #F00000;">atslib_stkarray_get_ptrcur</span> and
+<span style="color: #F00000;">atslib_stkarray_set_ptrcur</span>, respectively.
 
 <p>
 
@@ -278,9 +383,10 @@ For more on array-based stack implementation, please see:
 Some Stack-Functions of Convenience 
 </h2>
 
-If a caller attempts to insert an element into a stack that happens to be
-full, we may require that the element be returned to the caller. The
-following function [stkarray_insert_opt] does this precisely:
+If a caller attempts to insert an element into a stack that happens to
+be full, we may require that the element be returned to the
+caller. The following function <span style="color: #F00000;">stkarray_insert_opt</span> does
+this precisely:
 
 <pre
 class="patsyntax">
@@ -288,7 +394,7 @@ class="patsyntax">
 <span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
 stkarray_insert_opt
   <span class="keyword">(</span>stk<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">stkarray</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">Option_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 stkarray_insert_opt
   <span class="keyword">(</span>stk<span class="keyword">,</span> x0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -303,10 +409,11 @@ stkarray_insert_opt
 <span class="keyword">end</span></span> <span class="comment">// end of [stkarray_insert_opt]</span>
 </pre>
 
-Similarly, a caller may attempt to take an element out of a stack that
-happens to be empty. The following function [stkarray_takeout_opt] returns
-an optional value so that its caller can tell whether an element has
-actually been taken out of a given stack:
+Similarly, a caller may attempt to take an element out of a stack
+that happens to be empty. The following function
+<span style="color: #F00000;">stkarray_takeout_opt</span> returns an optional value so that its
+caller can tell whether an element has actually been taken out of a
+given stack:
 
 <pre
 class="patsyntax">
@@ -314,7 +421,7 @@ class="patsyntax">
 <span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
 stkarray_takeout_opt
   <span class="keyword">(</span>stk<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">stkarray</span> <span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">Option_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 stkarray_takeout_opt
   <span class="keyword">(</span>stk<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
@@ -335,7 +442,46 @@ written in the postfix-notation is coded.
 
 <hr size="2">
 
+<p>
 This article is written by <a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>.
+</p>
+<script type="text/javascript">
+  window.onload = function() {
+    var links = [];
+    var headers = document.getElementsByTagName('h2');
+
+    for (var i = 0; i < headers.length; i++) {
+        var header = headers[i];
+        var subHeadings = header.getElementsByTagName('h4');
+        var title = header.innerHTML;
+        var link = title.trim().split(/\s/).map(function(x) { return x.toLowerCase(); }).join('-');
+        var html = '<h2 id="' + link + '">' + title + '</h2>';
+        var linkHtml = '<a href="#' + link + '">' + html + '</a>';
+        header.outerHTML = linkHtml;
+        links.push({link: link, title: title});
+    }
+
+    if (links.length > 0) {
+        var sideBarHtml = '<h2>Table of Contents</h2>';
+        sideBarHtml += '<ul class="sidebar-list">';
+        for (var i = 0; i < links.length; i++) {
+            var link = links[i];
+            sideBarHtml += '<li class="sidebar-item">';
+            sideBarHtml += '<a href="#' + link.link + '">' + link.title + '</a>';
+            sideBarHtml += '</li>';
+        }
+        sideBarHtml += '</ul>';
+        sideBarHtml += '<h2>Introduction</h2>';
+
+        var sidebar = document.createElement('div');
+        sidebar.className = 'sidebar';
+        sidebar.innerHTML = sideBarHtml
+
+        var mainTitle = document.getElementsByTagName('h1')[0];
+        document.body.insertBefore(sidebar, mainTitle.nextSibling);
+    }
+  }
+</script>
 
 </body>
 </html>

@@ -1,8 +1,7 @@
-%{
-#include "./../ATEXT/atextfun.hats"
-%}
-
 <!DOCTYPE html>
+%{
+#include "./../MYTEXT/mytextfun.hats"
+%}
 <html>
 
 <head>
@@ -11,6 +10,7 @@
  content="text/html; charset=UTF-8" />
 <title>EFFECTIVATS-ssntyped-channels-introduction</title>
 #patscode_style()
+#patspage_style()
 </head>
 
 <body>
@@ -460,8 +460,10 @@ the demo on his/her own.
 
 <hr size="2">
 
+<p>
 This article is written by <a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>.
-
+</p>
+#patspage_script()
 </body>
 </html>
 

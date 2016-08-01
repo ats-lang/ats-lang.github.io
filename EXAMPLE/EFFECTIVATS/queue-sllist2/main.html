@@ -1,8 +1,6 @@
+<!DOCTYPE html>
 
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
@@ -24,6 +22,106 @@
   .patsyntax span.dyncstdec  {text-decoration:none;}
   .patsyntax span.dyncstuse  {color:#B80000;text-decoration:underline;}
   .patsyntax span.dyncst_implement  {color:#B80000;text-decoration:underline;}
+</style>
+
+<style type="text/css">
+  @import url("https://fonts.googleapis.com/css?family=Lato:400,300,700");
+
+  body {
+    margin: 0 auto;
+    width: 66%;
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    font-size: 15pt;
+    color: #2E2E2E;
+    padding-left: 2em;
+    padding-right: 2em;
+    border-left: 1px solid #acacac;
+    border-right: 1px solid #acacac;
+  }
+  pre, .patsyntax {
+    color: black;
+    background-color: #FEFFEC;
+    border: 1px solid #acacac;
+    border-left: 5px solid #BCBCBC;
+    padding: 20px;
+    margin: 1.5em 0;
+    font-family: monospace;
+    font-size: 0.75em;
+    overflow: auto;
+    line-height: 1.3em;
+  }
+  h1, h2, h3 {
+    font-family: "Lato", sans-serif;
+  }
+  h1 {
+    border: 1px solid #8c8c8c;
+    font-size: 1.2em;
+    padding: 5px;
+    background-color: #EEF;
+    box-shadow: 1px 1px 2px #999;
+    text-align: center;
+  }
+  h2 {
+    border-bottom: 1px solid #8C8C8C;
+    padding: 5px;
+    margin-top: 1em;
+    font-size: 1.2em;
+    text-align: left;
+  }
+  h4 {
+    border-bottom: 1px dashed #8C8C8C;
+  }
+  ol, ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  li:first-child {
+    border-top: 1px solid #EEF;
+  }
+  li:hover {
+    background-color: #EEF;
+  }
+  li {
+    border-bottom: 1px solid #EEF;
+    border-left: 1px solid #EEF;
+    border-right: 1px solid #EEF;
+  }
+  li a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+  }
+
+  a:hover {
+    color: black;
+  }
+  a:visited {
+    color: #7D7D7D;
+  }
+  a {
+    text-decoration: none;
+    color: #0062BB;
+  }
+
+  @media print {
+  body {
+    margin: 0 auto;
+    width: 90%;
+    font-size: 12pt;
+    border-left: 0;
+    border-right: 0;
+  }
+  pre, .patsyntax {
+    color: black;
+    padding: 10px;
+    font-size: 10pt;
+  }
+  h1 {
+    box-shadow: none;
+  }
+  }
 </style>
 
 </head>
@@ -174,9 +272,9 @@ the type [sllist]), performing memory allocation/deallocation explicitly.
 class="patsyntax">
 <span class="keyword">staload</span> "libats/SATS/sllist.sats"
 
-<span class="dynexp"><span class="keyword">datavtype</span>
-queue <span class="staexp"><span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">viewt@ype+</span><span class="keyword">,</span> n<span class="keyword">:</span>int<span class="keyword">)</span></span> <span class="keyword">=</span>
-  <span class="staexp"><span class="keyword">{</span>f<span class="keyword">,</span>r<span class="keyword">:</span>nat <span class="keyword">|</span> f+r==n<span class="keyword">}</span></span> QUEUE <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">sllist</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">f</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">sllist</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">datavtype</span>
+<span class="staexp">queue <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">viewt@ype+</span><span class="keyword">,</span> n<span class="keyword">:</span>int<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="dynexp"><span class="staexp"><span class="keyword">{</span>f<span class="keyword">,</span>r<span class="keyword">:</span>nat <span class="keyword">|</span> f+r==n<span class="keyword">}</span></span> QUEUE <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">sllist</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">f</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">sllist</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
 <span class="comment">// end of [queue]</span>
 
 <span class="staexp"><span class="keyword">assume</span> queue_vtype <span class="keyword">(</span>a<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> queue <span class="keyword">(</span>a<span class="keyword">,</span> n<span class="keyword">)</span></span>
@@ -187,7 +285,7 @@ the sum of lengths of its front and rear parts.
 
 <pre
 class="patsyntax">
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 queue_make_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> QUEUE <span class="keyword">(</span>sllist_nil <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> sllist_nil <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
 </pre>
 
@@ -196,7 +294,7 @@ consists of an empty front part and an empty rear part.
 
 <pre
 class="patsyntax">
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 queue_free_nil <span class="keyword">(</span>que<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
 <span class="dynexp"><span class="keyword">val+</span><span class="keyword">~</span>QUEUE <span class="keyword">(</span>f<span class="keyword">,</span> r<span class="keyword">)</span> <span class="keyword">=</span> que</span>
@@ -219,7 +317,7 @@ elements.
 
 <pre
 class="patsyntax">
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 queue_is_empty <span class="keyword">(</span>que<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val+</span>QUEUE <span class="keyword">(</span>f<span class="keyword">,</span> r<span class="keyword">)</span> <span class="keyword">=</span> que</span>
 <span class="keyword">in</span>
@@ -231,7 +329,7 @@ A queue is empty if and only if both of its front and rear parts are empty.
 
 <pre
 class="patsyntax">
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 queue_isnot_empty <span class="keyword">(</span>que<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val+</span>QUEUE <span class="keyword">(</span>f<span class="keyword">,</span> r<span class="keyword">)</span> <span class="keyword">=</span> que</span>
 <span class="keyword">in</span>
@@ -245,7 +343,7 @@ on [queue_is_empty] as is shown below:
 
 <pre
 class="patsyntax">
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
 queue_isnot_empty <span class="keyword">(</span>que<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> lemma_queue_param <span class="keyword">(</span>que<span class="keyword">)</span></span> <span class="keyword">in</span> not <span class="keyword">(</span>queue_is_empty <span class="keyword">(</span>que<span class="keyword">)</span><span class="keyword">)</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [queue_isnot_empty]</span>
@@ -266,7 +364,7 @@ are implemented as follows:
 
 <pre
 class="patsyntax">
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 queue_insert_atend <span class="keyword">(</span>que<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
 <span class="comment">//</span>
 <span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>QUEUE <span class="keyword">(</span>f<span class="keyword">,</span> r<span class="keyword">)</span> <span class="keyword">=</span> que</span>
@@ -277,7 +375,7 @@ queue_insert_atend <span class="keyword">(</span>que<span class="keyword">,</spa
   <span class="comment">// nothing</span>
 <span class="keyword">end</span></span></span> <span class="comment">// end of [queue_insert_atend]</span>
 
-<span class="prfexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
 queue_takeout_atbeg <span class="keyword">(</span>que<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
   <span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>QUEUE <span class="keyword">(</span>f<span class="keyword">,</span> r<span class="keyword">)</span> <span class="keyword">=</span> que</span>
 <span class="comment">//</span>
@@ -317,7 +415,46 @@ entirety of the above presented code plus some code for testing.
 
 <hr size="2">
 
+<p>
 This article is written by <a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>.
+</p>
+<script type="text/javascript">
+  window.onload = function() {
+    var links = [];
+    var headers = document.getElementsByTagName('h2');
+
+    for (var i = 0; i < headers.length; i++) {
+        var header = headers[i];
+        var subHeadings = header.getElementsByTagName('h4');
+        var title = header.innerHTML;
+        var link = title.trim().split(/\s/).map(function(x) { return x.toLowerCase(); }).join('-');
+        var html = '<h2 id="' + link + '">' + title + '</h2>';
+        var linkHtml = '<a href="#' + link + '">' + html + '</a>';
+        header.outerHTML = linkHtml;
+        links.push({link: link, title: title});
+    }
+
+    if (links.length > 0) {
+        var sideBarHtml = '<h2>Table of Contents</h2>';
+        sideBarHtml += '<ul class="sidebar-list">';
+        for (var i = 0; i < links.length; i++) {
+            var link = links[i];
+            sideBarHtml += '<li class="sidebar-item">';
+            sideBarHtml += '<a href="#' + link.link + '">' + link.title + '</a>';
+            sideBarHtml += '</li>';
+        }
+        sideBarHtml += '</ul>';
+        sideBarHtml += '<h2>Introduction</h2>';
+
+        var sidebar = document.createElement('div');
+        sidebar.className = 'sidebar';
+        sidebar.innerHTML = sideBarHtml
+
+        var mainTitle = document.getElementsByTagName('h1')[0];
+        document.body.insertBefore(sidebar, mainTitle.nextSibling);
+    }
+  }
+</script>
 
 </body>
 </html>

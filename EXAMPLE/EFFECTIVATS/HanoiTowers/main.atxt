@@ -1,8 +1,7 @@
-%{
-#include "./../ATEXT/atextfun.hats"
-%}
-
 <!DOCTYPE html>
+%{
+#include "./../MYTEXT/mytextfun.hats"
+%}
 <html>
 
 <head>
@@ -11,6 +10,7 @@
  content="text/html; charset=UTF-8" />
 <title>EFFECTIVATS-hanoi-towers</title>
 #patscode_style()
+#patspage_style()
 </head>
 
 <body>
@@ -41,17 +41,22 @@ The <u>Hanoi Towers</u> puzzle can be described as follows:
 Given three poles: Pole 1, Pole 2 and Pole 3, there are 64 disks of
 distinct sizes stacked on Pole 1 such that no disk is stacked on one
 of a lesser size, and both Pole 2 and Pole 3 are empty.  The player is
-asked to the task of moving all the disks from Pole 1 to Pole 2 (while
-using Pole 3 as a spare): Only one disk can be moved from one pole to
-another one each time and no disk is ever allowed to be stacked on
-another one of less size during the entire process of moving.\
+asked to finish the task of moving all the disks from Pole 1 to Pole 2
+(while using Pole 3 as a spare): Only one disk can be moved from one
+pole to another one at any time and no disk is ever allowed to be
+stacked on another one of a lesser size during the entire process of
+disk-moving.\
 
 ")
 
-#para("\
-It will soon be clear that 2<sup>64</sup>-1 moves are needed in order to
-accomplish the aforementioned task.
-")
+#para('\
+
+It will soon be clear that 2<sup>64</sup>-1 moves are needed in order
+to accomplish the aforementioned task.
+Please click <a href="./HanoiTowers_txt.html">here</a> to see a simple
+demo where there are 8 disks initially stacked on Pole 1.
+
+')#comment("para")
 
 <h2>
 A Solution of Imperative Style
@@ -333,7 +338,7 @@ waste.
 
 #para('\
 
-Let us first declare #stacode("pole") is decared as a linear type:
+Let us first declare #stacode("pole") as a linear type:
 
 <pre
 class="patsyntax">
@@ -344,12 +349,13 @@ absvtype pole(n:int) = ptr
 ')</pre>
 
 Unlike a non-linear type, a value of a linear type can be modified.
-The types for the linear functional version of #stacode("move_1") and
-#stacode("move_n") are declared as follows:
+The types for the linear functional version of #dyncode("move_1") and
+#dyncode("move_n") are declared as follows:
 
 <pre
 class="patsyntax">
 #pats2xhtml_dats('\
+//
 extern
 fun
 move_1
@@ -370,9 +376,9 @@ move_n{n:nat}
 //
 ')</pre>
 
-Based on the type of #stacode("move_1"), it is clear that calling the
+Based on the type of #dyncode("move_1"), it is clear that calling the
 function on two given poles #dyncode("P1") and #dyncode("P2") changes
-the types of these two poles to reflect that fact that #dyncode("P1")
+the types of these two poles to reflect the fact that #dyncode("P1")
 contains one fewer disk after the call and #dyncode("P2") one more
 disk. The type assigned to #dyncode("move_n") can be interpreted similarly.\
 
@@ -470,8 +476,10 @@ but also more efficient both time-wise and memory-wise.
 
 <hr size="2">
 
+<p>
 This article is written by <a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>.
-
+</p>
+#patspage_script()
 </body>
 </html>
 

@@ -27,6 +27,106 @@
   .patsyntax span.dyncst_implement  {color:#B80000;text-decoration:underline;}
 </style>
 
+<style type="text/css">
+  @import url("https://fonts.googleapis.com/css?family=Lato:400,300,700");
+
+  body {
+    margin: 0 auto;
+    width: 66%;
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    font-size: 15pt;
+    color: #2E2E2E;
+    padding-left: 2em;
+    padding-right: 2em;
+    border-left: 1px solid #acacac;
+    border-right: 1px solid #acacac;
+  }
+  pre, .patsyntax {
+    color: black;
+    background-color: #FEFFEC;
+    border: 1px solid #acacac;
+    border-left: 5px solid #BCBCBC;
+    padding: 20px;
+    margin: 1.5em 0;
+    font-family: monospace;
+    font-size: 0.75em;
+    overflow: auto;
+    line-height: 1.3em;
+  }
+  h1, h2, h3 {
+    font-family: "Lato", sans-serif;
+  }
+  h1 {
+    border: 1px solid #8c8c8c;
+    font-size: 1.2em;
+    padding: 5px;
+    background-color: #EEF;
+    box-shadow: 1px 1px 2px #999;
+    text-align: center;
+  }
+  h2 {
+    border-bottom: 1px solid #8C8C8C;
+    padding: 5px;
+    margin-top: 1em;
+    font-size: 1.2em;
+    text-align: left;
+  }
+  h4 {
+    border-bottom: 1px dashed #8C8C8C;
+  }
+  ol, ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  li:first-child {
+    border-top: 1px solid #EEF;
+  }
+  li:hover {
+    background-color: #EEF;
+  }
+  li {
+    border-bottom: 1px solid #EEF;
+    border-left: 1px solid #EEF;
+    border-right: 1px solid #EEF;
+  }
+  li a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+  }
+
+  a:hover {
+    color: black;
+  }
+  a:visited {
+    color: #7D7D7D;
+  }
+  a {
+    text-decoration: none;
+    color: #0062BB;
+  }
+
+  @media print {
+  body {
+    margin: 0 auto;
+    width: 90%;
+    font-size: 12pt;
+    border-left: 0;
+    border-right: 0;
+  }
+  pre, .patsyntax {
+    color: black;
+    padding: 10px;
+    font-size: 10pt;
+  }
+  h1 {
+    box-shadow: none;
+  }
+  }
+</style>
+
 </head>
 
 <body>
@@ -477,12 +577,12 @@ The datatype <span style="color: #0000F0;">token</span> is declared for tokens a
 <pre
 class="patsyntax">
 <span class="comment">//</span>
-<span class="dynexp"><span class="keyword">datatype</span> token <span class="keyword">=</span>
-  <span class="keyword">|</span> TOKeof <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="comment">// the end</span>
-  <span class="keyword">|</span> TOKint <span class="keyword">of</span> <span class="staexp">int</span> <span class="comment">// integer</span>
-  <span class="keyword">|</span> TOKident <span class="keyword">of</span> <span class="staexp">string</span> <span class="comment">// identifier</span>
-  <span class="keyword">|</span> TOKspchr <span class="keyword">of</span> <span class="staexp">char</span> <span class="comment">// special char</span>
-  <span class="keyword">|</span> TOKcomment <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="comment">// comment</span>
+<span class="keyword">datatype</span> <span class="staexp">token <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="dynexp">TOKeof <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="comment">// the end</span>
+  <span class="keyword">|</span> <span class="dynexp">TOKint <span class="keyword">of</span> <span class="staexp">int</span></span> <span class="comment">// integer</span>
+  <span class="keyword">|</span> <span class="dynexp">TOKident <span class="keyword">of</span> <span class="staexp">string</span></span> <span class="comment">// identifier</span>
+  <span class="keyword">|</span> <span class="dynexp">TOKspchr <span class="keyword">of</span> <span class="staexp">char</span></span> <span class="comment">// special char</span>
+  <span class="keyword">|</span> <span class="dynexp">TOKcomment <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span></span> <span class="comment">// comment</span>
 <span class="comment">//</span>
 </pre>
 
@@ -525,7 +625,7 @@ Note that <span style="color: #F00000;">kp_eof</span>, <span style="color: #F000
 sequence of characters starting with <span style="color: #F00000;">(*</span> and ending with
 <span style="color: #F00000;">*)</span>, and embedded comments are allowed. I suggest that the
 reader pay close attention to the implementation of <span style="color: #F00000;">kp_comment</span>
-in <tt>tokenizer.dats</tt>, which is not based on parsing combinators.
+in <u>tokenizer.dats</u>, which is not based on parsing combinators.
 Instead, <span style="color: #F00000;">kp_comment</span> is implemented in a direct style.  Parsing
 combinators can often help implement elegant parsers but not always.  There
 is really no point sticking to parsing combinators if one can find a
@@ -571,14 +671,53 @@ kp_token <span class="keyword">=</span> kparser_decode<span class="keyword">(</s
 
 <p>
 Please find the entirety of the code for this example in the file
-<tt>tokenizer.dats</tt>. A good exercise to solidify one's
+<u>tokenizer.dats</u>. A good exercise to solidify one's
 understanding of parsing combinators of CPS-style is to simply implement a
 parser for arithmetic expressions based on the tokenizer presented here.
 </p>
 
 <hr size="2">
 
+<p>
 This article is written by <a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a>.
+</p>
+<script type="text/javascript">
+  window.onload = function() {
+    var links = [];
+    var headers = document.getElementsByTagName('h2');
+
+    for (var i = 0; i < headers.length; i++) {
+        var header = headers[i];
+        var subHeadings = header.getElementsByTagName('h4');
+        var title = header.innerHTML;
+        var link = title.trim().split(/\s/).map(function(x) { return x.toLowerCase(); }).join('-');
+        var html = '<h2 id="' + link + '">' + title + '</h2>';
+        var linkHtml = '<a href="#' + link + '">' + html + '</a>';
+        header.outerHTML = linkHtml;
+        links.push({link: link, title: title});
+    }
+
+    if (links.length > 0) {
+        var sideBarHtml = '<h2>Table of Contents</h2>';
+        sideBarHtml += '<ul class="sidebar-list">';
+        for (var i = 0; i < links.length; i++) {
+            var link = links[i];
+            sideBarHtml += '<li class="sidebar-item">';
+            sideBarHtml += '<a href="#' + link.link + '">' + link.title + '</a>';
+            sideBarHtml += '</li>';
+        }
+        sideBarHtml += '</ul>';
+        sideBarHtml += '<h2>Introduction</h2>';
+
+        var sidebar = document.createElement('div');
+        sidebar.className = 'sidebar';
+        sidebar.innerHTML = sideBarHtml
+
+        var mainTitle = document.getElementsByTagName('h1')[0];
+        document.body.insertBefore(sidebar, mainTitle.nextSibling);
+    }
+  }
+</script>
 
 </body>
 </html>

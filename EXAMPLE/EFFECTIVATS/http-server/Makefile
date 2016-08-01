@@ -14,6 +14,18 @@ PATSLIB=$(PATSHOME)/ccomp/atslib/lib
 
 ######
 
+MYTEXTING=./../MYTEXT/bin/mytexting
+
+######
+#
+all:: \
+main.html
+main.html: \
+main_html.atxt ; $(MYTEXTING) -o $@ -i $<
+main_html.atxt: main_html.php; $(PHP) -f $< > $@
+#
+######
+
 all:: \
 myserver
 myserver: \
@@ -25,22 +37,16 @@ cleanall:: ; $(RMF) myserver
 all:: \
 myserver2
 myserver2: myserver2.dats ; \
-  $(PATSCC) -D_GNU_SOURCE -I${PATSHOME}/contrib -o $@ $< -lczmq -lzmq
+  $(PATSCC) -D_GNU_SOURCE -I${PATSHOMERELOC}/contrib -o $@ $< -lczmq -lzmq
 cleanall:: ; $(RMF) myserver2
 
 ######
-
-all:: \
-main.html
-main.html: main_html.php; $(PHP) -f $< > $@
-
-######
-
+#
 upload_main: \
   main.html ; \
   scp main.html \
-  ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/EFFECTIVATS/HttpServer/
-
+  ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/EFFECTIVATS/http-server/
+#
 ######
 
 RMF=rm -f
