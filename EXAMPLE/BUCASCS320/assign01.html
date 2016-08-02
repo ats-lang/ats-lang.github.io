@@ -137,11 +137,6 @@ println! ("isTriangle(3,4,5) = ", isTriangle(3,4,5))
 
 <tr>
 <td align="center">
-<button
- type="button"
- ID="pats2xhtml_button"
- onclick="pats2xhtml_onclick('assign01')"
->synhilite</button>
 
 <button
  type="button"
@@ -160,6 +155,13 @@ println! ("isTriangle(3,4,5) = ", isTriangle(3,4,5))
  ID="patsopt_cc2js_button"
  onclick="patsopt_cc2js_onclick('assign01')"
 >patsopt_cc2js</button>
+
+<button
+ type="button"
+ ID="pats2xhtml_button"
+ onclick="pats2xhtml_eval_onclick('assign01')"
+>pats2xhtml</button>
+
 </td>
 <td></td>
 </tr>
@@ -169,6 +171,28 @@ println! ("isTriangle(3,4,5) = ", isTriangle(3,4,5))
 </p>
 
 <hr></hr>
+
+The buttons above can be clicked for the following actions:
+<ul>
+<li>
+<u>patsopt_tc</u>: for typechecking the source only
+</li>
+<li>
+<u>patsopt_cc</u>: for typechecking and compiling the source
+</li>
+<li>
+<u>patsopt_cc2js</u> for compiling to JS and evaluating the JS code.
+</li>
+<li>
+<u>pats2xhtml</u>: for syntax-hiliting the ATS source code.
+</li>
+</ul>
+
+<hr></hr>
+
+<p>
+The JavaScript code loaded by this page is prepared with atscc2js.
+</p>
 
 <script
  src="https://ats-lang.github.io/LIBRARY/libtutoriats/libtutoriats_patsopt_services_dats.js">
