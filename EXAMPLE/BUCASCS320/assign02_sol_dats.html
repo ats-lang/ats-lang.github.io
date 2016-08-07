@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>BUCASCS320-assign01</title>
+<title>BUCASCS320-assign02_sol</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <style type="text/css">
   .patsyntax {width:100%;margin:auto;}
@@ -26,6 +26,9 @@
  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js">
 </script>
 <script
+ src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2014-11-29/FileSaver.min.js">
+</script>
+<script
  src="https://ats-lang.github.io/LIBRARY/libatscc2js/libatscc2js_all.js">
 </script>
 <script
@@ -36,54 +39,72 @@
 </script>
 </head>
 <body>
-
-
-<h1>BUCASCS320</h1>
-
-The following assignment shows some basic steps involved in
-compiling a single-file ATS program.
-
-<h1>Assignment #1</h1>
+<h1>Assignment-Sol #2</h1>
 
 <p>
-Please implement a function ##fun("isTriangle") that determines
-whether three given integers ##arg("x"), ##arg("y"), and #arg("z") can
-form a triangle. The interface for ##fun("isTriangle") is given as follows:
+The following function ##fun("fib")
+computes Fibonacci numbers:
+
+<p></p>
+
+<div>
+<dats2xhtml>//
+fun
+fib(n: int): int =
+  if n >= 2 then fib(n-1) + fib(n-2) else n
+//</dats2xhtml>
+</div>
+
+<p></p>
+
+Clearly, ##fun("fib") is recursive but not tail-recursive:
+Neither of the two recursive calls in the body of ##fun("fib")
+is a tail-call. Please give a tail-recursive implementation
+of ##fun("fib_trec") that also computes Fibonacci numbers:
 
 <p></p>
 
 <div>
 <sats2xhtml>//
-fun
-isTriangle
-  (x: int, y: int, z: int) : bool
+fun fib_trec(n: int): int
 //</sats2xhtml>
 </div>
 
-<p></p>
-
-Note that three numbers can form the three sides of a triangle
-if and only if the sum of any two of them exceeds the remaining one.
 </p>
 
 <hr></hr>
-
-<p>
-An implementation of ##fun("isTriangle") is given as follows:
-</p>
+A tail-recursive implementation of ##fun("fib_trec")
+is given in the following window:<br>
 
 <table width="100%">
 <tr>
 <th width="50%"></th>
 <th width="50%"></th>
 </tr>
+<tr>
+<td align="center">
+<button
+ type="button"
+ id="assign02_sol_patssrc_saveAs_button"
+ onclick="assign02_patssrc_saveAs_onclick('assign02_sol')"
+>saveAs</button>
+<input
+ type="text"
+ id="assign02_sol_patssrc_saveAs_input"
+ size=18 maxlength=32
+ placeholder="assign02_sol.dats"></input>
+</td>
+<td align="center">
+</td>
+</tr>
 <tr
- id="assign01_table_tr1">
+ id="assign02_sol_table_tr1">
 <td align="center">
 <textarea
- id="assign01_source"
- rows=24 cols=80
- spellcheck="false">//
+ id="assign02_sol_source"
+ rows=41 cols=80
+ spellcheck="false">
+//
 #define
 ATS_MAINATSFLAG 1
 #define
@@ -107,51 +128,46 @@ alert(ats2jspre_the_print_store_join());
 //
 extern
 fun
-isTriangle
-  (x: int, y: int, z: int) : bool
+fib_trec (n: int): int
 //
+val () = println! ("fib_trec(10) = ", fib_trec(10))
+val () = println! ("fib_trec(20) = ", fib_trec(20))
+//
+(*
+** Please add your code below this comment:
+*)
 implement
-isTriangle
-  (x, y, z) = (
+fib_trec(n) = (
 //
-ifcase
-  | x + y <= z => false | y + z <= x => false
-  | z + x <= y => false | _ (* else *) => true
-// end of [ifcase]
-) (* isTriangle *)
+fix
+f(n: int, r: int, s: int): int =>
+  if n >= 2 then f(n-1, s, r+s) else (if n >= 1 then s else r)
 //
-val () =
-println! ("isTriangle(1,3,5) = ", isTriangle(1,3,5))
-val () =
-println! ("isTriangle(3,4,5) = ", isTriangle(3,4,5))
+)(n, 0(*fib0*), 1(*fib1*))
 //</textarea>
-</td>
-<td align="left">
-<pre
- id="assign01_hilite"
- hidden="hidden">
-</pre>
 </td>
 <td align="center">
 <textarea
- id="assign01_output"
- rows=24 cols=80
+ id="assign02_sol_output"
+ rows=0 cols=0
  spellcheck="false"
  placeholder="The output goes here...">
 </textarea>
 </td>
 </tr>
 <tr
- id="assign01_table_tr2"
+ id="assign02_sol_table_tr2"
  hidden="hidden">
-<td align="left">
+<td align="center">
 <pre
- id="assign01_source2">source2
+ id="assign02_sol_source2"
+ style="text-align:left;">source2
 </pre>
 </td>
-<td align="left">
+<td align="center">
 <pre
- id="assign01_output2">output2
+ id="assign02_sol_output2"
+ style="text-align:left;">output2
 </pre>
 </td>
 </tr>
@@ -159,28 +175,39 @@ println! ("isTriangle(3,4,5) = ", isTriangle(3,4,5))
 <td align="center">
 <button
  type="button"
- id="assign01_patsopt_tc_button"
- onclick="assign02_patsopt_tc_onclick('assign01')"
+ id="assign02_sol_patsopt_tc_button"
+ onclick="assign02_patsopt_tc_onclick('assign02_sol')"
 >patsopt_tc</button>
 <button
  type="button"
- id="assign01_patsopt_cc_button"
- onclick="assign02_patsopt_cc_onclick('assign01')"
+ id="assign02_sol_patsopt_cc_button"
+ onclick="assign02_patsopt_cc_onclick('assign02_sol')"
 >patsopt_cc</button>
 <button
  type="button"
- id="assign01_patsopt_cc2js_button"
- onclick="assign02_patsopt_cc2js_onclick('assign01')"
+ id="assign02_sol_patsopt_cc2js_button"
+ onclick="assign02_patsopt_cc2js_onclick('assign02_sol')"
 >patsopt_cc2js</button>
 <button
  type="button"
- id="assign01_pats2xhtml_button"
- onclick="assign02_pats2xhtml_toggle_onclick('assign01')"
+ id="assign02_sol_pats2xhtml_button"
+ onclick="assign02_pats2xhtml_toggle_onclick('assign02_sol')"
 >pats2xhtml-toggle</button>
 </td>
 <td></td>
 </tr>
 </table>
+<hr></hr>
+<p>
+The functionalities of the above buttons
+can be briefly described as follows:
+</p>
+<ul>
+<li> Patsopt-tc: for typechecking ATS code.
+<li> Patsopt-cc: for typechecking and compiling ATS code to C.
+<li> Patsopt-cc2js: for compiling ATS code to JS and then evaluating the JS code.
+<li> Pats2xhtml-toggle: for syntax-hiliting ATS code and adding/removing line numbers.
+</ul>
 <hr></hr>
 <p>
 The Python3 code generating this page is prepared with atscc2py3.
@@ -189,19 +216,8 @@ The Python3 code generating this page is prepared with atscc2py3.
  src="https://ats-lang.github.io/LIBRARY/libtutoriats/libtutoriats_assign02_patsopt_services_dats.js">
 </script>
 <script>
-function
-assign02_pats_key2source(key)
-{
-//
-return document.getElementById(key+"_source").value;
-//
-} /* end of [pats_key2source] */
-</script>
-<script>
 $(document).ready(function(){pats2xhtmlize_process_all();return;});
-</script>
-<script>
-$(document).ready(function(){assign02_patsopt_services_initize("assign01");return;});
+$(document).ready(function(){assign02_patsopt_services_initize("assign02_sol");return;});
 </script>
 </body>
 </html>
