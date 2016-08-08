@@ -31,6 +31,9 @@
  src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
 </script>
 <script
+ src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2014-11-29/FileSaver.min.js">
+</script>
+<script
  src="https://ats-lang.github.io/LIBRARY/libatscc2js/libatscc2js_all.js">
 </script>
 <script
@@ -86,13 +89,28 @@ An implementation of ##fun("isTriangle") is given as follows:
 </tr>
 </thead>
 <tbody>
+<tr>
+<td align="center">
+<button
+ type="button"
+ id="assign01_patssrc_saveAs_button"
+ onclick="assign02_patssrc_saveAs_onclick('assign01')"
+>saveAs</button>
+<input
+ type="text"
+ id="assign01_patssrc_saveAs_input"
+ size=18 maxlength=32 placeholder="assign01_sol.dats"></input>
+</td>
+<td align="center">
+</td>
+</tr>
 <tr
  id="assign01_table_tr1">
 <td
  align="center">
 <textarea
  id="assign01_source"
- rows=24 cols=72
+ rows=24 cols=100
  spellcheck="false">//
 #define
 ATS_MAINATSFLAG 1
@@ -196,7 +214,7 @@ The Python3 code generating this page is prepared with atscc2py3.
 </div>
 
 <script
- src="https://ats-lang.github.io/LIBRARY/libtutoriats/libtutoriats_assign02_patsopt_services_dats.js">
+ src="./assign02_patsopt_services_dats.js">
 </script>
 <script>
 function
