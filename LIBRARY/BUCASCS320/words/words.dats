@@ -73081,6 +73081,17 @@ val () = myins("zygotes")
 in (* in-of-local *)
 //
 implement
+words_get_at
+  (i0) =
+(
+//
+if
+(i0 < theIndex[])
+then Some_vt(theWords[i0]) else None_vt()
+//
+) (* words_get_at *)
+//
+implement
 words_foreach_cloref
   (fwork) =
   (theIndex[]).foreach()(lam(i) => fwork(theWords[i]))
