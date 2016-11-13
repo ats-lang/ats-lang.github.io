@@ -4,6 +4,13 @@
 
 (* ****** ****** *)
 //
+#include
+"share/atspre_define.hats"
+#include
+"{$LIBATSCC2JS}/staloadall.hats"
+//
+(* ****** ****** *)
+//
 #define
 ATS_PACKNAME "BUCASCS320.words"
 #define
@@ -17,13 +24,6 @@ ATS_STATIC_PREFIX "_BUCASCS320_words_static_"
 ATS_MAINATSFLAG 1
 #define
 ATS_DYNLOADNAME "BUCASCS320_words_dynload"
-//
-(* ****** ****** *)
-//
-#include
-"share/atspre_define.hats"
-#include
-"{$LIBATSCC2JS}/staloadall.hats"
 //
 (* ****** ****** *)
 
@@ -73091,6 +73091,13 @@ if (i0 < theIndex[])
   then Some_vt(theWords[i0]) else None_vt()
 //
 ) (* theWords_get_at *)
+//
+implement
+theWords_streamize
+  ((*void*)) =
+(
+  theIndex[]
+).stream_vt_map(TYPE{string})(lam i => theWords[i])
 //
 implement
 theWords_foreach_cloref
