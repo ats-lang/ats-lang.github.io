@@ -26,12 +26,9 @@ ATS_DYNLOADNAME "BUCASCS320_words_dynload"
 "{$LIBATSCC2JS}/staloadall.hats"
 //
 (* ****** ****** *)
-//
-extern
-fun
-words_foreach_cloref
-  ((string) -<cloref1> void): void = "mac#%"
-//
+
+staload "./words.sats"
+
 (* ****** ****** *)
 
 local
