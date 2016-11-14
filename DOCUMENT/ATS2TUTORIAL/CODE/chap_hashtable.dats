@@ -89,7 +89,7 @@ myhashtbl_foreach_cloref
 //
 (* ****** ****** *)
 
-implement main0 () = {}
+implement main0 () = { (*empty*) }
 
 (* ****** ****** *)
 
