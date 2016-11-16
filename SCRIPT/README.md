@@ -32,21 +32,20 @@ compilation (as ATS2 is implemented in ATS1). It also installs
 the libatsopt and libatsynmark library packages, which are needed for
 processing the books INT2PROGINATS and ATS2TUTORIAL.
 
-## [msys2-build-ats2.sh](http://ats-lang.github.io/SCRIPT/msys2-build-ats2.sh)
+## [AS-MSYS2-build-ats2.sh](http://ats-lang.github.io/SCRIPT/AS-MSYS2-build-ats2.sh)
 
-This script is for installing ATS2 and ATS2-contrib under MSYS2 (the
-modern rewrite of MSYS) for Windows. It is based on
-"C9-ATS2-install.sh".
+This script is for installing ATS2 and ATS2-contrib under MSYS2 (the modern rewrite of MSYS)
+for Windows. It is based on "C9-ATS2-install.sh".
 
-Installation instructions are as follows:
+Installation instructions are given as follows:
 
-*    install MSYS2 following their [documentation](http://msys2.github.io/)
-*    open up the MSYS2 shell
-*    copy the script to a directory (say `$D`) on your system (e.g., `$D`
-could stand for `~/tst`) -- it is this directoy that ATS2 and ATS2-contrib will be installed to
-*    `cd $D`
-*    ensure the script is executable (e.g. by `chmod +x msys2-build-ats2.sh`)
-*    finally, run the script
+*    Install MSYS2 following its official [documentation](http://msys2.github.io/);
+*    Initiate an instance of MSYS2 shell;
+*    Copy the script to a directory (say `$DIR`) on your system where you want ATS2 and ATS2-contrib
+     to be installed (e.g., `$DIR` may stand for `~/MYTMP`);
+*    Enter the directory `$DIR` (by executing `cd $DIR`);
+*    Make sure that the script is executable (e.g. by issuing `chmod +x AS-MSYS2-build-ats2.sh`);
+*    Finally, please execute the script.
 
 ## [Sortsmill-Gentoo-Overlay](https://bitbucket.org/sortsmill/sortsmill-gentoo-overlay)
 
