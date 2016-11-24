@@ -119,8 +119,11 @@ cp ATS2/utils/libatsopt/libatsopt.a ${ATSHOME}/ccomp/lib
 cp ATS2/utils/libatsynmark/libatsynmark.a ${ATSHOME}/ccomp/lib
 #
 ######
+#
+# sudo apt-get install -y erlang
+#
+######
 
-sudo apt-get install -y erlang
 sudo apt-get install -y libjson-c-dev
 
 ######
@@ -130,10 +133,12 @@ sudo apt-get install -y libjson-c-dev
 (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve && time make DATS_C)
 #
 # For building patsolve_z3
+#
 (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-z3 && time make build)
 (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
 #
 # For building patsolve_smt2
+#
 (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-smt2 && time make build)
 (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-smt2 && mv -f patsolve_smt2 ${PATSHOME}/bin)
 #
@@ -155,6 +160,12 @@ sudo apt-get install -y libjson-c-dev
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2py3 && time make build)
 (cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2py3 && mv -f atscc2py3 ${PATSHOME}/bin)
 (cd ATS2-contrib/contrib/libatscc/libatscc2py3 && time make all && time make all_in_one)
+#
+# For building atscc2php
+#
+(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2php && time make build)
+(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2php && mv -f atscc2php ${PATSHOME}/bin)
+(cd ATS2-contrib/contrib/libatscc/libatscc2php && time make all && time make all_in_one)
 #
 # For building atscc2scm
 #

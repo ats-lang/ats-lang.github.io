@@ -25,8 +25,8 @@ mainly for teaching BU-CAS-CS-520.
 In addition to C9-ATS2-install-cs520.sh, this script installs
 patsolve_z3, a Z3-based external constraint-solver for handling
 ATS2-typechecking constraints.  You may use
-JG-C9-ATS2-install-cs520-z3.sh (or a modified version) to first
-implement Z3 and then ATS2.
+JG-C9-ATS2-install-cs520-z3.sh (or a modified version) that first
+installs Z3 and then invokes C9-ATS2-install-cs520-z3.sh.
 
 ## [C9-ATS2-install-latest.sh](http://ats-lang.github.io/SCRIPT/C9-ATS2-install-latest.sh)
 
