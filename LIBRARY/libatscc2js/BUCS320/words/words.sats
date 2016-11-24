@@ -6,6 +6,8 @@
 //
 #define
 ATS_PACKNAME "BUCS320.words"
+#define
+ATS_EXTERN_PREFIX "ats2jspre_BUCS320_"
 //
 (* ****** ****** *)
 //
