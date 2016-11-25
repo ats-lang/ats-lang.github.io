@@ -18,9 +18,21 @@ LIBATSCC2JS
 LIBATSCC2PY3
 #then
 #include
-"{$LIBATSCC2JS}/staloadall.hats"
+"{$LIBATSCC2PY3}/staloadall.hats"
 #endif
 //
+(* ****** ****** *)
+
+#ifdef
+LIBATSCC2PY3
+#then
+%{^
+######
+from libatscc2py_all import *
+######
+%} // end of [%{^]
+#endif
+
 (* ****** ****** *)
 //
 #define

@@ -41,5 +41,7 @@ clean:: ; rm -f *_?ats.c
 
 cleanall:: clean
 cleanall:: ; rm -f initgen
+cleanall:: ; rm -f words_dats.js
+cleanall:: ; rm -f words_dats.py
 
 ###### end of [Makefile] ######

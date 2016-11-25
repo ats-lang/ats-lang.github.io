@@ -2,8 +2,18 @@
 ##
 ## The Python3 code
 ## is generated from ATS source by atscc2py3
-## The starting compilation time is: 2016-11-24: 21h:11m
+## The starting compilation time is: 2016-11-25: 10h:14m
 ##
+######
+
+######
+#ATSextcode_beg()
+######
+######
+from libatscc2py_all import *
+######
+######
+#ATSextcode_end()
 ######
 
 _BUCS320_words_static_statmp0 = None
@@ -24,23 +34,23 @@ def _BUCS320_words_static_myins_0(arg0):
   funlab_py = None
   tmplab_py = None
   #__patsflab__BUCS320_words_static_myins_0
-  tmp3 = ats2jspre_ref_get_elt(_BUCS320_words_static_statmp0)
-  tmp5 = ats2jspre_add_int1_int1(tmp3, 1)
-  ats2jspre_ref_set_elt(_BUCS320_words_static_statmp0, tmp5)
-  ats2jspre_ML_array0_set_at(_BUCS320_words_static_statmp1, tmp3, arg0)
+  tmp3 = ats2pypre_ref_get_elt(_BUCS320_words_static_statmp0)
+  tmp5 = ats2pypre_add_int1_int1(tmp3, 1)
+  ats2pypre_ref_set_elt(_BUCS320_words_static_statmp0, tmp5)
+  ats2pypre_ML_array0_set_at(_BUCS320_words_static_statmp1, tmp3, arg0)
   return#_void
 
 
-def ats2jspre_BUCS320_theWords_size():
+def ats2pypre_BUCS320_theWords_size():
   tmpret73029 = None
   funlab_py = None
   tmplab_py = None
   #__patsflab_theWords_size
-  tmpret73029 = ats2jspre_ref_get_elt(_BUCS320_words_static_statmp0)
+  tmpret73029 = ats2pypre_ref_get_elt(_BUCS320_words_static_statmp0)
   return tmpret73029
 
 
-def ats2jspre_BUCS320_theWords_get_at(arg0):
+def ats2pypre_BUCS320_theWords_get_at(arg0):
   tmpret73030 = None
   tmp73031 = None
   tmp73032 = None
@@ -48,10 +58,10 @@ def ats2jspre_BUCS320_theWords_get_at(arg0):
   funlab_py = None
   tmplab_py = None
   #__patsflab_theWords_get_at
-  tmp73032 = ats2jspre_ref_get_elt(_BUCS320_words_static_statmp0)
-  tmp73031 = ats2jspre_lt_int1_int1(arg0, tmp73032)
+  tmp73032 = ats2pypre_ref_get_elt(_BUCS320_words_static_statmp0)
+  tmp73031 = ats2pypre_lt_int1_int1(arg0, tmp73032)
   if (tmp73031):
-    tmp73033 = ats2jspre_ML_array0_get_at(_BUCS320_words_static_statmp1, arg0)
+    tmp73033 = ats2pypre_ML_array0_get_at(_BUCS320_words_static_statmp1, arg0)
     tmpret73030 = (tmp73033, )
   else:
     tmpret73030 = None
@@ -59,7 +69,7 @@ def ats2jspre_BUCS320_theWords_get_at(arg0):
   return tmpret73030
 
 
-def ats2jspre_BUCS320_theWords_streamize():
+def ats2pypre_BUCS320_theWords_streamize():
   tmpret73034 = None
   tmp73035 = None
   tmp73036 = None
@@ -67,9 +77,9 @@ def ats2jspre_BUCS320_theWords_streamize():
   funlab_py = None
   tmplab_py = None
   #__patsflab_theWords_streamize
-  tmp73036 = ats2jspre_ref_get_elt(_BUCS320_words_static_statmp0)
+  tmp73036 = ats2pypre_ref_get_elt(_BUCS320_words_static_statmp0)
   tmp73037 = 0
-  tmp73035 = ats2jspre_int_stream_vt_map_method(tmp73036, tmp73037)
+  tmp73035 = ats2pypre_int_stream_vt_map_method(tmp73036, tmp73037)
   tmpret73034 = tmp73035[0](tmp73035, _BUCS320_words_static_patsfun_4__closurerize())
   #ATSINSfreeclo(tmp73035);
   return tmpret73034
@@ -80,18 +90,18 @@ def _BUCS320_words_static_patsfun_4(arg0):
   funlab_py = None
   tmplab_py = None
   #__patsflab__BUCS320_words_static_patsfun_4
-  tmpret73038 = ats2jspre_ML_array0_get_at(_BUCS320_words_static_statmp1, arg0)
+  tmpret73038 = ats2pypre_ML_array0_get_at(_BUCS320_words_static_statmp1, arg0)
   return tmpret73038
 
 
-def ats2jspre_BUCS320_theWords_foreach_cloref(arg0):
+def ats2pypre_BUCS320_theWords_foreach_cloref(arg0):
   tmp73040 = None
   tmp73041 = None
   funlab_py = None
   tmplab_py = None
   #__patsflab_theWords_foreach_cloref
-  tmp73041 = ats2jspre_ref_get_elt(_BUCS320_words_static_statmp0)
-  tmp73040 = ats2jspre_int_foreach_method(tmp73041)
+  tmp73041 = ats2pypre_ref_get_elt(_BUCS320_words_static_statmp0)
+  tmp73040 = ats2pypre_int_foreach_method(tmp73041)
   tmp73040[0](tmp73040, _BUCS320_words_static_patsfun_6__closurerize(arg0))
   return#_void
 
@@ -101,7 +111,7 @@ def _BUCS320_words_static_patsfun_6(env0, arg0):
   funlab_py = None
   tmplab_py = None
   #__patsflab__BUCS320_words_static_patsfun_6
-  tmp73043 = ats2jspre_ML_array0_get_at(_BUCS320_words_static_statmp1, arg0)
+  tmp73043 = ats2pypre_ML_array0_get_at(_BUCS320_words_static_statmp1, arg0)
   env0[0](env0, tmp73043)
   return#_void
 
@@ -119,8 +129,8 @@ def _057_home_057_hwxi_057_Research_057_ats_055_lang_056_github_056_io_057_LIBRA
   if (ATSCKiseqz(_057_home_057_hwxi_057_Research_057_ats_055_lang_056_github_056_io_057_LIBRARY_057_BUCS320_057_words_057_words_056_dats__dynloadflag)):
     #ATSdynloadset
     _057_home_057_hwxi_057_Research_057_ats_055_lang_056_github_056_io_057_LIBRARY_057_BUCS320_057_words_057_words_056_dats__dynloadflag = 1
-    _BUCS320_words_static_statmp0 = ats2jspre_ref(0)
-    _BUCS320_words_static_statmp1 = ats2jspre_ML_array0_make_elt(80000, "")
+    _BUCS320_words_static_statmp0 = ats2pypre_ref(0)
+    _BUCS320_words_static_statmp1 = ats2pypre_ML_array0_make_elt(80000, "")
     _BUCS320_words_static_myins_0("A")
     _BUCS320_words_static_myins_0("AOL")
     _BUCS320_words_static_myins_0("Aachen")
