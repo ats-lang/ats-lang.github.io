@@ -2,7 +2,7 @@
 ##
 ## The Python3 code
 ## is generated from ATS source by atscc2py3
-## The starting compilation time is: 2016-11-25: 10h:14m
+## The starting compilation time is: 2016-11-25: 10h:27m
 ##
 ######
 
@@ -10,7 +10,7 @@
 #ATSextcode_beg()
 ######
 ######
-from libatscc2py_all import *
+from libatscc2py3_all import *
 ######
 ######
 #ATSextcode_end()

@@ -28,7 +28,7 @@ LIBATSCC2PY3
 #then
 %{^
 ######
-from libatscc2py_all import *
+from libatscc2py3_all import *
 ######
 %} // end of [%{^]
 #endif
