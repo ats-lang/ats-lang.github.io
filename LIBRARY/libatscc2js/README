@@ -1,6 +1,30 @@
+######
 #
 # README for libatscc2js
 #
+######
+
+####################################
+
+######
+#
+# libatscc2js_bucs320_words_dats.js
+#
+######
+
+For a dictionary of English words
+
+####################################
+
+######
+#
+# ATS2-0.2.12:
+#
+######
+
+Added on 2016-11-25.
+
+####################################
 
 ######
 #
@@ -10,4 +34,4 @@
 
 Versioning happens for the first time.
 
-###### end of [README] ######
+############ end of [README] ############
