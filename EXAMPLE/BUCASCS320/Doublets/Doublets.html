@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Doublets</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/bacon.js/0.7.53/Bacon.min.js">
+    </script>
+<!--
+    <script src="./libatscc2js_all.js"> </script>
+-->
+    <script
+      src="https://ats-lang.github.io/LIBRARY/libatscc2js/ATS2-0.2.12/libatscc2js_all.js">
+    </script>
+    <script
+      src="https://ats-lang.github.io/LIBRARY/libatscc2js/ATS2-0.2.12/libatscc2js_baconjs_all.js">
+    </script>
+    <script
+      src="https://ats-lang.github.io/LIBRARY/libatscc2js/ATS2-0.2.12/libatscc2js_print_store_cats.js">
+    </script>
+    <script
+      src="https://ats-lang.github.io/LIBRARY/libatscc2js/libatscc2js_bucs320_words_dats.js">
+    </script>
+  </head>
+
+  <body>
+    <h1>Playing Doublets</h1>
+    <hr size="2"></hr>
+    <p>
+      Doublets is a word game invented by Lewis Carroll (1832-1898),
+      the author of children's classics "Alice in Wonderland".  For a
+      description of this game, please visit, for instance, the <a href="http://www.logicville.com/doublets.htm">link</a>.
+    </p>
+    <hr size="2"></hr>
+    <p>
+      Please input two words of the same length and then click the play button:
+    </p>
+    <center>
+      Word 1:<input type="text" id="theWord1_inp" value='' size=16></input>
+      Word 2:<input type="text" id="theWord2_inp" value='' size=16></input>&nbsp;<button id="thePlay_btn">Play!</button>
+    </center>
+    <hr size="2"></hr>
+    <div>
+      <table
+	 width=100%
+      ><!--table-->
+	<tr>
+	  <td>
+	    This page is created by
+	    <a href="http://www.cs.bu.edu/~hwxi/">Hongwei Xi</a> with ATS+atscc2js
+	  </td>
+	</tr>
+      </table>
+    </div>
+    <hr size="2"></hr>
+    <script src="Doublets_dats.js"></script>
+  </body>
+
+</html>
