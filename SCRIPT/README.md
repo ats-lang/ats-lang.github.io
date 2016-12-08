@@ -10,6 +10,9 @@ This script is for installing ATS2 and ATS2-contrib under a
 distrbution of Linux. It is primarily used in an Ubuntu box
 provided by [Cloud-9](http://c9.io).
 
+Also, an improvement of this script by Yannick Duchêne is available as
+[C9-ATS2-install-alt.sh](https://gist.github.com/Hibou57/9077632c31c7c5af4c6e6a81f4cbc04b).
+
 ## [C9-ATS2-install-cs320.sh](http://ats-lang.github.io/SCRIPT/C9-ATS2-install-cs320.sh)
 
 This script is a variant of C9-ATS2-install.sh. It is tailored
@@ -24,7 +27,7 @@ mainly for teaching BU-CAS-CS-520.
 
 In addition to C9-ATS2-install-cs520.sh, this script installs
 patsolve_z3, a Z3-based external constraint-solver for handling
-ATS2-typechecking constraints.  You may use
+ATS2-typechecking constraints. You may use
 JG-C9-ATS2-install-cs520-z3.sh (or a modified version) that first
 installs Z3 and then invokes C9-ATS2-install-cs520-z3.sh.
 
