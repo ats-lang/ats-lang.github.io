@@ -27,17 +27,17 @@
 
 (* ****** ****** *)
 
-(*
-** Source:
-** $PATSHOME/prelude/SATS/CODEGEN/integer_ptr.atxt
-** Time of generation: Sun Jul  3 11:13:15 2016
-*)
+(* Author: Hongwei Xi *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+(* Start time: January, 2013 *)
 
 (* ****** ****** *)
 
-(* Author: Hongwei Xi *)
-(* Authoremail: hwxi AT cs DOT bu DOT edu *)
-(* Start time: January, 2013 *)
+(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/integer_ptr.atxt
+** Time of generation: Sun Nov 20 21:18:16 2016
+*)
 
 (* ****** ****** *)
 //
@@ -90,12 +90,6 @@ fun g0int_sub_intptr (x: intptr, y: intptr):<> intptr = "mac#%"
 fun g0int_mul_intptr (x: intptr, y: intptr):<> intptr = "mac#%"
 fun g0int_div_intptr (x: intptr, y: intptr):<> intptr = "mac#%"
 fun g0int_mod_intptr (x: intptr, y: intptr):<> intptr = "mac#%"
-fun g0int_isltz_intptr (x: intptr):<> bool = "mac#%"
-fun g0int_isltez_intptr (x: intptr):<> bool = "mac#%"
-fun g0int_isgtz_intptr (x: intptr):<> bool = "mac#%"
-fun g0int_isgtez_intptr (x: intptr):<> bool = "mac#%"
-fun g0int_iseqz_intptr (x: intptr):<> bool = "mac#%"
-fun g0int_isneqz_intptr (x: intptr):<> bool = "mac#%"
 fun g0int_lt_intptr (x: intptr, y: intptr):<> bool = "mac#%"
 fun g0int_lte_intptr (x: intptr, y: intptr):<> bool = "mac#%"
 fun g0int_gt_intptr (x: intptr, y: intptr):<> bool = "mac#%"
@@ -105,6 +99,12 @@ fun g0int_neq_intptr (x: intptr, y: intptr):<> bool = "mac#%"
 fun g0int_compare_intptr (x: intptr, y: intptr):<> int = "mac#%"
 fun g0int_max_intptr (x: intptr, y: intptr):<> intptr = "mac#%"
 fun g0int_min_intptr (x: intptr, y: intptr):<> intptr = "mac#%"
+fun g0int_isltz_intptr (x: intptr):<> bool = "mac#%"
+fun g0int_isltez_intptr (x: intptr):<> bool = "mac#%"
+fun g0int_isgtz_intptr (x: intptr):<> bool = "mac#%"
+fun g0int_isgtez_intptr (x: intptr):<> bool = "mac#%"
+fun g0int_iseqz_intptr (x: intptr):<> bool = "mac#%"
+fun g0int_isneqz_intptr (x: intptr):<> bool = "mac#%"
 //
 (* ****** ****** *)
 //
@@ -131,9 +131,6 @@ fun g0uint_lnot_uintptr (x: uintptr):<> uintptr = "mac#%"
 fun g0uint_lor_uintptr (x: uintptr, y: uintptr):<> uintptr = "mac#%"
 fun g0uint_lxor_uintptr (x: uintptr, y: uintptr):<> uintptr = "mac#%"
 fun g0uint_land_uintptr (x: uintptr, y: uintptr):<> uintptr = "mac#%"
-fun g0uint_isgtz_uintptr (x: uintptr):<> bool = "mac#%"
-fun g0uint_iseqz_uintptr (x: uintptr):<> bool = "mac#%"
-fun g0uint_isneqz_uintptr (x: uintptr):<> bool = "mac#%"
 fun g0uint_lt_uintptr (x: uintptr, y: uintptr):<> bool = "mac#%"
 fun g0uint_lte_uintptr (x: uintptr, y: uintptr):<> bool = "mac#%"
 fun g0uint_gt_uintptr (x: uintptr, y: uintptr):<> bool = "mac#%"
@@ -143,6 +140,9 @@ fun g0uint_neq_uintptr (x: uintptr, y: uintptr):<> bool = "mac#%"
 fun g0uint_compare_uintptr (x: uintptr, y: uintptr):<> int = "mac#%"
 fun g0uint_max_uintptr (x: uintptr, y: uintptr):<> uintptr = "mac#%"
 fun g0uint_min_uintptr (x: uintptr, y: uintptr):<> uintptr = "mac#%"
+fun g0uint_isgtz_uintptr (x: uintptr):<> bool = "mac#%"
+fun g0uint_iseqz_uintptr (x: uintptr):<> bool = "mac#%"
+fun g0uint_isneqz_uintptr (x: uintptr):<> bool = "mac#%"
 //
 (* ****** ****** *)
 //
@@ -165,12 +165,6 @@ fun g1int_sub_intptr : g1int_sub_type (intptrknd) = "mac#%"
 fun g1int_mul_intptr : g1int_mul_type (intptrknd) = "mac#%"
 fun g1int_div_intptr : g1int_div_type (intptrknd) = "mac#%"
 fun g1int_nmod_intptr : g1int_nmod_type (intptrknd) = "mac#%"
-fun g1int_isltz_intptr : g1int_isltz_type (intptrknd) = "mac#%"
-fun g1int_isltez_intptr : g1int_isltez_type (intptrknd) = "mac#%"
-fun g1int_isgtz_intptr : g1int_isgtz_type (intptrknd) = "mac#%"
-fun g1int_isgtez_intptr : g1int_isgtez_type (intptrknd) = "mac#%"
-fun g1int_iseqz_intptr : g1int_iseqz_type (intptrknd) = "mac#%"
-fun g1int_isneqz_intptr : g1int_isneqz_type (intptrknd) = "mac#%"
 fun g1int_lt_intptr : g1int_lt_type (intptrknd) = "mac#%"
 fun g1int_lte_intptr : g1int_lte_type (intptrknd) = "mac#%"
 fun g1int_gt_intptr : g1int_gt_type (intptrknd) = "mac#%"
@@ -180,6 +174,12 @@ fun g1int_neq_intptr : g1int_neq_type (intptrknd) = "mac#%"
 fun g1int_compare_intptr : g1int_compare_type (intptrknd) = "mac#%"
 fun g1int_max_intptr : g1int_max_type (intptrknd) = "mac#%"
 fun g1int_min_intptr : g1int_min_type (intptrknd) = "mac#%"
+fun g1int_isltz_intptr : g1int_isltz_type (intptrknd) = "mac#%"
+fun g1int_isltez_intptr : g1int_isltez_type (intptrknd) = "mac#%"
+fun g1int_isgtz_intptr : g1int_isgtz_type (intptrknd) = "mac#%"
+fun g1int_isgtez_intptr : g1int_isgtez_type (intptrknd) = "mac#%"
+fun g1int_iseqz_intptr : g1int_iseqz_type (intptrknd) = "mac#%"
+fun g1int_isneqz_intptr : g1int_isneqz_type (intptrknd) = "mac#%"
 //
 (* ****** ****** *)
 //
@@ -191,9 +191,6 @@ fun g1uint_sub_uintptr : g1uint_sub_type (uintptrknd) = "mac#%"
 fun g1uint_mul_uintptr : g1uint_mul_type (uintptrknd) = "mac#%"
 fun g1uint_div_uintptr : g1uint_div_type (uintptrknd) = "mac#%"
 fun g1uint_mod_uintptr : g1uint_mod_type (uintptrknd) = "mac#%"
-fun g1uint_isgtz_uintptr : g1uint_isgtz_type (uintptrknd) = "mac#%"
-fun g1uint_iseqz_uintptr : g1uint_iseqz_type (uintptrknd) = "mac#%"
-fun g1uint_isneqz_uintptr : g1uint_isneqz_type (uintptrknd) = "mac#%"
 fun g1uint_lt_uintptr : g1uint_lt_type (uintptrknd) = "mac#%"
 fun g1uint_lte_uintptr : g1uint_lte_type (uintptrknd) = "mac#%"
 fun g1uint_gt_uintptr : g1uint_gt_type (uintptrknd) = "mac#%"
@@ -203,6 +200,9 @@ fun g1uint_neq_uintptr : g1uint_neq_type (uintptrknd) = "mac#%"
 fun g1uint_compare_uintptr : g1uint_compare_type (uintptrknd) = "mac#%"
 fun g1uint_max_uintptr : g1uint_max_type (uintptrknd) = "mac#%"
 fun g1uint_min_uintptr : g1uint_min_type (uintptrknd) = "mac#%"
+fun g1uint_isgtz_uintptr : g1uint_isgtz_type (uintptrknd) = "mac#%"
+fun g1uint_iseqz_uintptr : g1uint_iseqz_type (uintptrknd) = "mac#%"
+fun g1uint_isneqz_uintptr : g1uint_isneqz_type (uintptrknd) = "mac#%"
 //
 (* ****** ****** *)
 //

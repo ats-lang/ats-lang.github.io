@@ -30,13 +30,14 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/stream_vt.atxt
-** Time of generation: Sun Jul 31 10:16:08 2016
+** Time of generation: Sat Nov 26 08:26:49 2016
 *)
 
 (* ****** ****** *)
-
-sortdef t0p = t@ype and vt0p = vt@ype
-
+(*
+sortdef
+t0p = t@ype and vt0p = vt@ype
+*)
 (* ****** ****** *)
 //
 #if(0)
@@ -77,10 +78,21 @@ fun
 {a:vt0p}
 stream_vt_make_nil():<> stream_vt(a)
 fun{a:t0p}
-stream_vt_make_sing(x: a):<> stream_vt(a)
+stream_vt_make_cons
+  (a, stream_vt(INV(a))):<> stream_vt(a)
+//
+(* ****** ****** *)
 //
 fun{a:t0p}
-stream_vt_make_con(stream_vt_con(a)):<> stream_vt(a)
+stream_vt_sing(a):<> stream_vt_con(a)
+fun{a:t0p}
+stream_vt_make_sing(x: a):<> stream_vt(a)
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+stream_vt_make_con
+  (xs_con: stream_vt_con(INV(a))):<> stream_vt(a)
 //
 (* ****** ****** *)
 //
@@ -109,9 +121,9 @@ stream_vt_con_free (xs: stream_vt_con(a)):<!wrt> void
 (* ****** ****** *)
 
 fun{a:t0p}
-stream_vt_take
-  (xs: stream_vt(INV(a)), n: intGte(0)): List0_vt(a)
-// end of [stream_vt_take]
+stream_vt_takeLte
+  (xs: stream_vt(INV(a)), n: intGte(0)): stream_vt(a)
+// end of [stream_vt_takeLte]
 
 (* ****** ****** *)
 //
@@ -128,24 +140,24 @@ stream_vt_drop_opt
 (* ****** ****** *)
 //
 fun{a:t0p}
-stream_vt_head
-  (stream_vt(INV(a))):<!exnwrt> (a)
-fun{a:t0p}
-stream_vt_tail
-  (stream_vt(INV(a))):<!exnwrt> stream_vt(a)
-//
-fun{a:vt0p}
-stream_vt_uncons
-  (xs: &stream_vt(INV(a)) >> _):<!exnwrt> (a)
-fun{a:vt0p}
-stream_vt_uncons_opt
-  (xs: &stream_vt(INV(a)) >> _):<!exnwrt> Option_vt(a)
+stream_vt_length
+  (xs: stream_vt(INV(a))):<!wrt> intGte(0)
 //
 (* ****** ****** *)
 //
 fun{a:t0p}
-stream_vt_length
-  (xs: stream_vt(INV(a))):<!wrt> intGte(0)
+stream_vt_head_exn
+  (stream_vt(INV(a))):<!exnwrt> (a)
+fun{a:t0p}
+stream_vt_tail_exn
+  (stream_vt(INV(a))):<!exnwrt> stream_vt(a)
+//
+fun{a:vt0p}
+stream_vt_uncons_exn
+  (xs: &stream_vt(INV(a)) >> _):<!exnwrt> (a)
+fun{a:vt0p}
+stream_vt_uncons_opt
+  (xs: &stream_vt(INV(a)) >> _):<!exnwrt> Option_vt(a)
 //
 (* ****** ****** *)
 //
@@ -168,31 +180,6 @@ stream_vt_concat
 //
 (* ****** ****** *)
 //
-fun{a:vt0p}
-stream_vt_foreach
-  (stream_vt(INV(a))): stream_vt_con(a)
-fun{
-a:vt0p}{env:vt0p
-} stream_vt_foreach_env
-  (stream_vt(INV(a)), env: &env >> _): stream_vt_con(a)
-//
-fun{
-a:vt0p}{env:vt0p
-} stream_vt_foreach$cont
-  (x: &a, env: &env >> _): bool
-fun{
-a:vt0p}{env:vt0p
-} stream_vt_foreach$fwork
-  (x: &a >> a?!, env: &env >> _): void // lin-cleared
-//
-fun{a:vt0p}
-stream_vt_foreach_cloptr
-(
-  stream_vt(INV(a)), fwork: (&a >> a?!) -<cloptr1> void
-) : void // end of [stream_vt_foreach_cloptr]
-//
-(* ****** ****** *)
-//
 fun{a:t0p}
 stream_vt_filter
   (xs: stream_vt(INV(a))): stream_vt(a)
@@ -202,11 +189,17 @@ stream_vt_filter_fun
 (
   xs: stream_vt(INV(a)), pred: (&a) -<fun> bool
 ) : stream_vt (a) // end of [stream_vt_filter_fun]
+//
 fun{a:t0p}
 stream_vt_filter_cloptr
 (
-  xs: stream_vt(INV(a)), pred: (&a) -<cloptr> bool
+  xs: stream_vt(INV(a)), pred: (&a) -<cloptr1> bool
 ) : stream_vt (a) // end of [stream_vt_filter_cloptr]
+fun{a:t0p}
+stream_vt_ifilter_cloptr
+(
+  xs: stream_vt(INV(a)), pred: (intGte(0), &a) -<cloptr1> bool
+) : stream_vt (a) // end of [stream_vt_ifilter_cloptr]
 //
 fun{a:vt0p}
 stream_vt_filterlin
@@ -250,10 +243,11 @@ a1,a2:t0p}{b:vt0p
   (x1: &a1 >> _, x2: &a2 >> _): b
 fun{
 a1,a2:t0p}{b:vt0p
-} stream_vt_map2 (
-  xs1: stream_vt (INV(a1))
-, xs2: stream_vt (INV(a2))
-) : stream_vt (b) // end of [stream_vt_map2]
+} stream_vt_map2
+(
+  xs1: stream_vt(INV(a1))
+, xs2: stream_vt(INV(a2))
+) : stream_vt(b) // end of [stream_vt_map2]
 //
 fun{
 a1,a2:t0p}{b:vt0p
@@ -273,6 +267,17 @@ a1,a2:t0p}{b:vt0p
 ) : stream_vt(b) // end of [stream_vt_map2_cloptr]
 //
 (* ****** ****** *)
+//
+fun{
+res:t0p
+}{a:vt0p}
+stream_vt_scan_cloptr
+(
+  xs: stream_vt(INV(a))
+, ini: res, fopr: (res, &a >> a?!) -<cloptr1> res
+) : stream_vt(res) // end of [stream_vt_scan_cloptr]
+//
+(* ****** ****** *)
 
 fun
 {a:vt0p}
@@ -287,6 +292,61 @@ fun
 {a:vt0p}
 stream_vt_labelize
   (stream_vt(INV(a))): stream_vt(@(intGte(0), a))
+//
+(* ****** ****** *)
+//
+fun{a:vt0p}
+stream_vt_foreach
+  (stream_vt(INV(a))): stream_vt_con(a)
+fun{
+a:vt0p}{env:vt0p
+} stream_vt_foreach_env
+  (stream_vt(INV(a)), env: &env >> _): stream_vt_con(a)
+//
+fun{
+a:vt0p}{env:vt0p
+} stream_vt_foreach$cont
+  (x: &a, env: &env >> _): bool
+fun{
+a:vt0p}{env:vt0p
+} stream_vt_foreach$fwork
+  (x: &a >> a?!, env: &env >> _): void // lin-cleared
+//
+fun{a:vt0p}
+stream_vt_foreach_cloptr
+(
+  stream_vt(INV(a)), fwork: (&a >> a?!) -<cloptr1> void
+) : void // end of [stream_vt_foreach_cloptr]
+//
+fun{a:vt0p}
+stream_vt_rforeach_cloptr
+(
+  stream_vt(INV(a)), fwork: (&a >> a?!) -<cloptr1> void
+) : void // end of [stream_vt_rforeach_cloptr]
+//
+fun{a:vt0p}
+stream_vt_iforeach_cloptr
+(
+  stream_vt(INV(a)), fwork: (intGte(0), &a >> a?!) -<cloptr1> void
+) : void // end of [stream_vt_iforeach_cloptr]
+//
+(* ****** ****** *)
+//
+fun{
+res:vt0p
+}{a:vt0p}
+stream_vt_foldleft_cloptr
+(
+  xs: stream_vt(INV(a)), init: res, fopr: (res, &a >> a?!) -<cloptr1> res
+) : res // end of [stream_vt_foldleft_cloptr]
+//
+fun{
+res:vt0p
+}{a:vt0p}
+stream_vt_ifoldleft_cloptr
+(
+  xs: stream_vt(INV(a)), init: res, fopr: (Nat, res, &a >> a?!) -<cloptr1> res
+) : res // end of [stream_vt_ifoldleft_cloptr]
 //
 (* ****** ****** *)
 
@@ -319,6 +379,9 @@ cross_stream_vt_list_vt
 //
 // HX-2016-07-01:
 // [stream_vt_fprint] calls [fprint_val]
+//
+// HX-2016-09-12:
+// Note that (n < 0) means to print all the values
 //
 fun{}
 stream_vt_fprint$beg(out: FILEref): void
@@ -370,9 +433,13 @@ overload iseqz with stream_vt_is_nil
 overload isneqz with stream_vt_is_cons
 
 (* ****** ****** *)
+//
+overload length with stream_vt_length
+//
+(* ****** ****** *)
 
-overload .head with stream_vt_head
-overload .tail with stream_vt_tail
+overload .head with stream_vt_head_exn
+overload .tail with stream_vt_tail_exn
 
 (* ****** ****** *)
 

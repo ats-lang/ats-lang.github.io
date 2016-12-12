@@ -47,8 +47,8 @@ staload "./pats_lexing.sats"
 (* ****** ****** *)
 
 implement DOT = T_DOT
-implement PERCENT = T_IDENT_alp "%"
 implement QMARK = T_IDENT_alp "?"
+implement PERCENT = T_IDENT_alp "%"
 
 (* ****** ****** *)
 
@@ -66,7 +66,7 @@ implement CASE_neg = T_CASE (CK_case_neg)
 implement DATATYPE = T_DATATYPE (TYPE_int)
 implement DATAPROP = T_DATATYPE (PROP_int)
 implement DATAVIEW = T_DATATYPE (VIEW_int)
-implement DATAVIEWTYPE = T_DATATYPE (VIEWTYPE_int)
+implement DATAVTYPE = T_DATATYPE (VIEWTYPE_int)
 
 implement FIX = T_FIX (TYPE_int)
 implement FIXAT = T_FIX (T0YPE_int)
@@ -420,8 +420,8 @@ val () = ins ("datasort", T_DATASORT)
 val () = ins ("datatype", DATATYPE)
 val () = ins ("dataprop", DATAPROP)
 val () = ins ("dataview", DATAVIEW)
-val () = ins ("datavtype", DATAVIEWTYPE)
-val () = ins ("dataviewtype", DATAVIEWTYPE)
+val () = ins ("datavtype", DATAVTYPE)
+val () = ins ("dataviewtype", DATAVTYPE)
 //
 val () = ins ("do", T_DO)
 //
@@ -497,15 +497,16 @@ val () = ins ("sortdef", T_SORTDEF)
 // HX: [sta] is now deprecated
 *)
 val () = ins ("sta", T_STACST)
+(*
+val () = ins ("dyn", T_DYNCST) // not in use
+*)
+//
 val () = ins ("stacst", T_STACST)
 val () = ins ("stadef", T_STADEF)
 val () = ins ("static", T_STATIC)
 (*
 val () = ins ("stavar", T_STAVAR)
 *)
-//
-val () = ins ("staload", T_STALOAD)
-val () = ins ("dynload", T_DYNLOAD)
 //
 val () = ins ("try", T_TRY)
 //
@@ -550,6 +551,7 @@ val () = ins ("$ldelay", DLRLDELAY)
 val () = ins ("$arrpsz", T_DLRARRPSZ)
 val () = ins ("$arrptrsize", T_DLRARRPSZ)
 //
+val () = ins ("$tyrep", T_DLRTYREP)
 val () = ins ("$d2ctype", T_DLRD2CTYPE)
 //
 val () = ins ("$effmask", DLREFFMASK)
@@ -634,6 +636,13 @@ val () = ins ("#undef", T_SRPUNDEF)
 val () = ins ("#define", T_SRPDEFINE)
 //
 val () = ins ("#include", T_SRPINCLUDE)
+//
+val () = ins ("staload", T_SRPSTALOAD)
+val () = ins ("#staload", T_SRPSTALOAD)
+//
+val () = ins ("dynload", T_SRPDYNLOAD)
+val () = ins ("#dynload", T_SRPDYNLOAD)
+//
 val () = ins ("#require", T_SRPREQUIRE)
 //
 val () = ins ("#pragma", T_SRPPRAGMA) // HX: general pragma

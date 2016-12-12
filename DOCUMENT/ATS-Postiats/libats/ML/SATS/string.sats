@@ -46,28 +46,29 @@ typedef SHR(a:type) = a // for commenting purpose
 typedef NSH(a:type) = a // for commenting purpose
 
 (* ****** ****** *)
-
+//
 fun{}
 itoa (x: int):<> string
-
+//
 (* ****** ****** *)
-
+//
 fun{}
 string_sing (c: charNZ):<> string
-
+//
 (* ****** ****** *)
-
+//
 fun{}
 string_is_empty (NSH(string)):<> bool
 fun{}
 string_isnot_empty (NSH(string)):<> bool
-  
-(* ****** ****** *)
-
+//
 overload iseqz with string_is_empty
 overload isneqz with string_isnot_empty
-
+//
 (* ****** ****** *)
+//
+// HX-2016-11-08:
+// str1 is a prefix of str2
 //
 fun{}
 string_is_prefix
@@ -76,17 +77,28 @@ string_is_prefix
 ) :<> bool // string_is_prefix
 //
 (* ****** ****** *)
-
+//
+// HX-2016-11-12:
+// str1 is a suffix of str2
+//
+fun{}
+string_is_suffix
+(
+  str1: string, str2: string
+) :<> bool // string_is_suffix
+//
+(* ****** ****** *)
+//
 fun{}
 string_copy(x: NSH(string)):<> string
-
+//
 (* ****** ****** *)
-
+//
 fun{}
 string_make_list(cs: list0(char)):<> string
 fun{}
 string_make_rlist(cs: list0(char)):<> string
-
+//
 (* ****** ****** *)
 
 fun{}
@@ -109,10 +121,14 @@ string_append3
 (
   x1: NSH(string), x2: NSH(string), x3: NSH(string)
 ) :<> string // end of [string_append3]
+//
+(* ****** ****** *)
+//
 fun{}
 string_append4
 (
-  x1: NSH(string), x2: NSH(string), x3: NSH(string), x4: NSH(string)
+  x1: NSH(string), x2: NSH(string)
+, x3: NSH(string), x4: NSH(string)
 ) :<> string // end of [string_append4]
 fun{}
 string_append5
@@ -135,36 +151,70 @@ stringlst_concat(xs: list0 (string)):<> string
 (* ****** ****** *)
 
 fun{}
-string_explode (x: string):<> list0 (char)
+string_explode(x0: string):<> list0(char)
 fun{}
-string_implode (cs: list0 (char)):<> string
+string_implode(cs: list0(char)):<> string
 
 (* ****** ****** *)
 //
-fun string_tabulate
-  (n: size_t, f: (size_t) -<cloref1> charNZ): string
+fun{}
+string_tabulate
+  {n:int}
+(
+  n0: size_t(n), fopr: (sizeLt(n)) -<cloref1> charNZ
+) : string // end of [string_tabulate]
+//
+(* ****** ****** *)
+//
+fun{}
+string_forall
+  (x: string, f: cfun(char, bool)): bool
+fun{}
+string_iforall
+  (x: string, f: cfun2(int, char, bool)): bool
+//
+fun{}
+string_forall_method(string)(cfun(char, bool)): bool
+fun{}
+string_iforall_method(string)(cfun2(int, char, bool)): bool
+//
+overload .forall with string_forall_method
+overload .iforall with string_iforall_method
+//
+(* ****** ****** *)
+//
+fun{}
+string_foreach
+  (x: string, f: cfun(char, void)): void
+fun{}
+string_iforeach
+  (x: string, f: cfun2(int, char, void)): void
+//
+fun{}
+string_foreach_method(x: string)(cfun(char, void)): void
+fun{}
+string_iforeach_method(x: string)(cfun2(int, char, void)): void
+//
+overload .foreach with string_foreach_method
+overload .iforeach with string_iforeach_method
 //
 (* ****** ****** *)
 //
 fun
-string_forall (x: string, f: cfun (char, bool)): bool
+{res:vt0p}
+string_foldleft
+  (cs: string, ini: res, cfun(res, char, res)): res
 fun
-string_iforall (x: string, f: cfun2 (int, char, bool)): bool
+{res:vt0p}
+string_foldleft_method
+  (cs: string, TYPE(res))(ini: res, cfun(res, char, res)): res
 //
-fun
-string_foreach (x: string, f: cfun (char, void)): void
+overload .foldleft with string_foldleft_method
 //
-fun{}
-string_forall_method(string)(cfun (char, bool)): bool
-fun{}
-string_iforall_method(string)(cfun2 (int, char, bool)): bool
+(* ****** ****** *)
 //
 fun{}
-string_foreach_method(x: string)(f: cfun (char, void)): void
-//
-overload .forall with string_forall_method
-overload .iforall with string_iforall_method
-overload .foreach with string_foreach_method
+streamize_string_char(string): stream_vt(charNZ)
 //
 (* ****** ****** *)
 

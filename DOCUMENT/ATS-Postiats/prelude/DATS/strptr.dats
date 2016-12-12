@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/strptr.atxt
-** Time of generation: Sun Jul  3 11:13:22 2016
+** Time of generation: Sun Nov 20 21:18:24 2016
 *)
 
 (* ****** ****** *)
@@ -244,27 +244,35 @@ implement
 strptr_append
   (x1, x2) = let
 //
-val isnot1 = ptr_isnot_null (strptr2ptr(x1))
-//
-in
-//
-if isnot1 then let
-//
-val isnot2 = ptr_isnot_null (strptr2ptr(x2))
+val
+isnot1 =
+ptr_isnot_null(strptr2ptr(x1))
 //
 in
 //
 if
+isnot1
+then let
+//
+val
+isnot2 =
+ptr_isnot_null(strptr2ptr(x2))
+//
+in
+//
+if (
 isnot2
-then
-  strnptr2strptr(string1_append ($UN.strptr2string(x1), $UN.strptr2string(x2)))
-else
-  strptr1_copy (x1)
+) then (
+  strnptr2strptr(
+    string1_append($UN.strptr2string(x1), $UN.strptr2string(x2))
+  ) (*strnptr2strptr*)
+) else strptr1_copy(x1)
 // end of [if]
 //
 end else
-  strptr0_copy (x2)
-// end of [if]
+(
+  strptr0_copy(x2)
+) (* end of [if] *)
 //
 end // end of [strptr_append]
 

@@ -17,9 +17,9 @@ PATSHOMERELOC_targetloc "$PATSHOMERELOC"
 #define
 PATSPRE_targetloc "$PATSHOME/prelude"
 #define
-PATSLIBC_targetloc "$PATSHOME/libc"
-#define
 PATSLIBATS_targetloc "$PATSHOME/libats"
+#define
+PATSLIBATSC_targetloc "$PATSHOME/libats/libc"
 //
 (* ****** ****** *)
 //
@@ -41,16 +41,6 @@ PCRE_targetloc "$PATSHOMERELOC/contrib/pcre"
 LIBGMP_sourceloc "$ATSLANGWEBLIB/contrib/libgmp"
 #define
 LIBGMP_targetloc "$PATSHOMERELOC/contrib/libgmp"
-//
-(* ****** ****** *)
-//
-#define
-ZLOG_targetloc "$PATSHOMERELOC/contrib/zlog"
-//
-(* ****** ****** *)
-//
-#define
-ZEROMQ_targetloc "$PATSHOMERELOC/contrib/zeromq"
 //
 (* ****** ****** *)
 //
@@ -119,6 +109,11 @@ GUROBI_targetloc "$PATSHOMERELOC/contrib/gurobi"
 (* ****** ****** *)
 //
 #define
+LIBCATS_targetloc "$PATSHOMERELOC/contrib/libcats"
+//
+(* ****** ****** *)
+//
+#define
 KERNELATS_targetloc "$PATSHOMERELOC/contrib/kernelats"
 //
 (* ****** ****** *)
@@ -153,6 +148,16 @@ LIBATSCC2CLJ_targetloc
 #define
 LIBATSCC2PHP_targetloc
 "$PATSHOMERELOC/contrib/libatscc/libatscc2php"
+//
+(* ****** ****** *)
+//
+#define
+ZLOG_targetloc "$PATSHOMERELOC/contrib/zlog"
+//
+(* ****** ****** *)
+//
+#define
+ZEROMQ_targetloc "$PATSHOMERELOC/contrib/zeromq"
 //
 (* ****** ****** *)
 //

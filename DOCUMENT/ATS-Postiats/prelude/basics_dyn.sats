@@ -85,11 +85,36 @@ lemma_subcls_transitive
   {c1,c2,c3:cls | c1 <= c2; c2 <= c3}(): [c1 <= c3] void
 //
 (* ****** ****** *)
-
-praxi praxi_int{i:int} ((*void*)): int(i)
-praxi praxi_ptr{l:addr} ((*void*)): ptr(l)
-praxi praxi_bool{b:bool} ((*void*)): bool(b)
-
+//
+praxi
+praxi_int{i:int} ((*void*)): int(i)
+//
+dataprop
+MUL_prop
+(
+  int, int, int
+) = // MUL_prop
+  | {n:int}
+    MULbas (0, n, 0)
+  | {m:nat}{n:int}{p:int}
+    MULind (m+1, n, p+n) of MUL_prop (m, n, p)
+  | {m:pos}{n:int}{p:int}
+    MULneg (~(m), n, ~(p)) of MUL_prop (m, n, p)
+//
+propdef MUL(m:int, n:int, mn:int) = MUL_prop(m, n, mn)
+//
+(* ****** ****** *)
+//
+// HX-2010-12-30: 
+//
+absprop
+DIVMOD (
+  x:int, y: int, q: int, r: int // x = q * y + r
+) // end of [DIVMOD]
+//
+propdef DIV (x:int, y:int, q:int) = [r:int] DIVMOD(x, y, q, r)
+propdef MOD (x:int, y:int, r:int) = [q:int] DIVMOD(x, y, q, r)
+//
 (* ****** ****** *)
 
 dataprop
@@ -105,6 +130,11 @@ prfun
 eqint_make_guint
   {tk:tk}{x:int}(x: g1uint(tk, x)): [y:int] EQINT(x, y)
 //
+(* ****** ****** *)
+
+praxi praxi_ptr{l:addr} ((*void*)): ptr(l)
+praxi praxi_bool{b:bool} ((*void*)): bool(b)
+
 (* ****** ****** *)
 
 dataprop
@@ -186,21 +216,34 @@ mfree_gc_v_elim
 praxi
 mfree_gcngc_v_nullify
   {l:addr} (
-  pf1: mfree_gc_v (l), pf1: mfree_ngc_v (l)
+  pf1: mfree_gc_v(l), pf1: mfree_ngc_v(l)
 ) : void // end of [mfree_gcngc_nullify_v]
 
 (* ****** ****** *)
 //
 fun
 cloptr_free
-  {a:t0p}(pclo: cloptr (a)):<!wrt> void = "mac#%"
+  {a:t0p}
+  (pclo: cloptr(a)):<!wrt> void = "mac#%"
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
-lazy_force (lazyval: lazy (a)):<!laz> a
-fun{a:vt0p}
-lazy_vt_force (lazyval: lazy_vt (a)): (a)
+fun
+{a:t0p}
+lazy_force(lazyval: lazy(INV(a))):<!laz> (a)
+//
+fun
+{a:vt0p}
+lazy_vt_force(lazyval: lazy_vt(INV(a))):<!all> (a)
+//
+(*
+//
+// HX-2016-08:
+// this is assumed internally!
+//
+overload ! with lazy_force of 0
+overload ! with lazy_vt_force of 0
+*)
 //
 (* ****** ****** *)
 //
@@ -209,8 +252,10 @@ lazy_vt_force (lazyval: lazy_vt (a)): (a)
 //
 fun
 lazy_vt_free
-  {a:vt0p} (lazyval: lazy_vt (a)):<!wrt> void = "mac#%"
-overload ~ with lazy_vt_free
+  {a:vt0p}
+  (lazyval: lazy_vt(a)):<!wrt> void = "mac#%"
+//
+overload ~ with lazy_vt_free of 0
 //
 (* ****** ****** *)
 //
@@ -265,11 +310,11 @@ stamp_vt{a:vt@ype}(x: a):<> stamped_vt(a)
 
 castfn
 unstamp_t
-  {a:t@ype}{x:int} (x: stamped_t (INV(a), x)):<> a
+  {a:t@ype}{x:int}(x: stamped_t(INV(a), x)):<> a
 // end of [unstamp_t]
 castfn
 unstamp_vt
-  {a:vt@ype}{x:int} (x: stamped_vt (INV(a), x)):<> a
+  {a:vt@ype}{x:int}(x: stamped_vt(INV(a), x)):<> a
 // end of [unstamp_vt]
 
 (* ****** ****** *)
@@ -277,25 +322,27 @@ unstamp_vt
 castfn
 stamped_t2vt
   {a:t@ype}{x:int}
-  (x: stamped_t(INV(a), x)):<> stamped_vt (a, x)
+  (x: stamped_t(INV(a), x)):<> stamped_vt(a, x)
 // end of [stamped_t2vt]
 //
 castfn
 stamped_vt2t
   {a:t@ype}{x:int}
-  (x: stamped_vt(INV(a), x)):<> stamped_t (a, x)
+  (x: stamped_vt(INV(a), x)):<> stamped_t(a, x)
 // end of [stamped_vt2t]
 //
 fun{a:t@ype}
 stamped_vt2t_ref{x:int}
-  (x: &stamped_vt(INV(a), x)):<> stamped_t (a, x)
+  (x: &stamped_vt(INV(a), x)):<> stamped_t(a, x)
 //
 (* ****** ****** *)
 //
 praxi
-vcopyenv_v_decode{v:view} (x: vcopyenv_v (v)): vtakeout0 (v)
+vcopyenv_v_decode
+  {v:view}(x: vcopyenv_v(v)): vtakeout0(v)
 castfn
-vcopyenv_vt_decode{vt:vt0p} (x: vcopyenv_vt (vt)): vttakeout0 (vt)
+vcopyenv_vt_decode
+  {vt:vt0p}(x: vcopyenv_vt(vt)): vttakeout0(vt)
 //
 overload decode with vcopyenv_v_decode
 overload decode with vcopyenv_vt_decode
@@ -305,13 +352,15 @@ overload decode with vcopyenv_vt_decode
 // HX: the_null_ptr = (void*)0
 //
 val
-the_null_ptr : ptr (null) = "mac#atsptr_null"
+the_null_ptr
+  : ptr(null) = "mac#the_atsptr_null"
 //
 (* ****** ****** *)
-
+//
 praxi
-lemma_addr_param{l:addr} (): [l >= null] void
-
+lemma_addr_param
+  {l:addr}((*void*)): [l >= null] void
+//
 (* ****** ****** *)
 
 praxi
@@ -365,6 +414,7 @@ praxi __vfree_exn (x: exn):<> void // for freeing nullary exception-con
 datatype unit = unit of ()
 dataprop unit_p = unit_p of ()
 dataview unit_v = unit_v of ()
+datavtype unit_vt = unit_vt of ()
 //
 prfun unit_v_elim (pf: unit_v): void
 //
@@ -499,7 +549,8 @@ datatype
 option_t0ype_bool_type
 (
   a:t@ype+, bool
-) = Some(a, true) of (a) | None(a, false)
+) = // option_t0ype_bool_type
+  | Some(a, true) of (INV(a)) | None(a, false)
 // end of [datatype]
 stadef option = option_t0ype_bool_type
 typedef Option (a:t0p) = [b:bool] option (a, b)
@@ -509,7 +560,8 @@ datavtype
 option_vt0ype_bool_vtype
 (
   a:vt@ype+, bool
-) = Some_vt(a, true) of (a) | None_vt(a, false)
+) = // option_vt0ype_bool_vtype
+  | Some_vt(a, true) of (INV(a)) | None_vt(a, false)
 // end of [option_vt0ype_bool_vtype]
 stadef option_vt = option_vt0ype_bool_vtype
 vtypedef Option_vt (a:vt0p) = [b:bool] option_vt (a, b)
@@ -517,49 +569,59 @@ vtypedef Option_vt (a:vt0p) = [b:bool] option_vt (a, b)
 (* ****** ****** *)
 //
 praxi
-opt_some
-  {a:vt0p}(x: !INV(a) >> opt(a, true)):<prf> void
+opt_some{a:vt0p}
+  (x: !INV(a) >> opt(a, true)):<prf> void
 praxi
-opt_unsome
-  {a:vt0p}(x: !opt(INV(a), true) >> a):<prf> void
+opt_unsome{a:vt0p}
+  (x: !opt(INV(a), true) >> a):<prf> void
 //
 fun{a:vt0p}
-opt_unsome_get (x: &opt(INV(a), true) >> a?): (a)
+opt_unsome_get(x: &opt(INV(a), true) >> a?): (a)
 //
 praxi
-opt_none
-  {a:vt0p} (x: !(a?) >> opt(a, false)):<prf> void
+opt_none{a:vt0p}
+  (x: !(a?) >> opt(a, false)):<prf> void
 praxi
-opt_unnone
-  {a:vt0p} (x: !opt(INV(a), false) >> a?):<prf> void
+opt_unnone{a:vt0p}
+  (x: !opt(INV(a), false) >> a?):<prf> void
 //
 praxi
-opt_clear
-  {a:t0p}{b:bool}(x: !opt(INV(a), b) >> a?):<prf> void
+opt_clear{a:t0p}
+  {b:bool}(x: !opt(INV(a), b) >> a?):<prf> void
 //
 (* ****** ****** *)
 //
 dataprop
 or_prop_prop_int_prop
-  (a0: prop+, a1: prop+, int) =
-  PORleft(a0, a1, 0) of a0 | PORright(a0, a1, 1) of a1
-stadef por = or_prop_prop_int_prop
-//
+(
+  a0: prop+, a1: prop+, int
+) = // or_prop_prop_int_prop
+  | POR_l(a0, a1, 0) of (INV(a0))
+  | POR_r(a0, a1, 1) of (INV(a1))
 dataview
 or_view_view_int_view
-  (a0: view+, a1: view+, int) =
-  VORleft(a0, a1, 0) of a0 | VORright(a0, a1, 1) of a1
+(
+  a0: view+, a1: view+, int
+) = // or_view_view_int_view
+  | VOR_l(a0, a1, 0) of (INV(a0))
+  | VOR_r(a0, a1, 1) of (INV(a1))
+//
+stadef por = or_prop_prop_int_prop
 stadef vor = or_view_view_int_view
 //
 dataprop
 option_prop_bool_prop
-  (a:prop+, bool) = Some_p (a, true) of (a) | None_p (a, false)
+(
+  a:prop+, bool
+) = // option_prop_bool_prop
+  | Some_p (a, true) of (INV(a)) | None_p (a, false)
 // end of [option_prop_bool_prop]
 stadef option_p = option_prop_bool_prop
 //
 dataview
 option_view_bool_view
-  (a:view+, bool) = Some_v (a, true) of (a) | None_v (a, false)
+  (a:view+, bool) =
+  | Some_v (a, true) of (INV(a)) | None_v (a, false)
 // end of [option_view_bool_view]
 stadef option_v = option_view_bool_view
 //
@@ -570,16 +632,20 @@ arrayopt (a:vt0p, n:int, b:bool) = array (a, n)
 //
 praxi
 arrayopt_some
-  {a:vt0p}{n:int} (A: &array(a, n) >> arrayopt(a, n, true)): void
+  {a:vt0p}{n:int}
+  (A: &array(a, n) >> arrayopt(a, n, true)): void
 praxi
 arrayopt_none
-  {a:vt0p}{n:int} (A: &array(a?, n) >> arrayopt(a, n, false)): void
+  {a:vt0p}{n:int}
+  (A: &array(a?, n) >> arrayopt(a, n, false)): void
 praxi
 arrayopt_unsome
-  {a:vt0p}{n:int} (A: &arrayopt(a, n, true) >> array(a, n)): void
+  {a:vt0p}{n:int}
+  (A: &arrayopt(a, n, true) >> array(a, n)): void
 praxi
 arrayopt_unnone
-  {a:vt0p}{n:int} (A: &arrayopt(a, n, false) >> array(a?, n)): void
+  {a:vt0p}{n:int}
+  (A: &arrayopt(a, n, false) >> array(a?, n)): void
 //
 (* ****** ****** *)
 
@@ -614,11 +680,14 @@ overload [] with argv_set_at
 //
 symintr main0
 //
-fun main_void_0
+fun
+main_void_0
   ((*void*)): void = "ext#mainats_void_0"
-fun main_argc_argv_0
+fun
+main_argc_argv_0
   {n:int | n >= 1}
   (argc: int n, argv: !argv(n)): void = "ext#mainats_argc_argv_0"
+//
 overload main0 with main_void_0
 overload main0 with main_argc_argv_0
 //
@@ -626,14 +695,18 @@ overload main0 with main_argc_argv_0
 //
 symintr main
 //
-fun main_void_int
+fun
+main_void_int
   ((*void*)): int = "ext#mainats_void_int"
-fun main_argc_argv_int
+fun
+main_argc_argv_int
   {n:int | n >= 1}
   (argc: int n, argv: !argv(n)): int = "ext#mainats_argc_argv_int"
-fun main_argc_argv_envp_int
+fun
+main_argc_argv_envp_int
   {n:int | n >= 1}
   (argc: int n, argv: !argv n, envp: ptr): int = "ext#mainats_argc_argv_envp_int"
+//
 overload main with main_void_int
 overload main with main_argc_argv_int
 overload main with main_argc_argv_envp_int
@@ -687,9 +760,11 @@ overload assertexn with assertexn_bool1 of 10
 //
 (* ****** ****** *)
 //
-fun assert_errmsg_bool0
+fun
+assert_errmsg_bool0
   (x: bool, msg: string):<!exn> void = "mac#%"
-fun assert_errmsg_bool1
+fun
+assert_errmsg_bool1
   {b:bool} (x: bool b, msg: string):<!exn> [b] void = "mac#%"
 //
 symintr assert_errmsg
@@ -793,9 +868,9 @@ fprint_vtype(a: vt0p) = (FILEref, !a) -> void
 //
 (* ****** ****** *)
 
-fun print_newline (): void = "mac#%"
-fun prerr_newline (): void = "mac#%"
-fun fprint_newline (out: FILEref): void = "mac#%"
+fun print_newline((*void*)): void = "mac#%"
+fun prerr_newline((*void*)): void = "mac#%"
+fun fprint_newline(out: FILEref): void = "mac#%"
 
 (* ****** ****** *)
 

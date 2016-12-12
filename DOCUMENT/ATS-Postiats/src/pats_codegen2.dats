@@ -105,6 +105,8 @@ macdef datcontag_test = datcontag_test_e1xp
 //
 macdef fprint_test = fprint_test_e1xp
 //
+macdef absrec_test = absrec_test_e1xp
+//
 val-D2Ccodegen(knd, xs) = d2c0.d2ecl_node
 //
 in
@@ -115,17 +117,25 @@ case+ xs of
     (x, xs) =>
   (
   case+ x of
+//
   | _ when
       datcon_test(x) =>
       codegen2_datcon(out, d2c0, xs)
   | _ when
       datcontag_test(x) =>
       codegen2_datcontag(out, d2c0, xs)
+//
   | _ when
       fprint_test(x) =>
       codegen2_fprint(out, d2c0, xs)
+//
+  | _ when
+      absrec_test(x) =>
+      codegen2_absrec(out, d2c0, xs)
+//
   | _ (*unrecognized*) => auxerr_cons(out, d2c0, x)
-  )
+//
+  ) (* list_cons *)
 //
 | list_nil((*void*)) => auxerr_nil(out, d2c0)
 //

@@ -845,6 +845,7 @@ and d2exp_node =
 //
   | D2Ecstsp of $SYN.cstsp // special constants
 //
+  | D2Etyrep of (s2exp) // $tyrep(...)
   | D2Eliteral of (d2exp) // $literal: int, float, string
 //
   | D2Eextval of (s2exp(*type*), string(*name*))
@@ -910,16 +911,17 @@ and d2exp_node =
   | D2Eptrof of (d2exp) // taking the address of
   | D2Eviewat of (d2exp) // taking view at a given address
 //
-  | D2Ederef of (d2exp) // deref a left-value
+  | D2Ederef of (d2sym, d2exp) // dereference
+//
   | D2Eassgn of (d2exp(*left*), d2exp(*right*))
   | D2Exchng of (d2exp(*left*), d2exp(*right*))
 //
   | D2Earrsub of (* array subscription *)
       (d2sym, d2exp, location(*ind*), d2explst(*ind*))
   | D2Earrpsz of (* $arrpsz expression *)
-      (s2expopt (*elt*), d2explst (*elements*))
+      (s2expopt(*eltype*), d2explst(*elements*))
   | D2Earrinit of (* array initialization *)
-      (s2exp (*elt*), d2expopt (*asz*), d2explst (*ini*))
+      (s2exp(*elt*), d2expopt(*asz*), d2explst(*ini*))
 //
   | D2Eraise of (d2exp) // raised exception
 //
@@ -1274,6 +1276,14 @@ d2exp_cstsp
   loc: location, cst: $SYN.cstsp
 ) : d2exp // end-of-function
 //
+(* ****** ****** *)
+//
+fun
+d2exp_tyrep
+  (loc: location, s2e: s2exp): d2exp
+//
+(* ****** ****** *)
+//
 fun
 d2exp_literal
   (loc: location, d2e_lit: d2exp): d2exp
@@ -1459,16 +1469,17 @@ fun d2exp_seq (loc: location, d2es: d2explst): d2exp
 fun d2exp_seq2 (loc: location, d2es: d2explst): d2exp
 
 (* ****** ****** *)
-
+//
 fun d2exp_deref
-  (loc: location, d2e_lval: d2exp): d2exp
+  (loc: location, d2s: d2sym, d2e_lval: d2exp): d2exp
+//
 fun d2exp_assgn
   (loc: location, _left: d2exp, _right: d2exp): d2exp
 // end of [d2exp_assgn]
 fun d2exp_xchng
   (loc: location, _left: d2exp, _right: d2exp): d2exp
 // end of [d2exp_xchng]
-
+//
 (* ****** ****** *)
 
 fun d2exp_arrsub
@@ -1509,7 +1520,9 @@ d2exp_sel_dot // = d2exp_selab
 //
 fun
 d2exp_sel_ptr
-  (loc: location, _rec: d2exp, d2l: d2lab): d2exp
+(
+  loc: location, d2s: d2sym, d2rec: d2exp, d2l: d2lab
+) : d2exp // end of [d2exp_sel_ptr]
 //
 (* ****** ****** *)
 //

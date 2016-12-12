@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/bool.atxt
-** Time of generation: Mon Jul 18 12:06:28 2016
+** Time of generation: Sun Nov 20 21:18:15 2016
 *)
 
 (* ****** ****** *)
@@ -49,21 +49,23 @@ overload g1ofg0 with g1ofg0_bool // index-inducing
 //
 (* ****** ****** *)
 //
+fun
+int2bool0 (i: int):<> bool = "mac#%"
+fun
+int2bool1
+  {i:int} (i: int i):<> bool(i != 0) = "mac#%"
+//
 symintr int2bool
-//
-fun int2bool0 (i: int):<> bool = "mac#%"
-fun int2bool1
-  {i:int} (i: int i):<> bool (i != 0) = "mac#%"
-//
 overload int2bool with int2bool0 of 0
 overload int2bool with int2bool1 of 10
 //
+fun
+bool2int0 (b: bool):<> natLt(2) = "mac#%"
+fun
+bool2int1
+  {b:bool} (b: bool b):<> int(bool2int(b)) = "mac#%"
+//
 symintr bool2int
-//
-fun bool2int0 (b: bool):<> natLt(2) = "mac#%"
-fun bool2int1
-  {b:bool} (b: bool b):<> int (bool2int(b)) = "mac#%"
-//
 overload bool2int with bool2int0 of 0
 overload bool2int with bool2int1 of 10
 //

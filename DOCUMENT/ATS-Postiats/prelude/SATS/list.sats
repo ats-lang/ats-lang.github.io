@@ -27,17 +27,17 @@
 
 (* ****** ****** *)
 
-(*
-** Source:
-** $PATSHOME/prelude/SATS/CODEGEN/list.atxt
-** Time of generation: Sat Jul 30 11:26:12 2016
-*)
+(* Author: Hongwei Xi *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+(* Start time: February, 2012 *)
 
 (* ****** ****** *)
 
-(* Author: Hongwei Xi *)
-(* Authoremail: hwxi AT cs DOT bu DOT edu *)
-(* Start time: February, 2012 *)
+(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/list.atxt
+** Time of generation: Sun Nov 20 21:18:19 2016
+*)
 
 (* ****** ****** *)
 
@@ -284,14 +284,14 @@ list_last_exn{n:int} (xs: list(INV(x), n)):<!exn> (x)
 fun{
 x:t0p
 } list_nth{n:int}
-  (xs: list(INV(x), n), i: natLt (n)):<> (x)
+  (list(INV(x), n), natLt(n)):<> (x)
 fun{x:t0p}
 list_nth_opt
-  (xs: List(INV(x)), i: intGte (0)):<> Option_vt(x)
+  (xs: List(INV(x)), i: intGte(0)):<> Option_vt(x)
 //
 fun{x:t0p}
 list_get_at{n:int}
-  (xs: list(INV(x), n), i: natLt (n)):<> (x)
+  (list(INV(x), n), natLt(n)):<> (x)
 fun{x:t0p}
 list_get_at_opt
   (xs: List(INV(x)), i: intGte (0)):<> Option_vt(x)
@@ -299,11 +299,11 @@ list_get_at_opt
 (* ****** ****** *)
 //
 fun{x:t0p}
-list_set_at{n:nat}
-  (xs: list(INV(x), n), i: natLt (n), x: x):<> list(x, n)
+list_fset_at{n:nat}
+  (list(INV(x), n), natLt(n), x):<> list(x, n)
 fun{x:t0p}
-list_exch_at{n:nat}
-  (xs: list(INV(x), n), i: natLt (n), x: x):<> (list(x, n), x)
+list_fexch_at{n:nat}
+  (list(INV(x), n), natLt(n), x):<> (list(x, n), x)
 //
 (* ****** ****** *)
 
@@ -706,44 +706,52 @@ a:vt0p
   (n: int n, f: natLt(n) -<cloref1> a): list_vt(a, n)
 
 (* ****** ****** *)
-
+//
 fun{
 x,y:t0p
 } list_zip{m,n:int}
 (
-  xs: list(INV(x), m), ys: list(INV(y), n)
-) :<!wrt> list_vt((x, y), min(m,n)) // endfun
-
-fun{
-x,y:t0p}{xy:vt0p
-} list_zipwith{m,n:int}
-(
-  xs: list(INV(x), m), ys: list(INV(y), n)
-) : list_vt(xy, min(m,n)) // endfun
+  xs: list(INV(x), m)
+, ys: list(INV(y), n)
+) :<!wrt> list_vt((x, y), min(m,n))
 //
-fun{
-x,y:t0p}{xy:vt0p
-} list_zipwith$fopr (x: x, y: y): (xy)
+fun
+{x,y:t0p}
+{res:vt0p}
+list_zipwith{m,n:int}
+(
+  xs: list(INV(x), m)
+, ys: list(INV(y), n)
+) : list_vt(res, min(m,n)) // endfun
+//
+fun
+{x,y:t0p}
+{res:vt0p}
+list_zipwith$fopr (x: x, y: y): (res)
 //
 (* ****** ****** *)
-
+//
 fun{
 x,y:t0p
 } list_cross{m,n:int}
 (
-  xs: list(INV(x), m), ys: list(INV(y), n)
+  xs: list(INV(x), m)
+, ys: list(INV(y), n)
 ) :<!wrt> list_vt((x, y), m*n) // endfun
-
-fun{
-x,y:t0p}{xy:vt0p
-} list_crosswith{m,n:int}
-(
-  xs: list(INV(x), m), ys: list(INV(y), n)
-) : list_vt(xy, m*n) // end of [list_crosswith]
 //
-fun{
-x,y:t0p}{xy:vt0p
-} list_crosswith$fopr (x: x, y: y): (xy)
+fun
+{x,y:t0p}
+{res:vt0p}
+list_crosswith{m,n:int}
+(
+  xs: list(INV(x), m)
+, ys: list(INV(y), n)
+) : list_vt(res, m*n) // end of [list_crosswith]
+//
+fun
+{x,y:t0p}
+{res:vt0p}
+list_crosswith$fopr (x: x, y: y): (res)
 //
 (* ****** ****** *)
 
@@ -892,25 +900,35 @@ x,y:t0p}{env:vt0p
   (i: intGte(0), x: x, y: y, env: &(env) >> _): void
 //
 (* ****** ****** *)
-
+//
 fun{
 res:vt0p}{x:t0p
 } list_foldleft
   (xs: List(INV(x)), ini: res): res
 fun{
 res:vt0p}{x:t0p
-} list_foldleft$fopr (acc: res, x: x): res
-
+} list_foldleft$fopr(acc: res, x: x): res
+//
+fun{
+res:vt0p}{x:t0p
+} list_foldleft_cloref
+  (xs: List(INV(x)), ini: res, fopr: (res, x) -<cloref1> res): res
+//
 (* ****** ****** *)
-
+//
 fun{
 x:t0p}{res:vt0p
 } list_foldright
   (xs: List(INV(x)), snk: res): res
 fun{
 x:t0p}{res:vt0p
-} list_foldright$fopr (x: x, acc: res): res
-
+} list_foldright$fopr(x: x, acc: res): res
+//
+fun{
+x:t0p}{res:vt0p
+} list_foldright_cloref
+  (xs: List(INV(x)), fopr: (x, res) -<cloref1> res, snk: res): res
+//
 (* ****** ****** *)
 
 fun{
@@ -919,7 +937,7 @@ a:t0p
   (xs: list(INV(a), n)) :<!wrt> list_vt(a, n)
 //
 fun{a:t0p}
-list_mergesort$cmp (x1: a, x2: a):<> int (* sign *)
+list_mergesort$cmp(x1: a, x2: a):<> int (* sign *)
 //
 (* ****** ****** *)
 
@@ -928,7 +946,7 @@ a:t0p
 } list_mergesort_fun
   {n:int} (
   xs: list(INV(a), n), cmp: cmpval (a)
-) :<!wrt> list_vt(a, n) // end of [list_mergesort_fun]
+) :<!wrt> list_vt(a, n) // end-of-function
 
 fun{
 a:t0p
@@ -945,7 +963,7 @@ a:t0p
   (xs: list(INV(a), n)) :<!wrt> list_vt(a, n)
 //
 fun{a:t0p}
-list_quicksort$cmp (x1: a, x2: a):<> int (* sign *)
+list_quicksort$cmp(x1: a, x2: a):<> int (* sign *)
 //
 (* ****** ****** *)
 
@@ -956,13 +974,34 @@ a:t0p
   xs: list(INV(a), n), cmp: cmpval (a)
 ) :<!wrt> list_vt(a, n) // end-of-function
 
+fun{
+a:t0p
+} list_quicksort_cloref
+  {n:int} (
+  xs: list(INV(a), n), cmp: (a, a) -<cloref> int
+) :<!wrt> list_vt(a, n) // end of [list_quicksort_cloref]
+
 (* ****** ****** *)
 //
 fun{a:t0p}
-streamize_list_elt(List(a)):<!wrt> stream_vt(a)
+streamize_list_elt
+  (xs: List(INV(a))):<!wrt> stream_vt(a)
 //
 fun{a:t0p}
-streamize_list_choose2(List(a)):<!wrt> stream_vt(@(a, a))
+streamize_list_choose2
+  (xs: List(INV(a))):<!wrt> stream_vt(@(a, a))
+//
+(* ****** ****** *)
+//
+fun
+{a,b:t0p}
+streamize_list_zip
+  (List(INV(a)), List(INV(b))):<!wrt> stream_vt(@(a, b))
+//
+fun
+{a,b:t0p}
+streamize_list_cross
+  (List(INV(a)), List(INV(b))):<!wrt> stream_vt(@(a, b))
 //
 (* ****** ****** *)
 //

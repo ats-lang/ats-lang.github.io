@@ -383,7 +383,10 @@ val asz = array0_get_size (A)
 val f = $UN.cast{cfun1(ptr, b)}(f)
 //
 in
-  array0_tabulate<b> (asz, lam i => f (ptr_add<a> (p0, i)))
+//
+array0_tabulate<b>
+  (g1ofg0(asz), lam i => f (ptr_add<a> (p0, i)))
+//
 end // end of [array0_map]
 
 (* ****** ****** *)
@@ -391,11 +394,18 @@ end // end of [array0_map]
 implement
 {a}(*tmp*)
 array0_tabulate
-  (asz, f) = let
+  {n}(asz, f) = let
 //
 implement{a2}
 array_tabulate$fopr
-  (i) = $UN.castvwtp0{a2}(f(i))
+  (i) = let
+//
+  val i =
+  $UN.cast{sizeLt(n)}(i)
+//
+in
+  $UN.castvwtp0{a2}(f(i))
+end // array_tabulate$fopr
 //
 val ASZ = arrszref_tabulate<a> (asz)
 //
@@ -653,6 +663,62 @@ end // end of [array_quicksort$cmp]
 in
   arrayref_quicksort<a> (A, asz)
 end // end of [array0_quicksort]
+
+(* ****** ****** *)
+//
+// HX: some common generic functions
+//
+(* ****** ****** *)
+
+implement
+(a)(*tmp*)
+fprint_val<array0(a)> = fprint_array0<a>
+
+(* ****** ****** *)
+
+implement
+(a)(*tmp*)
+gcompare_val_val<array0(a)>
+  (xs, ys) = let
+//
+val m = array0_get_size{a}(xs)
+val n = array0_get_size{a}(ys)
+//
+fun
+loop
+(
+  px: ptr, py: ptr, i: size_t, j: size_t
+) : int =
+(
+if (
+i < m
+) then (
+//
+if j < n
+  then let
+    val (pfx, fpfx | px) =
+      $UN.ptr_vtake{a}(px)
+    val (pfy, fpfy | py) =
+      $UN.ptr_vtake{a}(py)
+    val sgn = gcompare_ref_ref(!px, !py)
+    prval () = fpfx(pfx) and () = fpfy(pfy)
+  in
+    if sgn != 0
+      then (sgn)
+      else loop(ptr_succ<a>(px), ptr_succ<a>(py), succ(i), succ(j))
+    // end of [if]
+  end else (1) // end of [else]
+//
+) else (
+//
+if j < n then (~1) else (0)
+//
+) (* end of [else] *)
+) (* end of [loop] *)
+//
+in
+  $effmask_all(loop(array0_get_ref{a}(xs), array0_get_ref{a}(xs), i2sz(0), i2sz(0)))
+end // end of [gcompare_val_val]
 
 (* ****** ****** *)
 

@@ -181,6 +181,8 @@ extern fun hidexp_ccomp_string : hidexp_ccomp_funtype
 
 extern fun hidexp_ccomp_cstsp : hidexp_ccomp_funtype
 
+extern fun hidexp_ccomp_tyrep : hidexp_ccomp_funtype
+
 extern fun hidexp_ccomp_tmpcst : hidexp_ccomp_funtype
 extern fun hidexp_ccomp_tmpvar : hidexp_ccomp_funtype
 
@@ -298,6 +300,8 @@ case+ hde0.hidexp_node of
 //
 | HDEcstsp _ => hidexp_ccomp_cstsp (env, res, hde0)
 //
+| HDEtyrep _ => hidexp_ccomp_tyrep (env, res, hde0)
+//
 | HDEtop () => primval_top (loc0, hse0)
 | HDEempty () => primval_empty (loc0, hse0)
 | HDEignore (hde) => hidexp_ccomp (env, res, hde)
@@ -412,10 +416,10 @@ case+ hde0.hidexp_node of
 | HDEsif _(*error*) => let
     val () =
     prerr_errccomp_loc(loc0)
-    val () =
-    prerrln!
-      (": [sif] is not supported after proof-erasure.")
-    // end of [val]
+    val () = prerrln!
+    (
+      ": [sif] is not supported after proof-erasure."
+    ) (* end of [println!] *)
   in
     primval_error (loc0, hse0)
   end (* end of [HDEsif] *)
@@ -423,9 +427,8 @@ case+ hde0.hidexp_node of
 | _(*unspported*) => let
     val () =
     prerr_interror_loc(loc0)
-    val () = prerrln! (": hidexp_ccomp: hde0 = ", hde0)
-  in
-    exitloc (1)
+    val () =
+    prerrln! (": hidexp_ccomp: hde0 = ", hde0) in exitloc(1)
   end // end of [_(*unsupported*)]
 //
 end // end of [let] // end of [hidexp_ccomp]
@@ -888,6 +891,20 @@ in
   primval_cstsp (loc0, hse0, pmc)
 end // end of [hidexp_ccomp_cstsp]
 
+(* ****** ****** *)
+//
+implement
+hidexp_ccomp_tyrep
+  (env, res, hde0) = let
+//
+val loc0 = hde0.hidexp_loc
+val hse0 = hde0.hidexp_type
+val-HDEtyrep(hse) = hde0.hidexp_node
+//
+in
+  primval_tyrep (loc0, hse0, hse)
+end // end of [hidexp_ccomp_tyrep]
+//
 (* ****** ****** *)
 
 implement

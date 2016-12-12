@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/prelude/CATS/CODEGEN/float.atxt
-** Time of generation: Tue Nov 17 16:34:23 2015
+** Time of generation: Sun Nov 27 09:09:17 2016
 */
 
 /* ****** ****** */
@@ -129,7 +129,7 @@ atstype_double x
 extern double atof (const char *inp) ;
 //
 ATSinline()
-atstype_int
+atstype_double
 atspre_g0string2float_double
   (atstype_string inp) { return atof((char*)inp) ; }
 //

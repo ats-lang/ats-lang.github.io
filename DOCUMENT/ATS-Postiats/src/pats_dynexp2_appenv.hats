@@ -602,6 +602,7 @@ d2e0.d2exp_node of
 | D2Eempty () => ()
 //
 | D2Ecstsp _ => ()
+| D2Etyrep (s2e) => s2exp_app (s2e, env)
 | D2Eliteral _ => ()
 //
 | D2Eextval (s2e, name) => s2exp_app (s2e, env)
@@ -708,7 +709,10 @@ d2e0.d2exp_node of
 | D2Eann_seff (d2e, s2fe) => d2exp_app (d2e, env)
 | D2Eann_funclo (d2e, funclo) => d2exp_app (d2e, env)
 //
-| D2Ederef (d2e) => d2exp_app (d2e, env)
+| D2Ederef (d2s, d2e) =>
+  (
+    d2sym_app(d2s, env); d2exp_app (d2e, env)
+  )
 | D2Eassgn (d2e_l, d2e_r) =>
   (
     d2exp_app (d2e_l, env); d2exp_app (d2e_r, env)

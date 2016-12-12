@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/list_vt.atxt
-** Time of generation: Tue Jul 19 10:45:29 2016
+** Time of generation: Sat Dec  3 10:16:34 2016
 *)
 
 (* ****** ****** *)
@@ -337,20 +337,20 @@ fun{x:vt0p}
 list_vt_separate$pred (x: &RD(x)): bool
 
 (* ****** ****** *)
-
+//
 fun{x:t0p}
 list_vt_filter{n:int}
-  (x: list_vt(INV(x), n)):<!wrt> listLte_vt(x, n)
+  (list_vt(INV(x), n)):<!wrt> listLte_vt(x, n)
 // end of [list_vt_filter]
-
+//
 fun{x:t0p}
 list_vt_filter$pred (x: &RD(x)):<> bool
-
+//
 (* ****** ****** *)
 //
 fun{x:vt0p}
-list_vt_filterlin
-  {n:int} (list_vt(INV(x), n)):<!wrt> listLte_vt(x, n)
+list_vt_filterlin{n:int}
+  (list_vt(INV(x), n)):<!wrt> listLte_vt(x, n)
 //
 fun{x:vt0p}
 list_vt_filterlin$pred (x: &RD(x)):<> bool
@@ -452,6 +452,12 @@ x:vt0p
 ) :<fe> void // end of [list_vt_foreach_fun]
 fun{
 x:vt0p
+} list_vt_foreach_cloref
+  {fe:eff} (
+  xs: !List_vt(INV(x)), f: (&x) -<cloref,fe> void
+) :<fe> void // end of [list_vt_foreach_cloref]
+fun{
+x:vt0p
 } list_vt_foreach_funenv
   {v:view}{vt:viewtype}{fe:eff} (
   pfv: !v
@@ -487,7 +493,7 @@ a:vt0p
   {n:int} (xs: list_vt(INV(a), n)):<!wrt> list_vt(a, n)
 fun{
 a:vt0p
-} list_vt_mergesort$cmp (x1: &RD(a), x2: &RD(a)):<> int(*sgn*)
+} list_vt_mergesort$cmp(x1: &RD(a), x2: &RD(a)):<> int(*sgn*)
 //
 fun{
 a:vt0p
@@ -504,7 +510,7 @@ a:vt0p
   {n:int} (xs: list_vt(INV(a), n)):<!wrt> list_vt(a, n)
 fun{
 a:vt0p
-} list_vt_quicksort$cmp (x1: &RD(a), x2: &RD(a)):<> int(*sgn*)
+} list_vt_quicksort$cmp(x1: &RD(a), x2: &RD(a)):<> int(*sgn*)
 //
 fun{
 a:vt0p
@@ -515,8 +521,8 @@ a:vt0p
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
-streamize_list_vt_elt(List_vt(a)):<!wrt> stream_vt(a)
+fun{a:vt0p}
+streamize_list_vt_elt(List_vt(INV(a))):<!wrt> stream_vt(a)
 //
 (* ****** ****** *)
 //

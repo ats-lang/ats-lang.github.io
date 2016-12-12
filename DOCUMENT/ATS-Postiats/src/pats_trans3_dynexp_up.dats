@@ -277,6 +277,8 @@ of // case+
 //
 | D2Ecstsp(csp) => d2exp_trup_cstsp (d2e0, csp)
 //
+| D2Etyrep(s2e) => d2exp_trup_tyrep (d2e0, s2e)
+//
 | D2Eliteral(d2e) => d2exp_trup_literal (d2e0, d2e)
 //
 (*
@@ -352,14 +354,14 @@ of // case+
       end // end of [D2Emac]
 //
     | _ (*rest-of-d0exp*) => let
-        val opt = d2exp_get_seloverld (_fun)
+        val opt = d2exp_get_seloverld(_fun)
       in
         case+ opt of
         | None () =>
-            d2exp_trup_applst (d2e0, _fun, _arg)
+            d2exp_trup_applst(d2e0, _fun, _arg)
           // end of [None]
         | Some (d2s) =>
-            d2exp_trup_applst_seloverld (d2e0, _fun, d2s, _arg)
+            d2exp_trup_applst_seloverld(d2e0, _fun, d2s, _arg)
           // end of [Some]
       end // end of [rest-of-d0exp]
   end // end of [D2Eapplst]
@@ -437,12 +439,17 @@ of // case+
 | D2Erec _ => d2exp_trup_rec (d2e0)
 | D2Eseq _ => d2exp_trup_seq (d2e0)
 //
-| D2Eselab (d2e, d2ls) => d2exp_trup_selab (loc0, d2e, d2ls)
+| D2Eselab
+    (d2e, d2ls) =>
+    d2exp_trup_selab(loc0, d2e, d2ls)
+  // end of [D2Eselab]
 //
 | D2Eptrof _ => d2exp_trup_ptrof (d2e0)
 | D2Eviewat _ => d2exp_trup_viewat (d2e0)
 //
-| D2Ederef (d2e) => d2exp_trup_deref (loc0, d2e, list_nil)
+| D2Ederef(d2s, d2e) =>
+    d2exp_trup_deref(loc0, d2s, d2e, list_nil)
+  // end of [D2Ederef]
 //
 | D2Eassgn _ => d2exp_trup_assgn (d2e0)
 | D2Exchng _ => d2exp_trup_xchng (d2e0)
@@ -803,7 +810,8 @@ fun auxerr
   loc0: loc_t, d2v: d2var
 ) : void = let
 //
-  val islin = d2var_is_linear (d2v)
+  val
+  islin = d2var_is_linear(d2v)
 //
   val () = prerr_error3_loc (loc0)
 //
@@ -1987,7 +1995,8 @@ end // end of [local]
 (* ****** ****** *)
 
 implement
-d2exp_trup_delay (d2e0) = let
+d2exp_trup_delay
+  (d2e0) = let
 //
 val loc0 = d2e0.d2exp_loc
 val-D2Edelay (d2e_eval) = d2e0.d2exp_node
@@ -2021,7 +2030,8 @@ end // end of [d2exp_delay_trup]
 (* ****** ****** *)
 
 implement
-d2exp_trup_ldelay (d2e0) = let
+d2exp_trup_ldelay
+  (d2e0) = let
 //
 val loc0 = d2e0.d2exp_loc
 val-D2Eldelay (d2e_eval, opt) = d2e0.d2exp_node
@@ -2046,7 +2056,7 @@ val () = lstbefitmlst_restore_type (lsbis)
 //
 val d2e_free =
 (
-case opt of Some (d2e) => d2e | None () => d2exp_empty (loc_eval)
+case opt of Some(d2e) => d2e | None() => d2exp_empty(loc_eval)
 ) : d2exp // end of [val]
 //
 val loc_free = d2e_free.d2exp_loc

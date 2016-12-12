@@ -1016,7 +1016,7 @@ in '{
 
 implement
 labs0exp_make
-  (lab, name, s0e) = SL0ABELED (lab, name, s0e)
+  (lab, name, s0e) = SL0ABELED(lab, name, s0e)
 // end of [labs0exp_make]
 
 (* ****** ****** *)
@@ -1825,6 +1825,19 @@ d0exp_MYFUN (tok) = '{
   d0exp_loc= tok.token_loc
 , d0exp_node= D0Ecstsp (CSTSPmyfun())
 }
+
+(* ****** ****** *)
+
+implement
+d0exp_tyrep
+  (t_beg, s0e, t_end) = let
+//
+val loc =
+  t_beg.token_loc + t_end.token_loc
+//
+in '{
+  d0exp_loc= loc, d0exp_node= D0Etyrep(s0e)
+} end // end of [d0exp_tyrep]
 
 (* ****** ****** *)
 

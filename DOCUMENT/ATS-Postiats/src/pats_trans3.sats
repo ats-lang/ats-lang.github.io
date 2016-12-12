@@ -331,6 +331,11 @@ fun d2exp_trup_cstsp
 
 (* ****** ****** *)
 //
+fun d2exp_trup_tyrep
+  (d2e0: d2exp, s2e_rep: s2exp): d3exp
+//
+(* ****** ****** *)
+//
 fun d2exp_trup_literal
   (d2e0: d2exp, d2e_lit: d2exp): d3exp
 //
@@ -424,9 +429,11 @@ s2exp_get_dlablst_context_check
 
 (* ****** ****** *)
 
-fun d2exp_trup_deref
-  (loc0: loc_t, d2e: d2exp, d2ls: d2lablst): d3exp
-// end of [d2exp_trup_deref]
+fun
+d2exp_trup_deref
+(
+  loc0: loc_t, d2s: d2sym, d2e: d2exp, d2ls: d2lablst
+) : d3exp // end of [d2exp_trup_deref]
 
 fun s2addr_deref
 (

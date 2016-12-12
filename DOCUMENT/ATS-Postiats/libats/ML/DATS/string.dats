@@ -99,6 +99,9 @@ prelude_string_iforall = string_iforall
 macdef
 prelude_string_foreach = string_foreach
 //
+macdef
+prelude_streamize_string_char = streamize_string_char
+//
 (* ****** ****** *)
 
 staload "libats/ML/SATS/basis.sats"
@@ -190,6 +193,34 @@ end // end of [string_is_prefix]
 
 implement
 {}(*tmp*)
+string_is_suffix
+(
+  str1, str2
+) = let
+//
+val n1 = length(str1)
+val n2 = length(str2)
+//
+in (* in-of-let *)
+//
+if
+(n1 >= n2)
+then let
+  val p1 = string2ptr(str1)
+in
+//
+$UN.cast{string}
+  (ptr_add<char>(p1, n1-n2)) = str2
+//
+end // end of [then]
+else false // end of [else]
+//
+end // end of [string_is_suffix]
+
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
 string_copy
   (str) = (
 //
@@ -200,7 +231,8 @@ strptr2string
 
 (* ****** ****** *)
 //
-implement{}
+implement
+{}(*tmp*)
 string_make_list
   (cs) = let
 //
@@ -233,8 +265,9 @@ end // end of [string_make_rlist]
 //
 (* ****** ****** *)
 
-implement{
-} string_make_substring
+implement
+{}(*tmp*)
+string_make_substring
   (x, st, ln) = let
 //
 val x = g1ofg0_string(x)
@@ -346,8 +379,9 @@ end // end of [string_append6]
 
 (* ****** ****** *)
 
-implement{
-} stringlst_concat (xs) = let
+implement
+{}(*tmp*)
+stringlst_concat (xs) = let
   val res = $effmask_wrt (prelude_stringlst_concat (g1ofg0_list(xs)))
 in
   strptr2string (res)
@@ -382,21 +416,24 @@ string_implode(cs) = string_make_list(cs)
 (* ****** ****** *)
 
 implement
+{}(*tmp*)
 string_tabulate
-  (n, f) = let
+  {n}(n0, fopr) = let
 //
-val n = g1ofg0_uint(n)
+val n0 = g1ofg0_uint(n0)
 //
 implement
-string_tabulate$fopr<> (i) = f(i)
+string_tabulate$fopr<>
+  (i) = fopr($UN.cast{sizeLt(n)}(i))
 //
 in
-  strnptr2string(prelude_string_tabulate(n))
+  strnptr2string(prelude_string_tabulate(n0))
 end // end of [string_tabulate]
 
 (* ****** ****** *)
 
 implement
+{}(*tmp*)
 string_forall
   (str, f) = let
 //
@@ -410,6 +447,7 @@ in
 end // end of [string_forall]
 
 implement
+{}(*tmp*)
 string_iforall
   (str, f) = let
 //
@@ -423,32 +461,106 @@ in
 end // end of [string_iforall]
 
 (* ****** ****** *)
+//
+implement{}
+string_forall_method
+  (cs) = lam(f) => string_forall(cs, f)
+implement{}
+string_iforall_method
+  (cs) = lam(f) => string_iforall(cs, f)
+//
+(* ****** ****** *)
 
 implement
+{}(*tmp*)
 string_foreach
-  (str, f) = let
+  (cs, f) = let
 //
-val str = g1ofg0_string(str)
+fun
+loop
+(
+p0: ptr
+) : void = let
+  val c = $UN.ptr0_get<char>(p0)
+in
 //
-implement(env)
-string_foreach$cont<env> (c, env) = true
-implement(env)
-string_foreach$fwork<env> (c, env) = f(c)
+if isneqz(c)
+  then (f(c); loop(ptr_succ<char>(p0))) else ()
 //
-val _(*nchar*) = prelude_string_foreach (str)
+end // end of [loop]
 //
 in
-  // nothing
+  loop(string2ptr(cs))
 end // end of [string_foreach]
+
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+string_iforeach
+  (cs, f) = let
+//
+fun
+loop
+(
+  i: intGte(0), p0: ptr
+) : void = let
+  val c = $UN.ptr0_get<char>(p0)
+in
+//
+if isneqz(c)
+  then (f(i, c); loop(i, ptr_succ<char>(p0))) else ()
+//
+end // end of [loop]
+//
+in
+  loop(0, string2ptr(cs))
+end // end of [string_iforeach]
 
 (* ****** ****** *)
 //
 implement{}
-string_forall_method(x) = lam(f) => string_forall (x, f)
+string_foreach_method
+  (cs) = lam(f) => string_foreach(cs, f)
 implement{}
-string_iforall_method(x) = lam(f) => string_iforall (x, f)
+string_iforeach_method
+  (cs) = lam(f) => string_iforeach(cs, f)
+//
+(* ****** ****** *)
+
+implement
+{res}(*tmp*)
+string_foldleft
+  (cs, ini, fopr) = let
+//
+fun
+loop
+(
+p0: ptr, res: res
+) : res = let
+  val c = $UN.ptr0_get<char>(p0)
+in
+//
+if isneqz(c)
+  then loop(ptr_succ<char>(p0), fopr(res, c)) else res
+//
+end // end of [loop]
+//
+in
+  loop(string2ptr(cs), ini)
+end // end of [string_foldleft]
+//
+implement
+{res}(*tmp*)
+string_foldleft_method
+  (cs, _) =
+  lam(ini,fopr) => string_foldleft<res>(cs, ini, fopr)
+//
+(* ****** ****** *)
+//
 implement{}
-string_foreach_method(x) = lam(f) => string_foreach (x, f)
+streamize_string_char
+  (cs) = prelude_streamize_string_char(cs)
 //
 (* ****** ****** *)
 

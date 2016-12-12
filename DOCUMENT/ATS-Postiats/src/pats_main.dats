@@ -293,6 +293,7 @@ dynload "pats_trans2_decl.dats"
 //
 dynload "pats_codegen2.dats"
 dynload "pats_codegen2_util.dats"
+dynload "pats_codegen2_absrec.dats"
 dynload "pats_codegen2_datype.dats"
 dynload "pats_codegen2_fprint.dats"
 //
@@ -904,25 +905,28 @@ val () = $CNSTR3.constraint3_initialize () // internalizing some maps
 //
 *)
 //
-val () =
-  pervasive_load(PATSHOME, "prelude/SATS/arith_prf.sats")
-//
 val () = pervasive_load(PATSHOME, "prelude/SATS/integer.sats")
 val () = pervasive_load(PATSHOME, "prelude/SATS/pointer.sats")
+//
+val () = pervasive_load(PATSHOME, "prelude/SATS/arith_prf.sats")
+//
+val () = pervasive_load(PATSHOME, "prelude/SATS/integer_long.sats")
+val () = pervasive_load(PATSHOME, "prelude/SATS/integer_size.sats")
+val () = pervasive_load(PATSHOME, "prelude/SATS/integer_short.sats")
 //
 val () = pervasive_load(PATSHOME, "prelude/SATS/bool.sats")
 val () = pervasive_load(PATSHOME, "prelude/SATS/char.sats")
 val () = pervasive_load(PATSHOME, "prelude/SATS/float.sats")
 //
-val () = pervasive_load(PATSHOME, "prelude/SATS/integer_ptr.sats")
-val () = pervasive_load(PATSHOME, "prelude/SATS/integer_fixed.sats")
-//
-val () = pervasive_load(PATSHOME, "prelude/SATS/memory.sats")
-//
 val () = pervasive_load(PATSHOME, "prelude/SATS/string.sats")
 val () = pervasive_load(PATSHOME, "prelude/SATS/strptr.sats")
 //
+val () = pervasive_load(PATSHOME, "prelude/SATS/integer_ptr.sats")
+val () = pervasive_load(PATSHOME, "prelude/SATS/integer_fixed.sats")
+//
 val () = pervasive_load(PATSHOME, "prelude/SATS/tuple.sats")
+//
+val () = pervasive_load(PATSHOME, "prelude/SATS/memory.sats")
 //
 val () = pervasive_load(PATSHOME, "prelude/SATS/reference.sats")
 //
@@ -935,7 +939,7 @@ val () = pervasive_load(PATSHOME, "prelude/SATS/grandom.sats")
 //
 (*
 //
-// manual loading
+// HX: manual loading
 //
 val () = pervasive_load(PATSHOME, "prelude/SATS/unsafe.sats")
 //
@@ -956,7 +960,9 @@ val () = pervasive_load(PATSHOME, "prelude/SATS/option.sats")
 val () = pervasive_load(PATSHOME, "prelude/SATS/option_vt.sats")
 //
 val () = pervasive_load(PATSHOME, "prelude/SATS/array.sats")
+//
 val () = pervasive_load(PATSHOME, "prelude/SATS/array_prf.sats")
+//
 val () = pervasive_load(PATSHOME, "prelude/SATS/arrayptr.sats")
 val () = pervasive_load(PATSHOME, "prelude/SATS/arrayref.sats")
 //

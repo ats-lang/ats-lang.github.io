@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/stream.atxt
-** Time of generation: Sun Jul 31 10:16:07 2016
+** Time of generation: Sun Nov 20 21:18:21 2016
 *)
 
 (* ****** ****** *)
@@ -68,11 +68,6 @@ fun isStreamSubscriptExn (x: !exn):<> bool = "mac#isStreamSubscriptExn"
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
-stream_sing(a):<> stream_con(a)
-//
-(* ****** ****** *)
-//
 fun
 {a:t0p}
 stream_is_nil(xs: stream(a)): bool
@@ -81,12 +76,20 @@ fun
 stream_is_cons(xs: stream(a)): bool
 //
 (* ****** ****** *)
-
+//
 fun{a:t0p}
 stream_make_nil(): stream(a)
 fun{a:t0p}
+stream_make_cons
+  (a, stream(INV(a))):<> stream(a)
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+stream_sing(a):<> stream_con(a)
+fun{a:t0p}
 stream_make_sing(x: a): stream(a)
-
+//
 (* ****** ****** *)
 
 fun{a:t0p}
@@ -127,9 +130,16 @@ stream_get_at_exn
 (* ****** ****** *)
 
 fun{a:t0p}
+stream_takeLte
+  (xs: stream(INV(a)), n: intGte(0)): stream_vt(a)
+// end of [stream_takeLte]
+
+(* ****** ****** *)
+
+fun{a:t0p}
 stream_take_exn{n:nat}
   (xs: stream(INV(a)), n: int n):<!laz> list_vt(a, n)
-// end of [stream_take_lte]
+// end of [stream_take_exn]
 
 (* ****** ****** *)
 
@@ -137,6 +147,10 @@ fun{a:t0p}
 stream_drop_exn
   (xs: stream(INV(a)), n: intGte(0)):<!laz> stream(a)
 // end of [stream_drop_exn]
+fun{a:t0p}
+stream_drop_opt
+  (xs: stream(INV(a)), n: intGte(0)):<!laz> Option_vt(stream(a))
+// end of [stream_drop_opt]
 
 (* ****** ****** *)
 //
@@ -167,7 +181,7 @@ stream_filter_cloref
 ) :<!laz> stream(a) // end-of-function
 //
 (* ****** ****** *)
-
+//
 fun{
 a:t0p}{b:t0p
 } stream_map
@@ -238,7 +252,6 @@ a1,a2:t0p}{b:t0p
 ) :<!laz> stream(b) // end-of-fun
 //
 (* ****** ****** *)
-
 //
 fun{
 res:t0p}{x:t0p
@@ -265,18 +278,21 @@ res:t0p}{x:t0p
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 stream_merge
   (stream(INV(a)), stream(a)) :<!laz> stream(a)
 //
 fun{a:t0p} stream_merge$cmp (x1: a, x2: a):<> int
 //
-fun{a:t0p}
+fun
+{a:t0p}
 stream_merge_fun
 (
   xs1: stream(INV(a)), xs2: stream(a), (a, a) -<fun> int
 ) :<!laz> stream(a) // end of [stream_merge_fun]
-fun{a:t0p}
+fun
+{a:t0p}
 stream_merge_cloref
 (
   xs1: stream(INV(a)), xs2: stream(a), (a, a) -<cloref> int
@@ -303,34 +319,58 @@ stream_mergeq_cloref
 //
 (* ****** ****** *)
 //
-fun{
-a:t0p
-} stream_tabulate (): stream(a)
-fun{
-a:t0p
-} stream_tabulate$fopr (i: intGte(0)): (a)
+fun
+{a:t0p}
+stream_tabulate(): stream(a)
+fun
+{a:t0p}
+stream_tabulate$fopr(i: intGte(0)): (a)
 //
-fun{
-a:t0p
-} stream_tabulate_fun (f: intGte(0) -> a): stream(a)
-fun{
-a:t0p
-} stream_tabulate_cloref (f: intGte(0) -> a): stream(a)
+fun
+{a:t0p}
+stream_tabulate_fun
+  (fopr: intGte(0) -> a): stream(a)
+fun
+{a:t0p}
+stream_tabulate_cloref
+  (fopr: intGte(0) -<cloref1> a): stream(a)
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 stream_foreach (xs: stream(a)): void
-fun{
-a:t0p}{env:vt0p
-} stream_foreach_env (xs: stream(a), &env >> _): void
+fun
+{a:t0p}
+{env:vt0p}
+stream_foreach_env(xs: stream(a), &env >> _): void
+//
+fun
+{a:t0p}
+{env:vt0p}
+stream_foreach$cont(x: a, env: &env): bool
+fun
+{a:t0p}
+{env:vt0p}
+stream_foreach$fwork(x: a, env: &env): void
+//
+fun{a:t0p}
+stream_foreach_fun
+  (xs: stream(a), fwork: (a) -<fun1> void): void
+fun{a:t0p}
+stream_foreach_cloref
+  (xs: stream(a), fwork: (a) -<cloref1> void): void
+//
+(* ****** ****** *)
 //
 fun{
-a:t0p}{env:vt0p
-} stream_foreach$cont (x: a, env: &env): bool
+res:vt0p}{a:t0p
+} stream_foldleft_fun
+  (xs: stream(a), ini: res, fopr: (res, a) -<fun1> res): res
 fun{
-a:t0p}{env:vt0p
-} stream_foreach$fwork (x: a, env: &env): void
+res:vt0p}{a:t0p
+} stream_foldleft_cloref
+  (xs: stream(a), ini: res, fopr: (res, a) -<cloref1> res): res
 //
 (* ****** ****** *)
 //
@@ -355,10 +395,12 @@ overload isneqz with stream_is_cons
 //
 (* ****** ****** *)
 //
+overload length with stream_length
+//
+(* ****** ****** *)
+//
 overload .head with stream_head_exn
 overload .tail with stream_tail_exn
-//
-overload length with stream_length
 //
 (* ****** ****** *)
 

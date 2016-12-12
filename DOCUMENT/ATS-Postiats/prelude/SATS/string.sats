@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/string.atxt
-** Time of generation: Sun Jul 17 21:46:06 2016
+** Time of generation: Sat Nov 26 17:28:20 2016
 *)
 
 (* ****** ****** *)
@@ -57,21 +57,21 @@ typedef NSH(a:type) = a // for commenting purpose
 (* ****** ****** *)
 //
 typedef
-stringLt (n:int) = [k:nat | k < n] string (k)
+stringLt(n:int) = [k:nat | k < n] string(k)
 typedef
-stringLte (n:int) = [k:nat | k <= n] string (k)
+stringLte(n:int) = [k:nat | k <= n] string(k)
 //
 typedef
-stringGt (n:int) = [k:int | k > n] string (k)
+stringGt(n:int) = [k:int | k > n] string(k)
 typedef
-stringGte (n:int) = [k:int | k >= n] string (k)
+stringGte(n:int) = [k:int | k >= n] string(k)
 //
 typedef
 stringBtw
-  (m:int, n:int) = [k:int | m <= k; k < n] string (k)
+  (m:int, n:int) = [k:int | m <= k; k < n] string(k)
 typedef
 stringBtwe
-  (m:int, n:int) = [k:int | m <= k; k <= n] string (k)
+  (m:int, n:int) = [k:int | m <= k; k <= n] string(k)
 //
 (* ****** ****** *)
 //
@@ -89,10 +89,10 @@ string_index_p
 (
   n: int, int(*i*), int(*c*)
 ) =
-  | string_index_p_eqz (n, n, 0)
+  | string_index_p_eqz(n, n, 0)
   | {i:int | n > i}
     {c:int8 | c != 0}
-    string_index_p_neqz (n, i, c)
+    string_index_p_neqz(n, i, c)
 // end of [string_index_p]
 
 (* ****** ****** *)
@@ -112,7 +112,8 @@ overload ptrcast with string2ptr
 
 (* ****** ****** *)
 //
-// HX: [string2string] = [string1_of_string0]
+// HX:
+// [string2string] = [string1_of_string0]
 //
 castfn g0ofg1_string (x: String):<> string
 castfn g1ofg0_string (x: string):<> String0
@@ -144,15 +145,15 @@ fun{
 fun{}
 string_is_atend_size
   {n:int}{i:nat | i <= n}
-  (s: string (n), i: size_t (i)):<> bool (i==n)
+  (s: string(n), i: size_t(i)):<> bool(i==n)
 fun{tk:tk}
 string_is_atend_gint
   {n:int}{i:nat | i <= n}
-  (s: string (n), i: g1int (tk, i)):<> bool (i==n)
+  (s: string(n), i: g1int(tk, i)):<> bool(i==n)
 fun{tk:tk}
 string_is_atend_guint
   {n:int}{i:nat | i <= n}
-  (s: string (n), i: g1uint (tk, i)):<> bool (i==n)
+  (s: string(n), i: g1uint(tk, i)):<> bool(i==n)
 //
 symintr string_is_atend
 overload string_is_atend with string_is_atend_gint
@@ -177,15 +178,15 @@ string_tail{n:pos} (str: string(n)):<> string(n-1)
 fun{}
 string_get_at_size
   {n:int}{i:nat | i < n}
-  (s: string (n), i: size_t (i)):<> charNZ
+  (s: string(n), i: size_t(i)):<> charNZ
 fun{tk:tk}
 string_get_at_gint
   {n:int}{i:nat | i < n}
-  (s: string (n), i: g1int (tk, i)):<> charNZ
+  (s: string(n), i: g1int(tk, i)):<> charNZ
 fun{tk:tk}
 string_get_at_guint
   {n:int}{i:nat | i < n}
-  (s: string (n), i: g1uint (tk, i)):<> charNZ
+  (s: string(n), i: g1uint(tk, i)):<> charNZ
 //
 symintr string_get_at
 overload string_get_at with string_get_at_size of 1
@@ -197,15 +198,15 @@ overload string_get_at with string_get_at_guint of 0
 fun{}
 string_test_at_size
   {n:int}{i:nat | i <= n}
-  (s: string (n), i: size_t (i)):<> [c:int] (string_index_p (n, i, c) | char (c))
+  (s: string(n), i: size_t(i)):<> [c:int] (string_index_p(n, i, c) | char(c))
 fun{tk:tk}
 string_test_at_gint
   {n:int}{i:nat | i <= n}
-  (s: string (n), i: g1int (tk, i)):<> [c:int] (string_index_p (n, i, c) | char (c))
+  (s: string(n), i: g1int(tk, i)):<> [c:int] (string_index_p(n, i, c) | char(c))
 fun{tk:tk}
 string_test_at_guint
   {n:int}{i:nat | i <= n}
-  (s: string (n), i: g1uint (tk, i)):<> [c:int] (string_index_p (n, i, c) | char (c))
+  (s: string(n), i: g1uint(tk, i)):<> [c:int] (string_index_p(n, i, c) | char(c))
 //
 symintr string_test_at
 overload string_test_at with string_test_at_size of 1
@@ -261,29 +262,70 @@ fun{
 
 fun{}
 string_make_list
-  {n:int} (cs: list(charNZ, n)):<!wrt> strnptr (n)
+  {n:int}
+  (cs: list(charNZ, n)):<!wrt> strnptr(n)
 fun{}
 string_make_listlen
-  {n:int} (cs: list(charNZ, n), n: int n):<!wrt> strnptr (n)
+  {n:int}
+  (cs: list(charNZ, n), n: int(n)):<!wrt> strnptr(n)
 
 (* ****** ****** *)
 
 fun{}
 string_make_rlist
-  {n:int} (cs: list(charNZ, n)):<!wrt> strnptr (n)
+  {n:int}
+  (cs: list(charNZ, n)):<!wrt> strnptr(n)
 // end of [string_make_rlist]
 
 fun{}
 string_make_rlistlen
-  {n:int} (cs: list(charNZ, n), n: int n):<!wrt> strnptr (n)
+  {n:int}
+  (cs: list(charNZ, n), n: int(n)):<!wrt> strnptr(n)
 // end of [string_make_rlistlen]
 
+(* ****** ****** *)
+//
+fun{}
+string_make_list_vt
+  {n:int}
+  (cs: list_vt(charNZ, n)):<!wrt> strnptr(n)
+//
+fun{}
+string_make_listlen_vt
+  {n:int}
+  (cs: list_vt(charNZ, n), n: int(n)):<!wrt> strnptr(n)
+//
+(* ****** ****** *)
+//
+fun{}
+string_make_rlist_vt
+  {n:int}
+  (cs: list_vt(charNZ, n)):<!wrt> strnptr(n)
+//
+fun{}
+string_make_rlistlen_vt
+  {n:int}
+  (cs: list_vt(charNZ, n), n: int(n)):<!wrt> strnptr(n)
+//
+(* ****** ****** *)
+//
+fun{}
+string_make_stream
+  {n:int}(cs: stream(charNZ)):<!wrt> Strptr1
+fun{}
+string_make_stream_vt
+  {n:int}(cs: stream_vt(charNZ)):<!wrt> Strptr1
+//
+fun{}
+string_make_stream$bufsize
+   ((*void*)):<> intGte(1) // HX: the default = 16
+//
 (* ****** ****** *)
 
 fun{}
 string_make_substring
   {n:int}{st,ln:nat | st+ln <= n}
-  (str: string (n), st: size_t st, ln: size_t ln):<!wrt> strnptr (ln)
+  (str: string(n), st: size_t st, ln: size_t ln):<!wrt> strnptr(ln)
 // end of [string_make_substring]
 
 (* ****** ****** *)
@@ -304,40 +346,40 @@ fun fprint_substring
 
 fun{}
 strchr{n:int}
-  (str: string (n), c0: char):<> ssizeBtwe (~1, n)
+  (str: string(n), c0: char):<> ssizeBtwe(~1, n)
 // end of [strchr]
 
 fun{}
 strrchr{n:int}
-  (str: string (n), c0: char):<> ssizeBtwe (~1, n)
+  (str: string(n), c0: char):<> ssizeBtwe(~1, n)
 // end of [strrchr]
 
 fun{}
 strstr{n:int}
-  (haystack: string (n), needle: string):<> ssizeBtw (~1, n)
+  (haystack: string(n), needle: string):<> ssizeBtw(~1, n)
 // end of [strstr]
 
 (* ****** ****** *)
 
 fun{}
 strspn{n:int} // spanning
-  (str: string (n), accept: string):<> sizeLte (n)
+  (str: string(n), accept: string):<> sizeLte(n)
 // end of [strspn]
 fun{}
 strcspn{n:int} // complement spanning
-  (str: string (n), accept: string):<> sizeLte (n)
+  (str: string(n), accept: string):<> sizeLte(n)
 // end of [strcspn]
 
 (* ****** ****** *)
 
 fun{
 } string_index{n:int}
-  (str: string (n), c0: charNZ):<> ssizeBtw (~1, n)
+  (str: string(n), c0: charNZ):<> ssizeBtw(~1, n)
 // end of [string_index]
 
 fun{
 } string_rindex{n:int}
-  (str: string (n), c0: charNZ):<> ssizeBtw (~1, n)
+  (str: string(n), c0: charNZ):<> ssizeBtw(~1, n)
 // end of [string_rindex]
 
 (* ****** ****** *)
@@ -374,10 +416,36 @@ overload string_nlength with string1_nlength of 10
 //
 fun{}
 string0_copy
-  (xs: NSH(string)):<!wrt> Strptr1
+  (cs: NSH(string)):<!wrt> Strptr1
 fun{}
 string1_copy
-  {n:int} (xs: NSH(string(n))):<!wrt> strnptr (n)
+  {n:int}
+  (cs: NSH(string(n))):<!wrt> strnptr(n)
+//
+(* ****** ****** *)
+//
+// HX-2016-11-13:
+// This can be done by calling
+// [string_copy] and then [strptr_set_at]
+//
+fun{}
+string_fset_at_size
+  {n:int}{i:nat | i < n}
+  (NSH(string(n)), i: size_t(i), c: charNZ):<!wrt> string(n)
+//
+(*
+fun{tk:tk}
+string_fset_at_gint
+  {n:int}{i:nat | i < n}
+  (NSH(string(n)), i: g1int(tk, i), c: charNZ):<!wrt> string(n)
+fun{tk:tk}
+string_fset_at_guint
+  {n:int}{i:nat | i < n}
+  (NSH(string(n)), i: g1uint(tk, i), c: charNZ):<!wrt> string(n)
+*)
+//
+symintr string_fset_at
+overload string_fset_at with string_fset_at_size of 1
 //
 (* ****** ****** *)
 //
@@ -385,16 +453,19 @@ fun{}
 string0_append
 (
   x1: NSH(string), x2: NSH(string)
-) :<!wrt> Strptr1 // end-of-fun
+) :<!wrt> Strptr1 // end-of-function
 fun{}
 string1_append
   {n1,n2:int} (
   x1: NSH(string(n1)), x2: NSH(string(n2))
-) :<!wrt> strnptr (n1+n2) // end of [string1_append]
+) :<!wrt> strnptr(n1+n2) // end of [string1_append]
 //
 symintr string_append
 overload string_append with string0_append of 0
 (*
+//
+// HX: too much of a surprise!
+//
 overload string_append with string1_append of 20
 *)
 //
@@ -403,23 +474,27 @@ overload string_append with string1_append of 20
 fun{}
 string0_append3
 (
-  x1: NSH(string), x2: NSH(string), x3: NSH(string)
-) :<!wrt> Strptr1 // end-of-fun
+  x1: NSH(string)
+, x2: NSH(string), x3: NSH(string)
+) :<!wrt> Strptr1 // end-of-function
 fun{}
 string0_append4
 (
-  x1: NSH(string), x2: NSH(string), x3: NSH(string), x4: NSH(string)
-) :<!wrt> Strptr1 // end-of-fun
+  x1: NSH(string), x2: NSH(string)
+, x3: NSH(string), x4: NSH(string)
+) :<!wrt> Strptr1 // end-of-function
 fun{}
 string0_append5
 (
-  x1: NSH(string), x2: NSH(string), x3: NSH(string), x4: NSH(string), x5: NSH(string)
-) :<!wrt> Strptr1 // end-of-fun
+  x1: NSH(string), x2: NSH(string)
+, x3: NSH(string), x4: NSH(string), x5: NSH(string)
+) :<!wrt> Strptr1 // end-of-function
 fun{}
 string0_append6
 (
-  x1: NSH(string), x2: NSH(string), x3: NSH(string), x4: NSH(string), x5: NSH(string), x6: NSH(string)
-) :<!wrt> Strptr1 // end-of-fun
+  x1: NSH(string), x2: NSH(string), x3: NSH(string)
+, x4: NSH(string), x5: NSH(string), x6: NSH(string)
+) :<!wrt> Strptr1 // end-of-function
 //
 overload string_append with string0_append3 of 0
 overload string_append with string0_append4 of 0
@@ -432,7 +507,7 @@ fun{}
 stringarr_concat{n:int}
   (arrayref(string, n), size_t(n)):<!wrt> Strptr1
 fun{}
-stringlst_concat (xs: List(string)):<!wrt> Strptr1
+stringlst_concat(xs: List(string)):<!wrt> Strptr1
 
 (* ****** ****** *)
 
@@ -444,9 +519,9 @@ string_explode
 (* ****** ****** *)
 //
 fun{}
-string_tabulate$fopr (size_t): charNZ
+string_tabulate$fopr(size_t): charNZ
 fun{}
-string_tabulate{n:int} (n: size_t(n)): strnptr(n)
+string_tabulate{n:int}(n: size_t(n)): strnptr(n)
 //
 fun{}
 string_tabulate_cloref{n:int}
@@ -455,23 +530,23 @@ string_tabulate_cloref{n:int}
 (* ****** ****** *)
 //
 fun{}
-string_forall (str: string): bool
+string_forall(str: string): bool
 fun{}
-string_forall$pred (c: char): bool
+string_forall$pred(c: char): bool
 //
 (* ****** ****** *)
 //
 fun{}
-string_iforall (str: string): bool
+string_iforall(str: string): bool
 fun{}
-string_iforall$pred (i: int, c: char): bool
+string_iforall$pred(i: int, c: char): bool
 //
 (* ****** ****** *)
 //
 fun{env:vt0p}
-string_foreach$cont (c: char, env: &env): bool
+string_foreach$cont(c: char, env: &env): bool
 fun{env:vt0p}
-string_foreach$fwork (c: char, env: &(env) >> _): void
+string_foreach$fwork(c: char, env: &(env) >> _): void
 //
 fun{
 } string_foreach {n:int} (str: string(n)): sizeLte(n)
@@ -510,8 +585,8 @@ fun stropt_none (): stropt (~1) = "mac#%"
 
 (* ****** ****** *)
 //
-castfn stropt0_some (x: SHR(string)): Stropt1
-castfn stropt1_some {n:int} (x: SHR(string n)): stropt (n)
+castfn stropt0_some(x: SHR(string)): Stropt1
+castfn stropt1_some{n:int}(x: SHR(string n)): stropt(n)
 //
 symintr stropt_some
 overload stropt_some with stropt0_some of 0
@@ -519,26 +594,29 @@ overload stropt_some with stropt1_some of 10
 //
 (* ****** ****** *)
 
-fun{
-} stropt_is_none{n:int} (stropt(n)):<> bool (n < 0)
-fun{
-} stropt_is_some{n:int} (stropt(n)):<> bool (n >= 0)
+fun{}
+stropt_is_none{n:int}(stropt(n)):<> bool(n < 0)
+fun{}
+stropt_is_some{n:int}(stropt(n)):<> bool(n >= 0)
 
 (* ****** ****** *)
 
 castfn
-stropt_unsome{n:nat}(opt: stropt n):<> string (n)
+stropt_unsome{n:nat}(opt: stropt(n)):<> string(n)
 
 (* ****** ****** *)
 //
 fun{}
-stropt_length{n:int}(opt: stropt (n)):<> ssize_t (n)
+stropt_length{n:int}(opt: stropt(n)):<> ssize_t(n)
 //
 (* ****** ****** *)
 
-fun print_stropt (opt: Stropt0): void = "mac#%"
-fun prerr_stropt (opt: Stropt0): void = "mac#%"
-fun fprint_stropt (out: FILEref, opt: Stropt0): void = "mac#%"
+fun
+print_stropt(opt: Stropt0): void = "mac#%"
+fun
+prerr_stropt(opt: Stropt0): void = "mac#%"
+fun
+fprint_stropt(out: FILEref, opt: Stropt0): void = "mac#%"
 
 (* ****** ****** *)
 //

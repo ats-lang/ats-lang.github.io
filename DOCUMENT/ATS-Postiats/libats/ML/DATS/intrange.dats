@@ -220,29 +220,44 @@ aux
 ) : stream(int) => $delay(stream_cons(n, aux(n+1)))
 ) (n) // end of [int_streamGte]
 //
+implement
+{}(*tmp*)
+int_streamGte_vt(n) =
+(
+fix
+aux
+(
+  n:int
+) : stream_vt(int) => $ldelay(stream_vt_cons(n, aux(n+1)))
+) (n) // end of [int_streamGte_vt]
+//
 (* ****** ****** *)
 //
 implement
 {a}(*tmp*)
-int_list_map_cloref
+int_list0_map_cloref
   (n, f) = list0_tabulate<a> (n, f)
 //
 implement
 {a}(*tmp*)
-int_list_map_method
-  (n, tres) = lam(f) => int_list_map_cloref<a> (n, f)
+int_list0_map_method
+  (n, tres) = lam(f) => int_list0_map_cloref<a> (n, f)
 //
 (* ****** ****** *)
 //
 implement
 {a}(*tmp*)
-int_array_map_cloref
-  (n, f) = array0_tabulate<a> (i2sz(n), f)
+int_array0_map_cloref
+  (n, fopr) =
+(
+array0_tabulate<a>
+  (i2sz(n), lam(i) => fopr(sz2i(i)))
+)
 //
 implement
 {a}(*tmp*)
-int_array_map_method
-  (n, tres) = lam(f) => int_array_map_cloref<a> (n, f)
+int_array0_map_method
+  (n, tres) = lam(f) => int_array0_map_cloref<a> (n, f)
 //
 (* ****** ****** *)
 //
@@ -255,7 +270,7 @@ int_stream_map_cloref
 fun
 auxmain
 (
-  i: int
+  i: Nat
 ) : stream(a) = $delay
 (
 if
@@ -269,6 +284,32 @@ implement
 {a}(*tmp*)
 int_stream_map_method
   (n, tres) = lam(f) => int_stream_map_cloref<a> (n, f)
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+int_stream_vt_map_cloref
+  (n, f) = auxmain(0) where
+{
+//
+fun
+auxmain
+(
+  i: Nat
+) : stream_vt(a) = $ldelay
+(
+if
+(i < n)
+then stream_vt_cons(f(i), auxmain(i+1)) else stream_vt_nil()
+) : stream_vt_con(a) // [auxmain]
+//
+} (* end of [int_stream_vt_map_cloref] *)
+//
+implement
+{a}(*tmp*)
+int_stream_vt_map_method
+  (n, tres) = lam(f) => int_stream_vt_map_cloref<a> (n, f)
 //
 (* ****** ****** *)
 //

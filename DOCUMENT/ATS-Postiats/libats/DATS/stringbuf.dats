@@ -41,6 +41,10 @@
 //
 staload
 _ = "prelude/DATS/integer.dats"
+staload
+_ = "prelude/DATS/integer_size.dats"
+//
+(* ****** ****** *)
 //
 staload
 _ = "prelude/DATS/array.dats"
@@ -55,7 +59,7 @@ UN = "prelude/SATS/unsafe.sats"
 (* ****** ****** *)
 
 staload
-STDIO = "libc/SATS/stdio.sats"
+STDIO = "libats/libc/SATS/stdio.sats"
 
 (* ****** ****** *)
 

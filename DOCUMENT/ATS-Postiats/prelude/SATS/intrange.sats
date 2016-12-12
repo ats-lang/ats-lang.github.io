@@ -26,17 +26,17 @@
 *)
 (* ****** ****** *)
 
-(*
-** Source:
-** $PATSHOME/prelude/SATS/CODEGEN/intrange.atxt
-** Time of generation: Sun Jul  3 11:13:16 2016
-*)
-
-(* ****** ****** *)
-
 (* Author: Hongwei Xi *)
 (* Authoremail: hwxi AT cs DOT bu DOT edu *)
 (* Start time: June, 2012 *)
+
+(* ****** ****** *)
+
+(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/intrange.atxt
+** Time of generation: Sun Nov 20 21:18:18 2016
+*)
 
 (* ****** ****** *)
 //

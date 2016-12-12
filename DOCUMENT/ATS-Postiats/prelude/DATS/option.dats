@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/option.atxt
-** Time of generation: Sun Jul  3 11:13:25 2016
+** Time of generation: Sun Nov 20 22:20:19 2016
 *)
 
 (* ****** ****** *)
@@ -43,6 +43,14 @@
 
 implement{a} option_some (x) = Some (x)
 implement{a} option_none ( ) = None ( )
+
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+option2bool(opt) =
+  case+ opt of Some _ => true | None _ => false
+// end of [option2bool]
 
 (* ****** ****** *)
 

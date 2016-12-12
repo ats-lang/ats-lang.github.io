@@ -365,5 +365,39 @@ funset_streamize
   (xs) = $effmask_wrt($FS.funset_streamize<a>(xs))
 //
 (* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+funset_make_module
+  ((*void*)) = $rec
+{
+//
+nil = funset_nil{a}
+,
+sing = funset_sing<a>
+,
+make_list = funset_make_list<a>
+,
+size = funset_size<a>
+,
+is_nil = funset_is_nil{a}
+,
+isnot_nil = funset_isnot_nil{a}
+,
+insert= funset_insert<a>
+,
+remove= funset_remove<a>
+,
+union= funset_union<a>
+,
+intersect= funset_intersect<a>
+,
+listize = funset_listize<a>
+,
+streamiize = funset_streamize<a>
+//
+} (* end of [funset_make_module] *)
+//
+(* ****** ****** *)
 
 (* end of [funset.dats] *)

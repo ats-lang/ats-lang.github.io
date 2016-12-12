@@ -34,36 +34,40 @@
 (* ****** ****** *)
 //
 staload
-ATSPRE = "./pats_atspre.dats"
+ATSPRE =
+"./pats_atspre.dats"
 //
 (* ****** ****** *)
-
+//
 staload
-UN = "prelude/SATS/unsafe.sats"
-
+UN =
+"prelude/SATS/unsafe.sats"
+//
+(* ****** ****** *)
+//
+staload
+STMP = "./pats_stamp.sats"
+//
+overload = with $STMP.eq_stamp_stamp
+//
+(* ****** ****** *)
+//
+staload
+LEX = "./pats_lexing.sats"
+//
+(* ****** ****** *)
+//
+staload
+EFF = "./pats_effect.sats"
+//
+macdef
+effset_isnil = $EFF.effset_isnil
+macdef
+effset_isall = $EFF.effset_isall
+//
 (* ****** ****** *)
 
 staload "./pats_basics.sats"
-
-(* ****** ****** *)
-
-staload LEX = "./pats_lexing.sats"
-
-(* ****** ****** *)
-
-staload
-STMP = "./pats_stamp.sats"
-macdef eq_stamp_stamp = $STMP.eq_stamp_stamp
-
-(* ****** ****** *)
-//
-staload EFF = "./pats_effect.sats"
-//
-macdef effset_isnil = $EFF.effset_isnil
-macdef effset_isall = $EFF.effset_isall
-//
-(* ****** ****** *)
-
 staload "./pats_staexp2.sats"
 
 (* ****** ****** *)
@@ -73,56 +77,56 @@ staload "./pats_staexp2.sats"
 (* ****** ****** *)
 
 implement
-tyreckind_is_box (knd) =
-  case+ knd of TYRECKINDbox () => true | _ => false
+tyreckind_is_box(knd) =
+  case+ knd of TYRECKINDbox() => true | _ => false
 // end of [tyreckind_is_box]
 
 implement
-tyreckind_is_boxlin (knd) =
-  case+ knd of TYRECKINDbox_lin () => true | _ => false
+tyreckind_is_boxlin(knd) =
+  case+ knd of TYRECKINDbox_lin() => true | _ => false
 // end of [tyreckind_is_boxlin]
 
 implement
-tyreckind_is_boxed (knd) = let
-in
+tyreckind_is_boxed(knd) =
+(
 //
 case+ knd of
 | TYRECKINDbox _ => true | TYRECKINDbox_lin _ => true | _ => false
 //
-end // end of [tyreckind_is_boxed]
+) (* end of [tyreckind_is_boxed] *)
 
 (* ****** ****** *)
 
 implement
-tyreckind_is_flted
-  (knd) = let
+tyreckind_is_flted(knd) = let
 in
   case+ knd of
   | TYRECKINDflt0 _ => true
   | TYRECKINDflt1 _ => true
   | TYRECKINDflt_ext _ => true
-  | _ => false
+  | _ (*non-flted*) => false
 end // end of [tyreckind_is_flt]
 
 implement
-tyreckind_is_fltext (knd) =
+tyreckind_is_fltext(knd) =
+(
   case+ knd of TYRECKINDflt_ext _ => true | _ => false
-// end of [tyreckind_is_fltext]
+) (* end of [tyreckind_is_fltext] *)
 
 (* ****** ****** *)
 
 implement
-tyreckind_is_nameless (knd) = let
-in
+tyreckind_is_nameless(knd) =
+(
 //
 case+ knd of
-| TYRECKINDbox () => true
-| TYRECKINDbox_lin () => true
-| TYRECKINDflt0 () => true
-| TYRECKINDflt1 (stmp) => false
-| TYRECKINDflt_ext (name) => false
+| TYRECKINDbox() => true
+| TYRECKINDbox_lin() => true
+| TYRECKINDflt0() => true
+| TYRECKINDflt1(stmp) => false
+| TYRECKINDflt_ext(name) => false
 //
-end // end of [tyreckind_is_nameless]
+) (* end of [tyreckind_is_nameless] *)
 
 (* ****** ****** *)
 
@@ -141,18 +145,20 @@ of // case+
    TYRECKINDbox_lin()) => true
 | (TYRECKINDflt0(),
    TYRECKINDflt0()) => true
-| (TYRECKINDflt1(s1),
-   TYRECKINDflt1(s2)) => eq_stamp_stamp (s1, s2)
+| (TYRECKINDflt1(stmp1),
+   TYRECKINDflt1(stmp2)) => stmp1 = stmp2
 | (TYRECKINDflt_ext(name1),
    TYRECKINDflt_ext(name2)) => name1 = name2
-| (_, _) => false
+| (_(*rest*), _(*rest*)) => false
 //
 end // end of [eq_tyreckind_tyreckind]
 
 implement
 neq_tyreckind_tyreckind
-  (knd1, knd2) = not(eq_tyreckind_tyreckind (knd1, knd2))
-// end of [neq_tyreckind_tyreckind]
+  (knd1, knd2) =
+(
+  not(eq_tyreckind_tyreckind (knd1, knd2))
+) // end of [neq_tyreckind_tyreckind]
 
 (* ****** ****** *)
 
@@ -327,7 +333,7 @@ s2exp_app_srt
 implement
 s2exp_lam
   (s2vs, s2e_body) = let
-  val s2ts = l2l (list_map_fun (s2vs, s2var_get_srt))
+  val s2ts = l2l(list_map_fun(s2vs, s2var_get_srt))
   val s2t_fun = s2rt_fun (s2ts, s2e_body.s2exp_srt)
 in
   s2exp_lam_srt (s2t_fun, s2vs, s2e_body)
@@ -454,7 +460,7 @@ implement
 s2exp_tyarr
   (s2e_elt, dim) = let
   val s2t = (
-    if s2exp_is_lin (s2e_elt) then s2rt_vt0ype else s2rt_t0ype
+    if s2exp_is_lin(s2e_elt) then s2rt_vt0ype else s2rt_t0ype
   ) : s2rt // end of [val
 in
   s2exp_tyarr_srt (s2t, s2e_elt, dim)
@@ -579,24 +585,24 @@ s2exp_t0ype_err() = s2exp_errexp(s2rt_t0ype)
 implement
 s2exp_refeq
   (s2e1, s2e2) = (
-  $UN.cast2ptr (s2e1) = $UN.cast2ptr (s2e2)
+  $UN.cast2ptr(s2e1) = $UN.cast2ptr(s2e2)
 ) // end of [s2exp_refeq]
 
 (* ****** ****** *)
 
 implement
 s2exp_is_prf
-  (s2e) = s2rt_is_prf (s2e.s2exp_srt)
+  (s2e) = s2rt_is_prf(s2e.s2exp_srt)
 // end of [s2exp_is_prf]
 implement
-s2exp_is_nonprf (s2e) = not (s2exp_is_prf (s2e))
+s2exp_is_nonprf(s2e) = not(s2exp_is_prf(s2e))
 
 implement
 s2exp_is_lin
-  (s2e) = s2rt_is_lin (s2e.s2exp_srt)
+  (s2e) = s2rt_is_lin(s2e.s2exp_srt)
 // end of [s2exp_is_lin]
 implement
-s2exp_is_nonlin (s2e) = not (s2exp_is_lin (s2e))
+s2exp_is_nonlin(s2e) = not(s2exp_is_lin(s2e))
 
 implement
 s2exp_is_boxed

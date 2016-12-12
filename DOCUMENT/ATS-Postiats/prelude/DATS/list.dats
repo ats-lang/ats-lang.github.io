@@ -27,17 +27,17 @@
 
 (* ****** ****** *)
 
-(*
-** Source:
-** $PATSHOME/prelude/DATS/CODEGEN/list.atxt
-** Time of generation: Sat Jul 30 11:27:18 2016
-*)
-
-(* ****** ****** *)
-
 (* Author: Hongwei Xi *)
 (* Authoremail: gmhwxiATgmailDOTcom *)
 (* Start time: Feburary, 2012 *)
+
+(* ****** ****** *)
+
+(*
+** Source:
+** $PATSHOME/prelude/DATS/CODEGEN/list.atxt
+** Time of generation: Sun Nov 20 21:18:27 2016
+*)
 
 (* ****** ****** *)
 //
@@ -53,13 +53,26 @@ List0_(a:t@ype+) = List0(a)
 
 (* ****** ****** *)
 
-implement
-{x}(*tmp*)
-list_make_sing (x) = list_vt_cons{x}(x, list_vt_nil)
-implement
-{x}(*tmp*)
-list_make_pair (x1, x2) = list_vt_cons{x}(x1, list_vt_cons{x}(x2, list_vt_nil))
+primplmnt
+lemma_list_param(xs) =
+(
+//
+case+ xs of
+| list_nil _ => () | list_cons _ => ()
+//
+) (* lemma_list_param *)
 
+(* ****** ****** *)
+//
+implement
+{x}(*tmp*)
+list_make_sing(x) =
+  list_vt_cons{x}(x, list_vt_nil)
+implement
+{x}(*tmp*)
+list_make_pair(x1, x2) =
+  list_vt_cons{x}(x1, list_vt_cons{x}(x2, list_vt_nil))
+//
 (* ****** ****** *)
 
 implement
@@ -88,12 +101,18 @@ implement
 list_make_intrange
   {l0,r} (l0, r) = let
 //
-typedef elt = intBtw (l0, r)
-vtypedef res (l:int) = list_vt (elt, r-l)
-fun loop {
-  l:int | l0 <= l; l <= r
-} .<r-l>. (
-  l: int l, r: int r, res: &ptr? >> res (l)
+typedef elt = intBtw(l0, r)
+vtypedef res(l:int) = list_vt(elt, r-l)
+//
+fun
+loop
+{
+  l:int
+| l0 <= l; l <= r
+} .<r-l>.
+(
+  l: int l, r: int r
+, res: &ptr? >> res(l)
 ) :<!wrt> void =
   if l < r then let
     val () = res :=
@@ -106,7 +125,7 @@ fun loop {
 // end of [loop]
 //
 var res: ptr
-val () = $effmask_wrt (loop (l0, r, res))
+val ((*void*)) = $effmask_wrt(loop(l0, r, res))
 //
 in
   res
@@ -117,42 +136,62 @@ end // end of [list_make_intrange]
 implement
 {a}(*tmp*)
 list_make_array
-  {n} (A, n) = let
+  {n} (A, n0) = let
 //
 prval() = lemma_array_param(A)
 //
 vtypedef res(n:int) = list_vt(a, n)
 //
-fun loop
-  {l:addr}
-  {n:nat} .<n>. (
+fun
+loop
+{l:addr}
+{n:nat} .<n>.
+(
   pf: !array_v (a, l, n) >> array_v (a?!, l, n)
-| p: ptr l
-, n: size_t n
+| p0: ptr l
+, n0: size_t n
 , res: &ptr? >> res(n)
-) :<!wrt> void =
-  if n > 0 then let
-    prval (
-      pf1, pf2
-    ) = array_v_uncons (pf)
-    val () = res :=
-      list_vt_cons{a}{0}(_, _)
-    val+list_vt_cons (x, res1) = res
-    val () = x := !p
-    val () = loop (pf2 | ptr1_succ<a> (p), pred(n), res1)
-    prval () = pf := array_v_cons (pf1, pf2)
-    prval () = fold@ (res)
-  in
-    // nothing
-  end else let
-    prval () = array_v_unnil (pf)
-    prval () = pf := array_v_nil ()
-  in
-    res := list_vt_nil ()
-  end // end of [if]
-// end of [loop]
-var res: ptr // uninitialized
-val () = loop (view@(A) | addr@(A), n, res)
+) :<!wrt> void = (
+//
+if
+(n0 > 0)
+then let
+  prval
+  (
+    pf1, pf2
+  ) = array_v_uncons{a}(pf)
+//
+  val () = res :=
+    list_vt_cons{a}{0}(_, _)
+  // end of [val]
+  val+list_vt_cons(x, res1) = res
+//
+  val () = x := !p0
+  val p1 = ptr1_succ<a>(p0)
+  val () =
+    loop(pf2 | p1, pred(n0), res1)
+  // end of [val]
+  prval () =
+    pf := array_v_cons{a?!}(pf1, pf2)
+  // end of [prval]
+  prval ((*folded*)) = fold@ (res)
+in
+  // nothing
+end // end of [then]
+else let
+  prval () = array_v_unnil(pf)
+  prval () = pf := array_v_nil()
+in
+  res := list_vt_nil((*void*))
+end // end of [else]
+//
+) (* end of [loop] *)
+//
+var
+res: ptr // uninitialized
+//
+val ((*void*)) =
+  loop(view@(A) | addr@(A), n0, res)
 //
 in
   res
@@ -163,40 +202,44 @@ end // end of [list_make_array]
 implement
 {a}(*tmp*)
 list_make_arrpsz
-  {n} (A0) = let
+  {n}(ASZ) = let
 //
-var asz: size_t
-val A = arrpsz_get_ptrsize (A0, asz)
-val p = arrayptr2ptr (A)
+var
+asz: size_t
+//
+val A0 =
+arrpsz_get_ptrsize
+  (ASZ, asz)
+//
+val p0 = arrayptr2ptr(A0)
 //
 prval
-pfarr = arrayptr_takeout (A)
-val res = list_make_array (!p, asz)
-prval() = arrayptr_addback (pfarr | A)
-//
-val () = arrayptr_free (A)
+pfarr = arrayptr_takeout(A0)
+val res = list_make_array(!p0, asz)
+prval() = arrayptr_addback(pfarr | A0)
 //
 in
-  res
+//
+let val () = arrayptr_free(A0) in res end
+//
 end // end of [list_make_arrpsz]
 
 (* ****** ****** *)
 
 implement
 {a}(*tmp*)
-print_list (xs) = fprint_list<a> (stdout_ref, xs)
+print_list(xs) = fprint_list<a>(stdout_ref, xs)
 implement
 {a}(*tmp*)
-prerr_list (xs) = fprint_list<a> (stderr_ref, xs)
+prerr_list(xs) = fprint_list<a>(stderr_ref, xs)
 
 (* ****** ****** *)
-
+//
 implement
 {}(*tmp*)
-fprint_list$sep
-  (out) = fprint_string (out, ", ")
+fprint_list$sep(out) = fprint_string(out, ", ")
 // end of [fprint_list$sep]
-
+//
 implement
 {a}(*tmp*)
 fprint_list (out, xs) = let
@@ -216,19 +259,19 @@ val _(*len*) = list_iforeach<a> (xs)
 in
   // nothing
 end // end of [fprint_list]
-
+//
 implement
 {a}(*tmp*)
 fprint_list_sep
   (out, xs, sep) = let
 //
 implement
-fprint_list$sep<(*none*)> (out) = fprint_string (out, sep)
+fprint_list$sep<(*none*)> (out) = fprint_string(out, sep)
 //
 in
   fprint_list<a> (out, xs)
 end // end of [fprint_list_sep]
-
+//
 (* ****** ****** *)
 (*
 //
@@ -387,29 +430,42 @@ list_get_at_opt (xs, i) = list_nth_opt<a> (xs, i)
 
 implement
 {a}(*tmp*)
-list_set_at
+list_fset_at
   (xs, i, x_new) = let
-  val (xs1, xs2) =
-    $effmask_wrt (list_split_at<a> (xs, i))
-  val+list_cons (x_old, xs2) = xs2
-  val xs2 = list_cons{a}(x_new, xs2)
+//
+val
+(
+xs1, xs2
+) =
+$effmask_wrt
+  (list_split_at<a> (xs, i))
+//
+val+list_cons(x_old, xs2) = xs2
+val xs2 = list_cons{a}(x_new, xs2)
+//
 in
   $effmask_wrt (list_append1_vt<a> (xs1, xs2))
-end // ed of [list_set_at]
+end // ed of [list_fset_at]
 
 (* ****** ****** *)
 
 implement
 {a}(*tmp*)
-list_exch_at
+list_fexch_at
   (xs, i, x_new) = let
-  val (xs1, xs2) =
-    $effmask_wrt (list_split_at<a> (xs, i))
-  val+list_cons (x_old, xs2) = xs2
-  val xs2 = list_cons{a}(x_new, xs2)
+val
+(
+xs1, xs2
+) =
+$effmask_wrt
+  (list_split_at<a> (xs, i))
+//
+val+list_cons(x_old, xs2) = xs2
+val xs2 = list_cons{a}(x_new, xs2)
+//
 in
   ($effmask_wrt (list_append1_vt<a> (xs1, xs2)), x_old)
-end // ed of [list_exch_at]
+end // ed of [list_fexch_at]
 
 (* ****** ****** *)
 
@@ -1717,7 +1773,7 @@ end // end of [list_map2]
 implement
 {x}(*tmp*)
 list_tabulate
-  (n) = res where {
+  (n) = let
 //
 fun loop
   {n:int}
@@ -1739,16 +1795,18 @@ fun loop
     // nothing
   end else (res := list_vt_nil)
 //
-var res: ptr
-val () = loop (n, 0, res)
+in
 //
-} // end of [list_tabulate]
+let var res: ptr; val () = loop(n, 0, res) in res end
+//
+end // end of [list_tabulate]
 
 (* ****** ****** *)
 
 implement
 {a}(*tmp*)
-list_tabulate_fun (n, f) = let
+list_tabulate_fun
+  (n, f) = let
 //
 val f = $UN.cast{int -> a}(f)
 //
@@ -1761,7 +1819,8 @@ end // end of [list_tabulate_fun]
 
 implement
 {a}(*tmp*)
-list_tabulate_clo (n, f) = let
+list_tabulate_clo
+  (n, f) = let
 //
 val f = $UN.cast{int -<cloref1> a}(addr@f)
 //
@@ -1774,7 +1833,8 @@ end // end of [list_tabulate_clo]
 
 implement
 {a}(*tmp*)
-list_tabulate_cloref (n, f) = let
+list_tabulate_cloref
+  (n, f) = let
 //
 val f = $UN.cast{int -<cloref1> a}(f)
 //
@@ -1789,7 +1849,8 @@ end // end of [list_tabulate_cloref]
 
 implement
 {x,y}
-list_zip (xs, ys) = let
+list_zip
+  (xs, ys) = let
 //
 typedef xy = @(x, y)
 //
@@ -1797,57 +1858,67 @@ implement
 list_zipwith$fopr<x,y><xy> (x, y) = @(x, y)
 //
 in
-  $effmask_all (list_zipwith<x,y><xy> (xs, ys))
+  $effmask_all(list_zipwith<x,y><xy> (xs, ys))
 end // end of [list_zip]
 
 implement
 {x,y}{xy}
 list_zipwith
-  (xs, ys) = let
+(
+  xs, ys
+) = res where
+{
 //
 prval() = lemma_list_param(xs)
 prval() = lemma_list_param(ys)
 //
-fun loop
-  {m,n:nat} .<m>. (
-  xs: list (x, m)
-, ys: list (y, n)
-, res: &ptr? >> list_vt (xy, min(m,n))
-) : void = let
-in
+fun
+loop
+{m,n:nat} .<m>.
+(
+  xs: list(x, m)
+, ys: list(y, n)
+, res: &ptr? >> list_vt(xy, min(m,n))
+) : void = (
 //
 case+ xs of
-| list_cons (x, xs) => (
+| list_nil() =>
+    (res := list_vt_nil)
+  // list_nil
+| list_cons(x, xs) =>
+  (
   case+ ys of
-  | list_cons (y, ys) => let
+  | list_nil() =>
+      (res := list_vt_nil)
+    // list_nil
+  | list_cons
+      (y, ys) =>
+      fold@(res) where
+    {
       val xy =
-        list_zipwith$fopr<x,y><xy> (x, y)
+        list_zipwith$fopr<x,y><xy>(x, y)
       // end of [val]
       val () = res :=
-        list_vt_cons{xy}{0}(xy, _(*y*))
+        list_vt_cons{xy}{0}(xy, _(*res*))
       val+list_vt_cons
         (xy, res1) = res // res1 = res.1
-      val () = loop (xs, ys, res1)
-    in
-      fold@ (res)
-    end // end of [list_cons]
-  | list_nil () => (res := list_vt_nil)
+      val ((*tailrec*)) = loop(xs, ys, res1)
+    } (* end of [list_cons] *)
   ) // end of [list_cons]
-| list_nil () => (res := list_vt_nil)
 //
-end // end of [loop]
+) (* end of [loop] *)
 //
 var res: ptr
-val () = loop (xs, ys, res)
-in
-  res
-end // end of [list_zipwith]
+val ((*void*)) = loop(xs, ys, res)
+//
+} (* end of [list_zipwith] *)
 
 (* ****** ****** *)
 
 implement
 {x,y}
-list_cross (xs, ys) = let
+list_cross
+  (xs, ys) = let
 //
 typedef xy = @(x, y)
 //
@@ -1908,11 +1979,8 @@ case+ ys2 of
 //
 end // end of [loop2]
 //
-var res: ptr
-val () = loop1 (xs, ys, res)
-//
 in
-  res
+  let var res: ptr; val () = loop1 (xs, ys, res) in res end
 end // end of [list_crosswith]
 
 (* ****** ****** *)
@@ -2307,22 +2375,42 @@ prval() = lemma_list_param(xs)
 fun loop
   {n:nat} .<n>.
 (
-  xs: list (x, n), acc: res
+  xs: list (x, n), res: res
 ) : res =
   case+ xs of
-  | list_nil () => acc
+  | list_nil () => res
   | list_cons (x, xs) => let
-      val acc =
-        list_foldleft$fopr<res><x> (acc, x)
+      val res =
+        list_foldleft$fopr<res><x>(res, x)
       // end of [val]
     in
-      loop (xs, acc)
+      loop (xs, res)
     end // end of [list_cons]
 // end of [loop]
 //
 in
   loop (xs, ini)
 end // end of [list_foldleft]
+
+(* ****** ****** *)
+
+implement
+{res}{x}
+list_foldleft_cloref
+  (xs, ini, fopr) = let
+//
+implement
+{res2}{x2}
+list_foldleft$fopr
+  (res2, x2) =
+(
+$UN.castvwtp0{res2}
+  (fopr($UN.castvwtp0{res}(res2), $UN.cast{x}(x2)))
+)
+//
+in
+  list_foldleft<res><x>(xs, ini)
+end // end of [list_foldleft_cloref]
 
 (* ****** ****** *)
 
@@ -2336,12 +2424,12 @@ prval() = lemma_list_param(xs)
 fun aux
   {n:nat} .<n>.
 (
-  xs: list (x, n), acc: res
+  xs: list (x, n), res: res
 ) : res =
   case+ xs of
-  | list_nil() => acc
+  | list_nil() => res
   | list_cons(x, xs) =>
-      list_foldright$fopr<x><res> (x, aux (xs, acc))
+      list_foldright$fopr<x><res> (x, aux(xs, res))
     // end of [list_cons]
 // end of [aux]
 //
@@ -2352,9 +2440,29 @@ end // end of [list_foldright]
 (* ****** ****** *)
 
 implement
+{x}{res}
+list_foldright_cloref
+  (xs, fopr, snk) = let
+//
+implement
+{x2}{res2}
+list_foldright$fopr
+  (x2, res2) =
+(
+$UN.castvwtp0{res2}
+  (fopr($UN.cast{x}(x2), $UN.castvwtp0{res}(res2)))
+)
+//
+in
+  list_foldright<x><res>(xs, snk)
+end // end of [list_foldright_cloref]
+
+(* ****** ****** *)
+
+implement
 {a}(*tmp*)
 list_mergesort$cmp
-  (x1, x2) = gcompare_val_val<a> (x1, x2)
+  (x1, x2) = gcompare_val_val<a>(x1, x2)
 // end of [list_mergesort$cmp]
 
 implement
@@ -2362,14 +2470,17 @@ implement
 list_mergesort
   (xs) = let
 //
-val xs = list_copy<a> (xs)
-//
 implement
 list_vt_mergesort$cmp<a>
-  (x1, x2) = list_mergesort$cmp<a> (x1, x2)
+  (x1, x2) =
+  list_mergesort$cmp<a> (x1, x2)
 //
 in
-  list_vt_mergesort<a> (xs)
+//
+let val xs =
+  list_copy<a>(xs) in list_vt_mergesort<a>(xs)
+end // end of [let]
+//
 end // end of [list_mergesort]
 
 (* ****** ****** *)
@@ -2384,9 +2495,10 @@ implement
 list_mergesort$cmp
   (x1, x2) = let
 //
-typedef cmp2 = cmpval(a2)
+typedef
+cmp2 = cmpval(a2)
 //
-val cmp2 = $UN.cast{cmp2}(cmp) in cmp2 (x1, x2)
+val cmp2 = $UN.cast{cmp2}(cmp) in cmp2(x1, x2)
 //
 end // end of [list_mergesort$cmp]
 //
@@ -2404,9 +2516,11 @@ implement
 list_mergesort$cmp
   (x1, x2) = let
 //
-typedef cmp2 = (a2, a2) -<cloref> int
+typedef
+cmp2 = (a2, a2) -<cloref> int
 //
-val cmp2 = $UN.cast{cmp2}(cmp) in cmp2 (x1, x2)
+val cmp2 =
+  $UN.cast{cmp2}(cmp) in cmp2 (x1, x2)
 //
 end // end of [list_mergesort$cmp]
 //
@@ -2419,7 +2533,7 @@ end // end of [list_mergesort_cloref]
 implement
 {a}(*tmp*)
 list_quicksort$cmp
-  (x1, x2) = gcompare_val_val<a> (x1, x2)
+  (x1, x2) = gcompare_val_val<a>(x1, x2)
 // end of [list_quicksort$cmp]
 
 implement
@@ -2427,14 +2541,17 @@ implement
 list_quicksort
   (xs) = let
 //
-val xs = list_copy<a> (xs)
-//
 implement
 list_vt_quicksort$cmp<a>
-  (x1, x2) = list_quicksort$cmp<a> (x1, x2)
+  (x1, x2) =
+  list_quicksort$cmp<a>(x1, x2)
 //
 in
-  list_vt_quicksort<a> (xs)
+//
+let val xs =
+  list_copy<a> (xs) in list_vt_quicksort<a>(xs)
+end // end of [let]
+//
 end // end of [list_quicksort]
 
 (* ****** ****** *)
@@ -2449,13 +2566,37 @@ implement
 list_quicksort$cmp
   (x1, x2) = let
 //
-val cmp = $UN.cast{cmpval(a2)}(cmp) in cmp (x1, x2)
+typedef
+cmp2 = cmpval(a2)
+//
+val cmp2 = $UN.cast{cmp2}(cmp) in cmp2(x1, x2)
 //
 end // end of [list_quicksort$cmp]
 //
 in
   list_quicksort<a> (xs)
 end // end of [list_quicksort_fun]
+
+implement
+{a}(*tmp*)
+list_quicksort_cloref
+  (xs, cmp) = let
+//
+implement
+{a2}(*tmp*)
+list_quicksort$cmp
+  (x1, x2) = let
+//
+typedef
+cmp2 = (a2, a2) -<cloref> int
+//
+val cmp2 = $UN.cast{cmp2}(cmp) in cmp2(x1, x2)
+//
+end // end of [list_quicksort$cmp]
+//
+in
+  list_quicksort<a> (xs)
+end // end of [list_quicksort_cloref]
 
 (* ****** ****** *)
 
@@ -2513,6 +2654,77 @@ auxmain2
 in
   $effmask_all(auxmain(xs))
 end // end of [streamize_list_choose2]
+
+(* ****** ****** *)
+
+implement
+{a,b}(*tmp*)
+streamize_list_zip
+  (xs, ys) = let
+//
+fun
+auxmain
+(
+  xs: List(a)
+, ys: List(b)
+) : stream_vt(@(a, b)) = $ldelay
+(
+case+ xs of
+| list_nil() =>
+    stream_vt_nil()
+  // end of [list_nil]
+| list_cons(x, xs) =>
+  (
+    case+ ys of
+    | list_nil() => stream_vt_nil()
+    | list_cons(y, ys) => stream_vt_cons((x, y), auxmain(xs, ys))
+  ) (* end of [list_cons] *)
+) : stream_vt_con(@(a, b)) // auxmain
+//
+in
+  $effmask_all(auxmain(xs, ys))
+end // end of [streamize_list_zip]
+
+(* ****** ****** *)
+
+implement
+{a,b}(*tmp*)
+streamize_list_cross
+  (xs, ys) = let
+//
+fun
+auxone
+(
+  x0: a
+, ys: List(b)
+) : stream_vt(@(a, b)) = $ldelay
+(
+case+ ys of
+| list_nil() =>
+    stream_vt_nil()
+  // end of [list_nil]
+| list_cons(y, ys) =>
+    stream_vt_cons((x0, y), auxone(x0, ys))
+) : stream_vt_con(@(a, b))
+//
+fun
+auxmain
+(
+  xs: List(a)
+, ys: List(b)
+) : stream_vt(@(a, b)) = $ldelay
+(
+case+ xs of
+| list_nil() =>
+    stream_vt_nil()
+  // end of [list_nil]
+| list_cons(x0, xs) =>
+    !(stream_vt_append(auxone(x0, ys), auxmain(xs, ys)))
+) : stream_vt_con(@(a, b))
+//
+in
+  $effmask_all(auxmain(xs, ys))
+end // end of [streamize_list_cross]
 
 (* ****** ****** *)
 

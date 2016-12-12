@@ -46,7 +46,9 @@ S2E = "pats_staexp2.sats"
 staload
 D2E = "pats_dynexp2.sats"
 //
+typedef s2rt = $S2E.s2rt
 typedef s2cst = $S2E.s2cst
+typedef s2var = $S2E.s2var
 typedef s2exp = $S2E.s2exp
 typedef d2cst = $D2E.d2cst
 typedef d2ecl = $D2E.d2ecl
@@ -61,10 +63,18 @@ datcontag_test_e1xp(name: e1xp): bool
 //
 fun fprint_test_e1xp(name: e1xp): bool
 //
+fun absrec_test_e1xp(name: e1xp): bool
+//
 (* ****** ****** *)
 //
 fun
 codegen2_get_s2cst
+  (name: e1xp): Option_vt(s2cst)
+//
+(* ****** ****** *)
+//
+fun
+codegen2_get_tydef
   (name: e1xp): Option_vt(s2cst)
 fun
 codegen2_get_datype
@@ -90,6 +100,15 @@ codegen2_emit_tmpcstdec
 //
 (* ****** ****** *)
 //
+fun
+codegen2_emit_s2rt
+  (out: FILEref, s2t0: s2rt): void
+fun
+codegen2_emit_s2cst
+  (out: FILEref, s2c0: s2cst): void
+fun
+codegen2_emit_s2var
+  (out: FILEref, s2v0: s2var): void
 fun
 codegen2_emit_s2exp
   (out: FILEref, s2e0: s2exp): void
@@ -117,11 +136,21 @@ codegen2_datcontag
 (* ****** ****** *)
 //
 (*
-#codegen2(fprint, [datatype])
+#codegen2(fprint, [datatype], <fprint_name>)
 *)
 //
 fun
 codegen2_fprint
+  (out: FILEref, d2c0: d2ecl, xs: e1xplst): void
+//
+(* ****** ****** *)
+//
+(*
+#codegen2(absrec, [rectype], <rectype_name>)
+*)
+//
+fun
+codegen2_absrec
   (out: FILEref, d2c0: d2ecl, xs: e1xplst): void
 //
 (* ****** ****** *)

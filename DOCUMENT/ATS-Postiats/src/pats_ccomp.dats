@@ -299,18 +299,24 @@ primval_f0loat
 (* ****** ****** *)
 
 implement
-primval_sizeof
-  (loc, hse, hselt) =
-  primval_make_node (loc, hse, PMVsizeof (hselt))
-// end of [primval_sizeof]
-
-(* ****** ****** *)
-
-implement
 primval_cstsp
   (loc, hse, cstsp) =
   primval_make_node (loc, hse, PMVcstsp (cstsp))
 // end of [primval_cstsp]
+
+(* ****** ****** *)
+
+implement
+primval_tyrep
+  (loc, hse0, hse) =
+  primval_make_node (loc, hse0, PMVtyrep (hse))
+// end of [primval_tyrep]
+
+implement
+primval_sizeof
+  (loc, hse0, hse) =
+  primval_make_node (loc, hse0, PMVsizeof (hse))
+// end of [primval_sizeof]
 
 (* ****** ****** *)
 
@@ -432,42 +438,47 @@ end // end of [primval_lamfix]
 implement
 primval_tmpltcst
   (loc, hse, d2c, t2mas) =
-  primval_make_node (loc, hse, PMVtmpltcst (d2c, t2mas))
+  primval_make_node(loc, hse, PMVtmpltcst (d2c, t2mas))
 // end of [primval_tmpltcst]
 implement
 primval_tmpltvar
   (loc, hse, d2v, t2mas) =
-  primval_make_node (loc, hse, PMVtmpltvar (d2v, t2mas))
+  primval_make_node(loc, hse, PMVtmpltvar (d2v, t2mas))
 // end of [primval_tmpltvar]
 
 (* ****** ****** *)
-
+//
 implement
 primval_tmpltcstmat
   (loc, hse, d2c, t2mas, mat) =
-  primval_make_node (loc, hse, PMVtmpltcstmat (d2c, t2mas, mat))
+  primval_make_node
+    (loc, hse, PMVtmpltcstmat (d2c, t2mas, mat))
 // end of [primval_tmpltcstmat]
+//
 implement
 primval_tmpltvarmat
   (loc, hse, d2v, t2mas, mat) =
-  primval_make_node (loc, hse, PMVtmpltvarmat (d2v, t2mas, mat))
+  primval_make_node
+    (loc, hse, PMVtmpltvarmat (d2v, t2mas, mat))
 // end of [primval_tmpltvarmat]
-
+//
 (* ****** ****** *)
 
 implement
 primval_error
-  (loc, hse) = primval_make_node (loc, hse, PMVerror((*error*)))
+  (loc, hse) =
+  primval_make_node (loc, hse, PMVerror((*error*)))
 // end of [primval_error]
 
 (* ****** ****** *)
 
 implement
 primval_make_sizeof
-  (loc, s2elt) = let
-  val hse = hisexp_size_t0ype ()
-in
-  primval_sizeof (loc, hse, s2elt)
+  (loc, s2e) = let
+//
+val hse =
+  hisexp_size_t0ype() in primval_sizeof(loc, hse, s2e)
+//
 end // end of [primval_make_sizeof]
 
 (* ****** ****** *)

@@ -273,7 +273,10 @@ auxck_tszeq
   loc0: loc_t
 , s2e1: s2exp, s2e2: s2exp
 ) : void = let
-  val tszeq = s2exp_tszeq (s2e1, s2e2)
+//
+val
+tszeq = s2exp_tszeq (s2e1, s2e2)
+//
 in
 //
 if ~tszeq then let
@@ -346,16 +349,19 @@ case+ ctxtopt of
 | Some(ctxt) =>
     d3e_r where {
 //
-    val () = d3exp_open_and_add (d3e_r)
-    val s2e_sel2 = d3exp_get_type (d3e_r)
+    val () = d3exp_open_and_add(d3e_r)
+    val s2e_sel2 = d3exp_get_type(d3e_r)
 //
-    val () = auxck_tszeq (loc0, s2e_sel, s2e_sel2)
+    val () = auxck_tszeq(loc0, s2e_sel, s2e_sel2)
 //
     val () = d2var_inc_linval (d2vw)
 //
-    val s2e_elt = s2ctxt_hrepl (ctxt, s2e_sel2)
-    val s2e = s2exp_hrepl (s2e_ctx, s2e_elt)
-    val () = d2var_set_type (d2vw, Some (s2e))
+    val
+    s2e_elt = s2ctxt_hrepl(ctxt, s2e_sel2)
+//
+    val s2e0 = s2exp_hrepl(s2e_ctx, s2e_elt)
+//
+    val ((*void*)) = d2var_set_type (d2vw, Some(s2e0))
 //
   } (* end of [Some] *)
 //
@@ -679,12 +685,12 @@ case+ d2lv of
   in
     case+ opt of
     | Some (d2s) => let
-        val _fun = d2exp_top (loc0)
+        val _top = d2exp_top(loc0)
         val d2e0 = d2exp_get_seloverld_root (d2e_l)
         val d2a0 =
           D2EXPARGdyn (~1(*npf*), loc0, list_pair(d2e0, d2e_r))
         val d3e_sel =
-          d2exp_trup_applst_sym ((*d2e*)_fun, d2s, list_sing(d2a0))
+          d2exp_trup_applst_sym ((*d2e*)_top, d2s, list_sing(d2a0))
         // end of [val]
       in
         d3exp_trdn (d3e_sel, s2exp_void_t0ype ())

@@ -44,6 +44,10 @@ staload _(*UN*) = "prelude/DATS/unsafe.dats"
 (* ****** ****** *)
 
 staload _(*INT*) = "prelude/DATS/integer.dats"
+staload _(*INT*) = "prelude/DATS/integer_size.dats"
+
+(* ****** ****** *)
+
 staload _(*STRING*) = "prelude/DATS/string.dats"
 staload _(*STRING*) = "prelude/DATS/strptr.dats"
 staload _(*STREAM*) = "prelude/DATS/stream.dats"
@@ -58,10 +62,12 @@ staload "libats/ML/SATS/string.sats"
 staload "libats/ML/SATS/filebas.sats"
 //
 (* ****** ****** *)
-
-staload DIR = "libc/SATS/dirent.sats"
-staload _(*anon*) = "libc/DATS/dirent.dats"
-
+//
+staload
+DIR = "libats/libc/SATS/dirent.sats"
+staload
+_(*anon*) = "libats/libc/DATS/dirent.dats"
+//
 (* ****** ****** *)
 
 staload QUE = "libats/SATS/qlist.sats"
@@ -156,6 +162,7 @@ end // end of [dirname_get_fnamelst]
 (* ****** ****** *)
 
 implement
+{}(*tmp*)
 streamize_dirname_fname
   (dirname) = let
 //

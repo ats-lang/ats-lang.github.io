@@ -346,17 +346,25 @@ fun s2rt_is_dat (x: s2rt): bool
 //
 fun s2rt_is_fun (x: s2rt): bool
 fun s2rt_is_prf (x: s2rt): bool // is proof?
+//
 fun s2rt_is_lin (x: s2rt): bool
 fun s2rt_is_nonlin (x: s2rt): bool
+//
 fun s2rt_is_flat (x: s2rt): bool // is flat?
 fun s2rt_is_boxed (x: s2rt): bool // is boxed?
-fun s2rt_is_prgm (x: s2rt): bool // is program?
-fun s2rt_is_impred (x: s2rt): bool // is impredicative?
+//
 fun s2rt_is_tkind (x: s2rt): bool // is tkind?
 //
+fun s2rt_is_prgm (x: s2rt): bool // is program?
+fun s2rt_is_impred (x: s2rt): bool // is impredicative?
+//
 fun s2rt_is_lin_fun (x: s2rt): bool // is (... ->) linear?
+fun s2rt_is_flat_fun (x: s2rt): bool // is (... ->) flat?
 fun s2rt_is_boxed_fun (x: s2rt): bool // is (... ->) boxed?
 fun s2rt_is_tkind_fun (x: s2rt): bool // is (... ->) tkind?
+//
+fun s2rt_is_prgm_fun (x: s2rt): bool // is (... ->) program?
+fun s2rt_is_impred_fun (x: s2rt): bool // is (... ->) impred?
 //
 (* ****** ****** *)
 
@@ -710,9 +718,12 @@ overload compare with compare_s2cst_s2cst
 
 (* ****** ****** *)
 //
+fun s2cst_is_def(x: s2cst): bool
+//
 fun s2cst_is_abstr (x: s2cst): bool
 fun s2cst_is_tkind (x: s2cst): bool
 //
+fun s2cst_is_tydef (s2c: s2cst): bool
 fun s2cst_is_datype (s2c: s2cst): bool
 //
 fun s2cst_is_tagless (x: s2cst): bool
@@ -1100,28 +1111,35 @@ fun s2exp_var (x: s2var): s2exp // HX: static variable
 fun s2exp_Var (x: s2Var): s2exp // HX: static existential variable
 fun s2exp_hole (x: s2hole): s2exp // HX: static context hole
 
+(* ****** ****** *)
 (*
 ** HX: please be cautious!
 *)
 fun s2exp_var_srt (s2t: s2rt, s2v: s2var): s2exp
 
-fun s2exp_extype_srt
+(* ****** ****** *)
+//
+fun
+s2exp_extype_srt
   (s2t: s2rt, name: string, arg: s2explstlst): s2exp
 // end of [s2exp_extype_srt]
-fun s2exp_extkind_srt
+fun
+s2exp_extkind_srt
   (s2t: s2rt, name: string, arg: s2explstlst): s2exp
 // end of [s2exp_extkind_srt]
 
 (* ****** ****** *)
-
-fun s2exp_at
+//
+fun
+s2exp_at
   (s2e1: s2exp, s2e2: s2exp): s2exp
 // end of [s2exp_at]
-
+//
 (* ****** ****** *)
-
-fun s2exp_sizeof (s2e_type: s2exp): s2exp
-
+//
+fun
+s2exp_sizeof (s2e_type: s2exp): s2exp
+//
 (* ****** ****** *)
 
 fun s2exp_eff (s2fe: s2eff): s2exp

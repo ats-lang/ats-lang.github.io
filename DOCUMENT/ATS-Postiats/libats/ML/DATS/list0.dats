@@ -1305,6 +1305,19 @@ val res = list0_of_list_vt (res)
 } // end of [list0_mapopt]
 
 (* ****** ****** *)
+//
+implement
+{a}{b}
+list0_map_method
+  (xs, _) =
+  lam(fopr) => list0_map<a><b>(xs, fopr)
+implement
+{a}{b}
+list0_mapopt_method
+  (xs, _) =
+  lam(fopr) => list0_mapopt<a><b>(xs, fopr)
+//
+(* ****** ****** *)
 
 implement
 {a}(*tmp*)
@@ -1375,7 +1388,7 @@ in
 end // end of [list0_map2]
 
 (* ****** ****** *)
-
+//
 implement
 {a}(*tmp*)
 list0_filter
@@ -1390,26 +1403,39 @@ val ys = list_filter<a> (g1ofg0(xs))
 in
   list0_of_list_vt (ys)
 end // end of [list0_filter]
-
+//
+implement
+{a}(*tmp*)
+list0_filter_method
+  (xs) = lam(pred) => list0_filter<a>(xs, pred)
+//
 (* ****** ****** *)
 
 implement
 {a}(*tmp*)
 list0_tabulate
-  (n, f) = let
+  {n}(n, f) = let
 //
 implement{a2}
 list_tabulate$fopr
-  (i) = $UN.castvwtp0{a2}(f(i))
+  (i) = let
+  val i =
+  $UN.cast{natLt(n)}(i)
+in
+  $UN.castvwtp0{a2}(f(i))
+end // list_tabulate$fopr
 //
-val n = g1ofg0_int (n)
+val n = g1ofg0_int(n)
 //
 in
-  if n >= 0 then
-    list0_of_list_vt (list_tabulate<a> (n))
-  else
-    $raise IllegalArgExn("list0_tabulate:n")
-  // end of [if]
+//
+if
+(n >= 0)
+then
+list0_of_list_vt(list_tabulate<a>(n))
+else
+$raise IllegalArgExn("list0_tabulate:n")
+// end of [if]
 end // end of [list0_tabulate]
 
 (* ****** ****** *)
@@ -1422,8 +1448,8 @@ list0_tabulate_opt
 //
 fun loop
 (
-  i: int
-, res: &ptr? >> List0_vt (a)
+  i: Nat
+, res: &ptr? >> List0_vt(a)
 ) : void = let
 in
 //
@@ -1620,7 +1646,79 @@ implement
 {x,y}(*tmp*)
 list0_iforeach_xprod2_method
   (xs, ys) =
-  lam(fwork) => list0_iforeach_xprod2<x,y>(xs, ys, fwork)
+(
+lam(fwork) => list0_iforeach_xprod2<x,y>(xs, ys, fwork)
+)
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+streamize_list0_elt
+  (xs) = streamize_list_elt<a>(g1ofg0(xs))
+implement
+{a}(*tmp*)
+streamize_list0_choose2
+  (xs) = streamize_list_choose2<a>(g1ofg0(xs))
+//
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+streamize_list0_nchoose
+  (xs, n) = let  
+//
+fun
+auxmain
+(
+  xs: list0(a), n: intGte(0)
+) : stream_vt(list0(a)) = $ldelay
+(
+//
+if
+(n > 0)
+then
+(
+case+ xs of
+| list0_nil() =>
+  stream_vt_nil()
+| list0_cons(x0, xs1) => let
+    val res1 =
+      auxmain(xs1, n-1)
+    // end of [val]
+    val res2 = auxmain(xs1, n)
+  in
+    !(stream_vt_append
+      (
+        stream_vt_map_cloptr<list0(a)><list0(a)>(res1, lam(ys) => list0_cons(x0, ys)), res2
+      ) // stream_vt_append
+     )
+  end // end of [list0_cons]
+) (* end of [then] *)
+else
+(
+  stream_vt_cons(list0_nil, stream_vt_make_nil())
+) (* end of [else] *)
+//
+) : stream_vt_con(list0(a)) // auxmain
+//
+in
+  $effmask_all(auxmain(xs, n))
+end // end of [streamize_list0_nchoose]
+
+(* ****** ****** *)
+//
+implement
+{a,b}(*tmp*)
+streamize_list0_zip
+  (xs, ys) =
+  streamize_list_zip<a,b>(g1ofg0(xs), g1ofg0(ys))
+//
+implement
+{a,b}(*tmp*)
+streamize_list0_cross
+  (xs, ys) =
+  streamize_list_cross<a,b>(g1ofg0(xs), g1ofg0(ys))
 //
 (* ****** ****** *)
 
@@ -1629,9 +1727,9 @@ implement
 list0_quicksort(xs, cmp) = let
 //
 implement
-list_quicksort$cmp<a> (x, y) = cmp(x, y)
+list_quicksort$cmp<a>(x, y) = cmp(x, y)
 //
-val ys = $effmask_wrt (list_quicksort<a>(g1ofg0(xs)))
+val ys = $effmask_wrt(list_quicksort<a>(g1ofg0(xs)))
 //
 in
   list0_of_list_vt (ys)
@@ -1644,9 +1742,9 @@ implement
 list0_mergesort(xs, cmp) = let
 //
 implement
-list_mergesort$cmp<a> (x, y) = cmp(x, y)
+list_mergesort$cmp<a>(x, y) = cmp(x, y)
 //
-val ys = $effmask_wrt (list_mergesort<a>(g1ofg0(xs)))
+val ys = $effmask_wrt(list_mergesort<a>(g1ofg0(xs)))
 //
 in
   list0_of_list_vt (ys)
@@ -1654,13 +1752,13 @@ end // end of [list0_mergesort]
 
 (* ****** ****** *)
 //
+// HX: some common generic functions
+//
+(* ****** ****** *)
+//
 implement
 (a)(*tmp*)
-fprint_val<list0(a)>
-  (out, xs) =
-(
-  fprint_list0<a>(out, xs)
-)
+fprint_val<list0(a)> = fprint_list0<a>
 //
 (* ****** ****** *)
 
