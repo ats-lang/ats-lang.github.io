@@ -153,7 +153,8 @@ NAME="AEN1022"
 ></A
 ><PRE
 CLASS="programlisting"
->fun charlst_length
+>fun
+charlst_length
   (cs: charlst): int = case cs of
   | charlst_cons (_, cs) =&#62; 1 + charlst_length (cs)
   | charlst_nil () =&#62; 0
@@ -182,7 +183,8 @@ NAME="AEN1025"
 ></A
 ><PRE
 CLASS="programlisting"
->fun charlst_length
+>fun
+charlst_length
   (cs: charlst): int = let
 //
 fun loop

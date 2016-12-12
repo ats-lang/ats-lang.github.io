@@ -1,0 +1,498 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Unsafe C-style Programming in ATS</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Interaction with C"
+HREF="c2009.html"><LINK
+REL="PREVIOUS"
+TITLE="Calling External Functions in ATS"
+HREF="x2109.html"><LINK
+REL="NEXT"
+TITLE="Exporting Types in ATS for Use in C"
+HREF="x2172.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2109.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Interaction with C</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2172.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="unsafe_c-style_programming_in_ats"
+>Unsafe C-style Programming in ATS</A
+></H1
+><P
+>&#13;ATS is probably not a programming language easy for one to write code in.
+While ATS provides many features to support safe (low-level) programming,
+it may take a long time and some great efforts for a programmer to learn
+and then master these features before he or she can make effective use of
+them.  In this section, I would like to present some ATS code written in
+C-style that makes typical use of certan unsafe programming features in
+ATS. This is a programming style that should be familiar to any programmer
+who can write C code competently.
+
+</P
+><P
+>&#13;There are always occasions where one may find it sensible to program in
+unsafe C-style. Sometimes, one just wants to get a running implementation
+and then relies on testing to detect and fix bugs. Sometimes, one simply
+does not know enough of ATS needed to implement a function in a safe
+programming manner. This list of occasions can be readily extended as one
+wishes. I myself do unsafe C-style programming in ATS frequently, and I see
+it as a necessary skill for anyone who not just only wants to be able to
+write code in ATS but also wants to do it highly productively. Let us now
+see a concrete example of unsafe C-style programming in ATS.
+
+</P
+><P
+>&#13;Suppose that we want to implement a function for comparing two given
+strings according to the standard lexicographic ordering. Let us name
+the function <FONT
+COLOR="RED"
+>strcmp</FONT
+> and give it the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2127"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> strcmp <span class="keyword">(</span>str1<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">,</span> str2<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given two strings <FONT
+COLOR="RED"
+>str1</FONT
+> and <FONT
+COLOR="RED"
+>str2</FONT
+>,
+<FONT
+COLOR="RED"
+>strcmp(str1, str2)</FONT
+> is expected to return 1, -1, and 0 if
+<FONT
+COLOR="RED"
+>str1</FONT
+> is greater than, less than, and equal to <FONT
+COLOR="RED"
+>str2</FONT
+>,
+respectively. An implementation of <FONT
+COLOR="RED"
+>strcmp</FONT
+> is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2135"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">staload</span>
+UN <span class="keyword">=</span> "prelude/SATS/unsafe.sats"
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">implement</span>
+strcmp <span class="keyword">(</span>str1<span class="keyword">,</span> str2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+loop
+<span class="keyword">(</span>
+  p1<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> p2<span class="keyword">:</span> <span class="staexp">ptr</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> c1 <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_get&lt;<span class="staexp">uchar</span><span class="keyword">&gt;</span><span class="keyword">(</span>p1<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> c2 <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_get&lt;<span class="staexp">uchar</span><span class="keyword">&gt;</span><span class="keyword">(</span>p2<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">case+</span> <span class="dynexp">0</span> <span class="keyword">of</span>
+  <span class="keyword">|</span> _ <span class="keyword">when</span> c1 <span class="keyword">&gt;</span> c2 <span class="keyword">=&gt;</span>  <span class="dynexp">1</span>
+  <span class="keyword">|</span> _ <span class="keyword">when</span> c1 <span class="keyword">&lt;</span> c2 <span class="keyword">=&gt;</span> <span class="keyword">~</span><span class="dynexp">1</span>
+  <span class="keyword">|</span> _ <span class="comment">(* c1 = c2 *)</span> <span class="keyword">=&gt;</span>
+    <span class="keyword">(</span>
+      <span class="keyword">if</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>int<span class="keyword">}</span></span><span class="keyword">(</span>c1<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">0</span>
+        <span class="keyword">then</span> <span class="dynexp">0</span> <span class="keyword">else</span> loop <span class="keyword">(</span>ptr0_succ&lt;<span class="staexp">uchar</span><span class="keyword">&gt;</span><span class="keyword">(</span>p1<span class="keyword">)</span><span class="keyword">,</span> ptr0_succ&lt;<span class="staexp">uchar</span><span class="keyword">&gt;</span><span class="keyword">(</span>p2<span class="keyword">)</span><span class="keyword">)</span>
+      <span class="comment">// end of [if]</span>
+    <span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [loop] *)</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span>string2ptr<span class="keyword">(</span>str1<span class="keyword">)</span><span class="keyword">,</span> string2ptr<span class="keyword">(</span>str2<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [strcmp] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For a programmer familar with C, the above implementation of
+<FONT
+COLOR="RED"
+>strcmp</FONT
+> should be easily accessible.  There are a variety of
+unsafe functions declared in <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/unsafe.sats"
+TARGET="_top"
+>unsafe.sats</A
+>. Given a type T and a pointer p, <FONT
+COLOR="RED"
+>ptr0_get&#60;T&#62;(p)</FONT
+>
+fetches the value of the type T stored at the location to which p
+points.  Note that <FONT
+COLOR="RED"
+>ptr0_get</FONT
+> is inherently unsafe as there is
+simply no guarantee that p actually points to a valid memory location where
+a value of the type T is stored.  The function <FONT
+COLOR="RED"
+>cast</FONT
+>, which is
+also inherently unsafe, casts the type of a given value into any chosen
+type.  The function template <FONT
+COLOR="RED"
+>ptr0_succ</FONT
+>, which is declared in
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/pointer.sats"
+TARGET="_top"
+>pointer.sats</A
+>, is
+type-safe. Given a type T, <FONT
+COLOR="RED"
+>ptr0_succ&#60;T&#62;(p)</FONT
+> returns the
+pointer that is n bytes after p, where n equals the size of T.
+
+</P
+><P
+>&#13;Please find the entire code for this example
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_CINTERACT/strcmp.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+</P
+><P
+>&#13;For a function like <FONT
+COLOR="RED"
+>strcmp</FONT
+>, one can readily implement it in C
+directly. For instance, an implementation of <FONT
+COLOR="RED"
+>strcmp</FONT
+> in C, which
+is essentially a translation of the above implementation of <FONT
+COLOR="RED"
+>strcmp</FONT
+>
+in ATS, is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2151"
+></A
+><PRE
+CLASS="programlisting"
+>int strcmp (char *p1, char *p2)
+{
+  int res ;
+  unsigned char c1, c2;
+  while (1)
+  {
+    c1 = *p1; c2 = *p2;
+    if (c1 &#62; c2) { res =  1; break; } ;
+    if (c1 &#60; c2) { res = -1; break; } ;
+    if ((int)c1==0) { res = 0 ; break ; } else { p1++; p2++; } ;
+  }
+  return res ;
+}
+</PRE
+><P
+></P
+></DIV
+>
+
+
+However, writing ATS code in C-style can often have advantages over writing
+C code directly. For instance, there is direct support in ATS but not in C
+for implementing function templates.  In C, one is essentially forced to
+rely on rather involved use of macros to implement function templates,
+which makes the code not only difficult to follow but also notoriously
+error-prone. Let us now see as follows a function template implementation
+in ATS that is partly type-unsafe.
+
+</P
+><P
+>&#13;Suppose we want a function for copying into a given array the elements
+stored in a list. Let us name the function <FONT
+COLOR="RED"
+>array_copy_from_list</FONT
+>
+and give it the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2155"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array_copy_from_list <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a type T, <FONT
+COLOR="RED"
+>array0(T)</FONT
+> is for an array0-value containing a
+pointer p and a size n such that p points to a C-style array storing n
+elements of the type T.
+
+</P
+><P
+>&#13;For the moment, let us require that the size of the array A equals the
+length of the list xs when <FONT
+COLOR="RED"
+>array_copy_from_list(A, xs)</FONT
+> is
+called.  Following is an implementation of <FONT
+COLOR="RED"
+>array_copy_from_list</FONT
+>
+in ATS that makes use of an unsafe function (<FONT
+COLOR="RED"
+>ptr0_set</FONT
+>) declared
+in <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/unsafe.sats"
+TARGET="_top"
+>unsafe.sats</A
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2163"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">staload</span>
+UN <span class="keyword">=</span> "prelude/SATS/unsafe.sats"
+
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+array_copy_from_list
+  <span class="keyword">(</span>A<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+<span class="keyword">(</span>
+  p<span class="keyword">:</span> <span class="staexp">ptr</span><span class="keyword">,</span> xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_set&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>p<span class="keyword">,</span> x<span class="keyword">)</span></span> <span class="keyword">in</span> loop <span class="keyword">(</span>ptr0_succ&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>p<span class="keyword">)</span><span class="keyword">,</span> xs<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="comment">// end of [list0_cons]</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [loop] *)</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span>array0_get_ref<span class="keyword">(</span>A<span class="keyword">)</span><span class="keyword">,</span> xs<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [array_copy_from_list]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a type T, a pointer p, and a value x of the type T,
+<FONT
+COLOR="RED"
+>ptr0_set&#60;T&#62; (p, x)</FONT
+> stores the value x at the location to
+which p points.  Like <FONT
+COLOR="RED"
+>ptr0_get</FONT
+>, <FONT
+COLOR="RED"
+>ptr0_set</FONT
+> is
+inherently unsafe as there is simply no guarantee that p actually points to
+a valid memory location where a value of the type T can be stored.  The
+function <FONT
+COLOR="RED"
+>array0_get_ref</FONT
+>, which is declared in
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/libats/ML/SATS/array0.sats"
+TARGET="_top"
+>array0.sats</A
+>, returns the
+pointer to the C-style array associated with a given array0-value.
+
+</P
+><P
+>&#13;Please find the entire code for this example
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_CINTERACT/ArrayCopyFromList.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2109.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2172.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Calling External Functions in ATS</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2009.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Exporting Types in ATS for Use in C</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

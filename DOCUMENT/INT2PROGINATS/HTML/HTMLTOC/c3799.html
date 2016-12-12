@@ -160,12 +160,14 @@ NAME="AEN3806"
 ></A
 ><PRE
 CLASS="programlisting"
->datavtype
+>//
+datavtype
 option_vt (a:t@ype+, bool) =
   | Some_vt (a, true) of a | None_vt (a, false) of ()
 // end of [option_vt]
-
-vtypedef Option_vt (a:t@ype) = [b:bool] option_vt (a, b)
+//
+vtypedef Option_vt (a:t@ype) = [b:bool] option_vt(a, b)
+//
 </PRE
 ><P
 ></P

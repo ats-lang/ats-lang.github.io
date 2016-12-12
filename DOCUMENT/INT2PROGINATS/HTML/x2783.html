@@ -99,24 +99,26 @@ NAME="AEN2787"
 ><PRE
 CLASS="programlisting"
 >fun{
-a1,
-a2:t@ype
-}{b:t@ype
+a,b:t@ype
+}{c:t@ype
 } list_zipwith
   {n:nat}
 (
-  xs1: list (a1, n)
-, xs2: list (a2, n)
-, f: (a1, a2) -&#60;cloref1&#62; b
-) : list (b, n) =
-  case+ (xs1, xs2) of
-  | (list_cons (x1, xs1),
-     list_cons (x2, xs2)) =&#62;
-    (
-      list_cons{b}(f (x1, x2), list_zipwith&#60;a1,a2&#62;&#60;b&#62; (xs1, xs2, f))
-    )
-  | (_, _) =&#62; list_nil (*void*)
-// end of [list_zipwith]
+  xs: list(a, n)
+, ys: list(b, n)
+, f: (a, b) -&#60;cloref1&#62; c
+) : list(c, n) = (
+//
+case+ (xs, ys) of
+| (
+    list_cons(x, xs)
+  , list_cons(y, ys)) =&#62;
+  (
+    list_cons(f(x, y), list_zipwith&#60;a,b&#62;&#60;c&#62;(xs, ys, f))
+  )
+| (_, _) =&#62; list_nil((*void*))
+//
+) (* end of [list_zipwith] *)
 </PRE
 ><P
 ></P
@@ -129,7 +131,7 @@ nondeterministically (rather than sequentially). In this example, the
 second clause fails to typecheck as it is done without the assumption of
 the given pair <FONT
 COLOR="RED"
->(xs1, xs2)</FONT
+>(xs, ys)</FONT
 > failing to match the pattern
 guard associated with the first clause.  The second clause can be modified
 slightly as follows to pass typechecking:
@@ -143,7 +145,7 @@ NAME="AEN2790"
 ></A
 ><PRE
 CLASS="programlisting"
->  | (_, _) =&#62;&#62; list_nil ()
+>  | (_, _) =&#62;&#62; list_nil((*void*))
 </PRE
 ><P
 ></P
@@ -164,7 +166,7 @@ match the pattern guards associated with any previous clauses. Therefore,
 when the modified second clause is typechecked, it can be assumed that the
 pair <FONT
 COLOR="RED"
->(xs1, xs2)</FONT
+>(xs, ys)</FONT
 > matching the pattern <FONT
 COLOR="RED"
 >(_, _)</FONT
@@ -178,7 +180,7 @@ match one of the following three patterns:
 ><P
 >&#13;<FONT
 COLOR="RED"
->(list_cons (_, _), list_nil ())</FONT
+>(list_cons _, list_nil ())</FONT
 >
 </P
 ></LI
@@ -186,7 +188,7 @@ COLOR="RED"
 ><P
 >&#13;<FONT
 COLOR="RED"
->(list_nil (), list_cons (_, _))</FONT
+>(list_nil (), list_cons _)</FONT
 >
 </P
 ></LI
@@ -203,14 +205,14 @@ COLOR="RED"
 
 Given that <FONT
 COLOR="RED"
->xs1</FONT
+>xs</FONT
 > and <FONT
 COLOR="RED"
->xs2</FONT
+>ys</FONT
 > are of the same length,
 the typechecker can readily infer that <FONT
 COLOR="RED"
->(xs1, xs2)</FONT
+>(xs, ys)</FONT
 > cannot match
 either of the first two patterns. After these two patterns are ruled out,
 typechecking is essentially done as if the second clause was written as follows:
@@ -224,7 +226,7 @@ NAME="AEN2809"
 ></A
 ><PRE
 CLASS="programlisting"
->  | (list_nil (), list_nil ()) =&#62; list_nil ()
+>  | (list_nil(), list_nil()) =&#62; list_nil((*void*))
 </PRE
 ><P
 ></P

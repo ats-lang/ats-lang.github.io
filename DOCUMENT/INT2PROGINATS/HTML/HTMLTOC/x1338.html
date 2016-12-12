@@ -131,7 +131,7 @@ NAME="AEN1347"
 ></A
 ><PRE
 CLASS="programlisting"
->cons0 (0, cons0 (1, 2 :: 3 :: 4 :: nil0 ()))
+>cons0(0, cons0(1, 2 :: 3 :: 4 :: nil0((*void*))))
 </PRE
 ><P
 ></P
@@ -165,9 +165,10 @@ NAME="AEN1353"
 ></A
 ><PRE
 CLASS="programlisting"
->typedef
+>//
+typedef
 lte (a:t@ype) = (a, a) -&#62; bool
-
+//
 fun{
 a:t@ype
 } merge (
@@ -178,7 +179,7 @@ a:t@ype
   | cons0 (x, xs1) =&#62; (
     case+ ys of
     | cons0 (y, ys1) =&#62;
-        if x \lte y then
+        if x lte y then
           cons0{a}(x, merge&#60;a&#62; (xs1, ys, lte))
         else
           cons0{a}(y, merge&#60;a&#62; (xs, ys1, lte))
@@ -187,6 +188,7 @@ a:t@ype
     ) // end of [cons0]
   | nil0 () =&#62; ys
 ) (* end of [merge] *)
+//
 </PRE
 ><P
 ></P
@@ -206,18 +208,18 @@ COLOR="RED"
 > is (1, 2, 3, 4, 5, 6,
 7, 8, 9). The syntax <FONT
 COLOR="RED"
->\lte</FONT
+>lte</FONT
 > means that the particular occurrence
 of <FONT
 COLOR="RED"
 >lte</FONT
 > following the backslash symbol (<FONT
 COLOR="RED"
->\</FONT
+></FONT
 >) is
 given the infix status, and thus the expression <FONT
 COLOR="RED"
->x \lte y</FONT
+>x lte y</FONT
 >
 means the same as <FONT
 COLOR="RED"

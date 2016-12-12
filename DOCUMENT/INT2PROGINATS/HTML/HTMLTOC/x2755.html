@@ -132,13 +132,13 @@ a:t@ype
   xs0: list (a, m), ys0: list (a, n), lte: lte a
 ) : list (a, m+n) =
   case+ xs0 of
-  | list_nil () =&#62; ys0
-  | list_cons (x, xs1) =&#62;
+  | list_nil() =&#62; ys0
+  | list_cons(x, xs1) =&#62;
     (
     case+ ys0 of
-    | list_nil () =&#62; xs0
-    | list_cons (y, ys1) =&#62;
-        if x \lte y
+    | list_nil() =&#62; xs0
+    | list_cons(y, ys1) =&#62;
+        if x lte y
           then list_cons (x, merge (xs1, ys0, lte))
           else list_cons (y, merge (xs0, ys1, lte))
         // end of [if]
@@ -185,6 +185,7 @@ a:t@ype
 (
   xs: list (a, n), lte: lte a
 ) : list (a, n) = let
+//
   fun msort
     {n:nat} .&#60;n,n&#62;.
   (
@@ -213,9 +214,9 @@ a:t@ype
       merge (xsf, xs, lte)
     end // end of [if]
   // end of [split]
-  val n = list_length&#60;a&#62; (xs)
+//
 in
-  msort (xs, n, lte)
+  msort(xs, list_length&#60;a&#62;(xs), lte)
 end // end of [mergesort]
 </PRE
 ><P

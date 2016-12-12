@@ -1,0 +1,277 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Conditional Expressions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Elements of Programming"
+HREF="c96.html"><LINK
+REL="PREVIOUS"
+TITLE="Records and Record Types"
+HREF="x322.html"><LINK
+REL="NEXT"
+TITLE="Sequence Expressions"
+HREF="x378.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x322.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Elements of Programming</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x378.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="conditional_expressions"
+>Conditional Expressions</A
+></H1
+><P
+>A conditional expression consists of a test and two branches. For instance,
+the following expression is conditional:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN353"
+></A
+><PRE
+CLASS="programlisting"
+>if (x &#62;= 0) then x else ~x
+</PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>if</FONT
+>, <FONT
+COLOR="RED"
+>then</FONT
+> and <FONT
+COLOR="RED"
+>else</FONT
+> are keywords
+in ATS. In a conditional expression, the expression following
+<FONT
+COLOR="RED"
+>if</FONT
+> is the test and the expressions following <FONT
+COLOR="RED"
+>then</FONT
+>
+and <FONT
+COLOR="RED"
+>else</FONT
+> are referred to as the then-branch and the
+else-branch (of the conditional expression), respectively.
+</P
+><P
+>&#13;In order to assign a type T to a conditional expression, we need to assign
+the type <FONT
+COLOR="RED"
+>bool</FONT
+> to the test and the type T to both of the
+then-branch and the else-branch. For instance, the type <FONT
+COLOR="RED"
+>int</FONT
+> can
+be assigned to the above conditional expression if the name <FONT
+COLOR="RED"
+>x</FONT
+>
+is given the type <FONT
+COLOR="RED"
+>int</FONT
+>.  </P
+><P
+>&#13;Suppose that we have a conditional expression that is well-typed. When
+evaluating it, we first evaluate the test to a value, which is guaranteed
+to be either <FONT
+COLOR="RED"
+>true</FONT
+> or <FONT
+COLOR="RED"
+>false</FONT
+>; if the value is
+<FONT
+COLOR="RED"
+>true</FONT
+>, then we continue to evaluate the then-branch; otherwise,
+we continue to evaluate the else-branch.  </P
+><P
+>&#13;It is also allowed to form a conditional expression where the else-branch
+is missing or truncated. For instance, we can form an expression as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN371"
+></A
+><PRE
+CLASS="programlisting"
+>if (x &#62;= 0) then print(x)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+which is equivalent to the following conditional expression:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN373"
+></A
+><PRE
+CLASS="programlisting"
+>if (x &#62;= 0) then print(x) else ()
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>()</FONT
+> stands for the void value (of the type
+<FONT
+COLOR="RED"
+>void</FONT
+>). If a type can be assigned to a conditional expression
+in the truncated form, then the type must be <FONT
+COLOR="RED"
+>void</FONT
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x322.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x378.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Records and Record Types</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c96.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Sequence Expressions</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

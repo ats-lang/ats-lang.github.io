@@ -97,12 +97,14 @@ NAME="AEN322"
 ></A
 ><PRE
 CLASS="programlisting"
->&#13;typedef point2D = @{ x= double, y= double }
+>typedef
+point2D = @{ x= double, y= double }
 </PRE
 ><P
 ></P
 ></DIV
 >
+
 
 where <FONT
 COLOR="RED"
@@ -135,12 +137,14 @@ NAME="AEN329"
 ></A
 ><PRE
 CLASS="programlisting"
->&#13;val theOrigin = @{ x= 0.0, y= 0.0 } : point2D
+>val theOrigin = @{ x= 0.0, y= 0.0 } : point2D
 </PRE
 ><P
 ></P
 ></DIV
 >
+
+
 </P
 ><P
 >We can use the standard dot notation to extract out a selected component in
@@ -155,12 +159,13 @@ NAME="AEN332"
 ></A
 ><PRE
 CLASS="programlisting"
->&#13;val theOrigin_x = theOrigin.x and theOrigin_y = theOrigin.y
+>val theOrigin_x = theOrigin.x and theOrigin_y = theOrigin.y
 </PRE
 ><P
 ></P
 ></DIV
 >
+
 
 Alternatively, we can use pattern matching for doing component extraction
 as is done in the next line of code:
@@ -174,12 +179,13 @@ NAME="AEN334"
 ></A
 ><PRE
 CLASS="programlisting"
->&#13;val @{ x= theOrigin_x, y= theOrigin_y } = theOrigin
+>val @{ x= theOrigin_x, y= theOrigin_y } = theOrigin
 </PRE
 ><P
 ></P
 ></DIV
 >
+
 
 In this case, the names <FONT
 COLOR="RED"
@@ -212,13 +218,14 @@ NAME="AEN341"
 ></A
 ><PRE
 CLASS="programlisting"
->&#13;val @{ x= theOrigin_x, ... } = theOrigin // the x-component only 
+>val @{ x= theOrigin_x, ... } = theOrigin // the x-component only 
 val @{ y= theOrigin_y, ... } = theOrigin // the y-component only 
 </PRE
 ><P
 ></P
 ></DIV
 >
+
 
 If you find all this syntax for component extraction to be confusing, then
 I suggest that you stick to the dot notation. I myself rarely use pattern

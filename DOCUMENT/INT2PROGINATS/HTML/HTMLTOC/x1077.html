@@ -1,0 +1,324 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Binary Search Tree</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Datatypes"
+HREF="c909.html"><LINK
+REL="PREVIOUS"
+TITLE="Exhaustiveness of Pattern-Matching"
+HREF="x1031.html"><LINK
+REL="NEXT"
+TITLE="Example: Evaluating Integer Expressions"
+HREF="x1100.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1031.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Datatypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1100.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_binary_search_tree"
+>Example: Binary Search Tree</A
+></H1
+><P
+>&#13;A binary search tree is a binary tree satisfying the following property:
+for each node in the tree, the key stored in the node is greater than or
+equal to every key stored in the left child of the node and less than or
+equal to every key stored in the right child of the node. In other words, a
+binary tree is a binary search tree if a pre-order traversal encounters a
+sequence of keys ordered ascendingly (according to some ordering on keys). In
+practice, binary search trees are commonly employed to represent sets and
+maps.
+
+</P
+><P
+>&#13;The following declaration introduces a datatype <FONT
+COLOR="RED"
+>bstree</FONT
+> for
+binary search trees in which the stored keys are strings:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1082"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">datatype</span> <span class="staexp">bstree <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="dynexp">E <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">B <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">bstree</span><span class="keyword">,</span> <span class="staexp">string</span><span class="keyword">,</span> <span class="staexp">bstree</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [bstree]</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;It should be noted that not every value of the type <FONT
+COLOR="RED"
+>bstree</FONT
+>
+represents a valid binary search tree as it is certainly possible to
+construct a value representing a binary tree but not a binary search tree.
+
+</P
+><P
+>&#13;The following function [bstree_inord] does a in-order traversal of a
+given binary tree:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1087"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+bstree_inord
+<span class="keyword">(</span>
+  t0<span class="keyword">:</span> <span class="staexp">bstree</span><span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="staexp">string</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">void</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> t0 <span class="keyword">of</span>
+<span class="keyword">|</span> E <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> B <span class="keyword">(</span>t1<span class="keyword">,</span> k<span class="keyword">,</span> t2<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="keyword">{</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> bstree_inord <span class="keyword">(</span>t1<span class="keyword">,</span> fwork<span class="keyword">)</span></span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fwork <span class="keyword">(</span>k<span class="keyword">)</span></span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> bstree_inord <span class="keyword">(</span>t2<span class="keyword">,</span> fwork<span class="keyword">)</span></span>
+  <span class="keyword">}</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [bstree_inord] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;If [t0] is a binary search tree, then the sequence of
+keys processed by [fwork] are ordered ascendingly.
+
+</P
+><P
+>&#13;Given a binary search tree and a key, the following function
+[bstree_search] checks whether the key is stored inside the tree:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1091"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+bstree_search
+<span class="keyword">(</span>
+  t0<span class="keyword">:</span> <span class="staexp">bstree</span><span class="keyword">,</span> k0<span class="keyword">:</span> <span class="staexp">string</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> t0 <span class="keyword">of</span>
+<span class="keyword">|</span> E <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> false
+<span class="keyword">|</span> B <span class="keyword">(</span>t1<span class="keyword">,</span> k<span class="keyword">,</span> t2<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> sgn <span class="keyword">=</span> compare <span class="keyword">(</span>k0<span class="keyword">,</span> k<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">case+</span> <span class="dynexp">0</span> <span class="keyword">of</span>
+    <span class="keyword">|</span> _ <span class="keyword">when</span> sgn <span class="keyword">&lt;</span> <span class="dynexp">0</span> <span class="keyword">=&gt;</span> bstree_search <span class="keyword">(</span>t1<span class="keyword">,</span> k0<span class="keyword">)</span>
+    <span class="keyword">|</span> _ <span class="keyword">when</span> sgn <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">=&gt;</span> bstree_search <span class="keyword">(</span>t2<span class="keyword">,</span> k0<span class="keyword">)</span>
+    <span class="keyword">|</span> _ <span class="comment">(*k0 = k*)</span> <span class="keyword">=&gt;</span> true
+  <span class="keyword">end</span> <span class="comment">// end of [B]</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [bstree_search] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;Note that [bstree_search] returns true if the given key is
+found. Otherwise, it returns false.
+
+</P
+><P
+>&#13;Given a binary search tree and a key, the following function
+[bstree_insert] inserts the key into the tree:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1095"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+bstree_insert
+<span class="keyword">(</span>
+  t0<span class="keyword">:</span> <span class="staexp">bstree</span><span class="keyword">,</span> k0<span class="keyword">:</span> <span class="staexp">string</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bstree</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> t0 <span class="keyword">of</span>
+<span class="keyword">|</span> E <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> B <span class="keyword">(</span>E<span class="keyword">,</span> k0<span class="keyword">,</span> E<span class="keyword">)</span>
+<span class="keyword">|</span> B <span class="keyword">(</span>t1<span class="keyword">,</span> k<span class="keyword">,</span> t2<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> sgn <span class="keyword">=</span> compare <span class="keyword">(</span>k0<span class="keyword">,</span> k<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">case+</span> <span class="dynexp">0</span> <span class="keyword">of</span>
+    <span class="keyword">|</span> _ <span class="keyword">when</span> sgn <span class="keyword">&lt;</span> <span class="dynexp">0</span> <span class="keyword">=&gt;</span> B <span class="keyword">(</span>bstree_insert <span class="keyword">(</span>t1<span class="keyword">,</span> k0<span class="keyword">)</span><span class="keyword">,</span> k<span class="keyword">,</span> t2<span class="keyword">)</span>
+    <span class="keyword">|</span> _ <span class="keyword">when</span> sgn <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">=&gt;</span> B <span class="keyword">(</span>t1<span class="keyword">,</span> k<span class="keyword">,</span> bstree_insert <span class="keyword">(</span>t2<span class="keyword">,</span> k0<span class="keyword">)</span><span class="keyword">)</span>
+    <span class="keyword">|</span> _ <span class="comment">(*k0 = k*)</span> <span class="keyword">=&gt;</span> t0 <span class="comment">// [k0] found and no actual insertion</span>
+  <span class="keyword">end</span> <span class="comment">// end of [B]</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [bstree_insert] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;Note that [bstree_insert] inserts the key only if it is not already stored
+inside the given tree. Also, if inserted, the key is always stored in a newly
+created leaf node.
+
+</P
+><P
+>&#13;Please find
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_DATATYPE/bstree.dats"
+TARGET="_top"
+>on-line</A
+>
+the entirety of the code in this section plus some additional code for
+testing.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1031.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1100.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Exhaustiveness of Pattern-Matching</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c909.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Evaluating Integer Expressions</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

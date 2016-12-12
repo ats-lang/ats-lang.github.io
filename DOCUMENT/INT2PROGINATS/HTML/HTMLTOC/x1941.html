@@ -1,0 +1,404 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>&#13;Example: A Package for Rationals
+</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Modularity"
+HREF="c1707.html"><LINK
+REL="PREVIOUS"
+TITLE="
+Abstract Types
+"
+HREF="x1907.html"><LINK
+REL="NEXT"
+TITLE="
+Example: A Functorial Package for Rationals
+"
+HREF="x1981.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1907.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. Modularity</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1981.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_a_package_for_rationals"
+>Example: A Package for Rationals</A
+></H1
+><P
+>&#13;Let us represent a rational number as a pair of integers.  If we declare a
+boxed abstract type <FONT
+COLOR="RED"
+>rat</FONT
+> for values representing rational
+numbers, then each value of the type <FONT
+COLOR="RED"
+>rat</FONT
+> is stored in
+heap-allocated memory, which can only be reclaimed through garbage
+collection (GC). Instead, we follow an alternative approach by declaring
+<FONT
+COLOR="RED"
+>rat</FONT
+> as an unboxed abstract type. Therefore, a declaration like
+the following one is expected:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1947"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="staexp"><span class="keyword">abst@ype</span> rat</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The problem with this declaration is that it is too abstract. As there is
+not information given about the size of the type <FONT
+COLOR="RED"
+>rat</FONT
+>, the ATS
+compiler does not even know how much memory is needed for storing a value
+of the type <FONT
+COLOR="RED"
+>rat</FONT
+>. However, the programmer should not assume that
+such a form of declaration is useless. There are realistic circumstances
+where a declaration of this form can be of great importance, and this is a
+topic I will cover elsewhere. For now, let us declare an unboxed abstract
+type as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1951"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="staexp"><span class="keyword">abst@ype</span> rat <span class="keyword">=</span> <span class="keyword">(</span>int<span class="keyword">,</span> int<span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+This declaration simply informs the ATS compiler that the representation
+for values of the type <FONT
+COLOR="RED"
+>rat</FONT
+> is the same as the one for values of
+the type <FONT
+COLOR="RED"
+>(int, int)</FONT
+>. However, this information is not made
+available to the typechecker of ATS. In particular, if a value of the type
+<FONT
+COLOR="RED"
+>rat</FONT
+> is treated as a pair of integers in a program, then a
+type-error will surely occur.  </P
+><P
+>The following code is contained in a file named
+<TT
+CLASS="filename"
+>ratmod.sats</TT
+>, which is available
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_MODULARITY/ratmod.sats"
+TARGET="_top"
+>on-line</A
+>.
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1959"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">exception</span> <span class="dynexp">Denominator</span>
+<span class="keyword">exception</span> <span class="dynexp">DivisionByZero</span>
+
+<span class="dynexp"><span class="keyword">fun</span> rat_make_int_int <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> q<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">rat</span></span>
+
+<span class="dynexp"><span class="keyword">fun</span> ratneg<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">rat</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">rat</span></span> <span class="comment">// negation</span>
+<span class="dynexp"><span class="keyword">fun</span> ratadd<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">rat</span><span class="keyword">,</span> <span class="staexp">rat</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">rat</span></span> <span class="comment">// addition</span>
+<span class="dynexp"><span class="keyword">fun</span> ratsub<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">rat</span><span class="keyword">,</span> <span class="staexp">rat</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">rat</span></span> <span class="comment">// subtraction</span>
+<span class="dynexp"><span class="keyword">fun</span> ratmul<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">rat</span><span class="keyword">,</span> <span class="staexp">rat</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">rat</span></span> <span class="comment">// multiplication</span>
+<span class="dynexp"><span class="keyword">fun</span> ratdiv<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">rat</span><span class="keyword">,</span> <span class="staexp">rat</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">rat</span></span> <span class="comment">// division</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The exception <FONT
+COLOR="RED"
+>Denominator</FONT
+> is for reporting an erroneous
+occasion where a rational number is to be formed with a denominator equal
+to zero.  Given two integers representing the numerator and denominator of
+a rational number, the function <FONT
+COLOR="RED"
+>rat_make_int_int</FONT
+> returns a
+value representing the rational number. The following implementation of
+<FONT
+COLOR="RED"
+>rat_make_int_int</FONT
+> can be found in a file named
+<TT
+CLASS="filename"
+>ratmod.dats</TT
+>, which is also available
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_MODULARITY/ratmod.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1966"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+rat_make_int_int <span class="keyword">(</span>p<span class="keyword">,</span> q<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">fun</span> make <span class="keyword">(</span>
+    p<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> q<span class="keyword">:</span> <span class="staexp">int</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">rat</span> <span class="keyword">=</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> r <span class="keyword">=</span> gcd <span class="keyword">(</span>p<span class="keyword">,</span> q<span class="keyword">)</span></span> <span class="keyword">in</span> <span class="keyword">(</span>p / r<span class="keyword">,</span> q / r<span class="keyword">)</span>
+  <span class="keyword">end</span></span> <span class="comment">// end of [make]</span>
+<span class="comment">//</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">if</span> q <span class="keyword">=</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="dynexp"><span class="keyword">$raise</span> Denominator</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> q <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> make <span class="keyword">(</span>p<span class="keyword">,</span> q<span class="keyword">)</span> <span class="keyword">else</span> make <span class="keyword">(</span><span class="keyword">~</span>p<span class="keyword">,</span> <span class="keyword">~</span>q<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [rat_make_int_int]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a pair of integers p and q such that q is not zero, the function
+<FONT
+COLOR="RED"
+>rat_make_int_int</FONT
+> returns another pair of integers
+p<SUB
+>1</SUB
+> and q<SUB
+>1</SUB
+> such that
+q<SUB
+>1</SUB
+> is positive, p<SUB
+>1</SUB
+> and
+q<SUB
+>1</SUB
+> are coprimes, that is, their greatest common
+divisor is 1, and p<SUB
+>1</SUB
+>/q<SUB
+>1</SUB
+>
+equals p/q. With <FONT
+COLOR="RED"
+>rat_make_int_int</FONT
+>, it is straightforward to
+implement as follows the arithmetic operations on rational numbers:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1977"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span> ratneg <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">~</span>x<span class="dynexp"><span class="keyword">.0</span></span><span class="keyword">,</span> x<span class="dynexp"><span class="keyword">.1</span></span><span class="keyword">)</span></span>
+
+<span class="dynexp"><span class="keyword">implement</span>
+ratadd <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span>
+  rat_make_int_int <span class="keyword">(</span>x<span class="dynexp"><span class="keyword">.0</span></span> * y<span class="dynexp"><span class="keyword">.1</span></span> + x<span class="dynexp"><span class="keyword">.1</span></span> * y<span class="dynexp"><span class="keyword">.0</span></span><span class="keyword">,</span> x<span class="dynexp"><span class="keyword">.1</span></span> * y<span class="dynexp"><span class="keyword">.1</span></span><span class="keyword">)</span></span>
+<span class="comment">// end of [ratadd]</span>
+
+<span class="dynexp"><span class="keyword">implement</span>
+ratsub <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span>
+  rat_make_int_int <span class="keyword">(</span>x<span class="dynexp"><span class="keyword">.0</span></span> * y<span class="dynexp"><span class="keyword">.1</span></span> - x<span class="dynexp"><span class="keyword">.1</span></span> * y<span class="dynexp"><span class="keyword">.0</span></span><span class="keyword">,</span> x<span class="dynexp"><span class="keyword">.1</span></span> * y<span class="dynexp"><span class="keyword">.1</span></span><span class="keyword">)</span></span>
+<span class="comment">// end of [ratsub]</span>
+
+<span class="dynexp"><span class="keyword">implement</span>
+ratmul <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> rat_make_int_int <span class="keyword">(</span>x<span class="dynexp"><span class="keyword">.0</span></span> * y<span class="dynexp"><span class="keyword">.0</span></span><span class="keyword">,</span> x<span class="dynexp"><span class="keyword">.1</span></span> * y<span class="dynexp"><span class="keyword">.1</span></span><span class="keyword">)</span></span>
+
+<span class="dynexp"><span class="keyword">implement</span>
+ratdiv <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>
+<span class="keyword">if</span> y<span class="dynexp"><span class="keyword">.0</span></span> <span class="keyword">&gt;</span> <span class="dynexp">0</span>
+  <span class="keyword">then</span> rat_make_int_int <span class="keyword">(</span>x<span class="dynexp"><span class="keyword">.0</span></span> * y<span class="dynexp"><span class="keyword">.1</span></span><span class="keyword">,</span> x<span class="dynexp"><span class="keyword">.1</span></span> * y<span class="dynexp"><span class="keyword">.0</span></span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp"><span class="keyword">$raise</span> DivisionByZero<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">// end of [if]</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [ratdiv] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+There is also some testing code available
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_MODULARITY/test_ratmod.dats"
+TARGET="_top"
+>on-line</A
+> that makes
+use of some functions declared in <TT
+CLASS="filename"
+>ratmod.sats</TT
+>.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1907.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1981.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Abstract Types</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1707.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: A Functorial Package for Rationals</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

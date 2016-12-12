@@ -199,8 +199,7 @@ NAME="AEN1385"
 ></A
 ><PRE
 CLASS="programlisting"
->let val _ = [] in print ("Terminated") end
-</PRE
+>let val _ = [] in print ("Terminated") end</PRE
 ><P
 ></P
 ></DIV
@@ -316,7 +315,7 @@ NAME="AEN1407"
 CLASS="programlisting"
 >exception DivisionByZero of ()
 fun divexn (x: int, y: int): int =
-  if y != 0 then then x / y else $raise DivisionByZero()
+  if y != 0 then x / y else $raise DivisionByZero()
 // end of [divexn]
 </PRE
 ><P
@@ -396,7 +395,7 @@ CLASS="programlisting"
 >fun listprod1
 (
   xs: list0 (int)
-): int =
+) : int =
 (
   case+ xs of
   | list0_nil () =&#62; 1

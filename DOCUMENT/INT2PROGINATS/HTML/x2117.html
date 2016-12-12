@@ -159,7 +159,7 @@ NAME="AEN2131"
 ></A
 ><PRE
 CLASS="programlisting"
->&#13;staload
+>staload
 UN = "prelude/SATS/unsafe.sats"
 
 (* ****** ****** *)
@@ -167,11 +167,14 @@ UN = "prelude/SATS/unsafe.sats"
 implement
 strcmp (str1, str2) = let
 //
-fun loop
-  (p1: ptr, p2: ptr): int = let
+fun
+loop
+(
+  p1: ptr, p2: ptr
+) : int = let
 //
-val c1 = $UN.ptr0_get&#60;uchar&#62; (p1)
-val c2 = $UN.ptr0_get&#60;uchar&#62; (p2)
+val c1 = $UN.ptr0_get&#60;uchar&#62;(p1)
+val c2 = $UN.ptr0_get&#60;uchar&#62;(p2)
 //
 in
   case+ 0 of
@@ -180,7 +183,7 @@ in
   | _ (* c1 = c2 *) =&#62;
     (
       if $UN.cast{int}(c1) = 0
-        then 0 else loop (ptr0_succ&#60;uchar&#62; (p1), ptr0_succ&#60;uchar&#62; (p2))
+        then 0 else loop (ptr0_succ&#60;uchar&#62;(p1), ptr0_succ&#60;uchar&#62;(p2))
       // end of [if]
     )
 end (* end of [loop] *)
@@ -206,9 +209,9 @@ TARGET="_top"
 >unsafe.sats</A
 >. Given a type T and a pointer p, <FONT
 COLOR="RED"
->ptr0_get&#60;T&#62;
-(p)</FONT
-> fetches the value of the type T stored at the location to which p
+>ptr0_get&#60;T&#62;(p)</FONT
+>
+fetches the value of the type T stored at the location to which p
 points.  Note that <FONT
 COLOR="RED"
 >ptr0_get</FONT
@@ -230,7 +233,7 @@ TARGET="_top"
 >, is
 type-safe. Given a type T, <FONT
 COLOR="RED"
->ptr0_succ&#60;T&#62; (p)</FONT
+>ptr0_succ&#60;T&#62;(p)</FONT
 > returns the
 pointer that is n bytes after p, where n equals the size of T.
 
@@ -372,13 +375,13 @@ array_copy_from_list
 //
 fun loop
 (
-  p: ptr, xs: list0 (a)
+  p: ptr, xs: list0(a)
 ) : void =
 (
 case+ xs of
-| list0_nil () =&#62; ()
-| list0_cons (x, xs) =&#62; let
-    val () = $UN.ptr0_set&#60;a&#62; (p, x) in loop (ptr0_succ&#60;a&#62; (p), xs)
+| list0_nil() =&#62; ()
+| list0_cons(x, xs) =&#62; let
+    val () = $UN.ptr0_set&#60;a&#62;(p, x) in loop (ptr0_succ&#60;a&#62;(p), xs)
   end // end of [list0_cons]
 ) (* end of [loop] *)
 //

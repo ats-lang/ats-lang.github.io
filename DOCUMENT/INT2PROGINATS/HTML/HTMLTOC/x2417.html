@@ -142,15 +142,17 @@ NAME="AEN2427"
 ></A
 ><PRE
 CLASS="programlisting"
->fun string_is_atend
+>//
+fun string_is_atend
   {n:int}{i:nat | i &#60;= n}
   (str: string (n), i: size_t (i)): bool (i==n)
 // end of [string_is_atend]
-
+//
 fun string_isnot_atend
   {n:int}{i:nat | i &#60;= n}
   (str: string (n), i: size_t (i)): bool (i &#60; n)
 // end of [string_isnot_atend]
+//
 </PRE
 ><P
 ></P
@@ -219,17 +221,19 @@ NAME="AEN2435"
 ></A
 ><PRE
 CLASS="programlisting"
->typedef charNZ = [c:int | c != '\000'] char (c)
-
+>//
+typedef charNZ = [c:int | c != 0] char(c)
+//
 fun
-string_get_at{n:int}
-  {i:nat | i &#60; n} (str: string n, i: size_t i): charNZ
+string_get_at
+  {n:int}{i:nat | i &#60; n}(str: string n, i: size_t i): charNZ
 overload [] with string_get_at
-
+//
 fun
-string_set_char_at{n:int}
-  {i:nat | i &#60; n} (str: string n, i: size_t i, c: charNZ): void
+string_set_char_at
+  {n:int}{i:nat | i &#60; n}(str: string n, i: size_t i, c: charNZ): void
 overload [] with string_set_char_at
+//
 </PRE
 ><P
 ></P
@@ -375,10 +379,12 @@ loop{i:nat | i &#60;= n}
   typedef res = sizeLt (n)
   val c = string_test_at (str, i)
 in
-  if c != '\000' then
+  if c != '000' then
   (
-    if (c0 = c) then Some{res}(i) else loop (str, c0, succ(i))
-  ) else None ((*void*)) // end of [if]
+    if (c0 = c)
+      then Some{res}(i) else loop(str, c0, succ(i))
+    // end of [if]
+  ) else None((*void*)) // end of [if]
 end // end of [loop]
 //
 in
@@ -411,7 +417,7 @@ string_test_at
   {n:int}{i:nat | i &#60;= n}
 (
   str: string (n), i: size_t (i)
-) : [c:char | (c != NUL &#38;&#38; i &#60; n) || (c == NUL &#38;&#38; i &#62;= n)] char c
+) : [c:char | (c != NUL &#38;&#38; i &#60; n) || (c == NUL &#38;&#38; i &#62;= n)] char(c)
 // end of [string_test_at]
 </PRE
 ><P

@@ -197,13 +197,14 @@ NAME="AEN818"
 ></A
 ><PRE
 CLASS="programlisting"
->fun ifold
+>//
+fun ifold
   (n: int, f: (int, int) -&#62; int, ini: int): int =
   if n &#62; 0 then f (ifold (n-1, f, ini), n) else ini
-// end of [ifold]
-
+//
 fun sum (n: int): int = ifold (n, lam (res, x) =&#62; res + x, 0)
 fun prod (n: int): int = ifold (n, lam (res, x) =&#62; res * x, 1)
+//
 </PRE
 ><P
 ></P
@@ -302,16 +303,20 @@ NAME="AEN833"
 ></A
 ><PRE
 CLASS="programlisting"
->fun ifold2
+>//
+fun
+ifold2
 (
   n: int, f: (int, int) -&#60;cloref1&#62; int, ini: int
 ) : int =
   if n &#62; 0 then f (ifold2 (n-1, f, ini), n) else ini
 // end of [ifold2]
-
-fun sqrmodsum (n: int, d: int): int =
+//
+fun
+sqrmodsum (n: int, d: int): int =
   ifold2 (n, lam (res, x) =&#62; if x mod d then res + x * x else res, 0)
 // end of [sqrmodsum]
+//
 </PRE
 ><P
 ></P

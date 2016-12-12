@@ -1,0 +1,345 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Datatypes</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Functional Programming"
+HREF="p42.html"><LINK
+REL="PREVIOUS"
+TITLE="Currying and Uncurrying"
+HREF="x892.html"><LINK
+REL="NEXT"
+TITLE="Pattern-Matching"
+HREF="x950.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x892.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x950.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="datatypes"
+></A
+>Chapter 4. Datatypes</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c909.html#patterns"
+>Patterns</A
+></DT
+><DT
+><A
+HREF="x950.html"
+>Pattern-Matching</A
+></DT
+><DT
+><A
+HREF="x971.html"
+>Matching Clauses and Case-Expressions</A
+></DT
+><DT
+><A
+HREF="x978.html"
+>Enumerative Datatypes</A
+></DT
+><DT
+><A
+HREF="x1014.html"
+>Recursively Defined Datatypes</A
+></DT
+><DT
+><A
+HREF="x1031.html"
+>Exhaustiveness of Pattern-Matching</A
+></DT
+><DT
+><A
+HREF="x1077.html"
+>Example: Binary Search Tree</A
+></DT
+><DT
+><A
+HREF="x1100.html"
+>Example: Evaluating Integer Expressions</A
+></DT
+></DL
+></DIV
+><P
+>The feature of datatypes in ATS in largely taken from ML.
+</P
+><P
+>A datatype is
+like a tagged union type. For each datatype, there are some constructors
+associated with it, and these constructors are needed for constructing
+values of the datatype.  As an example, the following syntax declares a
+datatype named <FONT
+COLOR="RED"
+>intopt</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN914"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">datatype</span> <span class="staexp">intopt <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="dynexp">intopt_none <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">intopt_some <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [intopt]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+There are two constructors associated with <FONT
+COLOR="RED"
+>intopt</FONT
+>:
+<FONT
+COLOR="RED"
+>intopt_none</FONT
+>, which is nullary, and <FONT
+COLOR="RED"
+>intopt_some</FONT
+>,
+which is unary. For instance, <FONT
+COLOR="RED"
+>intopt_none()</FONT
+> and
+<FONT
+COLOR="RED"
+>intopt_some(1)</FONT
+> are two values of the type <FONT
+COLOR="RED"
+>intopt</FONT
+>.
+In order for accessing components in such values, a mechanism often
+referred to as pattern-matching is provided in ATS. I will demonstrate
+through examples that datatypes plus pattern matching can offer not only
+great convenience in programming but also clarity in code.
+</P
+><P
+>&#13;The code employed for illustration in this chapter plus some additional
+code for testing is available <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_DATATYPE/"
+TARGET="_top"
+>on-line</A
+>.
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="patterns"
+>Patterns</A
+></H1
+><P
+>Patterns in ATS can be defined inductively as follows:
+
+<P
+></P
+><UL
+><LI
+><P
+>&#13;Certain constant values such as integers, booleans, chars, floating point
+numbers, and strings are patterns.
+</P
+></LI
+><LI
+><P
+>The void-value () is a pattern.</P
+></LI
+><LI
+><P
+>The underscore symbol <FONT
+COLOR="RED"
+>_</FONT
+> represents a special wildcard pattern.
+</P
+></LI
+><LI
+><P
+>Variables are patterns.
+</P
+></LI
+><LI
+><P
+>&#13;A tuple of patterns, either boxed or unboxed, is a pattern.
+</P
+></LI
+><LI
+><P
+>&#13;A record of patterns, either boxed or unboxed, is a pattern.
+</P
+></LI
+><LI
+><P
+>&#13;Given a constructor C, a pattern can be formed by applying C to a given
+list of patterns.
+</P
+></LI
+><LI
+><P
+>&#13;Given a variable x and a pattern pat, (x <FONT
+COLOR="RED"
+>as</FONT
+> pat) is a
+reference-pattern, where <FONT
+COLOR="RED"
+>as</FONT
+> is a keyword.
+</P
+></LI
+><LI
+><P
+>&#13;Some other forms of patterns will be introduced elsewhere.
+</P
+></LI
+></UL
+>
+
+Each variable can occur at most once in a given pattern, and this is
+referred as the linearity restriction on variables in patterns. For
+instance, (x, x) is not a legal pattern as the variable x appears twice in
+it. However, this restriction does not apply to the variable <FONT
+COLOR="RED"
+>_</FONT
+>,
+which represents the wildcard pattern.
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x892.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x950.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Currying and Uncurrying</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p42.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Pattern-Matching</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

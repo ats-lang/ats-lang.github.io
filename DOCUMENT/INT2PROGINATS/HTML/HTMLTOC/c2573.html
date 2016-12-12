@@ -163,9 +163,10 @@ NAME="AEN2583"
 ></A
 ><PRE
 CLASS="programlisting"
->datatype list (t@ype+, int) =
-  | {a:t@ype} list_nil (a, 0) of () // [of ()] is optional
-  | {a:t@ype} {n:nat} list_cons (a, n+1) of (a, list (a, n))
+>datatype
+list(t@ype+, int) =
+  | {a:t@ype} list_nil(a, 0) of () // [of ()] is optional
+  | {a:t@ype} {n:nat} list_cons(a, n+1) of (a, list(a, n))
 </PRE
 ><P
 ></P
@@ -290,9 +291,10 @@ NAME="AEN2608"
 ></A
 ><PRE
 CLASS="programlisting"
->datatype list (a:t@ype+, int) =
-  | list_nil (a, 0) of () // [of ()] is optional
-  | {n:nat} list_cons (a, n+1) of (a, list (a, n))
+>datatype
+list (a:t@ype+, int) =
+  | list_nil(a, 0) of () // [of ()] is optional
+  | {n:nat} list_cons(a, n+1) of (a, list(a, n))
 </PRE
 ><P
 ></P
@@ -336,8 +338,8 @@ a:t@ype
   {n:nat} .&#60;n&#62;.
   // .&#60;n&#62;. is a termination metric
   (xs: list (a, n)): int (n) = case+ xs of
-  | list_nil () =&#62; 0
-  | list_cons (_, xs1) =&#62; 1 + list_length (xs1)
+  | list_nil((*void*)) =&#62; 0
+  | list_cons(_(*x*), xs1) =&#62; 1 + list_length&#60;a&#62;(xs1)
 // end of [list_length]
 </PRE
 ><P
@@ -481,7 +483,7 @@ NAME="AEN2647"
 ></A
 ><PRE
 CLASS="programlisting"
->  | list_nil () =&#62; 0
+>  | list_nil((*void*)) =&#62; 0
 </PRE
 ><P
 ></P
@@ -576,7 +578,7 @@ NAME="AEN2664"
 ><PRE
 CLASS="programlisting"
 >datatype
-option (a:t@ype+, bool) =
+option(a:t@ype+, bool) =
   | Some (a, true) of a | None (a, false) of ()
 // end of [option]
 </PRE

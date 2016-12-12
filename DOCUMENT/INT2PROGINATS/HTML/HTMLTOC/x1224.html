@@ -1,0 +1,372 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Polymorphic Datatypes</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Parametric Polymorphism"
+HREF="c1126.html"><LINK
+REL="PREVIOUS"
+TITLE="Polymorphic Functions"
+HREF="x1177.html"><LINK
+REL="NEXT"
+TITLE="Example: Function Templates on Lists"
+HREF="x1259.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1177.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Parametric Polymorphism</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1259.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="polymorphic_datatypes"
+>Polymorphic Datatypes</A
+></H1
+><P
+>&#13;Code sharing also applies to datatype declarations. For instance, a
+commonly used polymorphic datatype <FONT
+COLOR="RED"
+>list0</FONT
+> is declared as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1228"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">datatype</span>
+<span class="staexp">list0 <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="dynexp">list0_nil <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">list0_cons <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">list0</span> <span class="staexp">a</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [list0]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+More precisely, <FONT
+COLOR="RED"
+>list0</FONT
+> is a type constructor. Given a type T, we
+can form a type <FONT
+COLOR="RED"
+>list0(T)</FONT
+> for lists consisting of elements of
+the type T. For instance, <FONT
+COLOR="RED"
+>list0(char)</FONT
+> is for character lists,
+<FONT
+COLOR="RED"
+>list0(int)</FONT
+> for integer lists, <FONT
+COLOR="RED"
+>list0(list0(int))</FONT
+> for lists
+whose elements are themselves integer lists, etc.  To a great extent, the
+need for function templates or polymorphic functions largely stems from the
+availability of polymorphic datatypes. As an example, a function template
+<FONT
+COLOR="RED"
+>list0_length</FONT
+> is implemented as follows for computing the length
+of any given list:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1236"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_length
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> xs <span class="keyword">of</span>
+  <span class="keyword">|</span> list0_cons <span class="keyword">(</span>_<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">1</span> + list0_length&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">|</span> list0_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">0</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [list0_length] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+When applying <FONT
+COLOR="RED"
+>list0_length</FONT
+> to a list xs, we can in general
+write <FONT
+COLOR="RED"
+>list0_length(xs)</FONT
+>, expecting the typechecker to synthesize
+a proper type parameter for <FONT
+COLOR="RED"
+>list0_length</FONT
+>.  We may also write
+<FONT
+COLOR="RED"
+>list0_length&#60;</FONT
+><FONT
+COLOR="RED"
+>T</FONT
+><FONT
+COLOR="RED"
+>&#62;(xs)</FONT
+> if the
+elements of xs are of the type T. The latter style, though a bit more
+verbose, is likely to yield more informative messages in case type-errors
+occur.
+
+</P
+><P
+>&#13;Another commonly used polymorphic datatype <FONT
+COLOR="RED"
+>option0</FONT
+> is declared as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1246"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">datatype</span>
+<span class="staexp">option0 <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="dynexp">option0_none <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">option0_some <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="staexp">a</span></span></span>
+<span class="comment">// end of [option0]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+A typical use of <FONT
+COLOR="RED"
+>option0</FONT
+> is to perform some kind of
+error-handling. Suppose that we are to implement a function doing integer
+division and we want to make sure that the function returns even if it is
+called in a case where the divisor equals 0. This can be done as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1249"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> divopt
+<span class="keyword">(</span>
+  x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">option0</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> y != <span class="dynexp">0</span> <span class="keyword">then</span> option0_some<span class="staexp"><span class="keyword">{</span>int<span class="keyword">}</span></span><span class="keyword">(</span>x/y<span class="keyword">)</span> <span class="keyword">else</span> option0_none<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+<span class="comment">// end of [divopt]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+By inspecting what <FONT
+COLOR="RED"
+>divopt</FONT
+> returns, we can tell whether integer
+division has been done normally or an error of divsion-by-zero has
+occurred. A realistic use of <FONT
+COLOR="RED"
+>option0</FONT
+> is shown in the following
+implementation of <FONT
+COLOR="RED"
+>list0_last</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1254"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> list0_last
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">option0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> xs <span class="keyword">of</span>
+  <span class="keyword">|</span> list0_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> x <span class="keyword">|</span> list0_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> loop <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [loop] *)</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">case+</span> xs <span class="keyword">of</span>
+  <span class="keyword">|</span> list0_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> option0_none<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span>
+  <span class="keyword">|</span> list0_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> option0_some<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>loop <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [list0_last]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+When applied to a list, <FONT
+COLOR="RED"
+>list0_last</FONT
+> returns an optional
+value. If the value matches the pattern <FONT
+COLOR="RED"
+>option0_none()</FONT
+>, then
+the list is empty. Otherwise, the value is formed by applying
+<FONT
+COLOR="RED"
+>option0_some</FONT
+> to the last element of the given list.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1177.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1259.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Polymorphic Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1126.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Function Templates on Lists</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

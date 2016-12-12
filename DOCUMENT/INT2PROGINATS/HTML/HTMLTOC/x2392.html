@@ -95,7 +95,10 @@ NAME="AEN2395"
 CLASS="programlisting"
 >fun
 fact{n:nat}
-  (x: int n): [r:nat] int r = if x &#62; 0 then x * fact (x-1) else 1
+(
+  x: int(n)
+) : [r:nat] int r =
+  if x &#62; 0 then x * fact (x-1) else 1
 // end of [fact]
 </PRE
 ><P

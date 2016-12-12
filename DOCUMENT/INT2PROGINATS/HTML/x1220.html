@@ -144,7 +144,8 @@ NAME="AEN1232"
 ><PRE
 CLASS="programlisting"
 >fun{a:t@ype}
-list0_length (xs: list0 a): int =
+list0_length
+  (xs: list0 a): int =
 (
   case+ xs of
   | list0_cons (_, xs) =&#62; 1 + list0_length&#60;a&#62; (xs) | list0_nil () =&#62; 0

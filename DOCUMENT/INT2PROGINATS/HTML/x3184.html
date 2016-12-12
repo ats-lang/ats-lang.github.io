@@ -93,12 +93,11 @@ NAME="AEN3187"
 ></A
 ><PRE
 CLASS="programlisting"
->extern
-fun{
+>fun{
 a:t@ype
 } matrix_get
   {m,n:int}{i,j:nat | i &#60; m; j &#60; n}
-  (A: arrayref (a, m*n), col: int n, i: int i, j: int j): a
+  (A: arrayref (a, m*n), col: int n, i: int i, j: int j): (a)
 // end of [matrix_get]
 </PRE
 ><P

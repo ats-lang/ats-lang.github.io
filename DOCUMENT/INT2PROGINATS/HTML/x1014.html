@@ -1,0 +1,277 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Recursively Defined Datatypes</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Datatypes"
+HREF="c909.html"><LINK
+REL="PREVIOUS"
+TITLE="Enumerative Datatypes"
+HREF="x978.html"><LINK
+REL="NEXT"
+TITLE="Exhaustiveness of Pattern-Matching"
+HREF="x1031.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x978.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Datatypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1031.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="recursive_datatypes"
+>Recursively Defined Datatypes</A
+></H1
+><P
+>&#13;A recursively defined datatype (or recursive datatype for short) is one
+such that its associated constructors may form values by applying to values
+of the datatype itself. For instance, the following declared datatype
+<FONT
+COLOR="RED"
+>charlst</FONT
+> is recursive:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1018"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">datatype</span> <span class="staexp">charlst <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="dynexp">charlst_nil <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">charlst_cons <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">char</span><span class="keyword">,</span> <span class="staexp">charlst</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [charlst]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+When applied to a character and a value of the type <FONT
+COLOR="RED"
+>charlst</FONT
+>,
+the constructor <FONT
+COLOR="RED"
+>charlst_cons</FONT
+> forms a value of the type
+<FONT
+COLOR="RED"
+>charlst</FONT
+>. As an example, the following value represents a
+character list consisting of 'a', 'b' and 'c':
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1023"
+></A
+><PRE
+CLASS="programlisting"
+>charlst_cons('a', charlst_cons('b', charlst_cons('c', charlst_nil())))
+</PRE
+><P
+></P
+></DIV
+>
+
+
+We can define a function <FONT
+COLOR="RED"
+>charlst_length</FONT
+> as follows to compute
+the length of a given character list:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1026"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+charlst_length
+  <span class="keyword">(</span>cs<span class="keyword">:</span> <span class="staexp">charlst</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">case</span> cs <span class="keyword">of</span>
+  <span class="keyword">|</span> charlst_cons <span class="keyword">(</span>_<span class="keyword">,</span> cs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">1</span> + charlst_length <span class="keyword">(</span>cs<span class="keyword">)</span>
+  <span class="keyword">|</span> charlst_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">0</span></span>
+<span class="comment">// end of [charlst_length]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that this implementation is recursive but not tail-recursive. By
+relying on the commutativity and associativity of integer addition, we can
+give the following implementation of <FONT
+COLOR="RED"
+>charlst_length</FONT
+> that is
+tail-recursive:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1029"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+charlst_length
+  <span class="keyword">(</span>cs<span class="keyword">:</span> <span class="staexp">charlst</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+  <span class="keyword">(</span>cs<span class="keyword">:</span> <span class="staexp">charlst</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">case</span> cs <span class="keyword">of</span>
+  <span class="keyword">|</span> charlst_cons <span class="keyword">(</span>_<span class="keyword">,</span> cs<span class="keyword">)</span> <span class="keyword">=&gt;</span> loop <span class="keyword">(</span>cs<span class="keyword">,</span> n+<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">|</span> charlst_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> n</span>
+<span class="comment">// end of [loop]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span>cs<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [charlst_length]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the naming convention I follow closely in this book (and
+elsewhere) mandates that only a tail-recursive function be given a name
+indicative of its being a loop. A non-tail-recursive function is not called
+a loop because it cannot be translated directly to a loop in an imperative
+programming language like C.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x978.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1031.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Enumerative Datatypes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c909.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Exhaustiveness of Pattern-Matching</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

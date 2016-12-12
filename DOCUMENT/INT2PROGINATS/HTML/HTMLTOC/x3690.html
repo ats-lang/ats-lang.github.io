@@ -136,11 +136,14 @@ NAME="AEN3699"
 ></A
 ><PRE
 CLASS="programlisting"
->slseg_v_nil :
+>//
+slseg_v_nil :
   {a:t@ype}{l:addr} () -&#62; slseg_v (a, l, l, 0)
+//
 slseg_v_cons :
   {a:t@ype}{l_fst:agz}{l_nxt,l_end:addr}{n:nat}
   ((a, ptr l_nxt) @ l_fst, slseg_v (a, l_nxt, l_end, n)) -&#62; slseg_v (a, l_fst, l_end, n+1)
+//
 </PRE
 ><P
 ></P
@@ -283,7 +286,11 @@ NAME="AEN3717"
 ></A
 ><PRE
 CLASS="programlisting"
->int slist_ptr_length (slist_struct *p) {
+>int
+slist_ptr_length
+(
+  slist_struct *p
+) {
   int res = 0 ;
   while (p != NULL) { res = res + 1 ; p = p-&#62;next ; }
   return res ;
@@ -365,8 +372,10 @@ NAME="AEN3725"
 ><PRE
 CLASS="programlisting"
 >slist_struct*
-slist_ptr_reverse (slist_struct *p)
-{
+slist_ptr_reverse
+(
+  slist_struct *p
+) {
   slist_struct *tmp, *res = NULL ;
   while (p != NULL) {
     tmp = p-&#62;next ; p-&#62;next = res ; res = p ; p = tmp ;

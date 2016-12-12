@@ -1,0 +1,561 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Function Templates on Lists (Redux)</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Datatype Refinement"
+HREF="c2577.html"><LINK
+REL="PREVIOUS"
+TITLE="Datatype Refinement"
+HREF="c2577.html"><LINK
+REL="NEXT"
+TITLE="Example: Mergesort on Lists (Redux)"
+HREF="x2759.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c2577.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 10. Datatype Refinement</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2759.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_function_templates_on_lists_redux"
+>Example: Function Templates on Lists (Redux)</A
+></H1
+><P
+>&#13;I have presented previously implementation of some commonly used function
+templates on lists formed with the constructors <FONT
+COLOR="RED"
+>list0_nil</FONT
+> and
+<FONT
+COLOR="RED"
+>list0_cons</FONT
+>. This time, I present as follows implementation of
+the corresponding function templates on lists formed with the constructors
+<FONT
+COLOR="RED"
+>list_nil</FONT
+> and <FONT
+COLOR="RED"
+>list_cons</FONT
+>, which make it possible to
+assign more accurate types to these templates.
+
+</P
+><P
+>Please find the entire code in this section plus some additional
+code for testing <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_DEPDTREF/listfuns.dats"
+TARGET="_top"
+>on-line</A
+>.
+</P
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="list_append"
+>Appending: <FONT
+COLOR="RED"
+>list_append</FONT
+></A
+></H2
+><P
+>&#13;Given two lists xs and ys of the types <FONT
+COLOR="RED"
+>list(T, I1)</FONT
+> and
+<FONT
+COLOR="RED"
+>list(T, I2)</FONT
+> for some type T and integers I1 and I2,
+<FONT
+COLOR="RED"
+>list_append(xs, ys)</FONT
+> returns a list of the type
+<FONT
+COLOR="RED"
+>list(T,I1+I2)</FONT
+> that is the concatenation of xs and ys:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2704"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> list_append
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">m</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">)</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="staexp">+</span><span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> xs <span class="keyword">of</span>
+  <span class="keyword">|</span> list_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> ys
+  <span class="keyword">|</span> list_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> list_cons<span class="keyword">(</span>x<span class="keyword">,</span> list_append&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [list_append] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, this implementation of <FONT
+COLOR="RED"
+>list_append</FONT
+> is not
+tail-recursive.
+</P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="list_reverse_append"
+>Reverse Appending: <FONT
+COLOR="RED"
+>list_reverse_append</FONT
+></A
+></H2
+><P
+>&#13;Given two lists xs and ys of the type <FONT
+COLOR="RED"
+>list(T, I1)</FONT
+> and
+<FONT
+COLOR="RED"
+>list(T, I2)</FONT
+> for some type T and integers I1 and I2,
+<FONT
+COLOR="RED"
+>list_reverse_append(xs, ys)</FONT
+> returns a list of the type
+<FONT
+COLOR="RED"
+>list(T, I1+I2)</FONT
+> that is the concatenation of the reverse of xs
+and ys:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2715"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> list_reverse_append
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">m</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">)</span>
+<span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="staexp">+</span><span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> xs <span class="keyword">of</span>
+  <span class="keyword">|</span> list_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> ys
+  <span class="keyword">|</span> list_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+      list_reverse_append&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> list_cons<span class="keyword">(</span>x<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [list_reverse_append] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, this implementation of <FONT
+COLOR="RED"
+>list_reverse_append</FONT
+> is
+tail-recursive.
+</P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="list_reverse"
+>Reversing: <FONT
+COLOR="RED"
+>list_reverse</FONT
+></A
+></H2
+><P
+>&#13;Given a list xs, <FONT
+COLOR="RED"
+>list_reverse(xs)</FONT
+> returns the reverse of xs,
+which is of the same length as xs:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2723"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list_reverse<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;&gt;.</span> <span class="comment">// defined non-recursively</span>
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span> list_reverse_append&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> list_nil<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">// end of [list_reverse]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+</P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="list_map"
+>Mapping: <FONT
+COLOR="RED"
+>list_map</FONT
+></A
+></H2
+><P
+>&#13;Given a list xs of the type <FONT
+COLOR="RED"
+>list(T1, I)</FONT
+> for some type T1 and
+integer I and a closure function f of the type <FONT
+COLOR="RED"
+>T1 -&#60;cloref1&#62; T2</FONT
+>
+for some T2, <FONT
+COLOR="RED"
+>list_map(xs)</FONT
+> returns a list ys of the type <FONT
+COLOR="RED"
+>list(T2, I)</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2733"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+<span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> list_map
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> f<span class="keyword">:</span> <span class="staexp">a</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">b</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> xs <span class="keyword">of</span>
+  <span class="keyword">|</span> list_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> list_nil<span class="keyword">(</span><span class="keyword">)</span>
+  <span class="keyword">|</span> list_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> list_cons<span class="keyword">(</span>f x<span class="keyword">,</span> list_map&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [list_map] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Each element y in ys equals f(x), where x is the corresponding element in
+xs.  Clearly, this implementation of <FONT
+COLOR="RED"
+>list_map</FONT
+> is not
+tail-recursive.
+</P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="list_zip"
+>Zipping: <FONT
+COLOR="RED"
+>list_zip</FONT
+></A
+></H2
+><P
+>&#13;Given two lists xs and ys of the types <FONT
+COLOR="RED"
+>list(T1, I)</FONT
+> and
+<FONT
+COLOR="RED"
+>list(T2, I)</FONT
+> for some types T1 and T2 and integer I, respectively,
+<FONT
+COLOR="RED"
+>list_zip(xs, ys)</FONT
+> returns a list zs of the type <FONT
+COLOR="RED"
+>list((T1,T2), I)</FONT
+>.
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2744"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">,</span>b<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> list_zip
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span> <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>
+      list_nil<span class="keyword">(</span><span class="keyword">)</span>
+    <span class="keyword">,</span> list_nil<span class="keyword">(</span><span class="keyword">)</span>
+    <span class="keyword">)</span> <span class="keyword">=&gt;</span> list_nil<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>
+      list_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span>
+    <span class="keyword">,</span> list_cons <span class="keyword">(</span>y<span class="keyword">,</span> ys<span class="keyword">)</span>
+    <span class="keyword">)</span> <span class="keyword">=&gt;</span> list_cons<span class="keyword">(</span><span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span><span class="keyword">,</span> list_zip&lt;<span class="staexp">a</span><span class="keyword">,</span><span class="staexp">b</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [list_zip] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Each element z in zs equals the pair (x, y), where x and y are the
+corresponding elements in xs and ys, respectively.  Clearly, this
+implementation of <FONT
+COLOR="RED"
+>list_zip</FONT
+> is not tail-recursive.
+</P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="list_zipwith"
+>Zipping with: <FONT
+COLOR="RED"
+>list_zipwith</FONT
+></A
+></H2
+><P
+>&#13;Given two lists xs and ys of the types <FONT
+COLOR="RED"
+>list(T1, I)</FONT
+> and
+<FONT
+COLOR="RED"
+>list(T2, I)</FONT
+> for some types T1 and T2 and integer I,
+respectively, and a closure function f of the type <FONT
+COLOR="RED"
+>(T1, T2)
+-&#60;cloref1&#62; T3</FONT
+> for some type T3, <FONT
+COLOR="RED"
+>list_zipwith(xs, ys, f)</FONT
+>
+returns a list zs of the type <FONT
+COLOR="RED"
+>list(T3, I)</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2756"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">,</span>b<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> list_zipwith
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">,</span> f<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">c</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span> <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>
+      list_nil<span class="keyword">(</span><span class="keyword">)</span>
+    <span class="keyword">,</span> list_nil<span class="keyword">(</span><span class="keyword">)</span>
+    <span class="keyword">)</span> <span class="keyword">=&gt;</span> list_nil<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>
+      list_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span>
+    <span class="keyword">,</span> list_cons<span class="keyword">(</span>y<span class="keyword">,</span> ys<span class="keyword">)</span>
+    <span class="keyword">)</span> <span class="keyword">=&gt;</span>
+      list_cons<span class="keyword">(</span>f<span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span><span class="keyword">,</span> list_zipwith&lt;<span class="staexp">a</span><span class="keyword">,</span><span class="staexp">b</span><span class="keyword">&gt;&lt;</span><span class="staexp">c</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">,</span> f<span class="keyword">)</span><span class="keyword">)</span>
+     <span class="comment">// end of (list_cons, list_cons)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [list_zipwith] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Each element z in zs equals f(x, y), where x and y are the corresponding
+elements in xs and ys, respectively.  Clearly, this implementation of
+<FONT
+COLOR="RED"
+>list_zipwith</FONT
+> is not tail-recursive.
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c2577.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2759.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Datatype Refinement</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2577.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Mergesort on Lists (Redux)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

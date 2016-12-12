@@ -1,0 +1,659 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Abstract Views and Viewtypes</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Programming with Views and Viewtypes"
+HREF="p3311.html"><LINK
+REL="PREVIOUS"
+TITLE="Transition from Datatypes to Dataviewtypes"
+HREF="x4146.html"><LINK
+REL="NEXT"
+TITLE="Memory Allocation and Deallocation"
+HREF="x4230.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x4146.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x4230.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="abstract_views_viewtypes"
+></A
+>Chapter 16. Abstract Views and Viewtypes</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c4178.html#simple-linear-objects"
+>Simple Linear Objects</A
+></DT
+><DT
+><A
+HREF="x4230.html"
+>Memory Allocation and Deallocation</A
+></DT
+><DT
+><A
+HREF="x4294.html"
+>Example: Array-Based Circular Buffers</A
+></DT
+><DT
+><A
+HREF="x4331.html"
+>Locking and Unlocking</A
+></DT
+><DT
+><A
+HREF="x4379.html"
+>Linear Channels for Asynchronous IPC</A
+></DT
+></DL
+></DIV
+><P
+>&#13;I have so far given a presentation of views that solely focuses on at-views
+and the views built on top of at-views. This is largely due to at-views
+being the form of most widely used views in practice and also being the
+first form of views supported in ATS. However, other forms of views can be
+readily introduced into ATS abstractly. Even in a case where a view can be
+defined based on at-views (or other forms of views), one may still want to
+introduce it as an abstract view (accompanied with certain proof functions
+for performing view-changes). Often what the programmer really needs is to
+figure out <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>conceptually</I
+></SPAN
+> whether abstractly defined views and
+proof functions for manipulating them actually make sense. This is a bit
+like arguing whether a function is computable: There is rarely a need, if
+at all, to actually encode the function as a Turing-machine to prove its
+being computable. IMHO, learning proper use of abstract views and abstract
+viewtypes is a necessary step for one to take in order to employ linear
+types effectively in practice to deal with resource-related programming
+issues.
+
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="simple-linear-objects"
+>Simple Linear Objects</A
+></H1
+><P
+>&#13;Objects in the physical world are conspicuously linear: They cannot be
+created from nothing or simply go vanished by turning into nothing. Thus,
+it is only natural to assign linear types to values that represent physical
+objects. I choose the name <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>simple linear object</I
+></SPAN
+> here to refer
+to a linear value representing an object of some sort that does not contain
+built-in mechanism for supporting inheritance.
+</P
+><P
+>&#13;Let us now take a look at a concrete example of simple linear object.
+The following code presents an interface for a timer (that is, stopwatch):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4187"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="staexp"><span class="keyword">absvtype</span> timer_vtype</span>
+<span class="keyword">vtypedef</span> <span class="staexp">timer <span class="keyword">=</span> <span class="staexp">timer_vtype</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> timer_new <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">timer</span></span>
+<span class="dynexp"><span class="keyword">fun</span> timer_free <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">timer</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span> timer_start <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">timer</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span> timer_finish <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">timer</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span> timer_pause <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">timer</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span> timer_resume <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">timer</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span> timer_get_ntick <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">timer</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">uint</span></span>
+<span class="dynexp"><span class="keyword">fun</span> timer_reset <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">timer</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The state of a timer is given the
+record type <FONT
+COLOR="RED"
+>timer_struct</FONT
+> defined as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4190"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">typedef</span>
+<span class="staexp">timer_struct <span class="keyword">=</span> <span class="keyword">@{</span>
+  <span class="stalab">started</span><span class="keyword">=</span> <span class="staexp">bool</span> <span class="comment">// the timer has started</span>
+<span class="keyword">,</span> <span class="stalab">running</span><span class="keyword">=</span> <span class="staexp">bool</span> <span class="comment">// the timer is running</span>
+  <span class="comment">// the tick number recorded when the timer</span>
+<span class="keyword">,</span> <span class="stalab">ntick_beg</span><span class="keyword">=</span> <span class="staexp">uint</span> <span class="comment">// was turned on last time</span>
+<span class="keyword">,</span> <span class="stalab">ntick_acc</span><span class="keyword">=</span> <span class="staexp">uint</span> <span class="comment">// the number of accumulated ticks</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [timer_struct] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The following linear datatype <FONT
+COLOR="RED"
+>timer</FONT
+>
+is declared for timers, and the abstract type <FONT
+COLOR="RED"
+>timer_vtype</FONT
+>
+is assumed to equal <FONT
+COLOR="RED"
+>timer</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4195"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">datavtype</span> <span class="staexp">timer <span class="keyword">=</span>
+  <span class="dynexp">TIMER <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">timer_struct</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">assume</span> timer_vtype <span class="keyword">=</span> timer</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Various functions on timers can now be readily implemented.
+Let us first see the code for creating and freeing timers:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4198"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+timer_new <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> timer <span class="keyword">=</span> TIMER <span class="keyword">(</span>_<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> TIMER <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> timer</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>started</span> := false</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>running</span> := false</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>ntick_beg</span> := <span class="dynexp">0u</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>ntick_acc</span> := <span class="dynexp">0u</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>timer<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  timer
+<span class="keyword">end</span></span> <span class="comment">// end of [timer_new]</span>
+
+<span class="dynexp"><span class="keyword">implement</span>
+timer_free <span class="keyword">(</span>timer<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val</span> <span class="keyword">~</span>TIMER _ <span class="keyword">=</span> timer</span> <span class="dynexp"><span class="keyword">in</span> <span class="comment">(*nothing*)</span> <span class="keyword">end</span></span></span>
+<span class="comment">// end of [timer_free]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The function for starting a timer can be implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4201"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+timer_start
+  <span class="keyword">(</span>timer<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>TIMER<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> timer</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>started</span> := true</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>running</span> := true</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>ntick_beg</span> := the_current_tick_get <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>ntick_acc</span> := <span class="dynexp">0u</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>timer<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [timer_start]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>the_current_tick_get</FONT
+> is a function for
+reading the current time (represented as a number of ticks):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4204"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">extern</span> <span class="dynexp"><span class="keyword">fun</span> the_current_tick_get <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">uint</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;A timer can be stopped or paused. The function for stopping a timer can be
+implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4207"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+timer_finish
+  <span class="keyword">(</span>timer<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>TIMER<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> timer</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>started</span> := false</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> x<span class="dynexp"><span class="keyword">.</span>running</span> <span class="keyword">then</span>
+  <span class="keyword">{</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>running</span> := false</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>ntick_acc</span> :=
+      x<span class="dynexp"><span class="keyword">.</span>ntick_acc</span> + the_current_tick_get <span class="keyword">(</span><span class="keyword">)</span> - x<span class="dynexp"><span class="keyword">.</span>ntick_beg</span></span>
+  <span class="keyword">}</span></span> <span class="comment">(* end of [val] *)</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>timer<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [timer_finish]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;A timer can be paused and then resumed.
+The following code implements the functions for pausing and resuming a
+timer:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4210"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+timer_pause
+  <span class="keyword">(</span>timer<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>TIMER<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> timer</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> x<span class="dynexp"><span class="keyword">.</span>running</span> <span class="keyword">then</span>
+  <span class="keyword">{</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>running</span> := false</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>ntick_acc</span> :=
+      x<span class="dynexp"><span class="keyword">.</span>ntick_acc</span> + the_current_tick_get <span class="keyword">(</span><span class="keyword">)</span> - x<span class="dynexp"><span class="keyword">.</span>ntick_beg</span></span>
+  <span class="keyword">}</span></span> <span class="comment">(* end of [val] *)</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>timer<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [timer_pause]</span>
+
+<span class="dynexp"><span class="keyword">implement</span>
+timer_resume
+  <span class="keyword">(</span>timer<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>TIMER<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> timer</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> x<span class="dynexp"><span class="keyword">.</span>started</span> &amp;&amp; <span class="keyword">~</span><span class="keyword">(</span>x<span class="dynexp"><span class="keyword">.</span>running</span><span class="keyword">)</span> <span class="keyword">then</span>
+  <span class="keyword">{</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>running</span> := true</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>ntick_beg</span> := the_current_tick_get <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">}</span></span> <span class="comment">(* end of [if] *)</span> <span class="comment">// end of [val]</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>timer<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [timer_resume]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+As can be expected, the amount of time between the point
+where a timer is paused and the point where the timer is resumed
+is not counted.
+
+</P
+><P
+>&#13;It is also possible to reset a timer by calling the function
+<FONT
+COLOR="RED"
+>timer_reset</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4214"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+timer_reset
+  <span class="keyword">(</span>timer<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>TIMER<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> timer</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>started</span> := false</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>running</span> := false</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>ntick_beg</span> := <span class="dynexp">0u</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>ntick_acc</span> := <span class="dynexp">0u</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>timer<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [timer_reset]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;In order to read the time accumulated by a timer,
+the function <FONT
+COLOR="RED"
+>timer_get_ntick</FONT
+> can be called:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4218"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+timer_get_ntick
+  <span class="keyword">(</span>timer<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>TIMER<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> timer</span>
+  <span class="keyword">var</span> ntick<span class="keyword">:</span> <span class="staexp">uint</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">.</span>ntick_acc</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> x<span class="dynexp"><span class="keyword">.</span>running</span> <span class="keyword">then</span> <span class="keyword">(</span>
+    ntick := ntick + the_current_tick_get <span class="keyword">(</span><span class="keyword">)</span> - x<span class="dynexp"><span class="keyword">.</span>ntick_beg</span>
+  <span class="keyword">)</span></span> <span class="comment">(* end of [if] *)</span> <span class="comment">// end of [val]</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>timer<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  ntick
+<span class="keyword">end</span></span> <span class="comment">// end of [timer_get_ntick]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;A straightforward approach to
+implementing <FONT
+COLOR="RED"
+>the_current_tick_get</FONT
+>
+can be based directly on the function <FONT
+COLOR="RED"
+>clock_gettime</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4223"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">local</span>
+
+<span class="keyword">staload</span> "libc/SATS/time.sats"
+
+<span class="keyword">in</span> <span class="comment">(* in-of-local *)</span>
+
+<span class="dynexp"><span class="keyword">implement</span>
+the_current_tick_get <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">var</span> tv<span class="keyword">:</span> <span class="staexp">timespec</span> <span class="comment">// uninitialized</span>
+  <span class="dynexp"><span class="keyword">val</span> err <span class="keyword">=</span> clock_gettime <span class="keyword">(</span>CLOCK_REALTIME<span class="keyword">,</span> tv<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc <span class="keyword">(</span>err &gt;= <span class="dynexp">0</span><span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> opt_unsome<span class="staexp"><span class="keyword">{</span>timespec<span class="keyword">}</span></span><span class="keyword">(</span>tv<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  $UNSAFE<span class="keyword">.</span>cast2uint<span class="keyword">(</span>tv<span class="dynexp"><span class="keyword">.</span>tv_sec</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [the_current_tick_get]</span>
+
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the library flag <FONT
+COLOR="RED"
+>-lrt</FONT
+> may be needed in order to
+have link-time access to <FONT
+COLOR="RED"
+>clock_gettime</FONT
+> as the function is in
+<FONT
+COLOR="RED"
+>librt</FONT
+>.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_ABSVTYPE/timer.dats"
+TARGET="_top"
+>on-line</A
+> the
+entirety of the code presented in this section plus some testing code.
+
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x4146.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x4230.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Transition from Datatypes to Dataviewtypes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p3311.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Memory Allocation and Deallocation</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

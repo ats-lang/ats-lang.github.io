@@ -147,7 +147,9 @@ CLASS="programlisting"
 >//
 // Assuming that [uint] is of 32 bits
 //
-val ISQRT_MAX = (1 &#60;&#60; 16) - 1 // = 65535
+val
+ISQRT_MAX = (1 &#60;&#60; 16) - 1 // = 65535
+//
 fun isqrt
   (x: uint): int =
   bsearch_fun (lam i =&#62; square(g0i2u(i)), x, 0, ISQRT_MAX)

@@ -170,6 +170,7 @@ for_loop
 (
   count: int, limit: int, fwork: (int) -&#60;cloref1&#62; void
 ) : void = (
+//
 if count &#60; limit
   then (fwork(count); for_loop(count+1, limit, fwork)) else ()
 // end of [if]
@@ -260,19 +261,22 @@ NAME="AEN4620"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{
+>//
+fun{
 env:t@ype
 } for_loop2
 (
   count: int, limit: int
 , env: &#38;env &#62;&#62; _, fwork: (int, &#38;env &#62;&#62; _) -&#60;cloref1&#62; void
 ) : void = (
+//
 if
 count &#60; limit
 then (
   fwork(count, env); for_loop2&#60;env&#62; (count+1, limit, env, fwork)
 ) else ()
 // end of [if]
+//
 ) (* end of [for_loop2] *)
 </PRE
 ><P
@@ -361,12 +365,14 @@ env:t@ype
 (
   count: int, limit: int, env: &#38;env &#62;&#62; _
 ) : void = (
+//
 if
 count &#60; limit
 then (
   for_loop3$fwork&#60;env&#62;(count, env); for_loop3&#60;env&#62;(count+1, limit, env)
 ) else ()
 // end of [if]
+//
 ) (* end of [for_loop3] *)
 </PRE
 ><P

@@ -1,0 +1,446 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Simple Input and Output</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Effectful Programming Features"
+HREF="c1378.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Estimating the Constant Pi"
+HREF="x1641.html"><LINK
+REL="NEXT"
+TITLE="Modularity"
+HREF="c1707.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1641.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 6. Effectful Programming Features</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c1707.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="basic_input_and_output"
+>Simple Input and Output</A
+></H1
+><P
+>&#13;Handling I/O in ATS properly requires the availability of both dependent
+types and linear types, which I will cover elsewhere. In this section, I
+only present a means for allowing the programmer to access certain very
+basic I/O functionalities.
+</P
+><P
+>&#13;A file handle essentially associates a stream (of bytes) with a file
+identifier (represented as an integer).  In ATS, the type for file handles
+is <FONT
+COLOR="RED"
+>FILEref</FONT
+>. There are three standard file handles, which are
+listed as follows:
+
+</P
+><P
+></P
+><UL
+><LI
+><P
+><FONT
+COLOR="RED"
+>stdin_ref</FONT
+>: standard input
+</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>stdout_ref</FONT
+>: standard output
+</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>stderr_ref</FONT
+>: standard error output
+</P
+></LI
+></UL
+><P
+>&#13;Various functions on file handles are declared in the file
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/filebas.sats"
+TARGET="_top"
+>filebas.sats</A
+>, which is
+automatically loaded by <B
+CLASS="command"
+>atsopt</B
+>. For instance, the
+functions for opening and closing file handles have the following
+interfaces:
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1667"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> fileref_open_exn
+<span class="keyword">(</span>
+  path<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">,</span> fm<span class="keyword">:</span> <span class="staexp">file_mode</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">FILEref</span></span> <span class="comment">// endfun</span>
+
+<span class="dynexp"><span class="keyword">fun</span> fileref_close <span class="keyword">(</span>fil<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that these two functions abort immediately whenever an error occurs.
+The following function is an optional version of
+<FONT
+COLOR="RED"
+>fileref_open_exn</FONT
+>, and the caller needs to inspect the value
+returned by a call to <FONT
+COLOR="RED"
+>fileref_open_opt</FONT
+> to see if a file handle
+is actually obtained.
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1671"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> fileref_open_opt
+  <span class="keyword">(</span>path<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">,</span> fm<span class="keyword">:</span> <span class="staexp">file_mode</span><span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">Option_vt</span><span class="keyword">(</span><span class="staexp">FILEref</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>The type <FONT
+COLOR="RED"
+>file_mode</FONT
+> is for values representing file modes,
+which are listed as follows:
+</P
+><P
+></P
+><UL
+><LI
+><P
+><FONT
+COLOR="RED"
+>file_mode_r</FONT
+>: opening a file for reading and
+positioning the associated stream at the beginning of the file.
+</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>file_mode_rr</FONT
+>: opening a file for both reading and and
+writing and positioning the associated stream at the beginning of the file.
+</P
+></LI
+><LI
+><P
+>&#13;<FONT
+COLOR="RED"
+>file_mode_w</FONT
+>: truncating a given file to zero length or creating
+a new one for writing and positioning the associated stream at the
+beginning of the file.
+</P
+></LI
+><LI
+><P
+>&#13;<FONT
+COLOR="RED"
+>file_mode_ww</FONT
+>: truncating a given file to zero length or
+creating a new one for both reading and writing and positioning the
+associated stream at the beginning of the file.
+</P
+></LI
+><LI
+><P
+>&#13;<FONT
+COLOR="RED"
+>file_mode_a</FONT
+>: opening a file for writing and positioning the
+associated stream at the end of the file.
+</P
+></LI
+><LI
+><P
+>&#13;<FONT
+COLOR="RED"
+>file_mode_aa</FONT
+>: opening a file for both reading and writing and
+positioning the associated stream at the beginning of the file for reading
+and at the end for writing.
+</P
+></LI
+></UL
+><P
+>&#13;As an example, the following short program opens a file handle, outputs the
+string "Hello, world!" plus a newline into the stream associated with the
+file handle and then closes the file handle:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1695"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+main0 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">val</span> out <span class="keyword">=</span>
+  fileref_open_exn <span class="keyword">(</span><span class="dynstr">"hello.txt"</span><span class="keyword">,</span> file_mode_w<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_string <span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"Hello, world!n"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fileref_close <span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [main0] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+After executing the program, we obtain a file of the name "hello.txt" in
+the current working directory containing the expected content. There are
+various fprint-functions in ATS for printing out data into the stream
+associated with a given file handle. Often the programmer can simply use
+the name <FONT
+COLOR="RED"
+>fprint</FONT
+> to refer to these functions due to the support
+for overloading in ATS.
+</P
+><P
+>&#13;Another common I/O function is given the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1699"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> fileref_get_line_string<span class="keyword">(</span>fil<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">Strptr1</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The function <FONT
+COLOR="RED"
+>fileref_get_line_string</FONT
+> reads a line from the
+stream associated with a given file handle, and it returns a value of the
+type <FONT
+COLOR="RED"
+>Strptr1</FONT
+>. For the moment, I will simply say that such a
+value is just like a string except that it needs to be freed explicitly. As
+an example, the following short program echos onto the standard output each
+line read from the standard input:
+
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1703"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+main0 <span class="keyword">(</span>
+<span class="comment">// argumentless</span>
+<span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> isnot <span class="keyword">=</span> fileref_isnot_eof <span class="keyword">(</span>stdin_ref<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> isnot <span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> line <span class="keyword">=</span>
+    fileref_get_line_string <span class="keyword">(</span>stdin_ref<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">fprintln!</span> <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> line<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> strptr_free <span class="keyword">(</span>line<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="comment">(*loop exits as the end-of-file is reached*)</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [loop] *)</span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [main0] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the function <FONT
+COLOR="RED"
+>strptr_free</FONT
+> is called to free a linear
+string (of the type <FONT
+COLOR="RED"
+>Strptr1</FONT
+>). Often, typing the CTRL-D
+character can terminate the above program for echoing each line of input.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1641.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c1707.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Estimating the Constant Pi</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1378.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Modularity</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

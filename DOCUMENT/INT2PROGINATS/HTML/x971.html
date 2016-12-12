@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Matching Clauses and Case-Expressions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Datatypes"
+HREF="c909.html"><LINK
+REL="PREVIOUS"
+TITLE="Pattern-Matching"
+HREF="x950.html"><LINK
+REL="NEXT"
+TITLE="Enumerative Datatypes"
+HREF="x978.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x950.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Datatypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x978.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="matching_clauses_and_case-expressions"
+>Matching Clauses and Case-Expressions</A
+></H1
+><P
+>Given a pattern pat and an expression exp, (pat <FONT
+COLOR="RED"
+>=&#62;</FONT
+> exp) is a
+matching clause. The pattern pat and the expression exp are referred to as
+the guard and the body of the matching clause.
+</P
+><P
+>&#13;Given an expression exp0 and a sequence of matching clauses clseq, a
+case-expression can be formed as such: (<FONT
+COLOR="RED"
+>case</FONT
+> exp0
+<FONT
+COLOR="RED"
+>of</FONT
+> clseq). To evaluate the case-expression under a given
+environment ENV0, we first evaluate exp0 under ENV0 to a value. If this
+value does not match the guard of any clause in clseq, then the evaluation
+of the case-expression aborts. Otherwise, we choose the first clause in
+clseq such that the value matches the guard of the clause. Let ENV1 be the
+environment that extends ENV0 with the bindings generated from this
+matching, and we evaluate the body of the chosen clause under ENV1. The
+value obtained from this evaluation is the value of the case-expression
+being evaluated.  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x950.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x978.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Pattern-Matching</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c909.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Enumerative Datatypes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

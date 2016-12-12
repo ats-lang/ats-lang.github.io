@@ -118,10 +118,13 @@ NAME="AEN4094"
 ><PRE
 CLASS="programlisting"
 >datavtype
-bstree_vt (a:t@ype+, int) =
+bstree_vt
+(
+  a:t@ype+, int
+) = // bstree_vt
   | bstree_vt_nil (a, 0) of ()
   | {n1,n2:nat}
-    bstree_vt_cons (a, n1+n2+1) of (bstree_vt (a, n1), a, bstree_vt (a, n2))
+    bstree_vt_cons (a, n1+n2+1) of (bstree_vt(a, n1), a, bstree_vt(a, n2))
 // end of [bstree_vt]
 </PRE
 ><P

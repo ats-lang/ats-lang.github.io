@@ -1,0 +1,370 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>&#13;Example: A Functorial Package for Rationals
+</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Modularity"
+HREF="c1707.html"><LINK
+REL="PREVIOUS"
+TITLE="
+Example: A Package for Rationals
+"
+HREF="x1941.html"><LINK
+REL="NEXT"
+TITLE="Interaction with C"
+HREF="c2009.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1941.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. Modularity</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c2009.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_a_functorial_package_for_rationals"
+>Example: A Functorial Package for Rationals</A
+></H1
+><P
+>&#13;The previous package for rational numbers contains a serious limitation:
+The type for the integers employed in the representation of rational
+numbers is fixed to be <FONT
+COLOR="RED"
+>int</FONT
+>. If we ever want to represent
+rational numbers based on integers of a different type (for instance,
+<FONT
+COLOR="RED"
+>lint</FONT
+> for long integers or <FONT
+COLOR="RED"
+>llint</FONT
+> for long long
+integers), then we need to implement another package for rationals based on
+such integers. It is clearly advantageous to avoid this style of
+programming as it involves code duplication to a great extent.  </P
+><P
+>&#13;The approach I employ in this section to implement a package for rational
+numbers that can address the aforementioned limitation follows the idea of
+functors in the programming language Standard ML (SML). Let us first
+introduce a type definition as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1988"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">typedef</span>
+<span class="staexp">intmod <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">'{</span>
+  <span class="stalab">ofint</span><span class="keyword">=</span> <span class="staexp">int</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">a</span>
+<span class="keyword">,</span> <span class="stalab">fprint</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">FILEref</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span>
+<span class="keyword">,</span> <span class="stalab">neg</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">a</span> <span class="comment">// negation</span>
+<span class="keyword">,</span> <span class="stalab">add</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">a</span> <span class="comment">// addition</span>
+<span class="keyword">,</span> <span class="stalab">sub</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">a</span> <span class="comment">// subtraction</span>
+<span class="keyword">,</span> <span class="stalab">mul</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">a</span> <span class="comment">// multiplication</span>
+<span class="keyword">,</span> <span class="stalab">div</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">a</span> <span class="comment">// division</span>
+<span class="keyword">,</span> <span class="stalab">mod</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">a</span> <span class="comment">// modulo operation</span>
+<span class="keyword">,</span> <span class="stalab">cmp</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">int</span> <span class="comment">// comparison</span>
+<span class="keyword">}</span></span> <span class="comment">// end of [intmod]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a type T, <FONT
+COLOR="RED"
+>intmod(T)</FONT
+> is a boxed record type in which each
+field is a function type. A value of the type <FONT
+COLOR="RED"
+>intmod(T)</FONT
+> is
+supposed to represent a module of integer operations on integers
+represented by values of the type T. Similarly, let us introduce another
+type definition as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1992"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="staexp"><span class="keyword">abst@ype</span> rat<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>a<span class="keyword">,</span> a<span class="keyword">)</span></span>
+
+<span class="keyword">typedef</span>
+<span class="staexp">ratmod <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">'{</span>
+  <span class="stalab">make</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">rat</span> <span class="staexp">a</span>
+<span class="keyword">,</span> <span class="stalab">fprint</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">FILEref</span><span class="keyword">,</span> <span class="staexp">rat</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">void</span>
+<span class="keyword">,</span> <span class="stalab">numer</span><span class="keyword">=</span> <span class="staexp">rat</span> <span class="staexp">a</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">a</span> <span class="comment">// numerator</span>
+<span class="keyword">,</span> <span class="stalab">denom</span><span class="keyword">=</span> <span class="staexp">rat</span> <span class="staexp">a</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">a</span> <span class="comment">// denominator</span>
+<span class="keyword">,</span> <span class="stalab">neg</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">rat</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">rat</span> <span class="staexp">a</span> <span class="comment">// negation</span>
+<span class="keyword">,</span> <span class="stalab">add</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">rat</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">rat</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">rat</span> <span class="staexp">a</span> <span class="comment">// addition</span>
+<span class="keyword">,</span> <span class="stalab">sub</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">rat</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">rat</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">rat</span> <span class="staexp">a</span> <span class="comment">// subtraction</span>
+<span class="keyword">,</span> <span class="stalab">mul</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">rat</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">rat</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">rat</span> <span class="staexp">a</span> <span class="comment">// multiplication</span>
+<span class="keyword">,</span> <span class="stalab">div</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">rat</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">rat</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">rat</span> <span class="staexp">a</span> <span class="comment">// division</span>
+<span class="keyword">,</span> <span class="stalab">cmp</span><span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">rat</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">rat</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">int</span> <span class="comment">// comparison</span>
+<span class="keyword">}</span></span> <span class="comment">// end of [ratmod]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a type T, a value of the type <FONT
+COLOR="RED"
+>ratmod(T)</FONT
+> is supposed to
+represent a module of rational operations on rationals represented by
+values of the type <FONT
+COLOR="RED"
+>rat(T)</FONT
+>. The function we need to implement can
+now be given the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1996"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+ratmod_make_intmod <span class="keyword">(</span>int<span class="keyword">:</span> <span class="staexp">intmod</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">ratmod</span> <span class="staexp">a</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+If applied to a given module of integer operations,
+<FONT
+COLOR="RED"
+>ratmod_make_intmod</FONT
+> returns a module of rational operations such
+that the integers in the former and the latter modules have the same
+representation. Therefore, <FONT
+COLOR="RED"
+>ratmod_make_intmod</FONT
+> behaves like a
+functor in SML.  In the following code, let us implement two modules
+<FONT
+COLOR="RED"
+>ratmod_int</FONT
+> and <FONT
+COLOR="RED"
+>ratmod_dbl</FONT
+> of rational operations in
+which integers are represented as values of the types <FONT
+COLOR="RED"
+>int</FONT
+> and
+<FONT
+COLOR="RED"
+>double</FONT
+>, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2004"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">staload</span> M <span class="keyword">=</span> "libc/SATS/math.sats"
+
+<span class="dynexp"><span class="keyword">val</span> ratmod_int <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> intmod_int <span class="keyword">=</span> <span class="keyword">'{</span>
+  <span class="dynlab">ofint</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=&gt;</span> i
+<span class="keyword">,</span> <span class="dynlab">fprint</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp"><span class="keyword">$extfcall</span> <span class="keyword">(</span>void<span class="keyword">,</span> "fprintf"<span class="keyword">,</span> out<span class="keyword">,</span> "%i"<span class="keyword">,</span> x<span class="keyword">)</span></span>
+<span class="keyword">,</span> <span class="dynlab">neg</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">~</span>x
+<span class="keyword">,</span> <span class="dynlab">add</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=&gt;</span> x + y
+<span class="keyword">,</span> <span class="dynlab">sub</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=&gt;</span> x - y
+<span class="keyword">,</span> <span class="dynlab">mul</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=&gt;</span> x * y
+<span class="keyword">,</span> <span class="dynlab">div</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=&gt;</span> x / y
+<span class="keyword">,</span> <span class="dynlab">mod</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">op</span> mod <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span>
+<span class="keyword">,</span> <span class="dynlab">cmp</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=&gt;</span> compare <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span>
+<span class="keyword">}</span> <span class="keyword">:</span> <span class="staexp">intmod</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span></span> <span class="comment">// end of [val]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  ratmod_make_intmod&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span>intmod_int<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [val]</span>
+
+<span class="dynexp"><span class="keyword">val</span> ratmod_dbl <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> intmod_dbl <span class="keyword">=</span> <span class="keyword">'{</span>
+  <span class="dynlab">ofint</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=&gt;</span> g0i2f<span class="keyword">(</span>i<span class="keyword">)</span>
+<span class="keyword">,</span> <span class="dynlab">fprint</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp"><span class="keyword">$extfcall</span> <span class="keyword">(</span>void<span class="keyword">,</span> "fprintf"<span class="keyword">,</span> out<span class="keyword">,</span> "%0.f"<span class="keyword">,</span> x<span class="keyword">)</span></span>
+<span class="keyword">,</span> <span class="dynlab">neg</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">~</span>x
+<span class="keyword">,</span> <span class="dynlab">add</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=&gt;</span> x + y
+<span class="keyword">,</span> <span class="dynlab">sub</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=&gt;</span> x - y
+<span class="keyword">,</span> <span class="dynlab">mul</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=&gt;</span> x * y
+<span class="keyword">,</span> <span class="dynlab">div</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=&gt;</span> $M<span class="keyword">.</span>trunc <span class="keyword">(</span>x / y<span class="keyword">)</span> <span class="comment">// truncation</span>
+<span class="keyword">,</span> <span class="dynlab">mod</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=&gt;</span> $M<span class="keyword">.</span>fmod <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span>
+<span class="keyword">,</span> <span class="dynlab">cmp</span><span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=&gt;</span> compare <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span>
+<span class="keyword">}</span> <span class="keyword">:</span> <span class="staexp">intmod</span> <span class="keyword">(</span><span class="staexp">double</span><span class="keyword">)</span></span> <span class="comment">// end of [val]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  ratmod_make_intmod&lt;<span class="staexp">double</span><span class="keyword">&gt;</span> <span class="keyword">(</span>intmod_dbl<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [ratmod_dbl]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+An implementation of the function <FONT
+COLOR="RED"
+>ratmod_make_intmod</FONT
+> is
+available <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_MODULARITY/ratfun.dats"
+TARGET="_top"
+>on-line</A
+> and there
+is some related testing code available
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_MODULARITY/test_ratfun.dats"
+TARGET="_top"
+>on-line</A
+> as well.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1941.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c2009.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: A Package for Rationals</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1707.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Interaction with C</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

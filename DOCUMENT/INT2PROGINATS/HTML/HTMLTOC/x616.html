@@ -100,7 +100,7 @@ NAME="AEN620"
 ><PRE
 CLASS="programlisting"
 >fun f91 (n: int): int =
-  if n &#62;= 101 then n - 10 else f91 (f91 (n+11))
+  if n &#62;= 101 then n - 10 else f91(f91(n+11))
 </PRE
 ><P
 ></P
@@ -130,7 +130,7 @@ NAME="AEN624"
 CLASS="programlisting"
 >fun sum_iter
   (n: int, res: int): int =
-  if n &#62; 0 then sum_iter (n-1, n+res) else res
+  if n &#62; 0 then sum_iter(n-1, n+res) else (res)
 // end of [sum_iter]
 </PRE
 ><P

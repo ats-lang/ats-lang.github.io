@@ -146,17 +146,19 @@ NAME="AEN3618"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{
+>//
+fun{
 a:t@ype
 } arrget{l:addr}{n,i:nat | i &#60; n}
   (pf: !array_v (a, l, n) | p: ptr l, i: int i): a
 // end of [arrget] // end of [fun]
-
+//
 fun{
 a:t@ype
 } arrset{l:addr}{n,i:nat | i &#60; n}
   (pf: !array_v (a, l, n) | p: ptr l, i: int i, x: a): void
 // end of [arrset] // end of [fun]
+//
 </PRE
 ><P
 ></P
@@ -465,13 +467,15 @@ NAME="AEN3662"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{
+>//
+fun{
 a:t@ype
-} arrget {n,i:nat | i &#60; n} (A: &#38;(@[a][n]), i: int i): a
-
+} arrget {n,i:nat | i &#60; n} (A: &#38;(@[a][n]), i: int i): (a)
+//
 fun{
 a:t@ype
 } arrset {n,i:nat | i &#60; n} (A: &#38;(@[a][n]), i: int i, x: a): void
+//
 </PRE
 ><P
 ></P

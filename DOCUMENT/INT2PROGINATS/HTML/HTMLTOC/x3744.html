@@ -120,14 +120,15 @@ NAME="AEN3751"
 ></A
 ><PRE
 CLASS="programlisting"
->prfun
+>//
+prfun
 array_v_split
   {a:t@ype}
   {l:addr}{n,i:nat | i &#60;= n}
 (
   pfarr: array_v (a, l, n)
 ) : (array_v (a, i, l), array_v (a, n-i, l+i*sizeof(a)))
-
+//
 prfun
 array_v_unsplit
   {a:t@ype}
@@ -135,6 +136,7 @@ array_v_unsplit
 (
   pf1arr: array_v (a, l, n1), pf2arr: array_v (a, l+n1*sizeof(a), n2)
 ) : array_v (a, l, n1+n2)
+//
 </PRE
 ><P
 ></P
@@ -272,13 +274,15 @@ NAME="AEN3769"
 ></A
 ><PRE
 CLASS="programlisting"
->prfun
+>//
+prfun
 array_v_takeout
   {a:t@ype}
   {l:addr}{n,i:nat | i &#60; n}
 (
   pfarr: array_v (a, l, n)
 ) : (a @ l+i*sizeof(a), a @ l+i*sizeof(a) -&#60;lin,prf&#62; array_v (a, l, n))
+//
 </PRE
 ><P
 ></P
@@ -413,13 +417,15 @@ NAME="AEN3786"
 ></A
 ><PRE
 CLASS="programlisting"
->prfun
+>//
+prfun
 slseg_v_unsplit
   {a:t@ype}
   {l1,l2,l3:addr}{n1,n2:nat}
 (
   pf1lst: slseg_v (a, l1, l2, n1), pf2lst: slseg_v (a, l2, l3, n2)
 ) : slseg_v (a, l1, l3, n1+n2)
+//
 </PRE
 ><P
 ></P

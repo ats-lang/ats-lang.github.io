@@ -135,7 +135,10 @@ NAME="AEN525"
 ></A
 ><PRE
 CLASS="programlisting"
->fun sum1 (n: int): int = if n &#62;= 1 then sum1 (n-1) + n else 0
+>fun sum1
+  (n: int): int =
+  if n &#62;= 1 then sum1 (n-1) + n else 0
+// end of [sum1]
 </PRE
 ><P
 ></P
@@ -191,7 +194,10 @@ NAME="AEN537"
 ></A
 ><PRE
 CLASS="programlisting"
->fun sum2 (m: int, n: int): int = if m &#60;= n then m + sum2 (m+1, n) else 0
+>fun sum2
+  (m: int, n: int): int =
+  if m &#60;= n then m + sum2 (m+1, n) else 0
+// end of [sum2]
 </PRE
 ><P
 ></P
@@ -269,9 +275,13 @@ NAME="AEN554"
 CLASS="programlisting"
 >fun sum3
   (m: int, n: int): int =
-  if m &#60;= n then let
-    val mn2 = (m+n)/2 in sum3 (m, mn2-1) + mn2 + sum3 (mn2+1, n)
-  end else 0 // end of [if]
+  if m &#60;= n
+    then let
+      val mn2 = (m+n)/2
+    in
+      sum3 (m, mn2-1) + mn2 + sum3 (mn2+1, n)
+    end // end of [then]
+    else 0 // end of [else]
 // end of [sum3]
 </PRE
 ><P
@@ -283,7 +293,7 @@ CLASS="programlisting"
 It should be noted that the division involved in the expression
 <FONT
 COLOR="RED"
->(m+n)/2 </FONT
+>(m+n)/2</FONT
 > is integer division for which rounding is done by
 truncation.
 </P

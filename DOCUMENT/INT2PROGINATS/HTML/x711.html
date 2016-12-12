@@ -100,8 +100,13 @@ NAME="AEN716"
 ></A
 ><PRE
 CLASS="programlisting"
->fun isevn (n: int): bool = if n &#62; 0 then isodd (n-1) else true
-and isodd (n: int): bool = if n &#62; 0 then isevn (n-1) else false
+>//
+fun
+isevn (n: int): bool = if n &#62; 0 then isodd (n-1) else true
+//
+and
+isodd (n: int): bool = if n &#62; 0 then isevn (n-1) else false
+//
 </PRE
 ><P
 ></P
@@ -143,8 +148,13 @@ NAME="AEN724"
 ></A
 ><PRE
 CLASS="programlisting"
->fnx isevn (n: int): bool = if n &#62; 0 then isodd (n-1) else true
-and isodd (n: int): bool = if n &#62; 0 then isevn (n-1) else false
+>//
+fnx
+isevn (n: int): bool = if n &#62; 0 then isodd (n-1) else true
+//
+and
+isodd (n: int): bool = if n &#62; 0 then isevn (n-1) else false
+//
 </PRE
 ><P
 ></P

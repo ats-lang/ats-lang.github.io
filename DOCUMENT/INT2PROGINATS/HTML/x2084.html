@@ -93,13 +93,14 @@ NAME="AEN2087"
 ></A
 ><PRE
 CLASS="programlisting"
->extern
+>//
+extern
 fun fact (n: int): int
 extern
 fun fact2 (n: int, res: int): int = "ext#fact2_in_c"
-
+//
 implement fact (n) = fact2 (n, 1)
-
+//
 %{
 int
 fact2_in_c (int n, int res)
@@ -107,6 +108,7 @@ fact2_in_c (int n, int res)
   while (n &#62; 0) { res *= n ; n -= 1 ; } ; return res ;
 }
 %}
+//
 </PRE
 ><P
 ></P

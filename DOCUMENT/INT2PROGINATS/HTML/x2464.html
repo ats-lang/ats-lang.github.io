@@ -116,7 +116,7 @@ NAME="AEN2471"
 ><PRE
 CLASS="programlisting"
 >fun{a:t@ype}
-array_make_elt{n:int} (asz: size_t n, elt: a): arrayref (a, n)
+array_make_elt{n:int} (asz: size_t(n), elt: a): arrayref(a, n)
 </PRE
 ><P
 ></P
@@ -141,15 +141,17 @@ NAME="AEN2474"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:t@ype}
+>//
+fun{a:t@ype}
 arrayref_get_at
-  {n:int}{i:nat | i &#60; n} (A: arrayref (a, n), i: size_t i): a
+  {n:int}{i:nat | i &#60; n} (A: arrayref (a, n), i: size_t i): (a)
 overload [] with arrayref_get_at
-
+//
 fun{a:t@ype}
 arrayref_set_at
   {n:int}{i:nat | i &#60; n} (A: arrayref (a, n), i: size_t i, x: a): void
 overload [] with arrayref_set_at
+//
 </PRE
 ><P
 ></P

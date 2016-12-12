@@ -1,0 +1,285 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Tuples and Tuple Types</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Elements of Programming"
+HREF="c96.html"><LINK
+REL="PREVIOUS"
+TITLE="Primitive Types"
+HREF="x240.html"><LINK
+REL="NEXT"
+TITLE="Records and Record Types"
+HREF="x322.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x240.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Elements of Programming</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x322.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="tuples_and_tuple_types"
+>Tuples and Tuple Types</A
+></H1
+><P
+>&#13;Given two types T1 and T2, we can form a tuple type (T1, T2), which can
+also be written as @(T1, T2).  Assume that exp1 and exp2 are two
+expressions of the types T1 and T2, respectively. Then the expression
+(exp1, exp2), which can also be written as @(exp1, exp2), refers to a tuple
+of the tuple type (T1, T2). Accordingly, we can form tuples and tuple types
+of more components. In order for a tuple type to be assigned to a tuple,
+the tuple and the tuple type must have the equal number of components.
+</P
+><P
+>&#13;When evaluating a tuple expression, we evaluate all of its components
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>sequentially</I
+></SPAN
+>. Suppose that the expression contains n
+components, then the value of the expression is the tuple consisting of the
+n values of the n components listed in the order as the components
+themselves.
+</P
+><P
+>&#13;A tuple of length n for n &#62;= 2 is just a record of field names ranging from
+0 until n-1, inclusive. Given an expression exp of some tuple type (T1,
+T2), we can form expressions (exp).0 and (exp).1, which are of types T1 and
+T2, respectively. Note that the expression exp does not have to be a tuple
+expression. For instance, exp may be a name or a function application. If
+exp evaluates to a tuple of two values, then exp.0 evaluates to the first
+value and exp.1 the second value. Clearly, if the tuple type of exp
+contains more components, what is stated can be generalized accordingly.
+</P
+><P
+>&#13;In the following example, we first construct a tuple of length 3 and then
+introduce bindings between 3 names and all of the 3 components of the
+tuple:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN309"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> xyz <span class="keyword">=</span> <span class="keyword">(</span><span class="dynexp">'A'</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="dynexp">2.0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span> xyz<span class="dynexp"><span class="keyword">.0</span></span> <span class="keyword">and</span> y <span class="keyword">=</span> xyz<span class="dynexp"><span class="keyword">.1</span></span> <span class="keyword">and</span> z <span class="keyword">=</span> xyz<span class="dynexp"><span class="keyword">.2</span></span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the constructed tuple can be assigned the tuple type
+<FONT
+COLOR="RED"
+>(char, int, double)</FONT
+>. Another method for selecting components in
+a given tuple is based on pattern matching, which is employed in the
+following example:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN312"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> xyz <span class="keyword">=</span> <span class="keyword">(</span><span class="dynexp">'A'</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="dynexp">2.0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">,</span> z<span class="keyword">)</span> <span class="keyword">=</span> xyz</span> <span class="comment">// x = 'A'; y = 1; z = 2.0</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>(x, y, z)</FONT
+> is a pattern that can match any tuples of
+exact 3 components. I will say more about pattern matching elsewhere.
+</P
+><P
+>&#13;The tuples introduced above are often referred to as flat tuples, native
+tuples or unboxed tuples. There is another kind of tuples supported in ATS,
+which are called boxed tuples. A boxed tuple is essentially a pointer
+pointing to some heap location where a flat tuple is stored.
+</P
+><P
+>&#13;Assume that exp1 and exp2 are two expressions of the types T1 and T2,
+respectively. Then the expression '(exp1, exp2), refers to a tuple of the
+tuple type '(T1, T2). Accordingly, we can form boxed tuples and boxed tuple
+types of fewer or more components. What should be noted immediately is that
+every boxed tuple is of the size of a pointer, and can thus be stored in
+any place where a pointer can. Using boxed tuples is rather similar to
+using unboxed ones. For instance, the meaning of the following code should
+be evident:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN317"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> xyz <span class="keyword">=</span> <span class="keyword">'(</span> <span class="dynexp">'A'</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="dynexp">2.0</span> <span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span> xyz<span class="dynexp"><span class="keyword">.0</span></span> <span class="keyword">and</span> y <span class="keyword">=</span> xyz<span class="dynexp"><span class="keyword">.1</span></span> <span class="keyword">and</span> z <span class="keyword">=</span> xyz<span class="dynexp"><span class="keyword">.2</span></span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that a space is needed between <FONT
+COLOR="RED"
+>'(</FONT
+> and <FONT
+COLOR="RED"
+>'A'</FONT
+>
+for otherwise the current parser (for ATS/Postiats) would be confused.
+</P
+><P
+>&#13;Given the availability of flat and boxed tuples, one naturally wants to
+know whether there is a simple way to determine which kind is preferred
+over the other. Unfortunately, there is no simple way to do this as far as
+I can tell. In order to be certain, some kind of profiling is often
+needed. However, if we want to run code with no support of garbage
+collection (GC), then we should definitely avoid using boxed tuples.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x240.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x322.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Primitive Types</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c96.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Records and Record Types</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

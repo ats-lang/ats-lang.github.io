@@ -108,9 +108,11 @@ NAME="AEN2217"
 CLASS="programlisting"
 >//
 vtypedef
-list_node = list_cons_pstruct(int,ptr) // [list_node] for boxed nodes
+list_node =
+list_cons_pstruct(int,ptr) // [list_node] for boxed nodes
 //
-extern vtypedef "list_node" = list_node // exporting [list_node] to C
+extern
+vtypedef "list_node" = list_node // exporting [list_node] to C
 //
 </PRE
 ><P
@@ -142,7 +144,10 @@ NAME="AEN2222"
 ></A
 ><PRE
 CLASS="programlisting"
->typedef list_node_ = $extype"list_node_" // [list_node_] for unboxed nodes
+>//
+typedef
+list_node_ = $extype"list_node_" // [list_node_] for unboxed nodes
+//
 </PRE
 ><P
 ></P

@@ -163,10 +163,13 @@ NAME="AEN1131"
 ></A
 ><PRE
 CLASS="programlisting"
->typedef charint = (char, int)
+>//
+typedef charint = (char, int)
 typedef intchar = (int, char)
+//
 fun swap_char_int (xy: charint): intchar = (xy.1, xy.0)
 fun swap_int_char (xy: intchar): charint = (xy.1, xy.0)
+//
 </PRE
 ><P
 ></P
@@ -207,11 +210,14 @@ NAME="AEN1139"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{
+>//
+fun{
 a,b:t@ype
 } swap (xy: (a, b)): (b, a) = (xy.1, xy.0)
+//
 fun swap_char_int (xy: charint): intchar = swap&#60;char,int&#62; (xy)
 fun swap_int_char (xy: intchar): charint = swap&#60;int,char&#62; (xy)
+//
 </PRE
 ><P
 ></P
@@ -349,20 +355,22 @@ NAME="AEN1165"
 ></A
 ><PRE
 CLASS="programlisting"
->typedef
+>//
+typedef
 cfun (t1:t@ype, t2:t@ype) = t1 -&#60;cloref1&#62; t2
-
+//
 fun{
 a,b,c:t@ype
 } compose (
   f: cfun (a, b), g: cfun (b, c)
 ) :&#60;cloref1&#62; cfun (a, c) = lam x =&#62; g(f(x))
-
+//
 val inc_by_1 = lam (x:int): int =&#60;cloref&#62; x+1
 val mul_by_2 = lam (x:int): int =&#60;cloref&#62; x*2
-
+//
 val f_2x_1 = compose&#60;int,int,int&#62; (mul_by_2, inc_by_1)
 val f_2x_2 = compose&#60;int,int,int&#62; (inc_by_1, mul_by_2)
+//
 </PRE
 ><P
 ></P

@@ -137,7 +137,8 @@ NAME="AEN1083"
 ></A
 ><PRE
 CLASS="programlisting"
->fun bstree_inord
+>fun
+bstree_inord
 (
   t0: bstree, fwork: string -&#60;cloref1&#62; void
 ) : void =
@@ -174,9 +175,13 @@ NAME="AEN1087"
 ></A
 ><PRE
 CLASS="programlisting"
->fun bstree_search
-  (t0: bstree, k0: string): bool =
+>fun
+bstree_search
 (
+  t0: bstree, k0: string
+) : bool =
+(
+//
 case+ t0 of
 | E () =&#62; false
 | B (t1, k, t2) =&#62; let
@@ -187,6 +192,7 @@ case+ t0 of
     | _ when sgn &#62; 0 =&#62; bstree_search (t2, k0)
     | _ (*k0 = k*) =&#62; true
   end // end of [B]
+//
 ) (* end of [bstree_search] *)
 </PRE
 ><P
@@ -211,9 +217,13 @@ NAME="AEN1091"
 ></A
 ><PRE
 CLASS="programlisting"
->fun bstree_insert
-  (t0: bstree, k0: string): bstree =
+>fun
+bstree_insert
 (
+  t0: bstree, k0: string
+) : bstree =
+(
+//
 case+ t0 of
 | E () =&#62; B (E, k0, E)
 | B (t1, k, t2) =&#62; let
@@ -224,6 +234,7 @@ case+ t0 of
     | _ when sgn &#62; 0 =&#62; B (t1, k, bstree_insert (t2, k0))
     | _ (*k0 = k*) =&#62; t0 // [k0] found and no actual insertion
   end // end of [B]
+//
 ) (* end of [bstree_insert] *)
 </PRE
 ><P

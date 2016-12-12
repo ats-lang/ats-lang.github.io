@@ -1,0 +1,363 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Matrices</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Effectful Programming Features"
+HREF="c1378.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Ordering Permutations"
+HREF="x1564.html"><LINK
+REL="NEXT"
+TITLE="Example: Estimating the Constant Pi"
+HREF="x1641.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1564.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 6. Effectful Programming Features</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1641.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="matrices"
+>Matrices</A
+></H1
+><P
+>&#13;A matrix in ATS is just a two-dimensional array but it is represented by a
+one-dimensional array and the representation is of the row-major style (in
+contrast to the column-major style).  Given a type T, the type
+<FONT
+COLOR="RED"
+>mtrxszref(T)</FONT
+> is for a matrix combined with its number of rows
+and number of columns such that each element stored in the matrix is of the
+type T. I will loosely refer to values of the type <FONT
+COLOR="RED"
+>mtrxszref(T)</FONT
+>
+as matrices from now on.  If there is a clear need to avoid potential
+confusion, I may also refer to them as matrix0-values.
+</P
+><P
+>&#13;Given a matrix M of dimension m by n, the expression M[i,j] means to
+fetch the content of the cell in M that is indexed by (i, j), where i and j
+are natural numbers strictly less than m and n, respectively.  The
+expression M[i,j] can also be used as a left value. For instance, the
+assignment (M[i,j] := exp) means to evaluate exp to a value and then store
+the value into the cell in M that is indexed by (i, j).
+</P
+><P
+>&#13;Various functions and function templates on matrix0-values are declared in
+the file <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/matrixref.sats"
+TARGET="_top"
+>matrixref.sats</A
+>,
+which is automatically loaded by <B
+CLASS="command"
+>atsopt</B
+>. For instance,
+three function templates and two polymorphic functions on matrices are
+depicted by the following interfaces:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1609"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+mtrxszref_make_elt <span class="comment">// template</span>
+  <span class="keyword">(</span>row<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> col<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">mtrxszref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> mtrxszref_get_nrow<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span> <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">mtrxszref</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">size_t</span></span> <span class="comment">// polyfun</span>
+<span class="dynexp"><span class="keyword">fun</span> mtrxszref_get_ncol<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span> <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">mtrxszref</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">size_t</span></span> <span class="comment">// polyfun</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+mtrxszref_get_elt_at <span class="comment">// template</span>
+  <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">mtrxszref</span> <span class="staexp">a</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span></span> <span class="comment">// M[i,j]</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+mtrxszref_set_elt_at <span class="comment">// template</span>
+  <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">mtrxszref</span> <span class="staexp">a</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span> <span class="comment">// M[i,j] := x</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Given a type T and three values <FONT
+COLOR="RED"
+>nrow</FONT
+>, <FONT
+COLOR="RED"
+>ncol</FONT
+> and
+<FONT
+COLOR="RED"
+>init</FONT
+> of the types <FONT
+COLOR="RED"
+>size_t</FONT
+>, <FONT
+COLOR="RED"
+>size_t</FONT
+> and T,
+respectively, <FONT
+COLOR="RED"
+>mtrxszref_make_elt&#60;T&#62; (row, col, init)</FONT
+>
+returns a matrix of the type <FONT
+COLOR="RED"
+>mtrxszref(T)</FONT
+> such that the
+dimension of the matrix is <FONT
+COLOR="RED"
+>nrow</FONT
+> by <FONT
+COLOR="RED"
+>ncol</FONT
+> and each
+cell in the matrix is initialized with the value <FONT
+COLOR="RED"
+>init</FONT
+>. Given a
+matrix M of the type <FONT
+COLOR="RED"
+>mtrxszref(T)</FONT
+> for some T,
+<FONT
+COLOR="RED"
+>mtrxszref_get_nrow(M)</FONT
+> and <FONT
+COLOR="RED"
+>mtrxszref_get_ncol(M)</FONT
+>
+return the number of rows and the number of columns of M, respectively,
+which are both of the type <FONT
+COLOR="RED"
+>size_t</FONT
+>. For convenience,
+<FONT
+COLOR="RED"
+>mtrxszref_get_nrow(M)</FONT
+> and <FONT
+COLOR="RED"
+>mtrxszref_get_ncol(M)</FONT
+> can
+also be written as <FONT
+COLOR="RED"
+>M.nrow</FONT
+> and <FONT
+COLOR="RED"
+>M.ncol</FONT
+>, respectively.
+As for matrix access and update, the function templates
+<FONT
+COLOR="RED"
+>mtrxszref_get_elt_at</FONT
+> and <FONT
+COLOR="RED"
+>mtrxszref_set_elt_at</FONT
+> can
+be called, respectively. For convenience, bracket notation can used for
+these functions.
+</P
+><P
+>&#13;Let us now take a look at an example. The following defined function
+<FONT
+COLOR="RED"
+>mtrxszref_transpose</FONT
+> turns a given matrix into its transpose:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1634"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+mtrxszref_transpose
+  <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">mtrxszref</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> nrow <span class="keyword">=</span> mtrxszref_get_nrow <span class="keyword">(</span>M<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fnx</span> loop1
+  <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> i <span class="keyword">&lt;</span> nrow <span class="keyword">then</span> loop2 <span class="keyword">(</span>i<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">and</span> loop2
+  <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> j <span class="keyword">&lt;</span> i <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> tmp <span class="keyword">=</span> <span class="dynexp">M[i<span class="keyword">,</span>j<span class="keyword">]</span></span></span>
+  <span class="keyword">in</span>
+    <span class="dynexp">M[i<span class="keyword">,</span>j<span class="keyword">]</span></span> := <span class="dynexp">M[j<span class="keyword">,</span>i<span class="keyword">]</span></span><span class="keyword">;</span> <span class="dynexp">M[j<span class="keyword">,</span>i<span class="keyword">]</span></span> := tmp<span class="keyword">;</span> loop2 <span class="keyword">(</span>i<span class="keyword">,</span> j+<span class="dynexp">1</span><span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span>
+    loop1 <span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">)</span></span>
+  <span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  loop1 <span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [mtrxszref_transpose]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The matrix M is assumed to be a square, that is, its number of rows equals
+its number of columns. Note that the two functions <FONT
+COLOR="RED"
+>loop1</FONT
+> and
+<FONT
+COLOR="RED"
+>loop2</FONT
+> are defined mutually tail-recursively, and the keyword
+<FONT
+COLOR="RED"
+>fnx</FONT
+> indicates the need to combine the bodies of
+<FONT
+COLOR="RED"
+>loop1</FONT
+> and <FONT
+COLOR="RED"
+>loop2</FONT
+> so that mutual recursive tail-calls
+in these function bodies can be compiled into direct local jumps.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1564.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1641.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Ordering Permutations</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1378.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Estimating the Constant Pi</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

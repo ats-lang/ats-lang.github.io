@@ -1,0 +1,264 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Coin Changes for Fun</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="c412.html"><LINK
+REL="PREVIOUS"
+TITLE="Evaluation of Recursive Function Calls"
+HREF="x561.html"><LINK
+REL="NEXT"
+TITLE="Tail-Call and Tail-Recursion"
+HREF="x620.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x561.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x620.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example-coin-changes-for-fun"
+>Example: Coin Changes for Fun</A
+></H1
+><P
+>Let S be a finite set of positive numbers.  The problem we want to
+solve is to find out the number of distinct ways for a given integer x to
+be expressed as the sum of multiples of the positive numbers chosen from
+S. If we interpret each number in S as the denomination of a coin, then the
+problem asks how many distinct ways there exist for a given value x to be
+expressed as the sum of a set of coins. If we use cc(S, x) for this number,
+then we have the following properties on the function cc:
+
+<P
+></P
+><UL
+><LI
+><P
+>cc(S, 0) = 1 for any S.
+</P
+></LI
+><LI
+><P
+>If x &#60; 0, then cc(S, x) = 0 for any S.
+</P
+></LI
+><LI
+><P
+>If S is empty and x &#62; 0, then cc(S, x) = 0.
+</P
+></LI
+><LI
+><P
+>If S contains a number c, then
+cc(S, x) = cc(S<SUB
+>1</SUB
+>, x) + cc(S, x-c),
+where S<SUB
+>1</SUB
+> is the set formed by removing c from S.
+</P
+></LI
+></UL
+>
+
+In the following implementation, we fix S to be the set consisting of
+1, 5, 10 and 25.
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN611"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">typedef</span>
+<span class="staexp">int4 <span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> theCoins <span class="keyword">=</span> <span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">,</span> <span class="dynexp">5</span><span class="keyword">,</span> <span class="dynexp">10</span><span class="keyword">,</span> <span class="dynexp">25</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int4</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> coin_get
+  <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">if</span> n <span class="keyword">=</span> <span class="dynexp">0</span> <span class="keyword">then</span> theCoins<span class="dynexp"><span class="keyword">.0</span></span>
+  <span class="keyword">else</span> <span class="keyword">if</span> n <span class="keyword">=</span> <span class="dynexp">1</span> <span class="keyword">then</span> theCoins<span class="dynexp"><span class="keyword">.1</span></span>
+  <span class="keyword">else</span> <span class="keyword">if</span> n <span class="keyword">=</span> <span class="dynexp">2</span> <span class="keyword">then</span> theCoins<span class="dynexp"><span class="keyword">.2</span></span>
+  <span class="keyword">else</span> <span class="keyword">if</span> n <span class="keyword">=</span> <span class="dynexp">3</span> <span class="keyword">then</span> theCoins<span class="dynexp"><span class="keyword">.3</span></span>
+  <span class="keyword">else</span> <span class="keyword">~</span><span class="dynexp">1</span> <span class="comment">(* erroneous value *)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [coin_get] *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> coin_change
+  <span class="keyword">(</span>sum<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">fun</span> aux <span class="keyword">(</span>sum<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> sum <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span>
+     <span class="keyword">(</span><span class="keyword">if</span> n &gt;= <span class="dynexp">0</span> <span class="keyword">then</span> aux <span class="keyword">(</span>sum<span class="keyword">,</span> n-<span class="dynexp">1</span><span class="keyword">)</span> + aux <span class="keyword">(</span>sum-coin_get<span class="keyword">(</span>n<span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">0</span><span class="keyword">)</span>
+    <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">if</span> sum <span class="keyword">&lt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="dynexp">0</span> <span class="keyword">else</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+  <span class="comment">// end of [aux]</span>
+<span class="keyword">in</span>
+  aux <span class="keyword">(</span>sum<span class="keyword">,</span> <span class="dynexp">3</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [coin_change]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The auxiliary function <FONT
+COLOR="RED"
+>aux</FONT
+> defined in the body of
+the function <FONT
+COLOR="RED"
+>coin_change</FONT
+> corresponds to the cc function
+mentioned above.
+
+When applied to <FONT
+COLOR="RED"
+>1000</FONT
+>, the function <FONT
+COLOR="RED"
+>coin_change</FONT
+>
+returns <FONT
+COLOR="RED"
+>142511</FONT
+>.
+</P
+><P
+>Note that the entire code in this section plus some additional
+code for testing is available <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_FUNCTION/coinchange.dats"
+TARGET="_top"
+>on-line</A
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x561.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x620.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Evaluation of Recursive Function Calls</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c412.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Tail-Call and Tail-Recursion</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

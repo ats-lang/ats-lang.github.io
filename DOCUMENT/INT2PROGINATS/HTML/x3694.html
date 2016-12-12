@@ -1,0 +1,627 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Dataview for Singly-Linked Lists</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Dataviews as Linear Dataprops"
+HREF="c3546.html"><LINK
+REL="PREVIOUS"
+TITLE="Dataview for Linear Strings"
+HREF="x3670.html"><LINK
+REL="NEXT"
+TITLE="Proof Functions for View-Changes"
+HREF="x3748.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3670.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 14. Dataviews as Linear Dataprops</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3748.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="singly-linked_lists"
+>Dataview for Singly-Linked Lists</A
+></H1
+><P
+>&#13;The following dataview <FONT
+COLOR="RED"
+>slseg_v</FONT
+> captures the notion of a
+singly-linked list segment:
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3698"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">dataview</span>
+<span class="staexp">slseg_v <span class="keyword">(</span>
+  a<span class="keyword">:</span><span class="keyword">t@ype+</span> <span class="comment">// covariant argument</span>
+<span class="keyword">,</span> addr<span class="comment">(*beg*)</span>
+<span class="keyword">,</span> addr<span class="comment">(*end*)</span>
+<span class="keyword">,</span> int<span class="comment">(*length*)</span>
+<span class="keyword">)</span> <span class="keyword">=</span> <span class="comment">// slseg_v</span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span>
+    slseg_v_nil <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>l_fst<span class="keyword">:</span>agz<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l_nxt<span class="keyword">,</span>l_end<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+    slseg_v_cons <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l_fst</span><span class="keyword">,</span> <span class="staexp">l_end</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span> <span class="keyword">of</span>
+      <span class="keyword">(</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">ptr</span> <span class="staexp">l_nxt</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_fst</span><span class="keyword">,</span> <span class="staexp">slseg_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l_nxt</span><span class="keyword">,</span> <span class="staexp">l_end</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [slseg]_v</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+There are two proof constructors <FONT
+COLOR="RED"
+>slseg_v_nil</FONT
+> and
+<FONT
+COLOR="RED"
+>slseg_v_cons</FONT
+> associated with <FONT
+COLOR="RED"
+>slseg_v</FONT
+>, which are
+assigned the following types:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3703"
+></A
+><PRE
+CLASS="programlisting"
+>//
+slseg_v_nil :
+  {a:t@ype}{l:addr} () -&#62; slseg_v (a, l, l, 0)
+//
+slseg_v_cons :
+  {a:t@ype}{l_fst:agz}{l_nxt,l_end:addr}{n:nat}
+  ((a, ptr l_nxt) @ l_fst, slseg_v (a, l_nxt, l_end, n)) -&#62; slseg_v (a, l_fst, l_end, n+1)
+//
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Note that <FONT
+COLOR="RED"
+>agz</FONT
+> is a subset sort for addresses that are not null.
+Given a type T, two addresses L1 and L2, and a natural number N, the view
+<FONT
+COLOR="RED"
+>slseg_v(T, L1, L2, N)</FONT
+> is for a singly-linked list segment
+containing N elements of the type T that starts at L1 and finishes at L2.
+In the case where L2 is the null pointer, then the list segment is considered
+a list as is formally defined below:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3708"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">viewdef</span> <span class="staexp">slist_v
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">,</span> <span class="staexp">l<span class="keyword">:</span>addr</span><span class="keyword">,</span> <span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">slseg_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">null</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">// end of [slist_v]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Given a type T, a pointer pointing to L plus a proof of the view
+<FONT
+COLOR="RED"
+>slist_v(T, L, N)</FONT
+> for some natural number N is essentially the
+same as a pointer to a struct of the following declared type
+<FONT
+COLOR="RED"
+>slist_struct</FONT
+> in C:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3713"
+></A
+><PRE
+CLASS="programlisting"
+>typedef
+struct slist {
+  T data ; /* [T] matches the corresponding type in ATS */
+  struct slist *next ; /* pointing to the tail of the list */
+} slist_struct ;
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Let us now see a simple example involving singly-linked lists:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3716"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+slist_ptr_length
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="prfexp">pflst<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">slist_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span> <span class="keyword">|</span> p<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">fun</span> loop
+    <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">i</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>
+    <span class="prfexp">pflst<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">slist_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span></span> <span class="keyword">|</span> p<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">(</span><span class="staexp">j</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">(</span><span class="staexp">i</span><span class="staexp">+</span><span class="staexp">j</span><span class="keyword">)</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> p <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span> slseg_v_cons <span class="keyword">(</span>pfat<span class="keyword">,</span> pf1lst<span class="keyword">)</span> <span class="keyword">=</span> pflst</span>
+      <span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> loop <span class="keyword">(</span><span class="prfexp">pf1lst</span> <span class="keyword">|</span> <span class="keyword">!</span>p<span class="dynexp"><span class="keyword">.1</span></span><span class="keyword">,</span> j+<span class="dynexp">1</span><span class="keyword">)</span></span> <span class="comment">// !p.1 points to the tail</span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pflst := slseg_v_cons <span class="keyword">(</span>pfat<span class="keyword">,</span> pf1lst<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      res
+    <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span> <span class="comment">// the length of a null list is 0</span>
+      <span class="prfexp"><span class="keyword">prval</span> slseg_v_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pflst</span> <span class="keyword">in</span> pflst := slseg_v_nil <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">;</span> j
+    <span class="keyword">end</span></span> <span class="comment">(* end of [if] *)</span>
+  <span class="comment">// end of [loop]</span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span><span class="prfexp">pflst</span> <span class="keyword">|</span> p<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [slist_ptr_length]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The function template <FONT
+COLOR="RED"
+>slist_ptr_length</FONT
+> computes the length of a
+given singly-linked list. Note that the inner function <FONT
+COLOR="RED"
+>loop</FONT
+> is
+tail-recursive. The above implementation of <FONT
+COLOR="RED"
+>slist_ptr_length</FONT
+>
+essentially corresponds to the following implementation in C:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3721"
+></A
+><PRE
+CLASS="programlisting"
+>int
+slist_ptr_length
+(
+  slist_struct *p
+) {
+  int res = 0 ;
+  while (p != NULL) { res = res + 1 ; p = p-&#62;next ; }
+  return res ;
+} // end of [slist_ptr_length]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;As another example, the following function template
+<FONT
+COLOR="RED"
+>slist_ptr_reverse</FONT
+> turns a given linked list into its reverse:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3725"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+slist_ptr_reverse
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="prfexp">pflst<span class="keyword">:</span> <span class="staexp">slist_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span> <span class="keyword">|</span> p<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">slist_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">fun</span> loop
+    <span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+    <span class="staexp"><span class="keyword">{</span>l1<span class="keyword">,</span>l2<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n1</span><span class="keyword">&gt;.</span> <span class="keyword">(</span>
+    <span class="prfexp">pf1lst<span class="keyword">:</span> <span class="staexp">slist_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l1</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="keyword">)</span></span>
+  <span class="keyword">,</span> <span class="prfexp">pf2lst<span class="keyword">:</span> <span class="staexp">slist_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l2</span><span class="keyword">,</span> <span class="staexp">n2</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> p1<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l1</span><span class="keyword">,</span> p2<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l2</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">slist_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="staexp">+</span><span class="staexp">n2</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> p1 <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span> slseg_v_cons <span class="keyword">(</span>pf1at<span class="keyword">,</span> pf1lst<span class="keyword">)</span> <span class="keyword">=</span> pf1lst</span>
+      <span class="dynexp"><span class="keyword">val</span> p1_nxt <span class="keyword">=</span> <span class="keyword">!</span>p1<span class="dynexp"><span class="keyword">.1</span></span></span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p1<span class="dynexp"><span class="keyword">.1</span></span> := p2</span>
+    <span class="keyword">in</span>
+      loop <span class="keyword">(</span><span class="prfexp">pf1lst</span><span class="keyword">,</span> <span class="prfexp">slseg_v_cons <span class="keyword">(</span>pf1at<span class="keyword">,</span> pf2lst<span class="keyword">)</span></span> <span class="keyword">|</span> p1_nxt<span class="keyword">,</span> p1<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span> slseg_v_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf1lst</span> <span class="keyword">in</span> <span class="keyword">(</span><span class="prfexp">pf2lst</span> <span class="keyword">|</span> p2<span class="keyword">)</span>
+    <span class="keyword">end</span></span> <span class="comment">// end of [if]</span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span><span class="prfexp">pflst</span><span class="keyword">,</span> <span class="prfexp">slseg_v_nil</span> <span class="keyword">|</span> p<span class="keyword">,</span> the_null_ptr<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [slist_ptr_reverse]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+By translating the tail-recursive function <FONT
+COLOR="RED"
+>loop</FONT
+> into a
+while-loop, we can readily turn the implementation of
+<FONT
+COLOR="RED"
+>slist_ptr_reverse</FONT
+> in ATS into the following implementation in
+C:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3729"
+></A
+><PRE
+CLASS="programlisting"
+>slist_struct*
+slist_ptr_reverse
+(
+  slist_struct *p
+) {
+  slist_struct *tmp, *res = NULL ;
+  while (p != NULL) {
+    tmp = p-&#62;next ; p-&#62;next = res ; res = p ; p = tmp ;
+  }
+  return res ;
+} // end of [slist_ptr_reverse]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Let us see yet another example.
+List concatenation is a common operation on lists. This time, we first give
+an implementation of list concatenation in C:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3732"
+></A
+><PRE
+CLASS="programlisting"
+>slist_struct*
+slist_ptr_append
+  (slist_struct *p, slist_struct *q) {
+  slist_struct *p1 = p ;
+  if (p1 == NULL) return q ;
+  while (p1-&#62;next != NULL) p1 = p1-&#62;next ; p1-&#62;next = q ;
+  return p ;
+} // end of [slist_ptr_append]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+The algorithm is straightforward. If <FONT
+COLOR="RED"
+>p</FONT
+> is null, then
+<FONT
+COLOR="RED"
+>q</FONT
+> is returned. Otherwise, the last node in the list pointed to
+by <FONT
+COLOR="RED"
+>p</FONT
+> is first found and its field of the name <FONT
+COLOR="RED"
+>next</FONT
+>
+then replaced with <FONT
+COLOR="RED"
+>q</FONT
+>.  This implementation of
+<FONT
+COLOR="RED"
+>slist_ptr_append</FONT
+> in C can be translated directly into to
+the following one in ATS:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3740"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+slist_ptr_append
+  <span class="staexp"><span class="keyword">{</span>l1<span class="keyword">,</span>l2<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="prfexp">pf1lst<span class="keyword">:</span> <span class="staexp">slist_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l1</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="keyword">)</span></span>
+<span class="keyword">,</span> <span class="prfexp">pf2lst<span class="keyword">:</span> <span class="staexp">slist_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l2</span><span class="keyword">,</span> <span class="staexp">n2</span><span class="keyword">)</span></span>
+<span class="keyword">|</span> p1<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l1</span><span class="keyword">,</span> p2<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l2</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">slist_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="staexp">+</span><span class="staexp">n2</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">fun</span> loop
+    <span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+    <span class="staexp"><span class="keyword">{</span>l1<span class="keyword">,</span>l2<span class="keyword">:</span>addr <span class="keyword">|</span> l1 <span class="keyword">&gt;</span> null<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n1</span><span class="keyword">&gt;.</span> <span class="keyword">(</span>
+    <span class="prfexp">pf1lst<span class="keyword">:</span> <span class="staexp">slist_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l1</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="keyword">)</span></span>
+  <span class="keyword">,</span> <span class="prfexp">pf2lst<span class="keyword">:</span> <span class="staexp">slist_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l2</span><span class="keyword">,</span> <span class="staexp">n2</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> p1<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l1</span><span class="keyword">,</span> p2<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l2</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">slist_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l1</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="staexp">+</span><span class="staexp">n2</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">void</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+    <span class="prfexp"><span class="keyword">prval</span> slseg_v_cons <span class="keyword">(</span>pf1at<span class="keyword">,</span> pf1lst<span class="keyword">)</span> <span class="keyword">=</span> pf1lst</span>
+    <span class="dynexp"><span class="keyword">val</span> p1_nxt <span class="keyword">=</span> <span class="keyword">!</span>p1<span class="dynexp"><span class="keyword">.1</span></span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">if</span> p1_nxt <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pflst</span> <span class="keyword">|</span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span><span class="prfexp">pf1lst</span><span class="keyword">,</span> <span class="prfexp">pf2lst</span> <span class="keyword">|</span> p1_nxt<span class="keyword">,</span> p2<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">(</span><span class="prfexp">slseg_v_cons <span class="keyword">(</span>pf1at<span class="keyword">,</span> pflst<span class="keyword">)</span></span> <span class="keyword">|</span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p1<span class="dynexp"><span class="keyword">.1</span></span> := p2</span>
+      <span class="prfexp"><span class="keyword">prval</span> slseg_v_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf1lst</span>
+    <span class="keyword">in</span>
+      <span class="keyword">(</span><span class="prfexp">slseg_v_cons <span class="keyword">(</span>pf1at<span class="keyword">,</span> pf2lst<span class="keyword">)</span></span> <span class="keyword">|</span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">(* end of [if] *)</span>
+  <span class="keyword">end</span></span> <span class="comment">// end of [loop]</span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> p1 <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pflst</span> <span class="keyword">|</span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span><span class="prfexp">pf1lst</span><span class="keyword">,</span> <span class="prfexp">pf2lst</span> <span class="keyword">|</span> p1<span class="keyword">,</span> p2<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">(</span><span class="prfexp">pflst</span> <span class="keyword">|</span> p1<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+    <span class="prfexp"><span class="keyword">prval</span> slseg_v_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf1lst</span> <span class="keyword">in</span> <span class="keyword">(</span><span class="prfexp">pf2lst</span> <span class="keyword">|</span> p2<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="comment">(* end of [if] *)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [slist_ptr_append]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;In the above examples, it is evident that the code in ATS is a lot more
+verbose than its counterpart in C. However, the former is also a lot more
+robust than the latter in the following sense: If a minor change is made to
+the code in ATS (e.g., renaming identifiers, reordering function
+arguments), it is most likely that a type-error is to be reported when the
+changed code is typechecked. On the other hand, the same thing cannot be
+said about the code written in C. For instance, the following erroneous
+implementation of <FONT
+COLOR="RED"
+>slist_ptr_reverse</FONT
+> in C is certainly
+type-correct:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3744"
+></A
+><PRE
+CLASS="programlisting"
+>/*
+** This implementation is *incorrect* but type-correct:
+*/
+slist_struct*
+slist_ptr_reverse
+  (slist_struct *p)
+{
+  slist_struct *tmp, *res = NULL ;
+  while (p != NULL) {
+    tmp = p-&#62;next ; res = p ; p-&#62;next = res ; p = tmp ;
+  }
+  return res ;
+} // end of [slist_ptr_reverse]
+</PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;I now point out that the dataview <FONT
+COLOR="RED"
+>slseg_v</FONT
+> is declared here in a
+manner that does not address the issue of allocating and freeing list
+nodes, and it is done so for the sake of a less involved presentation. A
+dataview for singly-linked lists that does handle allocation and
+deallocation of list nodes can also be declared in ATS, but there is really
+little need for it as we can declare a dataviewtype for such lists that is
+far more convenient to use.  However, dataviews are fundamentally more
+general and flexible than dataviewtypes, and there are many common data
+structures (e.g. doubly-linked lists) that can only be properly handled
+with dataviews in ATS.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3670.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3748.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Dataview for Linear Strings</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3546.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Proof Functions for View-Changes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -151,11 +151,13 @@ a:t@ype
 } list_append
   {m,n:nat} .&#60;m&#62;.
 (
-  xs: list (a, m), ys: list (a, n)
-) : list (a, m+n) = case+ xs of
-  | list_nil () =&#62; ys
-  | list_cons (x, xs) =&#62; list_cons (x, list_append (xs, ys))
-// end of [list_append]
+  xs: list (a, m), ys: list(a, n)
+) : list (a, m+n) =
+(
+  case+ xs of
+  | list_nil() =&#62; ys
+  | list_cons(x, xs) =&#62; list_cons(x, list_append&#60;a&#62;(xs, ys))
+) (* end of [list_append] *)
 </PRE
 ><P
 ></P
@@ -214,12 +216,15 @@ a:t@ype
 } list_reverse_append
   {m,n:nat} .&#60;m&#62;.
 (
-  xs: list (a, m), ys: list (a, n)
-) : list (a, m+n) = case+ xs of
+  xs: list(a, m)
+, ys: list(a, n)
+) : list(a, m+n) =
+(
+  case+ xs of
   | list_nil () =&#62; ys
   | list_cons (x, xs) =&#62;
-      list_reverse_append (xs, list_cons (x, ys))
-// end of [list_reverse_append]
+      list_reverse_append&#60;a&#62;(xs, list_cons(x, ys))
+) (* end of [list_reverse_append] *)
 </PRE
 ><P
 ></P
@@ -263,7 +268,7 @@ NAME="AEN2719"
 CLASS="programlisting"
 >fun{a:t@ype}
 list_reverse{n:nat} .&#60;&#62;. // defined non-recursively
-  (xs: list (a, n)): list (a, n) = list_reverse_append (xs, list_nil)
+  (xs: list(a, n)): list(a, n) = list_reverse_append&#60;a&#62;(xs, list_nil())
 // end of [list_reverse]
 </PRE
 ><P
@@ -298,7 +303,7 @@ COLOR="RED"
 >list_map(xs)</FONT
 > returns a list ys of the type <FONT
 COLOR="RED"
->list(T2, I))</FONT
+>list(T2, I)</FONT
 >:
 
 <DIV
@@ -317,10 +322,12 @@ a:t@ype}
   {n:nat} .&#60;n&#62;.
 (
   xs: list (a, n), f: a -&#60;cloref1&#62; b
-) : list (b, n) = case+ xs of
-  | list_nil () =&#62; list_nil ()
-  | list_cons (x, xs) =&#62; list_cons (f x, list_map (xs, f))
-// end of [list_map]
+) : list (b, n) =
+(
+  case+ xs of
+  | list_nil() =&#62; list_nil()
+  | list_cons(x, xs) =&#62; list_cons(f x, list_map&#60;a&#62;(xs, f))
+) (* end of [list_map] *)
 </PRE
 ><P
 ></P
@@ -382,10 +389,14 @@ a,b:t@ype
 ) : list ((a, b), n) =
 (
   case+ (xs, ys) of
-  | (list_cons (x, xs),
-     list_cons (y, ys)) =&#62;
-      list_cons ((x, y), list_zip (xs, ys))
-  | (list_nil (), list_nil ()) =&#62; list_nil ()
+  | (
+      list_nil()
+    , list_nil()
+    ) =&#62; list_nil((*void*))
+  | (
+      list_cons (x, xs)
+    , list_cons (y, ys)
+    ) =&#62; list_cons((x, y), list_zip&#60;a,b&#62;(xs, ys))
 ) (* end of [list_zip] *)
 </PRE
 ><P
@@ -453,12 +464,20 @@ a,b:t@ype
   xs: list (a, n)
 , ys: list (b, n)
 , f: (a, b) -&#60;cloref1&#62; c
-) : list (c, n) = case+ (xs, ys) of
-  | (list_cons (x, xs),
-     list_cons (y, ys)) =&#62;
-      list_cons (f (x, y), list_zipwith (xs, ys, f))
-  | (list_nil (), list_nil ()) =&#62; list_nil ()
-// end of [list_zipwith]
+) : list (c, n) =
+(
+  case+ (xs, ys) of
+  | (
+      list_nil()
+    , list_nil()
+    ) =&#62; list_nil((*void*))
+  | (
+      list_cons(x, xs)
+    , list_cons(y, ys)
+    ) =&#62;
+      list_cons(f(x, y), list_zipwith&#60;a,b&#62;&#60;c&#62;(xs, ys, f))
+     // end of (list_cons, list_cons)
+) (* end of [list_zipwith] *)
 </PRE
 ><P
 ></P

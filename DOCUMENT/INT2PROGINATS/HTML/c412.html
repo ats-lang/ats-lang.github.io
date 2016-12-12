@@ -1,0 +1,513 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Functions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Functional Programming"
+HREF="p42.html"><LINK
+REL="PREVIOUS"
+TITLE="Comments in Code"
+HREF="x394.html"><LINK
+REL="NEXT"
+TITLE="Function Arity"
+HREF="x464.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x394.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x464.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="functions"
+></A
+>Chapter 3. Functions</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c412.html#functions-as-a-simple-form-of-abstraction"
+>Functions as a Simple Form of Abstraction</A
+></DT
+><DT
+><A
+HREF="x464.html"
+>Function Arity</A
+></DT
+><DT
+><A
+HREF="x489.html"
+>Function Interface</A
+></DT
+><DT
+><A
+HREF="x498.html"
+>Evaluation of Function Calls</A
+></DT
+><DT
+><A
+HREF="x518.html"
+>Recursive Functions</A
+></DT
+><DT
+><A
+HREF="x561.html"
+>Evaluation of Recursive Function Calls</A
+></DT
+><DT
+><A
+HREF="x597.html"
+>Example: Coin Changes for Fun</A
+></DT
+><DT
+><A
+HREF="x620.html"
+>Tail-Call and Tail-Recursion</A
+></DT
+><DT
+><A
+HREF="x631.html"
+>Example: The Eight-Queens Puzzle</A
+></DT
+><DT
+><A
+HREF="x694.html"
+>Mutually Recursive Functions</A
+></DT
+><DT
+><A
+HREF="x715.html"
+>Mutually Defined Tail-Recursion</A
+></DT
+><DT
+><A
+HREF="x746.html"
+>Envless Functions and Closure-Functions</A
+></DT
+><DT
+><A
+HREF="x800.html"
+>Higher-Order Functions</A
+></DT
+><DT
+><A
+HREF="x845.html"
+>Example: Binary Search for Fun</A
+></DT
+><DT
+><A
+HREF="x859.html"
+>Example: A Higher-Order Fun Puzzle</A
+></DT
+><DT
+><A
+HREF="x892.html"
+>Currying and Uncurrying</A
+></DT
+></DL
+></DIV
+><P
+>&#13;Functions play a foundational role in programming.  While it may be
+theoretically possible to program without functions (but with loops), such
+a programming style is of little practical value. ATS does provide some
+language constructs for implementing for-loops and while-loops directly. I,
+however, strongly recommend that the programmer implement loops as
+recursive functions or more precisely, as tail-recursive functions. This is
+a programming style that matches well with more advanced programming
+features in ATS, which will be presented in this book later.
+</P
+><P
+>&#13;The code employed for illustration in this chapter plus some additional
+code for testing is available <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_FUNCTION/"
+TARGET="_top"
+>on-line</A
+>.
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="functions-as-a-simple-form-of-abstraction"
+>Functions as a Simple Form of Abstraction</A
+></H1
+><P
+>Given an expression exp of the type <FONT
+COLOR="RED"
+>double</FONT
+>, we can
+multiply exp by itself to compute its square. If exp is a complex
+expression, we may introduce a binding between a name and exp so that exp
+is only evaluated once. This idea is shown in the following example:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN421"
+></A
+><PRE
+CLASS="programlisting"
+>let val x = 3.14 * (10.0 - 1.0 / 1.4142) in x * x end
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Now suppose that we have found a more efficient way to do squaring. In
+order to take full advantage of it, we need to modify each occurrence of
+squaring in the current program accordingly. This style of programming is
+clearly not modular, and it is of little chance to scale. To address this
+problem, we can implement a function as follows to compute the square of a
+given floating point number:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN423"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span> square <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=</span> x * x</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The keyword <FONT
+COLOR="RED"
+>fn</FONT
+> initiates the definition of a non-recursive
+function, and the name following it is for the function to be defined.  In
+the above example, the function <FONT
+COLOR="RED"
+>square</FONT
+> takes one argument of
+the name <FONT
+COLOR="RED"
+>x</FONT
+>, which is assumed to have the type
+<FONT
+COLOR="RED"
+>double</FONT
+>, and returns a value of the type
+<FONT
+COLOR="RED"
+>double</FONT
+>. The expression on the right-hand side (RHS) of the
+symbol <FONT
+COLOR="RED"
+>=</FONT
+> is the body of the function, which is <FONT
+COLOR="RED"
+>x *
+x</FONT
+> in this case. If we have a more efficient way to do squaring, we
+can just re-implement the body of the function <FONT
+COLOR="RED"
+>square</FONT
+>
+accordingly to take advantage of it, and there is no other changes needed
+(assuming that squaring is solely done by calling <FONT
+COLOR="RED"
+>square</FONT
+>).
+</P
+><P
+>&#13;If <FONT
+COLOR="RED"
+>square</FONT
+> is a name, what is the expression it refers to? It
+turns out that the above function definition can also be written as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN436"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> square <span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=&gt;</span> x * x</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the RHS of the symbol <FONT
+COLOR="RED"
+>=</FONT
+> is a lambda-expression
+representing an anonymous function that takes one argument of the type
+<FONT
+COLOR="RED"
+>double</FONT
+> and returns a value of the type <FONT
+COLOR="RED"
+>double</FONT
+>,
+and the expression following the symbol <FONT
+COLOR="RED"
+>=&#62;</FONT
+> is the body of the
+function. If we wish, we can change the name of the function argument as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN442"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> square <span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>y<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=&gt;</span> y * y</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+This is called alpha-renaming (of function arguments), and the new
+lambda-expression is said to be alpha-equivalent to the original one.
+</P
+><P
+>&#13;A lambda-expression is a (function) value. Suppose we have a
+lambda-expression representing a binary function, that is, a function
+taking two arguments. In order to assign a type of the form (T1, T2) -&#62; T
+to the lambda-expression, we need to verify that the body of the function
+can be given the type T if the two arguments of the function are assumed to
+have the types T1 and T2.
+What is stated also applies, <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>mutatis mutandis</I
+></SPAN
+>, to
+lambda-expressions representing functions of fewer or more arguments. For
+instance, the lambda-expression <FONT
+COLOR="RED"
+>lam (x: double): double =&#62; x *
+x</FONT
+> can be assigned the function type <FONT
+COLOR="RED"
+>(double) -&#62; double</FONT
+>, which
+may also be written as <FONT
+COLOR="RED"
+>double -&#62; double</FONT
+>.
+</P
+><P
+>&#13;Assume that exp is an expression of some function type (T1, T2) -&#62; T. Note
+that exp is not necessarily a name or a lambda-expression. If expressions
+exp<SUB
+>1</SUB
+> and exp<SUB
+>2</SUB
+> can be assigned
+the types T1 and T2, then the function application
+exp(exp<SUB
+>1</SUB
+>, exp<SUB
+>2</SUB
+>), which may
+also be referred to as a function call, can be assigned the type T.  Typing
+a function application of fewer or more arguments is handled similarly.
+</P
+><P
+>Let us now see an example that builds on the previously defined
+function <FONT
+COLOR="RED"
+>square</FONT
+>. The boundary of a ring consists of two
+circles centered at the same point. If the radii of the outer and inner
+circles are R and r, respectively, then the area of the ring can be
+computed by the following function <FONT
+COLOR="RED"
+>area_of_ring</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN457"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span> area_of_ring
+  <span class="keyword">(</span>R<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">,</span> r<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=</span> <span class="dynexp">3.1416</span> * <span class="keyword">(</span>square<span class="keyword">(</span>R<span class="keyword">)</span> - square<span class="keyword">(</span>r<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">// end of [area_of_ring]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the subtraction and multiplication functions
+are of the type <FONT
+COLOR="RED"
+>(double, double) -&#62; double</FONT
+>
+and <FONT
+COLOR="RED"
+>square</FONT
+> is of the type <FONT
+COLOR="RED"
+>(double) -&#62;
+double</FONT
+>. It is thus a simple routine to verify that the body of
+<FONT
+COLOR="RED"
+>area_of_ring</FONT
+> can be assigned the type <FONT
+COLOR="RED"
+>double</FONT
+>.
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x394.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x464.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Comments in Code</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p42.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Function Arity</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

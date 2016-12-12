@@ -108,7 +108,8 @@ NAME="AEN1033"
 ></A
 ><PRE
 CLASS="programlisting"
->fun charlst_last
+>fun
+charlst_last
   (cs: charlst): char =
 (
   case cs of
@@ -174,7 +175,8 @@ NAME="AEN1045"
 ></A
 ><PRE
 CLASS="programlisting"
->fun charlst_last
+>fun
+charlst_last
   (cs: charlst): char =
 (
   case cs of
@@ -260,7 +262,8 @@ NAME="AEN1062"
 ></A
 ><PRE
 CLASS="programlisting"
->fun charlst_last
+>fun
+charlst_last
   (cs: charlst): char = let
   val charlst_cons (c, cs1) = cs in case+ cs1 of
   | charlst_nil () =&#62; c | charlst_cons _ =&#62; charlst_last (cs1)

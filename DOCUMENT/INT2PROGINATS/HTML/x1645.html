@@ -179,7 +179,7 @@ NAME="AEN1667"
 ><PRE
 CLASS="programlisting"
 >fun fileref_open_opt
-  (path: string, fm: file_mode) : Option_vt (FILEref)
+  (path: string, fm: file_mode) : Option_vt(FILEref)
 </PRE
 ><P
 ></P
@@ -275,7 +275,7 @@ main0 () =
 {
 val out =
   fileref_open_exn ("hello.txt", file_mode_w)
-val () = fprint_string (out, "Hello, world!\n")
+val () = fprint_string (out, "Hello, world!n")
 val () = fileref_close (out)
 //
 } (* end of [main0] *)
@@ -308,7 +308,7 @@ NAME="AEN1695"
 ></A
 ><PRE
 CLASS="programlisting"
->fun fileref_get_line_string (fil: FILEref): Strptr1
+>fun fileref_get_line_string(fil: FILEref): Strptr1
 </PRE
 ><P
 ></P

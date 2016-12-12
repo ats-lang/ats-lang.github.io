@@ -253,8 +253,10 @@ NAME="AEN1117"
 CLASS="programlisting"
 >fun
 eval_iexp
-  (e0: IEXP): int =
 (
+  e0: IEXP
+) : int = (
+//
 case+ e0 of
 | IEXPcst n =&#62; n
 | IEXPneg (e) =&#62; ~eval_iexp (e)
@@ -269,12 +271,15 @@ case+ e0 of
   (
     eval_iexp (if eval_bexp (e_test) then e_then else e_else)
   ) // end of [IEXPif]
+//
 ) (* end of [eval_iexp] *)
 
 and
 eval_bexp
-  (e0: BEXP): bool =
 (
+  e0: BEXP
+) : bool = (
+//
 case+ e0 of
 | BEXPcst b =&#62; b
 | BEXPneg (e) =&#62; ~eval_bexp (e)
@@ -288,6 +293,7 @@ case+ e0 of
 | BEXPlte (e1, e2) =&#62; eval_iexp (e1) &#60;= eval_iexp (e2)
 | BEXPgt (e1, e2) =&#62; eval_iexp (e1) &#62; eval_iexp (e2)
 | BEXPgte (e1, e2) =&#62; eval_iexp (e1) &#62;= eval_iexp (e2)
+//
 ) (* end of [eval_bexp] *)
 </PRE
 ><P

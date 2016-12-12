@@ -256,7 +256,6 @@ COLOR="RED"
 >x</FONT
 > to its own argument:
 
-
 <DIV
 CLASS="informalexample"
 ><P
@@ -266,10 +265,12 @@ NAME="AEN774"
 ></A
 ><PRE
 CLASS="programlisting"
->fun addx (x: int): int -&#60;cloref1&#62; int = lam y =&#62; x + y
-
+>//
+fun addx (x: int): int -&#60;cloref1&#62; int = lam y =&#62; x + y
+//
 val plus1 = addx (1) // [plus1] is of the type int -&#60;cloref1&#62; int
 val plus2 = addx (2) // [plus2] is of the type int -&#60;cloref1&#62; int
+//
 </PRE
 ><P
 ></P

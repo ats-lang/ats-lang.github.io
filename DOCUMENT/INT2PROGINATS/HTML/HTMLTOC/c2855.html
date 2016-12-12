@@ -329,7 +329,8 @@ NAME="AEN2902"
 ></A
 ><PRE
 CLASS="programlisting"
->dataprop MUL(int, int, int) =
+>dataprop
+MUL(int, int, int) =
   | {n:int} MULbas(0, n, 0) of ()
   | {m:nat}{n:int}{p:int}
     MULind(m+1, n, p+n) of MUL(m, n, p)

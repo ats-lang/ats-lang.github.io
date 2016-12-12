@@ -17,7 +17,7 @@ TITLE="Static Semantics"
 HREF="x230.html"><LINK
 REL="NEXT"
 TITLE="Tuples and Tuple Types"
-HREF="x298.html"><LINK
+HREF="x302.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="x298.html"
+HREF="x302.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -92,18 +92,22 @@ COLOR="RED"
 floating point numbers (of double precision), respectively.
 </P
 ><P
->&#13;In the current implementation of ATS (Postiats), a program in ATS is first
-compiled into one in C (conforming to the C99 standard), which can then be
-compiled to object code by a compiler for C such as gcc. In the compilation
-from ATS to C, the type <FONT
+>&#13;In the current implementation of ATS (Postiats),
+a program in ATS is first compiled into one in C (conforming to the
+C99 standard), which can then be compiled to object code by a compiler
+for C such as gcc. In the compilation from ATS to C, each of the types
+<FONT
 COLOR="RED"
 >int</FONT
-> in ATS is translated to the type of
-the same name in C. Similarly, the type <FONT
+>, <FONT
 COLOR="RED"
 >double</FONT
+> and <FONT
+COLOR="RED"
+>void</FONT
 > in ATS is
 translated to the type of the same name in C.
+
 </P
 ><P
 >&#13;There are many other primitive types in ATS, and I will introduce
@@ -236,21 +240,26 @@ COLOR="RED"
 ><P
 ><FONT
 COLOR="RED"
->string</FONT
+>sint</FONT
 >:
-This type is for strings, and its translation in C is the type for
-pointers. I will explain this translation elsewhere.</P
+This type is translated into the type in C for short integers.</P
 ></LI
 ><LI
 ><P
 ><FONT
 COLOR="RED"
->void</FONT
+>usint</FONT
 >:
-This type is for the void value, and its translation in C is the type of
-the same name. It should be noted that the void value is unspecified in
-ATS. I often say that a function returns no value if it returns the void
-value, and vice versa.</P
+This type is translated into the type in C for unsigned short integers.</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>string</FONT
+>:
+This type is for strings, and its translation in C is the type for
+pointers. I will explain this translation elsewhere.</P
 ></LI
 ></UL
 >
@@ -293,7 +302,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="x298.html"
+HREF="x302.html"
 ACCESSKEY="N"
 >Next</A
 ></TD

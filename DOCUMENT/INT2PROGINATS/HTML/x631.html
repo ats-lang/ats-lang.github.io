@@ -1,0 +1,597 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: The Eight-Queens Puzzle</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functions"
+HREF="c412.html"><LINK
+REL="PREVIOUS"
+TITLE="Tail-Call and Tail-Recursion"
+HREF="x620.html"><LINK
+REL="NEXT"
+TITLE="Mutually Recursive Functions"
+HREF="x694.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x620.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Functions</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x694.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example-the-eight-queens-puzzle"
+>Example: The Eight-Queens Puzzle</A
+></H1
+><P
+>The eight-queens puzzle is the problem of positioning on a 8x8
+chessboard 8 queen pieces so that none of them can capture any other pieces
+using the standard chess moves defined for a queen piece. I will present as
+follows a solution to this puzzle in ATS, reviewing some of the programming
+features that have been covered so far. In particular, please note that
+every recursive function implemented in this solution is tail-recursive.
+</P
+><P
+>First, let us introduce a name for the integer constant 8 as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN635"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="neuexp"><span class="keyword">#define</span> N 8</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+After this declaration, each occurrence of the name <FONT
+COLOR="RED"
+>N</FONT
+> is to
+be replaced with 8. For representing board configurations, we define
+a type <FONT
+COLOR="RED"
+>int8</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN639"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">typedef</span> <span class="staexp">int8 <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span>
+<span class="keyword">)</span></span> <span class="comment">// end of [int8]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+A value of the type <FONT
+COLOR="RED"
+>int8</FONT
+> is a tuple of 8 integers where the
+first integer states the column position of the queen piece on the first
+row (row 0), and the second integer states the column position of the queen
+piece on the second row (row 1), and so on.
+</P
+><P
+>In order to print out a board configuration, we define the following
+functions:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN643"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> print_dots <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> i <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">(</span>print <span class="dynstr">". "</span><span class="keyword">;</span> print_dots <span class="keyword">(</span>i-<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">// end of [print_dots]</span>
+
+<span class="dynexp"><span class="keyword">fun</span> print_row <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  print_dots <span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">;</span> print <span class="dynstr">"Q "</span><span class="keyword">;</span> print_dots <span class="keyword">(</span>N-i-<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">;</span> print <span class="dynstr">"n"</span><span class="keyword">;</span>
+<span class="keyword">)</span></span> <span class="comment">// end of [print_row]</span>
+
+<span class="dynexp"><span class="keyword">fun</span> print_board <span class="keyword">(</span>bd<span class="keyword">:</span> <span class="staexp">int8</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  print_row <span class="keyword">(</span>bd<span class="dynexp"><span class="keyword">.0</span></span><span class="keyword">)</span><span class="keyword">;</span> print_row <span class="keyword">(</span>bd<span class="dynexp"><span class="keyword">.1</span></span><span class="keyword">)</span><span class="keyword">;</span> print_row <span class="keyword">(</span>bd<span class="dynexp"><span class="keyword">.2</span></span><span class="keyword">)</span><span class="keyword">;</span> print_row <span class="keyword">(</span>bd<span class="dynexp"><span class="keyword">.3</span></span><span class="keyword">)</span><span class="keyword">;</span>
+  print_row <span class="keyword">(</span>bd<span class="dynexp"><span class="keyword">.4</span></span><span class="keyword">)</span><span class="keyword">;</span> print_row <span class="keyword">(</span>bd<span class="dynexp"><span class="keyword">.5</span></span><span class="keyword">)</span><span class="keyword">;</span> print_row <span class="keyword">(</span>bd<span class="dynexp"><span class="keyword">.6</span></span><span class="keyword">)</span><span class="keyword">;</span> print_row <span class="keyword">(</span>bd<span class="dynexp"><span class="keyword">.7</span></span><span class="keyword">)</span><span class="keyword">;</span>
+  print_newline <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">// end of [print_board]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The function <FONT
+COLOR="RED"
+>print_newline</FONT
+> prints out a newline symbol and then
+flushes the buffer associated with the standard output. If the reader is
+unclear about what buffer flushing means, please feel free to ignore this
+aspect of <FONT
+COLOR="RED"
+>print_newline</FONT
+>.
+</P
+><P
+>&#13;As an example, if <FONT
+COLOR="RED"
+>print_board</FONT
+> is called on the board
+configuration represented by @(0, 1, 2, 3, 4, 5, 6, 7), then the following
+8 lines are printed out:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN649"
+></A
+><PRE
+CLASS="programlisting"
+>Q . . . . . . . 
+. Q . . . . . . 
+. . Q . . . . . 
+. . . Q . . . . 
+. . . . Q . . . 
+. . . . . Q . . 
+. . . . . . Q . 
+. . . . . . . Q 
+</PRE
+><P
+></P
+></DIV
+>
+
+</P
+><P
+>&#13;Given a board and the row number of a queen piece on the board, the
+following function <FONT
+COLOR="RED"
+>board_get</FONT
+> returns the column number of the piece:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN653"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> board_get
+  <span class="keyword">(</span>bd<span class="keyword">:</span> <span class="staexp">int8</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">0</span> <span class="keyword">then</span> bd<span class="dynexp"><span class="keyword">.0</span></span>
+  <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">1</span> <span class="keyword">then</span> bd<span class="dynexp"><span class="keyword">.1</span></span>
+  <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">2</span> <span class="keyword">then</span> bd<span class="dynexp"><span class="keyword">.2</span></span>
+  <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">3</span> <span class="keyword">then</span> bd<span class="dynexp"><span class="keyword">.3</span></span>
+  <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">4</span> <span class="keyword">then</span> bd<span class="dynexp"><span class="keyword">.4</span></span>
+  <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">5</span> <span class="keyword">then</span> bd<span class="dynexp"><span class="keyword">.5</span></span>
+  <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">6</span> <span class="keyword">then</span> bd<span class="dynexp"><span class="keyword">.6</span></span>
+  <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">7</span> <span class="keyword">then</span> bd<span class="dynexp"><span class="keyword">.7</span></span>
+  <span class="keyword">else</span> <span class="keyword">~</span><span class="dynexp">1</span></span> <span class="comment">// end of [if]</span>
+<span class="comment">// end of [board_get]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+</P
+><P
+>&#13;Given a board, a row number i and a column number j, the following function
+<FONT
+COLOR="RED"
+>board_set</FONT
+> returns a new board that are the same as the original
+board except for j being the column number of the queen piece on row i:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN657"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> board_set
+  <span class="keyword">(</span>bd<span class="keyword">:</span> <span class="staexp">int8</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span><span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int8</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span>x0<span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">,</span> x3<span class="keyword">,</span> x4<span class="keyword">,</span> x5<span class="keyword">,</span> x6<span class="keyword">,</span> x7<span class="keyword">)</span> <span class="keyword">=</span> bd</span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> x0 <span class="keyword">=</span> j</span> <span class="keyword">in</span> <span class="keyword">(</span>x0<span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">,</span> x3<span class="keyword">,</span> x4<span class="keyword">,</span> x5<span class="keyword">,</span> x6<span class="keyword">,</span> x7<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">1</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> x1 <span class="keyword">=</span> j</span> <span class="keyword">in</span> <span class="keyword">(</span>x0<span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">,</span> x3<span class="keyword">,</span> x4<span class="keyword">,</span> x5<span class="keyword">,</span> x6<span class="keyword">,</span> x7<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">2</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> x2 <span class="keyword">=</span> j</span> <span class="keyword">in</span> <span class="keyword">(</span>x0<span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">,</span> x3<span class="keyword">,</span> x4<span class="keyword">,</span> x5<span class="keyword">,</span> x6<span class="keyword">,</span> x7<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">3</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> x3 <span class="keyword">=</span> j</span> <span class="keyword">in</span> <span class="keyword">(</span>x0<span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">,</span> x3<span class="keyword">,</span> x4<span class="keyword">,</span> x5<span class="keyword">,</span> x6<span class="keyword">,</span> x7<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">4</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> x4 <span class="keyword">=</span> j</span> <span class="keyword">in</span> <span class="keyword">(</span>x0<span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">,</span> x3<span class="keyword">,</span> x4<span class="keyword">,</span> x5<span class="keyword">,</span> x6<span class="keyword">,</span> x7<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">5</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> x5 <span class="keyword">=</span> j</span> <span class="keyword">in</span> <span class="keyword">(</span>x0<span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">,</span> x3<span class="keyword">,</span> x4<span class="keyword">,</span> x5<span class="keyword">,</span> x6<span class="keyword">,</span> x7<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">6</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> x6 <span class="keyword">=</span> j</span> <span class="keyword">in</span> <span class="keyword">(</span>x0<span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">,</span> x3<span class="keyword">,</span> x4<span class="keyword">,</span> x5<span class="keyword">,</span> x6<span class="keyword">,</span> x7<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">7</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> x7 <span class="keyword">=</span> j</span> <span class="keyword">in</span> <span class="keyword">(</span>x0<span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">,</span> x3<span class="keyword">,</span> x4<span class="keyword">,</span> x5<span class="keyword">,</span> x6<span class="keyword">,</span> x7<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> bd <span class="comment">// end of [if]</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [board_set]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, the functions <FONT
+COLOR="RED"
+>board_get</FONT
+> and <FONT
+COLOR="RED"
+>board_set</FONT
+> are
+defined in a rather unwieldy fashion. This is entirely due to the use of
+tuples for representing board configurations. If we could use an array to
+represent a board configuration, then the implementation would be much
+simpler and cleaner. However, we have not yet covered arrays at this point.
+</P
+><P
+>&#13;Let us now implement two testing functions <FONT
+COLOR="RED"
+>safety_test1</FONT
+> and
+<FONT
+COLOR="RED"
+>safety_test2</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN664"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> safety_test1
+<span class="keyword">(</span>
+  i0<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j0<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> i1<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j1<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
+<span class="comment">(*
+** [abs]: the absolute value function
+*)</span>
+  j0 != j1 andalso abs <span class="keyword">(</span>i0 - i1<span class="keyword">)</span> != abs <span class="keyword">(</span>j0 - j1<span class="keyword">)</span></span>
+<span class="comment">// end of [safety_test1]</span>
+
+<span class="dynexp"><span class="keyword">fun</span> safety_test2
+<span class="keyword">(</span>
+  i0<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j0<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> bd<span class="keyword">:</span> <span class="staexp">int8</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> i &gt;= <span class="dynexp">0</span> <span class="keyword">then</span>
+    <span class="keyword">if</span> safety_test1 <span class="keyword">(</span>i0<span class="keyword">,</span> j0<span class="keyword">,</span> i<span class="keyword">,</span> board_get <span class="keyword">(</span>bd<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">)</span>
+      <span class="keyword">then</span> safety_test2 <span class="keyword">(</span>i0<span class="keyword">,</span> j0<span class="keyword">,</span> bd<span class="keyword">,</span> i-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> false
+    <span class="comment">// end of [if]</span>
+  <span class="keyword">else</span> true</span> <span class="comment">// end of [if]</span>
+<span class="comment">// end of [safety_test2]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The functionalities of these two functions can be described as such:
+
+<P
+></P
+><UL
+><LI
+><P
+>&#13;The function <FONT
+COLOR="RED"
+>safety_test1</FONT
+> tests whether a queen piece on row
+<FONT
+COLOR="RED"
+>i0</FONT
+> and column <FONT
+COLOR="RED"
+>j0</FONT
+> can capture another one on row
+<FONT
+COLOR="RED"
+>i</FONT
+> and column <FONT
+COLOR="RED"
+>j</FONT
+>.
+</P
+></LI
+><LI
+><P
+>&#13;The function <FONT
+COLOR="RED"
+>safety_test2</FONT
+> tests whether a queen piece on row
+<FONT
+COLOR="RED"
+>i0</FONT
+> and column <FONT
+COLOR="RED"
+>j0</FONT
+> can capture any other pieces on a
+given board with a row number less than or equal to <FONT
+COLOR="RED"
+>i</FONT
+>.
+</P
+></LI
+></UL
+>
+</P
+><P
+>&#13;We are now ready to implement the following function
+<FONT
+COLOR="RED"
+>search</FONT
+> based on a standard depth-first search (DFS) algorithm:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN682"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> search
+<span class="keyword">(</span>
+  bd<span class="keyword">:</span> <span class="staexp">int8</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> nsol<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">if</span>
+<span class="keyword">(</span>j <span class="keyword">&lt;</span> N<span class="keyword">)</span>
+<span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> test <span class="keyword">=</span> safety_test2 <span class="keyword">(</span>i<span class="keyword">,</span> j<span class="keyword">,</span> bd<span class="keyword">,</span> i-<span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> test
+    <span class="keyword">then</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> bd1 <span class="keyword">=</span> board_set <span class="keyword">(</span>bd<span class="keyword">,</span> i<span class="keyword">,</span> j<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">if</span> i+<span class="dynexp">1</span> <span class="keyword">=</span> N
+        <span class="keyword">then</span> <span class="keyword">let</span>
+          <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">print!</span> <span class="keyword">(</span><span class="dynstr">"Solution #"</span><span class="keyword">,</span> nsol+<span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">":nn"</span><span class="keyword">)</span></span>
+          <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> print_board <span class="keyword">(</span>bd1<span class="keyword">)</span></span>
+        <span class="keyword">in</span>
+          search <span class="keyword">(</span>bd<span class="keyword">,</span> i<span class="keyword">,</span> j+<span class="dynexp">1</span><span class="keyword">,</span> nsol+<span class="dynexp">1</span><span class="keyword">)</span>
+        <span class="keyword">end</span> <span class="comment">// end of [then]</span>
+        <span class="keyword">else</span> <span class="keyword">(</span>
+          search <span class="keyword">(</span>bd1<span class="keyword">,</span> i+<span class="dynexp">1</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="comment">(*j*)</span><span class="keyword">,</span> nsol<span class="keyword">)</span> <span class="comment">// positioning next piece</span>
+        <span class="keyword">)</span> <span class="comment">(* end of [else] *)</span>
+      <span class="comment">// end of [if]</span>
+    <span class="keyword">end</span> <span class="comment">// end of [then]</span>
+    <span class="keyword">else</span> search <span class="keyword">(</span>bd<span class="keyword">,</span> i<span class="keyword">,</span> j+<span class="dynexp">1</span><span class="keyword">,</span> nsol<span class="keyword">)</span>
+  <span class="comment">// end of [if]</span>
+<span class="keyword">end</span> <span class="comment">// end of [then]</span>
+<span class="keyword">else</span> <span class="keyword">(</span>
+  <span class="keyword">if</span> i <span class="keyword">&gt;</span> <span class="dynexp">0</span>
+    <span class="keyword">then</span> search <span class="keyword">(</span>bd<span class="keyword">,</span> i-<span class="dynexp">1</span><span class="keyword">,</span> board_get <span class="keyword">(</span>bd<span class="keyword">,</span> i-<span class="dynexp">1</span><span class="keyword">)</span> + <span class="dynexp">1</span><span class="keyword">,</span> nsol<span class="keyword">)</span> <span class="keyword">else</span> nsol
+  <span class="comment">// end of [if]</span>
+<span class="keyword">)</span> <span class="comment">(* end of [else] *)</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [search] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The return value of <FONT
+COLOR="RED"
+>search</FONT
+> is the number of distinct solutions
+to the eight queens puzzle. The symbol <FONT
+COLOR="RED"
+>print!</FONT
+> in the body of
+<FONT
+COLOR="RED"
+>search</FONT
+> is a special identifier in ATS: It takes an indefinite
+number of arguments and then applies <FONT
+COLOR="RED"
+>print</FONT
+> to each of
+them. Following is the first solution printed out by
+<FONT
+COLOR="RED"
+>print_board</FONT
+> during a call to the function <FONT
+COLOR="RED"
+>search</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN690"
+></A
+><PRE
+CLASS="programlisting"
+>Q . . . . . . . 
+. . . . Q . . . 
+. . . . . . . Q 
+. . . . . Q . . 
+. . Q . . . . . 
+. . . . . . Q . 
+. Q . . . . . . 
+. . . Q . . . . 
+</PRE
+><P
+></P
+></DIV
+>
+
+
+There are 92 distinct solutions in total.
+</P
+><P
+>&#13;Note that the entire code in this section plus some additional code for
+testing is available <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_FUNCTION/queens.dats"
+TARGET="_top"
+>on-line</A
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x620.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x694.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Tail-Call and Tail-Recursion</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c412.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Mutually Recursive Functions</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
