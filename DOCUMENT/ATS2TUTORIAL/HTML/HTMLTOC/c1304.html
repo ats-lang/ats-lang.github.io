@@ -174,8 +174,8 @@ NAME="AEN1326"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">}</span></span> lazy_vt_force <span class="keyword">(</span>lazyval<span class="keyword">:</span> <span class="staexp">lazy_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
-</p></PRE
+>############sats2xhtml_docbook("""fun{a:vt@ype} lazy_vt_force (lazyval: lazy_vt(a)): (a)
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -207,8 +207,8 @@ NAME="AEN1332"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> lazy_vt_free <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">}</span></span> <span class="keyword">(</span>lazyval<span class="keyword">:</span> <span class="staexp">lazy_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
-</p></PRE
+>############sats2xhtml_docbook("""fun lazy_vt_free {a:vt@ype} (lazyval: lazy_vt(a)): void
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -249,11 +249,11 @@ NAME="AEN1340"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="keyword">datavtype</span>
-<span class="staexp">stream_vt_con <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype+</span><span class="keyword">)</span> <span class="keyword">=</span>
-  <span class="keyword">|</span> <span class="dynexp">stream_vt_nil <span class="keyword">of</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">stream_vt_cons <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
-<span class="keyword">where</span> <span class="staexp">stream_vt <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">vt@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">lazy_vt</span> <span class="keyword">(</span><span class="staexp">stream_vt_con</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span>
-</p></PRE
+>############sats2xhtml_docbook("""datavtype
+stream_vt_con (a:vt@ype+) =
+  | stream_vt_nil of ((*void*)) | stream_vt_cons of (a, stream_vt(a))
+where stream_vt (a:vt@ype) = lazy_vt (stream_vt_con(a))
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -287,36 +287,36 @@ NAME="AEN1345"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="comment">//</span>
-<span class="dynexp"><span class="keyword">fun</span>
-from <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span>
-  <span class="dynexp"><span class="keyword">$ldelay</span> <span class="keyword">(</span>stream_vt_cons <span class="keyword">(</span>n<span class="keyword">,</span> from <span class="keyword">(</span>n+1<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
-<span class="comment">//</span>
-<span class="dynexp"><span class="keyword">fun</span> sieve
-<span class="keyword">(</span>
-  ns<span class="keyword">:</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span>
-<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$ldelay</span>
-<span class="keyword">(</span>
-<span class="keyword">let</span>
-<span class="comment">//</span>
-<span class="comment">// [val-] means no warning message from the compiler</span>
-<span class="comment">//</span>
-  <span class="keyword">val</span> ns_con <span class="keyword">=</span> <span class="keyword">!</span>ns
-  <span class="keyword">val-</span><span class="keyword">@</span>stream_vt_cons<span class="keyword">(</span>n<span class="keyword">,</span> ns1<span class="keyword">)</span> <span class="keyword">=</span> ns_con
-  <span class="keyword">val</span> n <span class="keyword">=</span> n
-  <span class="keyword">val</span> ns1_ <span class="keyword">=</span> ns1
-  <span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> ns1 := sieve <span class="keyword">(</span>stream_vt_filter_cloptr&lt;int<span class="keyword">&gt;</span> <span class="keyword">(</span>ns1_<span class="keyword">,</span> <span class="keyword">lam</span> x <span class="keyword">=&gt;</span> x mod n <span class="keyword">&gt;</span> 0<span class="keyword">)</span><span class="keyword">)</span>
-  <span class="keyword">prval</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span><span class="keyword">(</span>ns_con<span class="keyword">)</span>
-<span class="keyword">in</span>
+>############dats2xhtml_docbook("""//
+fun
+from (n: int): stream_vt (int) =
+  $ldelay (stream_vt_cons (n, from (n+1)))
+//
+fun sieve
+(
+  ns: stream_vt(int)
+) : stream_vt(int) = $ldelay
+(
+let
+//
+// [val-] means no warning message from the compiler
+//
+  val ns_con = !ns
+  val-@stream_vt_cons(n, ns1) = ns_con
+  val n = n
+  val ns1_ = ns1
+  val ((*void*)) = ns1 := sieve (stream_vt_filter_cloptr&#60;int&#62; (ns1_, lam x =&#62; x mod n &#62; 0))
+  prval ((*void*)) = fold@(ns_con)
+in
   ns_con
-<span class="keyword">end</span> <span class="comment">// end of [let]</span>
-<span class="keyword">,</span>
-<span class="keyword">~</span>ns <span class="comment">// [ns] is freed</span>
-<span class="keyword">)</span></span></span> <span class="comment">(* end of [$ldelay] *)</span> <span class="comment">// end of [sieve]</span>
-<span class="comment">//</span>
-<span class="dynexp"><span class="keyword">val</span> thePrimes <span class="keyword">=</span> sieve<span class="keyword">(</span>from<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span><span class="keyword">)</span></span>
-<span class="comment">//</span>
-</p></PRE
+end // end of [let]
+,
+~ns // [ns] is freed
+) (* end of [$ldelay] *) // end of [sieve]
+//
+val thePrimes = sieve(from(2))
+//
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -340,11 +340,11 @@ NAME="AEN1349"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+>############sats2xhtml_docbook("""fun{a:t0p}
 stream_vt_filter_cloptr
-  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> pred<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">&amp;</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloptr</span><span class="keyword">&gt;</span> <span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
-<span class="comment">// end of [stream_vt_filter_cloptr]</span>
-</p></PRE
+  (xs: stream_vt (a), pred: (&#38;a) -&#60;cloptr&#62; bool): stream_vt (a)
+// end of [stream_vt_filter_cloptr]
+""")</PRE
 ><P
 ></P
 ></DIV

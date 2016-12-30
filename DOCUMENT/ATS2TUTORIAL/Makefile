@@ -11,7 +11,8 @@ RMRF=rm -rf
 
 ######
 #
-all:: update_pdf
+#all:: update_pdf
+#
 all:: update_code
 #
 all:: update_html

@@ -125,18 +125,18 @@ NAME="AEN1364"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="comment">//</span>
-<span class="keyword">datatype</span> <span class="staexp">expr <span class="keyword">=</span>
-  <span class="keyword">|</span> <span class="dynexp">Int <span class="keyword">of</span> <span class="staexp">int</span></span>
-  <span class="keyword">|</span> <span class="dynexp">Var <span class="keyword">of</span> <span class="staexp">string</span></span>
-  <span class="keyword">|</span> <span class="dynexp">Add <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span></span>
-  <span class="keyword">|</span> <span class="dynexp">Sub <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span></span>
-  <span class="keyword">|</span> <span class="dynexp">Mul <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span></span>
-  <span class="keyword">|</span> <span class="dynexp">Div <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span></span>
-  <span class="keyword">|</span> <span class="dynexp">Ifgtz <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span></span> <span class="comment">// if expr &gt; 0 then ... else ...</span>
-  <span class="keyword">|</span> <span class="dynexp">Ifgtez <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span></span></span> <span class="comment">// if expr &gt;= 0 then ... else ...</span>
-<span class="comment">//</span>
-</p></PRE
+>############sats2xhtml_docbook("""//
+datatype expr =
+  | Int of int
+  | Var of string
+  | Add of (expr, expr)
+  | Sub of (expr, expr)
+  | Mul of (expr, expr)
+  | Div of (expr, expr)
+  | Ifgtz of (expr, expr, expr) // if expr &#62; 0 then ... else ...
+  | Ifgtez of (expr, expr, expr) // if expr &#62;= 0 then ... else ...
+//
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -174,8 +174,8 @@ NAME="AEN1370"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="keyword">#codegen2</span><span class="keyword">(</span>"datcon"<span class="keyword">,</span> expr<span class="keyword">)</span>
-</p></PRE
+>############sats2xhtml_docbook("""#codegen2("datcon", expr)
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -206,8 +206,8 @@ NAME="AEN1375"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="keyword">#codegen2</span><span class="keyword">(</span>"datcon"<span class="keyword">,</span> expr<span class="keyword">,</span> my_datcon_expr<span class="keyword">)</span>
-</p></PRE
+>############sats2xhtml_docbook("""#codegen2("datcon", expr, my_datcon_expr)
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -229,8 +229,8 @@ NAME="AEN1378"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="keyword">#codegen2</span><span class="keyword">(</span>"datcon"<span class="keyword">,</span> expr<span class="keyword">)</span>
-</p></PRE
+>############sats2xhtml_docbook("""#codegen2("datcon", expr)
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -280,26 +280,26 @@ NAME="AEN1386"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="comment">(* ****** ****** *)</span>
-<span class="comment">//</span>
-<span class="dynexp"><span class="keyword">implement</span>
-<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+>############dats2xhtml_docbook("""(* ****** ****** *)
+//
+implement
+{}(*tmp*)
 datcon_expr_
-  <span class="keyword">(</span>arg0<span class="keyword">)</span> <span class="keyword">=</span>
-<span class="keyword">(</span>
-<span class="keyword">case+</span> arg0 <span class="keyword">of</span>
-<span class="keyword">|</span> Int _ <span class="keyword">=&gt;</span> <span class="dynstr">"Int"</span>
-<span class="keyword">|</span> Var _ <span class="keyword">=&gt;</span> <span class="dynstr">"Var"</span>
-<span class="keyword">|</span> Add _ <span class="keyword">=&gt;</span> <span class="dynstr">"Add"</span>
-<span class="keyword">|</span> Sub _ <span class="keyword">=&gt;</span> <span class="dynstr">"Sub"</span>
-<span class="keyword">|</span> Mul _ <span class="keyword">=&gt;</span> <span class="dynstr">"Mul"</span>
-<span class="keyword">|</span> Div _ <span class="keyword">=&gt;</span> <span class="dynstr">"Div"</span>
-<span class="keyword">|</span> Ifgtz _ <span class="keyword">=&gt;</span> <span class="dynstr">"Ifgtz"</span>
-<span class="keyword">|</span> Ifgtez _ <span class="keyword">=&gt;</span> <span class="dynstr">"Ifgtez"</span>
-<span class="keyword">)</span></span>
-<span class="comment">//</span>
-<span class="comment">(* ****** ****** *)</span>
-</p></PRE
+  (arg0) =
+(
+case+ arg0 of
+| Int _ =&#62; "Int"
+| Var _ =&#62; "Var"
+| Add _ =&#62; "Add"
+| Sub _ =&#62; "Sub"
+| Mul _ =&#62; "Mul"
+| Div _ =&#62; "Div"
+| Ifgtz _ =&#62; "Ifgtz"
+| Ifgtez _ =&#62; "Ifgtez"
+)
+//
+(* ****** ****** *)
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -346,9 +346,9 @@ NAME="AEN1393"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
-datcon_expr_ <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">string</span></span> <span class="comment">// a function template</span>
-</p></PRE
+>############sats2xhtml_docbook("""fun{}
+datcon_expr_ : (expr) -&#62; string // a function template
+""")</PRE
 ><P
 ></P
 ></DIV

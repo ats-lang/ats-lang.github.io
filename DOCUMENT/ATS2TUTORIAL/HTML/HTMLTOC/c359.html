@@ -100,9 +100,9 @@ NAME="AEN364"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="keyword">datatype</span> <span class="staexp">weekday <span class="keyword">=</span>
-  <span class="keyword">|</span> <span class="dynexp">Monday</span> <span class="keyword">|</span> <span class="dynexp">Tuesday</span> <span class="keyword">|</span> <span class="dynexp">Wednesday</span> <span class="keyword">|</span> <span class="dynexp">Thursday</span> <span class="keyword">|</span> <span class="dynexp">Friday</span></span>
-</p></PRE
+>############sats2xhtml_docbook("""datatype weekday =
+  | Monday | Tuesday | Wednesday | Thursday | Friday
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -162,14 +162,14 @@ NAME="AEN376"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="comment">//</span>
-<span class="keyword">staload</span> UN <span class="keyword">=</span> "prelude/SATS/unsafe.sats"
-<span class="comment">//</span>
-<span class="dynexp"><span class="keyword">fun</span>
+>############dats2xhtml_docbook("""//
+staload UN = "prelude/SATS/unsafe.sats"
+//
+fun
 weekday2int
-  <span class="keyword">(</span>wd<span class="keyword">:</span> <span class="staexp">weekday</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>int<span class="keyword">}</span></span><span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>intptr<span class="keyword">}</span></span><span class="keyword">(</span>wd<span class="keyword">)</span><span class="keyword">)</span></span>
-<span class="comment">//</span>
-</p></PRE
+  (wd: weekday): int = $UN.cast{int}($UN.cast{intptr}(wd))
+//
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -241,10 +241,10 @@ NAME="AEN391"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
-isFriday<span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">weekday</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
-  <span class="keyword">case+</span> x <span class="keyword">of</span> Friday<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> true <span class="keyword">|</span> _ <span class="keyword">=&gt;</span> false</span>
-</p></PRE
+>############dats2xhtml_docbook("""fun
+isFriday(x: weekday): bool =
+  case+ x of Friday() =&#62; true | _ =&#62; false
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -278,9 +278,9 @@ NAME="AEN397"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc <span class="keyword">(</span>isFriday<span class="keyword">(</span>Friday<span class="keyword">)</span><span class="keyword">)</span></span>
-<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc <span class="keyword">(</span>isFriday<span class="keyword">(</span>Friday<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
-</p></PRE
+>############dats2xhtml_docbook("""val () = assertloc (isFriday(Friday))
+val () = assertloc (isFriday(Friday()))
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -311,8 +311,8 @@ NAME="AEN402"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="keyword">datatype</span> <span class="staexp">ab <span class="keyword">=</span> <span class="dynexp">A <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">B <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">bool</span><span class="keyword">)</span></span></span>
-</p></PRE
+>############sats2xhtml_docbook("""datatype ab = A of () | B of (bool)
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -353,10 +353,10 @@ NAME="AEN408"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc <span class="keyword">(</span>iseqz<span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">}</span></span><span class="keyword">(</span>A<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
-<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc <span class="keyword">(</span>true <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_get&lt;<span class="staexp">bool</span><span class="keyword">&gt;</span><span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">}</span></span><span class="keyword">(</span>B<span class="keyword">(</span>true<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
-<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc <span class="keyword">(</span>false <span class="keyword">=</span> $UN<span class="keyword">.</span>ptr0_get&lt;<span class="staexp">bool</span><span class="keyword">&gt;</span><span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">}</span></span><span class="keyword">(</span>B<span class="keyword">(</span>false<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
-</p></PRE
+>############dats2xhtml_docbook("""val () = assertloc (iseqz($UN.cast{ptr}(A())))
+val () = assertloc (true = $UN.ptr0_get&#60;bool&#62;($UN.cast{ptr}(B(true))))
+val () = assertloc (false = $UN.ptr0_get&#60;bool&#62;($UN.cast{ptr}(B(false))))
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -379,9 +379,9 @@ NAME="AEN412"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="keyword">datatype</span> <span class="staexp">abc <span class="keyword">=</span>
-  <span class="keyword">|</span> <span class="dynexp">A <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">B <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">bool</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">C <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">double</span><span class="keyword">)</span></span></span>
-</p></PRE
+>############sats2xhtml_docbook("""datatype abc =
+  | A of () | B of (bool) | C of (int, double)
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -442,18 +442,18 @@ NAME="AEN425"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+>############dats2xhtml_docbook("""fun
 abc2tag
-<span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">abc</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
-  <span class="dynexp"><span class="keyword">val</span> p <span class="keyword">=</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>intptr<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">)</span></span>
-<span class="keyword">in</span>
-<span class="comment">//</span>
-<span class="keyword">case+</span> <span class="dynexp">0</span> <span class="keyword">of</span>
-<span class="keyword">|</span> _ <span class="keyword">when</span> p <span class="keyword">&lt;</span> <span class="dynexp">1024</span> <span class="keyword">=&gt;</span> $UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>int<span class="keyword">}</span></span><span class="keyword">(</span>p<span class="keyword">)</span>
-<span class="keyword">|</span> _ <span class="comment">(*heap-allocated*)</span> <span class="keyword">=&gt;</span> $UN<span class="keyword">.</span>ptr0_get&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span>$UN<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">}</span></span><span class="keyword">(</span>p<span class="keyword">)</span><span class="keyword">)</span>
-<span class="comment">//</span>
-<span class="keyword">end</span></span> <span class="comment">// end of [abc2tag]</span>
-</p></PRE
+(x: abc): int = let
+  val p = $UN.cast{intptr}(x)
+in
+//
+case+ 0 of
+| _ when p &#60; 1024 =&#62; $UN.cast{int}(p)
+| _ (*heap-allocated*) =&#62; $UN.ptr0_get&#60;int&#62;($UN.cast{ptr}(p))
+//
+end // end of [abc2tag]
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -490,13 +490,13 @@ NAME="AEN432"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="keyword">datatype</span>
-<span class="staexp">intexp <span class="keyword">=</span>
-<span class="keyword">|</span> <span class="dynexp">Int <span class="keyword">of</span> <span class="staexp">int</span></span>
-<span class="keyword">|</span> <span class="dynexp">Neg <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">intexp</span><span class="keyword">)</span></span>
-<span class="keyword">|</span> <span class="dynexp">Add <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">intexp</span><span class="keyword">,</span> <span class="staexp">intexp</span><span class="keyword">)</span></span>
-<span class="keyword">|</span> <span class="dynexp">Sub <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">intexp</span><span class="keyword">,</span> <span class="staexp">intexp</span><span class="keyword">)</span></span></span>
-</p></PRE
+>############sats2xhtml_docbook("""datatype
+intexp =
+| Int of int
+| Neg of (intexp)
+| Add of (intexp, intexp)
+| Sub of (intexp, intexp)
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -530,23 +530,23 @@ NAME="AEN438"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="keyword">datatype</span>
-<span class="staexp">intexp <span class="keyword">=</span>
-<span class="keyword">|</span> <span class="dynexp">Int <span class="keyword">of</span> <span class="staexp">int</span></span>
-<span class="keyword">|</span> <span class="dynexp">Neg <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">intexp</span><span class="keyword">)</span></span>
-<span class="keyword">|</span> <span class="dynexp">Add <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">intexp</span><span class="keyword">,</span> <span class="staexp">intexp</span><span class="keyword">)</span></span>
-<span class="keyword">|</span> <span class="dynexp">Sub <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">intexp</span><span class="keyword">,</span> <span class="staexp">intexp</span><span class="keyword">)</span></span>
-<span class="keyword">|</span> <span class="dynexp">IfThenElse <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">boolexp</span><span class="keyword">,</span> <span class="staexp">intexp</span><span class="keyword">,</span> <span class="staexp">intexp</span><span class="keyword">)</span></span></span>
+>############sats2xhtml_docbook("""datatype
+intexp =
+| Int of int
+| Neg of (intexp)
+| Add of (intexp, intexp)
+| Sub of (intexp, intexp)
+| IfThenElse of (boolexp, intexp, intexp)
 
-<span class="keyword">and</span>
-<span class="staexp">boolexp <span class="keyword">=</span>
-<span class="keyword">|</span> <span class="dynexp">Bool <span class="keyword">of</span> <span class="staexp">bool</span></span> <span class="comment">// constant</span>
-<span class="keyword">|</span> <span class="dynexp">Not <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">boolexp</span><span class="keyword">)</span></span> <span class="comment">// negation</span>
-<span class="keyword">|</span> <span class="dynexp">Less <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">intexp</span><span class="keyword">,</span> <span class="staexp">intexp</span><span class="keyword">)</span></span> <span class="comment">// Less(x, y): x &lt; y</span>
-<span class="keyword">|</span> <span class="dynexp">LessEq <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">intexp</span><span class="keyword">,</span> <span class="staexp">intexp</span><span class="keyword">)</span></span> <span class="comment">// LessEq(x, y): x &lt;= y</span>
-<span class="keyword">|</span> <span class="dynexp">Conj <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">boolexp</span><span class="keyword">,</span> <span class="staexp">boolexp</span><span class="keyword">)</span></span> <span class="comment">// Conj(x, y): x / y</span>
-<span class="keyword">|</span> <span class="dynexp">Disj <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">boolexp</span><span class="keyword">,</span> <span class="staexp">boolexp</span><span class="keyword">)</span></span></span> <span class="comment">// Disj(x, y): x / y</span>
-</p></PRE
+and
+boolexp =
+| Bool of bool // constant
+| Not of (boolexp) // negation
+| Less of (intexp, intexp) // Less(x, y): x &#60; y
+| LessEq of (intexp, intexp) // LessEq(x, y): x &#60;= y
+| Conj of (boolexp, boolexp) // Conj(x, y): x /\ y
+| Disj of (boolexp, boolexp) // Disj(x, y): x \/ y
+""")</PRE
 ><P
 ></P
 ></DIV
@@ -572,50 +572,50 @@ NAME="AEN442"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="comment">//</span>
-<span class="neuexp"><span class="keyword">symintr</span> eval</span>
-<span class="comment">//</span>
-<span class="keyword">extern</span>
-<span class="dynexp"><span class="keyword">fun</span> eval_intexp <span class="keyword">:</span> <span class="staexp">intexp</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">int</span></span>
-<span class="keyword">extern</span>
-<span class="dynexp"><span class="keyword">fun</span> eval_boolexp <span class="keyword">:</span> <span class="staexp">boolexp</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">bool</span></span>
-<span class="comment">//</span>
-<span class="dynexp"><span class="keyword">overload</span> eval <span class="keyword">with</span> eval_intexp</span>
-<span class="dynexp"><span class="keyword">overload</span> eval <span class="keyword">with</span> eval_boolexp</span>
-<span class="comment">//</span>
-<span class="comment">(* ****** ****** *)</span>
-<span class="comment">//</span>
-<span class="dynexp"><span class="keyword">implement</span>
+>############dats2xhtml_docbook("""//
+symintr eval
+//
+extern
+fun eval_intexp : intexp -&#62; int
+extern
+fun eval_boolexp : boolexp -&#62; bool
+//
+overload eval with eval_intexp
+overload eval with eval_boolexp
+//
+(* ****** ****** *)
+//
+implement
 eval_intexp
-  <span class="keyword">(</span>e0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>
-<span class="comment">//</span>
-<span class="keyword">case+</span> e0 <span class="keyword">of</span>
-<span class="keyword">|</span> Int <span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=&gt;</span> i
-<span class="keyword">|</span> Neg <span class="keyword">(</span>e<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">~</span>eval<span class="keyword">(</span>e<span class="keyword">)</span>
-<span class="keyword">|</span> Add <span class="keyword">(</span>e1<span class="keyword">,</span> e2<span class="keyword">)</span> <span class="keyword">=&gt;</span> eval<span class="keyword">(</span>e1<span class="keyword">)</span> + eval<span class="keyword">(</span>e2<span class="keyword">)</span>
-<span class="keyword">|</span> Sub <span class="keyword">(</span>e1<span class="keyword">,</span> e2<span class="keyword">)</span> <span class="keyword">=&gt;</span> eval<span class="keyword">(</span>e1<span class="keyword">)</span> - eval<span class="keyword">(</span>e2<span class="keyword">)</span>
-<span class="keyword">|</span> IfThenElse
-    <span class="keyword">(</span>e_test<span class="keyword">,</span> e_then<span class="keyword">,</span> e_else<span class="keyword">)</span> <span class="keyword">=&gt;</span>
-    <span class="keyword">if</span> eval<span class="keyword">(</span>e_test<span class="keyword">)</span> <span class="keyword">then</span> eval<span class="keyword">(</span>e_then<span class="keyword">)</span> <span class="keyword">else</span> eval<span class="keyword">(</span>e_else<span class="keyword">)</span>
-<span class="comment">//</span>
-<span class="keyword">)</span></span> <span class="comment">(* end of [eval_intexp] *)</span>
-<span class="comment">//</span>
-<span class="dynexp"><span class="keyword">implement</span>
+  (e0) = (
+//
+case+ e0 of
+| Int (i) =&#62; i
+| Neg (e) =&#62; ~eval(e)
+| Add (e1, e2) =&#62; eval(e1) + eval(e2)
+| Sub (e1, e2) =&#62; eval(e1) - eval(e2)
+| IfThenElse
+    (e_test, e_then, e_else) =&#62;
+    if eval(e_test) then eval(e_then) else eval(e_else)
+//
+) (* end of [eval_intexp] *)
+//
+implement
 eval_boolexp
-  <span class="keyword">(</span>e0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>
-<span class="comment">//</span>
-<span class="keyword">case+</span> e0 <span class="keyword">of</span>
-<span class="keyword">|</span> Bool <span class="keyword">(</span>b<span class="keyword">)</span> <span class="keyword">=&gt;</span> b
-<span class="keyword">|</span> Not <span class="keyword">(</span>e<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">~</span>eval<span class="keyword">(</span>e<span class="keyword">)</span>
-<span class="keyword">|</span> Less <span class="keyword">(</span>e1<span class="keyword">,</span> e2<span class="keyword">)</span> <span class="keyword">=&gt;</span> eval<span class="keyword">(</span>e1<span class="keyword">)</span> <span class="keyword">&lt;</span> eval<span class="keyword">(</span>e2<span class="keyword">)</span>
-<span class="keyword">|</span> LessEq <span class="keyword">(</span>e1<span class="keyword">,</span> e2<span class="keyword">)</span> <span class="keyword">=&gt;</span> eval<span class="keyword">(</span>e1<span class="keyword">)</span> &lt;= eval<span class="keyword">(</span>e2<span class="keyword">)</span>
-<span class="keyword">|</span> Conj <span class="keyword">(</span>e1<span class="keyword">,</span> e2<span class="keyword">)</span> <span class="keyword">=&gt;</span> eval<span class="keyword">(</span>e1<span class="keyword">)</span> &amp;&amp; eval<span class="keyword">(</span>e2<span class="keyword">)</span>
-<span class="keyword">|</span> Disj <span class="keyword">(</span>e1<span class="keyword">,</span> e2<span class="keyword">)</span> <span class="keyword">=&gt;</span> eval<span class="keyword">(</span>e1<span class="keyword">)</span> || eval<span class="keyword">(</span>e2<span class="keyword">)</span>
-<span class="comment">//</span>
-<span class="keyword">)</span></span> <span class="comment">(* end of [eval_boolexp] *)</span>
-<span class="comment">//</span>
-<span class="comment">(* ****** ****** *)</span>
-</p></PRE
+  (e0) = (
+//
+case+ e0 of
+| Bool (b) =&#62; b
+| Not (e) =&#62; ~eval(e)
+| Less (e1, e2) =&#62; eval(e1) &#60; eval(e2)
+| LessEq (e1, e2) =&#62; eval(e1) &#60;= eval(e2)
+| Conj (e1, e2) =&#62; eval(e1) &#38;&#38; eval(e2)
+| Disj (e1, e2) =&#62; eval(e1) || eval(e2)
+//
+) (* end of [eval_boolexp] *)
+//
+(* ****** ****** *)
+""")</PRE
 ><P
 ></P
 ></DIV
