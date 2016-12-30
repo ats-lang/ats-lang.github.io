@@ -799,11 +799,11 @@ CLASS="programlisting"
 a<span class="keyword">:</span><span class="keyword">t@ype</span>
 <span class="keyword">}</span></span> append1<span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
 <span class="keyword">(</span>
-  xs<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">)</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+  xs<span class="keyword">:</span> <span class="staexp">list</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">)</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
 <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="staexp">+</span><span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span>
   <span class="keyword">case+</span> xs <span class="keyword">of</span>
-  <span class="keyword">|</span> list_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> list_cons <span class="keyword">(</span>x<span class="keyword">,</span> append1 <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span>
-  <span class="keyword">|</span> list_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> ys</span>
+  <span class="keyword">|</span> list_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> ys
+  <span class="keyword">|</span> list_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> list_cons<span class="keyword">(</span>x<span class="keyword">,</span> append1&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span></span>
 <span class="comment">// end of [append1]</span>
 </p></PRE
 ><P
@@ -850,8 +850,10 @@ a<span class="keyword">:</span><span class="keyword">t@ype</span>
 <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
   <span class="keyword">case+</span> xs <span class="keyword">of</span>
-  <span class="keyword">|</span> list_cons
-      <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+  <span class="keyword">|</span> list_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+      <span class="keyword">(</span>res := ys<span class="keyword">)</span>
+    <span class="comment">// end of [list_nil]</span>
+  <span class="keyword">|</span> list_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
       <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> 
       res := list_cons<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>0<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">,</span> _<span class="keyword">)</span></span>
       <span class="dynexp"><span class="keyword">val+</span> list_cons <span class="keyword">(</span>_<span class="keyword">,</span> res1<span class="keyword">)</span> <span class="keyword">=</span> res</span>
@@ -860,7 +862,6 @@ a<span class="keyword">:</span><span class="keyword">t@ype</span>
     <span class="dynexp"><span class="keyword">in</span>
       <span class="comment">// nothing</span>
     <span class="keyword">end</span></span> <span class="comment">// end of [list_cons]</span>
-  <span class="keyword">|</span> list_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span>res := ys<span class="keyword">)</span>
 <span class="keyword">)</span></span> <span class="comment">(* end of [loop] *)</span>
 <span class="comment">//</span>
 <span class="keyword">var</span> res<span class="keyword">:</span> <span class="staexp">List</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
@@ -879,58 +880,59 @@ a<span class="keyword">:</span><span class="keyword">t@ype</span>
 During typechecking, the expression <FONT
 COLOR="RED"
 >list_cons{a}{0}(x, _)</FONT
-> is
-assigned the (linear) type <FONT
+>
+is assigned the (linear) type <FONT
 COLOR="RED"
->list_cons(L0, L1, L2)</FONT
-> for some
-addresses L0, L1 and L2 while a proof of the at-view <FONT
+>list_cons_unfold(L0, L1, L2)</FONT
+>
+for some addresses L0, L1 and L2 while a proof of the at-view
+<FONT
 COLOR="RED"
 >a@L1</FONT
-> and
-another proof of the at-view <FONT
-COLOR="RED"
->list(a, 0)?@L2</FONT
-> are put into the
-store for currently available proofs. Note that the special symbol
-<FONT
-COLOR="RED"
->_</FONT
-> simply indicates that the tail of the newly constructed list
-is uninitialized. A partially initialized list of the type
-<FONT
-COLOR="RED"
->list_cons(L0, L1, L2)</FONT
-> is guaranteed to match the pattern
-<FONT
-COLOR="RED"
->list_cons(_, res1)</FONT
->, yielding a binding between <FONT
-COLOR="RED"
->res1</FONT
->
-and the pointer pointing to L2 where the (possibly uninitialized) tail of
-the list is stored. When <FONT
-COLOR="RED"
->fold@</FONT
-> is called on a variable of the
-type <FONT
-COLOR="RED"
->list_cons(L0, L1, L2)</FONT
->, it changes the type of the variable
-to <FONT
-COLOR="RED"
->list(T, N+1)</FONT
-> by consuming a proof of the at-view
-<FONT
-COLOR="RED"
->T@L1</FONT
 > and another proof of the at-view <FONT
 COLOR="RED"
->list(T,
-N)@L2</FONT
->, where T and N are a type and an integer, respectively.
-
+>list(a,
+0)?@L2</FONT
+> are put into the store for currently available proofs. Note
+that the special symbol <FONT
+COLOR="RED"
+>_</FONT
+> simply indicates that the tail
+of the newly constructed list is uninitialized. A partially
+initialized list of the type <FONT
+COLOR="RED"
+>list_cons_unfold(L0, L1, L2)</FONT
+>
+is guaranteed to match the pattern <FONT
+COLOR="RED"
+>list_cons(_, res1)</FONT
+>,
+yielding a binding between <FONT
+COLOR="RED"
+>res1</FONT
+> and the pointer pointing
+to L2 where the (possibly uninitialized) tail of the list is
+stored. When <FONT
+COLOR="RED"
+>fold@</FONT
+> is called on a variable of the type
+<FONT
+COLOR="RED"
+>list_cons_unfold(L0, L1, L2)</FONT
+>, it changes the type of the
+variable to <FONT
+COLOR="RED"
+>list(T, N+1)</FONT
+> by consuming a proof of the
+at-view <FONT
+COLOR="RED"
+>T@L1</FONT
+> and another proof of the at-view
+<FONT
+COLOR="RED"
+>list(T, N)@L2</FONT
+>, where T and N are a type and an integer,
+respectively.
 </P
 ></DIV
 ><DIV
