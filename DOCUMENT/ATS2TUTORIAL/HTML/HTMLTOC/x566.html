@@ -1,0 +1,545 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Functional Maps</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Functional Sets and Maps"
+HREF="c514.html"><LINK
+REL="PREVIOUS"
+TITLE="Functional Sets and Maps"
+HREF="c514.html"><LINK
+REL="NEXT"
+TITLE="Exceptions"
+HREF="c625.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c514.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 12. Functional Sets and Maps</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c625.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="funsetmap_map"
+>Functional Maps</A
+></H1
+><P
+>&#13;Suppose that a map is needed for mapping keys of type
+<FONT
+COLOR="RED"
+>key_t</FONT
+> to items of type <FONT
+COLOR="RED"
+>itm_t</FONT
+>. The following code
+essentially sets up an interface for creating and operating on such a map
+based on a balanced-tree implementation in ATSLIB/libats:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN571"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">local</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span>
+<span class="staexp">key <span class="keyword">=</span> <span class="staexp">key_t</span></span> <span class="keyword">and</span> <span class="staexp">itm <span class="keyword">=</span> <span class="staexp">itm_t</span></span>
+<span class="comment">//</span>
+<span class="keyword">staload</span>
+FM <span class="keyword">=</span> "libats/ML/SATS/funmap.sats"
+<span class="dynexp"><span class="keyword">implement</span>
+$FM<span class="keyword">.</span>compare_key_key&lt;<span class="staexp">key</span><span class="keyword">&gt;</span><span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> compare<span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span> <span class="comment">(* in-of-local *)</span>
+
+<span class="neuexp"><span class="keyword">#include</span> "libats/ML/HATS/myfunmap.hats"</span>
+
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/libats/ML/HATS/myfunmap.hats"
+TARGET="_top"
+>on-line</A
+> the
+HATS file mentioned in the code, which is just a convenience wrapper made
+to simplify programming with functional maps. Note that it is assumed here
+that there is a comparison function on values of the type <FONT
+COLOR="RED"
+>key_t</FONT
+>
+that overloads the symbol <FONT
+COLOR="RED"
+>compare</FONT
+>. If this is not the case, one
+needs to implement such a function.
+
+</P
+><P
+>&#13;Assume that <FONT
+COLOR="RED"
+>key_t</FONT
+> is <FONT
+COLOR="RED"
+>string</FONT
+> and <FONT
+COLOR="RED"
+>itm_t</FONT
+>
+is <FONT
+COLOR="RED"
+>int</FONT
+>. The following line of code creates an empty functional map:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN581"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> mymap <span class="keyword">=</span> myfunmap_nil<span class="keyword">(</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The following few lines insert some key/item pairs into
+<FONT
+COLOR="RED"
+>mymap</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN584"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">var</span> mymap <span class="keyword">=</span> mymap
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">,</span> <span class="dynexp">3</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.insert</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myfunmap_insert</FONT
+>.  The first line in the above code may
+seem puzzling: Its sole purpose is to create a left-value to be passed as
+the first argument to <FONT
+COLOR="RED"
+>myfunmap_insert</FONT
+>.  Given a key and an
+item, <FONT
+COLOR="RED"
+>mymap.insert</FONT
+> inserts the key/item pair into
+<FONT
+COLOR="RED"
+>mymap</FONT
+>.  If the key is in the domain of the map represented by
+<FONT
+COLOR="RED"
+>mymap</FONT
+> before insertion, then the original item associated with
+the key is returned. Otherwise, no item is returned. As can be expected,
+the size of <FONT
+COLOR="RED"
+>mymap</FONT
+> is 3 at this point:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN593"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc <span class="keyword">(</span>mymap<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">3</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.size</FONT
+> is overloaded with a function of the name
+<FONT
+COLOR="RED"
+>myfunmap_size</FONT
+>, which returns the number of key/item pairs
+stored in a given map.  During the course of debugging, one may want to
+print out the key/item pairs in a given map:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN597"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">fprintln!</span> <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> <span class="dynstr">"mymap = "</span><span class="keyword">,</span> mymap<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the symbol <FONT
+COLOR="RED"
+>fprint</FONT
+> is overloaded with
+<FONT
+COLOR="RED"
+>fprint_mymap</FONT
+>. The next two lines of code show how search with a
+given key operates on a map:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN601"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>search</span><span class="keyword">(</span><span class="dynstr">""</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>search</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.search</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myfunmap_search</FONT
+>, which returns the item associated with a
+given key if it is found. The next few lines of code remove some key/item
+pairs from <FONT
+COLOR="RED"
+>mymap</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN606"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span>true <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span>false <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>takeout</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">3</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>takeout</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.remove</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myfunmap_remove</FONT
+> for removing a key/item pair of a given
+key. If a key/item pair is removed, then the function returns
+true. Otherwise, it returns false to indicates that no key/item pair of the
+given key is stored in the map being operated on.  The dot-symbol
+<FONT
+COLOR="RED"
+>.takeout</FONT
+> is overloaded with a function of the name
+<FONT
+COLOR="RED"
+>myfunmap_takeout</FONT
+>, which is similar to <FONT
+COLOR="RED"
+>myfunmap_remove</FONT
+>
+excepting for returning the removed item.
+
+</P
+><P
+>&#13;The following function is available for generating a module
+(that is, a record) containing various operations on mymap-values:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN614"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> myfunmap_make_module<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">mymap_modtype</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For instance, a module of the name <FONT
+COLOR="RED"
+>MYMAP</FONT
+> is
+created as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN617"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> MYMAP <span class="keyword">=</span> myfunmap_make_module<span class="keyword">(</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+With <FONT
+COLOR="RED"
+>MYMAP</FONT
+>, we can create a (functional) map
+and then perform various insertion and removal operations:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN620"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">var</span> mymap <span class="keyword">=</span> <span class="keyword">(</span>MYMAP<span class="dynexp"><span class="keyword">.</span>nil</span><span class="keyword">)</span><span class="keyword">(</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>MYMAP<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">)</span><span class="keyword">(</span>mymap<span class="keyword">,</span> <span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>MYMAP<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">)</span><span class="keyword">(</span>mymap<span class="keyword">,</span> <span class="dynstr">"b"</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>MYMAP<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">)</span><span class="keyword">(</span>mymap<span class="keyword">,</span> <span class="dynstr">"c"</span><span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>MYMAP<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">)</span><span class="keyword">(</span>mymap<span class="keyword">,</span> <span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>MYMAP<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">)</span><span class="keyword">(</span>mymap<span class="keyword">,</span> <span class="dynstr">"b"</span><span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>MYMAP<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">)</span><span class="keyword">(</span>mymap<span class="keyword">,</span> <span class="dynstr">"c"</span><span class="keyword">,</span> <span class="dynexp">3</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">(</span>true<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>MYMAP<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">)</span><span class="keyword">(</span>mymap<span class="keyword">,</span> <span class="dynstr">"a"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">(</span>true<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>MYMAP<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">)</span><span class="keyword">(</span>mymap<span class="keyword">,</span> <span class="dynstr">"b"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">(</span>true<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>MYMAP<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">)</span><span class="keyword">(</span>mymap<span class="keyword">,</span> <span class="dynstr">"c"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span><span class="keyword">(</span>MYMAP<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">)</span><span class="keyword">(</span>mymap<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Various common map operations can be found in
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/libats/ML/HATS/myfunmap.hats"
+TARGET="_top"
+>libats/ML/HATS/myfunmap.hats</A
+>.  By following the types assigned to these
+operations, one should have no difficulty in figuring out how they are
+supposed to be called. Please find the entirety of the code used in this
+section <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_funsetmap_map.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c514.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c625.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Functional Sets and Maps</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c514.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Exceptions</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2TUTORIAL-BOOK.js"></SCRIPT></BODY
+></HTML
+>

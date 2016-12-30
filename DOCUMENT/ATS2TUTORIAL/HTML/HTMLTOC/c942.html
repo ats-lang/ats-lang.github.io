@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Tail-Recursion</TITLE
+>Persistent Hashtables</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Basic Tutorial Topics"
 HREF="p34.html"><LINK
 REL="PREVIOUS"
-TITLE="Persistent Hashtables"
-HREF="c881.html"><LINK
+TITLE="Persistent Matrices-with-size"
+HREF="c911.html"><LINK
 REL="NEXT"
-TITLE="Higher-Order Functions"
-HREF="c946.html"><LINK
+TITLE="Tail-Recursion"
+HREF="c1003.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c881.html"
+HREF="c911.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c946.html"
+HREF="c1003.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,18 +75,431 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="Tail-Recursion"
+NAME="hashtable"
 ></A
->Chapter 21. Tail-Recursion</H1
+>Chapter 20. Persistent Hashtables</H1
 ><P
->&#13;Please see
-<A
-HREF="http://ats-lang.sourceforge.net/EXAMPLE/EFFECTIVATS/loop-as-tailrec/main.html"
+>&#13;Hashtables are commonly used to implement finite maps. In ATSLIB/libats,
+there are hashtable implementations based on linear chaining and linear
+probing. There is also support for linear hashtables as well as persistent
+hashtables. The linear ones can be safely freed by the programmer, and the
+persistent ones (which are directly based on linear ones) can only be
+safely reclaimed through garbage collection (GC). In this chapter, I show
+how persistent hashtables can be created and operated on.
+</P
+><P
+>&#13;Suppose that a map is needed for mapping keys of type
+<FONT
+COLOR="RED"
+>key_t</FONT
+> to items of type <FONT
+COLOR="RED"
+>itm_t</FONT
+>. The following code
+essentially sets up an interface for creating and operating on such a map
+based on a hashtable implementation in ATSLIB/libats:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN948"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">local</span>
+
+<span class="keyword">typedef</span>
+<span class="staexp">key <span class="keyword">=</span> <span class="staexp">key_t</span></span> <span class="keyword">and</span> <span class="staexp">itm <span class="keyword">=</span> <span class="staexp">itm_t</span></span>
+
+<span class="keyword">in</span> <span class="comment">(* in-of-local *)</span>
+
+<span class="neuexp"><span class="keyword">#include</span> "libats/ML/HATS/myhashtblref.hats"</span>
+
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/libats/ML/HATS/myhashtblref.hats"
 TARGET="_top"
->&#13;this article
-</A
-> for a detailed explanation on tail-recursion and the
-support in ATS for turning tail-recursive calls into local jumps.
+>on-line</A
+>
+the HATS file mentioned in the code, which is just a convenience wrapper
+made to simplify programming with hashtables.
+
+</P
+><P
+>&#13;Assume that <FONT
+COLOR="RED"
+>key_t</FONT
+> is <FONT
+COLOR="RED"
+>string</FONT
+> and <FONT
+COLOR="RED"
+>itm_t</FONT
+>
+is <FONT
+COLOR="RED"
+>int</FONT
+>. The following line of code creates a hashtable with its
+initial capacity set to be 1000:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN956"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> mymap <span class="keyword">=</span> myhashtbl_make_nil<span class="keyword">(</span><span class="dynexp">1000</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the capacity in this case is the size of the array associated
+with the created hashtable. The underlying hashtable implementation is
+based on linear chaining, and this hashtable can store up to 5000 (5*1000)
+items without need for resizing. When resizing is indeed needed, it is done
+automatically. The following few lines insert some key/item pairs into
+<FONT
+COLOR="RED"
+>mymap</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN959"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">,</span> <span class="dynexp">3</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.insert</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myhashtbl_insert</FONT
+>. Given a key and an item,
+<FONT
+COLOR="RED"
+>mymap.insert</FONT
+> inserts the key/item pair into <FONT
+COLOR="RED"
+>mymap</FONT
+>.
+If the key is in the domain of the map represented by <FONT
+COLOR="RED"
+>mymap</FONT
+>
+before insertion, then the original item associated with the key is
+returned. Otherwise, no item is returned. As can be expected, the size
+of <FONT
+COLOR="RED"
+>mymap</FONT
+> is 3 at this point:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN967"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc <span class="keyword">(</span>mymap<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">3</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.size</FONT
+> is overloaded with a function of the name
+<FONT
+COLOR="RED"
+>myhashtbl_get_size</FONT
+>, which returns the number of key/item pairs
+stored in a given hashtable.  During the course of debugging, one may want
+to print out the key/item pairs in a given hashtable:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN971"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="dynexp">fprintln!</span> <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> <span class="dynstr">"mymap = "</span><span class="keyword">,</span> mymap<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the symbol <FONT
+COLOR="RED"
+>fprint</FONT
+> is overloaded with
+<FONT
+COLOR="RED"
+>fprint_myhashtbl</FONT
+>. The next two lines of code show how search
+with a given key operates on a hashtable:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN975"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>search</span><span class="keyword">(</span><span class="dynstr">""</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>search</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.search</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myhashtbl_search</FONT
+>, which returns the item associated with a
+given key if it is found. The next few lines of code remove some key/item
+pairs from <FONT
+COLOR="RED"
+>mymap</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN980"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span>true <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span>false <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>takeout</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">3</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>takeout</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.remove</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myhashtbl_remove</FONT
+> for removing a key/item pair of a given
+key. If a key/item pair is removed, then the function returns
+true. Otherwise, it returns false to indicates that no key/item pair of the
+given key is stored in the hashtable being operated on.  The dot-symbol
+<FONT
+COLOR="RED"
+>.takeout</FONT
+> is overloaded with a function of the name
+<FONT
+COLOR="RED"
+>myhashtbl_takeout</FONT
+>, which is similar to
+<FONT
+COLOR="RED"
+>myhashtbl_remove</FONT
+> excepting for returning the removed item.
+The next few lines of code make use of several less commonly used functions
+on hashtables:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN987"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert_any</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert_any</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert_any</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> kxs <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>listize1</span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">fprintln!</span> <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> <span class="dynstr">"kxs = "</span><span class="keyword">,</span> kxs<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> kxs <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>takeout_all</span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">fprintln!</span> <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> <span class="dynstr">"kxs = "</span><span class="keyword">,</span> kxs<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc <span class="keyword">(</span>mymap<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The dot-symbol <FONT
+COLOR="RED"
+>.insert_any</FONT
+> is overloaded with a function of the
+name <FONT
+COLOR="RED"
+>myhashtbl_insert_any</FONT
+>, which <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>always</I
+></SPAN
+> inserts a
+given key/item pair regardless whether the key is already in use. One
+should really avoid using this function or only call it when it is
+absolutely sure that the given key is not already in use for otherwise the
+involved hashtable would be corrupted.  The dot-symbols
+<FONT
+COLOR="RED"
+>.listize1</FONT
+> and <FONT
+COLOR="RED"
+>.takeout_all</FONT
+> are overloaded with two
+functions of the names <FONT
+COLOR="RED"
+>myhashtbl_listize1</FONT
+> and
+<FONT
+COLOR="RED"
+>myhashtbl_takeout_all</FONT
+>, respectively. Both of them return a list
+consisting of all the key/item pairs in a given hashtable; the former keeps
+the hashtable unchanged while the latter empties it. Last, I present as follows the
+interface for an iterator going over all the key/item pairs in a given hashtable:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN996"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+myhashtbl_foreach_cloref
+<span class="keyword">(</span>
+  tbl<span class="keyword">:</span> <span class="staexp">myhashtbl</span>
+<span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">key</span><span class="keyword">,</span> <span class="staexp">&amp;</span><span class="keyword">(</span><span class="staexp">itm</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">void</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span></span> <span class="comment">// end-of-function</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+As an example, the following code prints out all the key/item
+pairs in a given hashtable:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN998"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+myhashtbl_foreach_cloref
+<span class="keyword">(</span>
+  mymap
+<span class="keyword">,</span> <span class="keyword">lam</span> <span class="keyword">(</span>k<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">fprintln!</span> <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> <span class="dynstr">"k="</span><span class="keyword">,</span> k<span class="keyword">,</span> <span class="dynstr">" and "</span><span class="keyword">,</span> <span class="dynstr">"x="</span><span class="keyword">,</span> x<span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* myhashtbl_foreach_cloref *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Please find the entirety of the code used in this chapter
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_hashtable.dats"
+TARGET="_top"
+>on-line</A
+>. Also, there is a
+hashtable-based implementation of symbol table available
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_hashtable2.dats"
+TARGET="_top"
+>on-line</A
+>.
+
 </P
 ></DIV
 ><DIV
@@ -105,7 +518,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c881.html"
+HREF="c911.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -123,7 +536,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c946.html"
+HREF="c1003.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -133,7 +546,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Persistent Hashtables</TD
+>Persistent Matrices-with-size</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -147,7 +560,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Higher-Order Functions</TD
+>Tail-Recursion</TD
 ></TR
 ></TABLE
 ></DIV

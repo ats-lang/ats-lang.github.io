@@ -117,11 +117,11 @@ NAME="AEN723"
 ></A
 ><PRE
 CLASS="programlisting"
->typedef
-abc_tup = '(int, int, string) // for tuples
-typedef
-abc_rec = '{a=int, b=int, c=string} // for records
-</PRE
+><p class="patsyntax"><span class="keyword">typedef</span>
+<span class="staexp">abc_tup <span class="keyword">=</span> <span class="keyword">'(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">string</span><span class="keyword">)</span></span> <span class="comment">// for tuples</span>
+<span class="keyword">typedef</span>
+<span class="staexp">abc_rec <span class="keyword">=</span> <span class="keyword">'{</span><span class="stalab">a</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">b</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">c</span><span class="keyword">=</span><span class="staexp">string</span><span class="keyword">}</span></span> <span class="comment">// for records</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -161,11 +161,11 @@ NAME="AEN730"
 ></A
 ><PRE
 CLASS="programlisting"
->typedef
-abc_tup = $tup(int, int, string) // for tuples
-typedef
-abc_rec = $rec{a=int, b=int, c=string} // for records
-</PRE
+><p class="patsyntax"><span class="keyword">typedef</span>
+<span class="staexp">abc_tup <span class="keyword">=</span> <span class="keyword">$tup</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">string</span><span class="keyword">)</span></span> <span class="comment">// for tuples</span>
+<span class="keyword">typedef</span>
+<span class="staexp">abc_rec <span class="keyword">=</span> <span class="keyword">$rec</span><span class="keyword">{</span><span class="stalab">a</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">b</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">c</span><span class="keyword">=</span><span class="staexp">string</span><span class="keyword">}</span></span> <span class="comment">// for records</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -202,15 +202,15 @@ NAME="AEN737"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val x_tup = '(0, 1, "2") : abc_tup
-val x_rec = '{a=0, b=1, c="2"} : abc_rec
-//
-val ((*void*)) = assertloc(x_tup.0 = x_rec.a)
-val ((*void*)) = assertloc(x_tup.1 = x_rec.b)
-val ((*void*)) = assertloc(x_tup.2 = x_rec.c)
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x_tup <span class="keyword">=</span> <span class="keyword">'(</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">"2"</span><span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">abc_tup</span></span>
+<span class="dynexp"><span class="keyword">val</span> x_rec <span class="keyword">=</span> <span class="keyword">'{</span><span class="dynlab">a</span><span class="keyword">=</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynlab">b</span><span class="keyword">=</span><span class="dynexp">1</span><span class="keyword">,</span> <span class="dynlab">c</span><span class="keyword">=</span><span class="dynstr">"2"</span><span class="keyword">}</span> <span class="keyword">:</span> <span class="staexp">abc_rec</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup<span class="dynexp"><span class="keyword">.0</span></span> <span class="keyword">=</span> x_rec<span class="dynexp"><span class="keyword">.</span>a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup<span class="dynexp"><span class="keyword">.1</span></span> <span class="keyword">=</span> x_rec<span class="dynexp"><span class="keyword">.</span>b</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup<span class="dynexp"><span class="keyword">.2</span></span> <span class="keyword">=</span> x_rec<span class="dynexp"><span class="keyword">.</span>c</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -245,11 +245,11 @@ NAME="AEN744"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val () = x_tup.0 := 100 // *ERROR*: x_tup.0 not a left-value
-val () = x_rec.a := 100 // *ERROR*: x_tup.0 not a left-value
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x_tup<span class="dynexp"><span class="keyword">.0</span></span> := <span class="dynexp">100</span></span> <span class="comment">// *ERROR*: x_tup.0 not a left-value</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x_rec<span class="dynexp"><span class="keyword">.</span>a</span> := <span class="dynexp">100</span></span> <span class="comment">// *ERROR*: x_tup.0 not a left-value</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -278,13 +278,13 @@ NAME="AEN749"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-typedef
-abc_tup_ = @(int, int, string) // for tuples
-typedef
-abc_rec_ = @{a=int, b=int, c=string} // for records
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">typedef</span>
+<span class="staexp">abc_tup_ <span class="keyword">=</span> <span class="keyword">@(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">string</span><span class="keyword">)</span></span> <span class="comment">// for tuples</span>
+<span class="keyword">typedef</span>
+<span class="staexp">abc_rec_ <span class="keyword">=</span> <span class="keyword">@{</span><span class="stalab">a</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">b</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">c</span><span class="keyword">=</span><span class="staexp">string</span><span class="keyword">}</span></span> <span class="comment">// for records</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -316,11 +316,11 @@ NAME="AEN755"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-typedef abc_tup_r = ref(abc_tup_) // for tuples
-typedef abc_rec_r = ref(abc_rec_) // for records
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">abc_tup_r <span class="keyword">=</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">abc_tup_</span><span class="keyword">)</span></span> <span class="comment">// for tuples</span>
+<span class="keyword">typedef</span> <span class="staexp">abc_rec_r <span class="keyword">=</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">abc_rec_</span><span class="keyword">)</span></span> <span class="comment">// for records</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -339,22 +339,22 @@ NAME="AEN757"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val x_tup_r = ref&#60;abc_tup_&#62;(@(0, 1, "2"))
-val x_rec_r = ref&#60;abc_rec_&#62;(@{a=0, b=1, c="2"})
-//
-(* ****** ****** *)
-//
-val () = assertloc(x_tup_r-&#62;0 = x_rec_r-&#62;a)
-val () = assertloc(x_tup_r-&#62;1 = x_rec_r-&#62;b)
-val () = assertloc(x_tup_r-&#62;2 = x_rec_r-&#62;c)
-//
-(* ****** ****** *)
-//
-val () = x_tup_r-&#62;0 := 100 // *OKAY*: x_tup_r.0 is a left-value
-val () = x_rec_r-&#62;a := 100 // *OKAY*: x_rec_r.a is a left-value
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x_tup_r <span class="keyword">=</span> ref&lt;<span class="staexp">abc_tup_</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="keyword">@(</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">"2"</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> x_rec_r <span class="keyword">=</span> ref&lt;<span class="staexp">abc_rec_</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="keyword">@{</span><span class="dynlab">a</span><span class="keyword">=</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynlab">b</span><span class="keyword">=</span><span class="dynexp">1</span><span class="keyword">,</span> <span class="dynlab">c</span><span class="keyword">=</span><span class="dynstr">"2"</span><span class="keyword">}</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup_r<span class="dynexp"><span class="keyword">-&gt;</span>0</span> <span class="keyword">=</span> x_rec_r<span class="dynexp"><span class="keyword">-&gt;</span>a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup_r<span class="dynexp"><span class="keyword">-&gt;</span>1</span> <span class="keyword">=</span> x_rec_r<span class="dynexp"><span class="keyword">-&gt;</span>b</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup_r<span class="dynexp"><span class="keyword">-&gt;</span>2</span> <span class="keyword">=</span> x_rec_r<span class="dynexp"><span class="keyword">-&gt;</span>c</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x_tup_r<span class="dynexp"><span class="keyword">-&gt;</span>0</span> := <span class="dynexp">100</span></span> <span class="comment">// *OKAY*: x_tup_r.0 is a left-value</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x_rec_r<span class="dynexp"><span class="keyword">-&gt;</span>a</span> := <span class="dynexp">100</span></span> <span class="comment">// *OKAY*: x_rec_r.a is a left-value</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -395,72 +395,72 @@ NAME="AEN765"
 ></A
 ><PRE
 CLASS="programlisting"
->(* ****** ****** *)
+><p class="patsyntax"><span class="comment">(* ****** ****** *)</span>
 
-abstype myrec = ptr  
+<span class="staexp"><span class="keyword">abstype</span> myrec <span class="keyword">=</span> ptr</span>  
 
-(* ****** ****** *)
-//
-extern
-fun{}
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
 myrec_make
-(
-  a: int, b: int, c: string
-) : myrec // end-of-function
-//
-extern
-fun{}
-myrec_get_a : myrec -&#62; int
-extern
-fun{}
-myrec_set_a : (myrec, int) -&#62; void
-extern
-fun{}
-myrec_get_b : myrec -&#62; int
-extern
-fun{}
-myrec_set_b : (myrec, int) -&#62; void
-extern
-fun{}
-myrec_get_c : myrec -&#62; string
-//
-overload .a with myrec_get_a
-overload .a with myrec_set_a
-overload .b with myrec_get_b
-overload .b with myrec_set_b
-overload .c with myrec_get_c
-//
-(* ****** ****** *)
+<span class="keyword">(</span>
+  a<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> b<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> c<span class="keyword">:</span> <span class="staexp">string</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">myrec</span></span> <span class="comment">// end-of-function</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_get_a <span class="keyword">:</span> <span class="staexp">myrec</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">int</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_set_a <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">myrec</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_get_b <span class="keyword">:</span> <span class="staexp">myrec</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">int</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_set_b <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">myrec</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_get_c <span class="keyword">:</span> <span class="staexp">myrec</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">string</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>a <span class="keyword">with</span> myrec_get_a</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>a <span class="keyword">with</span> myrec_set_a</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>b <span class="keyword">with</span> myrec_get_b</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>b <span class="keyword">with</span> myrec_set_b</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>c <span class="keyword">with</span> myrec_get_c</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
 
-local
-//
-assume myrec = abc_rec_r
-//
-in (* in-of-local *)
-//
-implement
-{}(*tmp*)
+<span class="keyword">local</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">assume</span> myrec <span class="keyword">=</span> abc_rec_r</span>
+<span class="comment">//</span>
+<span class="keyword">in</span> <span class="comment">(* in-of-local *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 myrec_make
-  (a, b, c) = ref(@{a=a, b=b, c=c})
-//
-implement{} myrec_get_a(x) = x-&#62;a
-implement{} myrec_set_a(x, a) = x-&#62;a := a
-//
-implement{} myrec_get_b(x) = x-&#62;b
-implement{} myrec_set_b(x, b) = x-&#62;b := b
-//
-implement{} myrec_get_c(x) = x-&#62;c
-(*
+  <span class="keyword">(</span>a<span class="keyword">,</span> b<span class="keyword">,</span> c<span class="keyword">)</span> <span class="keyword">=</span> ref<span class="keyword">(</span><span class="keyword">@{</span><span class="dynlab">a</span><span class="keyword">=</span>a<span class="keyword">,</span> <span class="dynlab">b</span><span class="keyword">=</span>b<span class="keyword">,</span> <span class="dynlab">c</span><span class="keyword">=</span>c<span class="keyword">}</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_get_a<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>a</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_set_a<span class="keyword">(</span>x<span class="keyword">,</span> a<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>a</span> := a</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_get_b<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>b</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_set_b<span class="keyword">(</span>x<span class="keyword">,</span> b<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>b</span> := b</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_get_c<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>c</span></span>
+<span class="comment">(*
 //
 // there is no update for the c-field:
 //
-implement{} myrec_set_a(x, c) = x-&#62;c := c
-*)
-//
-end // end of [local]
+implement{} myrec_set_a(x, c) = x-&gt;c := c
+*)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
 
-(* ****** ****** *)
-</PRE
+<span class="comment">(* ****** ****** *)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -484,24 +484,24 @@ NAME="AEN768"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val x_abc = myrec_make(0, 1, "2")
-//
-val ((*void*)) = assertloc(x_abc.a() = 0)
-val ((*void*)) = assertloc(x_abc.b() = 1)
-val ((*void*)) = assertloc(x_abc.c() = "2")
-//
-val ((*void*)) = x_abc.a(100)
-val ((*void*)) = assertloc(x_abc.a() = 100)
-//
-val ((*void*)) = x_abc.b(101)
-val ((*void*)) = assertloc(x_abc.b() = 101)
-//
-(*
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x_abc <span class="keyword">=</span> myrec_make<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">"2"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>a</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>b</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>c</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">"2"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> x_abc<span class="dynexp"><span class="keyword">.</span>a</span><span class="keyword">(</span><span class="dynexp">100</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>a</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">100</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> x_abc<span class="dynexp"><span class="keyword">.</span>b</span><span class="keyword">(</span><span class="dynexp">101</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>b</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">101</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(*
 val ((*void*)) = x_abc.c("102") // *ERROR*: unsupported
-*)
-//
-</PRE
+*)</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV

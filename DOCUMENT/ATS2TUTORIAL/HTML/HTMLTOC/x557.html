@@ -100,22 +100,22 @@ NAME="AEN562"
 ></A
 ><PRE
 CLASS="programlisting"
->local
-//
-typedef
-key = key_t and itm = itm_t
-//
-staload
-FM = "libats/ML/SATS/funmap.sats"
-implement
-$FM.compare_key_key&#60;key&#62;(x, y) = compare(x, y)
-//
-in (* in-of-local *)
+><p class="patsyntax"><span class="keyword">local</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span>
+<span class="staexp">key <span class="keyword">=</span> <span class="staexp">key_t</span></span> <span class="keyword">and</span> <span class="staexp">itm <span class="keyword">=</span> <span class="staexp">itm_t</span></span>
+<span class="comment">//</span>
+<span class="keyword">staload</span>
+FM <span class="keyword">=</span> "libats/ML/SATS/funmap.sats"
+<span class="dynexp"><span class="keyword">implement</span>
+$FM<span class="keyword">.</span>compare_key_key&lt;<span class="staexp">key</span><span class="keyword">&gt;</span><span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> compare<span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span> <span class="comment">(* in-of-local *)</span>
 
-#include "libats/ML/HATS/myfunmap.hats"
+<span class="neuexp"><span class="keyword">#include</span> "libats/ML/HATS/myfunmap.hats"</span>
 
-end // end of [local]
-</PRE
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -165,8 +165,8 @@ NAME="AEN572"
 ></A
 ><PRE
 CLASS="programlisting"
->val mymap = myfunmap_nil()
-</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> mymap <span class="keyword">=</span> myfunmap_nil<span class="keyword">(</span><span class="keyword">)</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -188,19 +188,19 @@ NAME="AEN575"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-var mymap = mymap
-//
-val-~None_vt() = mymap.insert("a", 0)
-val-~Some_vt(0) = mymap.insert("a", 1)
-//
-val-~None_vt() = mymap.insert("b", 1)
-val-~Some_vt(1) = mymap.insert("b", 2)
-//
-val-~None_vt() = mymap.insert("c", 2)
-val-~Some_vt(2) = mymap.insert("c", 3)
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">var</span> mymap <span class="keyword">=</span> mymap
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">,</span> <span class="dynexp">3</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -247,8 +247,8 @@ NAME="AEN584"
 ></A
 ><PRE
 CLASS="programlisting"
->val () = assertloc (mymap.size() = 3)
-</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc <span class="keyword">(</span>mymap<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">3</span><span class="keyword">)</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -275,10 +275,10 @@ NAME="AEN588"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val () = fprintln! (stdout_ref, "mymap = ", mymap)
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">fprintln!</span> <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> <span class="dynstr">"mymap = "</span><span class="keyword">,</span> mymap<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -304,9 +304,9 @@ NAME="AEN592"
 ></A
 ><PRE
 CLASS="programlisting"
->val-~None_vt() = mymap.search("")
-val-~Some_vt(1) = mymap.search("a")
-</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>search</span><span class="keyword">(</span><span class="dynstr">""</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>search</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">)</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -336,14 +336,14 @@ NAME="AEN597"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val-true = mymap.remove("a")
-val-false = mymap.remove("a")
-//
-val-~Some_vt(2) = mymap.takeout("b")
-val-~Some_vt(3) = mymap.takeout("c")
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span>true <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span>false <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>takeout</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">3</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>takeout</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV

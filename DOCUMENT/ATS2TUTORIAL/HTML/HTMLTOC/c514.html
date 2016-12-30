@@ -17,7 +17,7 @@ TITLE="Functional Lists"
 HREF="c446.html"><LINK
 REL="NEXT"
 TITLE="Functional Maps"
-HREF="x557.html"><LINK
+HREF="x566.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="x557.html"
+HREF="x566.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -92,7 +92,7 @@ HREF="c514.html#funsetmap_set"
 ></DT
 ><DT
 ><A
-HREF="x557.html"
+HREF="x566.html"
 >Functional Maps</A
 ></DT
 ></DL
@@ -134,21 +134,21 @@ NAME="AEN521"
 ></A
 ><PRE
 CLASS="programlisting"
->&#13;local
-//
-typedef elt = elt_t
-//
-staload
-FS = "libats/ML/SATS/funset.sats"
-implement
-$FS.compare_elt_elt&#60;elt&#62;(x, y) = compare(x, y)
-//
-in (* in-of-local *)
+><p class="patsyntax"><span class="keyword">local</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">elt <span class="keyword">=</span> <span class="staexp">elt_t</span></span>
+<span class="comment">//</span>
+<span class="keyword">staload</span>
+FS <span class="keyword">=</span> "libats/ML/SATS/funset.sats"
+<span class="dynexp"><span class="keyword">implement</span>
+$FS<span class="keyword">.</span>compare_elt_elt&lt;<span class="staexp">elt</span><span class="keyword">&gt;</span><span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=</span> compare<span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span> <span class="comment">(* in-of-local *)</span>
 
-#include "libats/ML/HATS/myfunset.hats"
+<span class="neuexp"><span class="keyword">#include</span> "libats/ML/HATS/myfunset.hats"</span>
 
-end // end of [local]
-</PRE
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -192,8 +192,8 @@ NAME="AEN529"
 ></A
 ><PRE
 CLASS="programlisting"
->val myset = myfunset_nil()
-</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> myset <span class="keyword">=</span> myfunset_nil<span class="keyword">(</span><span class="keyword">)</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -212,10 +212,10 @@ NAME="AEN531"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-fun myfunset_insert(xs: &#38;myset &#62;&#62; _, x0: elt): bool
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> myfunset_insert<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">myset</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">elt</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -255,15 +255,15 @@ NAME="AEN538"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-var myset = myset
-//
-val-false = myset.insert(0) // inserted
-val-(true) = myset.insert(0) // not actually inserted
-val-false = myset.insert(1) // inserted
-val-(true) = myset.insert(1) // not actually inserted
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">var</span> myset <span class="keyword">=</span> myset
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span>false <span class="keyword">=</span> myset<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span> <span class="comment">// inserted</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">(</span>true<span class="keyword">)</span> <span class="keyword">=</span> myset<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span> <span class="comment">// not actually inserted</span>
+<span class="dynexp"><span class="keyword">val-</span>false <span class="keyword">=</span> myset<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span> <span class="comment">// inserted</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">(</span>true<span class="keyword">)</span> <span class="keyword">=</span> myset<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span> <span class="comment">// not actually inserted</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -289,10 +289,10 @@ NAME="AEN541"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val () = fprintln! (stdout_ref, "myset = ", myset)
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">fprintln!</span> <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> <span class="dynstr">"myset = "</span><span class="keyword">,</span> myset<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -318,10 +318,10 @@ NAME="AEN545"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-fun myfunset_remove(xs: &#38;myset &#62;&#62; _, x0: elt): bool
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> myfunset_remove<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">myset</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">elt</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -360,11 +360,96 @@ NAME="AEN552"
 ></A
 ><PRE
 CLASS="programlisting"
->val-true = myset.remove(0) // removed
-val-false = myset.remove(0) // not actually removed
-val-true = myset.remove(1) // removed
-val-false = myset.remove(1) // not actually removed
-</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val-</span>true <span class="keyword">=</span> myset<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span> <span class="comment">// removed</span>
+<span class="dynexp"><span class="keyword">val-</span>false <span class="keyword">=</span> myset<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span> <span class="comment">// not actually removed</span>
+<span class="dynexp"><span class="keyword">val-</span>true <span class="keyword">=</span> myset<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span> <span class="comment">// removed</span>
+<span class="dynexp"><span class="keyword">val-</span>false <span class="keyword">=</span> myset<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span> <span class="comment">// not actually removed</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The following function is available for generating a module
+(that is, a record) containing various operations on myset-values:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN555"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> myfunset_make_module<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">myset_modtype</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For instance, a module of the name <FONT
+COLOR="RED"
+>MYSET</FONT
+> is
+created as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN558"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> MYSET <span class="keyword">=</span> myfunset_make_module<span class="keyword">(</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+With <FONT
+COLOR="RED"
+>MYSET</FONT
+>, we can create a (functional) set
+and then perform certain insertion and removal operations:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN561"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">var</span> myset <span class="keyword">=</span> <span class="keyword">(</span>MYSET<span class="dynexp"><span class="keyword">.</span>nil</span><span class="keyword">)</span><span class="keyword">(</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span>false <span class="keyword">=</span> <span class="keyword">(</span>MYSET<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">)</span><span class="keyword">(</span>myset<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span> <span class="comment">// inserted</span>
+<span class="dynexp"><span class="keyword">val-</span>false <span class="keyword">=</span> <span class="keyword">(</span>MYSET<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">)</span><span class="keyword">(</span>myset<span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span> <span class="comment">// inserted</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span><span class="keyword">(</span>MYSET<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">)</span><span class="keyword">(</span>myset<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">(</span>true<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>MYSET<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">)</span><span class="keyword">(</span>myset<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span> <span class="comment">// removed</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span><span class="keyword">(</span>MYSET<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">)</span><span class="keyword">(</span>myset<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">(</span>true<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>MYSET<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">)</span><span class="keyword">(</span>myset<span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span> <span class="comment">// removed</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span><span class="keyword">(</span>MYSET<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">)</span><span class="keyword">(</span>myset<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -424,7 +509,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="x557.html"
+HREF="x566.html"
 ACCESSKEY="N"
 >Next</A
 ></TD

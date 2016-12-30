@@ -108,17 +108,17 @@ NAME="AEN930"
 ></A
 ><PRE
 CLASS="programlisting"
->local
+><p class="patsyntax"><span class="keyword">local</span>
 
-typedef
-key = key_t and itm = itm_t
+<span class="keyword">typedef</span>
+<span class="staexp">key <span class="keyword">=</span> <span class="staexp">key_t</span></span> <span class="keyword">and</span> <span class="staexp">itm <span class="keyword">=</span> <span class="staexp">itm_t</span></span>
 
-in (* in-of-local *)
+<span class="keyword">in</span> <span class="comment">(* in-of-local *)</span>
 
-#include "libats/ML/HATS/myhashtblref.hats"
+<span class="neuexp"><span class="keyword">#include</span> "libats/ML/HATS/myhashtblref.hats"</span>
 
-end // end of [local]
-</PRE
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -160,8 +160,8 @@ NAME="AEN938"
 ></A
 ><PRE
 CLASS="programlisting"
->val mymap = myhashtbl_make_nil(1000)
-</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> mymap <span class="keyword">=</span> myhashtbl_make_nil<span class="keyword">(</span><span class="dynexp">1000</span><span class="keyword">)</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -187,17 +187,17 @@ NAME="AEN941"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val-~None_vt() = mymap.insert("a", 0)
-val-~Some_vt(0) = mymap.insert("a", 1)
-//
-val-~None_vt() = mymap.insert("b", 1)
-val-~Some_vt(1) = mymap.insert("b", 2)
-//
-val-~None_vt() = mymap.insert("c", 2)
-val-~Some_vt(2) = mymap.insert("c", 3)
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">,</span> <span class="dynexp">3</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -239,8 +239,8 @@ NAME="AEN949"
 ></A
 ><PRE
 CLASS="programlisting"
->val () = assertloc (mymap.size() = 3)
-</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc <span class="keyword">(</span>mymap<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">3</span><span class="keyword">)</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -267,11 +267,11 @@ NAME="AEN953"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val () =
-  fprintln! (stdout_ref, "mymap = ", mymap)
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="dynexp">fprintln!</span> <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> <span class="dynstr">"mymap = "</span><span class="keyword">,</span> mymap<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -297,9 +297,9 @@ NAME="AEN957"
 ></A
 ><PRE
 CLASS="programlisting"
->val-~None_vt() = mymap.search("")
-val-~Some_vt(1) = mymap.search("a")
-</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>None_vt<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>search</span><span class="keyword">(</span><span class="dynstr">""</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>search</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">)</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -329,14 +329,14 @@ NAME="AEN962"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val-true = mymap.remove("a")
-val-false = mymap.remove("a")
-//
-val-~Some_vt(2) = mymap.takeout("b")
-val-~Some_vt(3) = mymap.takeout("c")
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span>true <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span>false <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>remove</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>takeout</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="keyword">~</span>Some_vt<span class="keyword">(</span><span class="dynexp">3</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>takeout</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -378,18 +378,18 @@ NAME="AEN969"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val () = mymap.insert_any("a", 0)
-val () = mymap.insert_any("b", 1)
-val () = mymap.insert_any("c", 2)
-val kxs = mymap.listize1((*void*))
-val ((*void*)) = fprintln! (stdout_ref, "kxs = ", kxs)
-val kxs = mymap.takeout_all((*void*))
-val ((*void*)) = fprintln! (stdout_ref, "kxs = ", kxs)
-//
-val () = assertloc (mymap.size() = 0)
-//
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert_any</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert_any</span><span class="keyword">(</span><span class="dynstr">"b"</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>insert_any</span><span class="keyword">(</span><span class="dynstr">"c"</span><span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> kxs <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>listize1</span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">fprintln!</span> <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> <span class="dynstr">"kxs = "</span><span class="keyword">,</span> kxs<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> kxs <span class="keyword">=</span> mymap<span class="dynexp"><span class="keyword">.</span>takeout_all</span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">fprintln!</span> <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> <span class="dynstr">"kxs = "</span><span class="keyword">,</span> kxs<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc <span class="keyword">(</span>mymap<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -442,16 +442,16 @@ NAME="AEN978"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-extern
-fun
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
 myhashtbl_foreach_cloref
-(
-  tbl: myhashtbl
-, fwork: (key, &#38;(itm) &#62;&#62; _) -&#60;cloref1&#62; void
-) : void // end-of-function
-//
-</PRE
+<span class="keyword">(</span>
+  tbl<span class="keyword">:</span> <span class="staexp">myhashtbl</span>
+<span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">key</span><span class="keyword">,</span> <span class="staexp">&amp;</span><span class="keyword">(</span><span class="staexp">itm</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">void</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span></span> <span class="comment">// end-of-function</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -470,15 +470,15 @@ NAME="AEN980"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-val () =
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
 myhashtbl_foreach_cloref
-(
+<span class="keyword">(</span>
   mymap
-, lam (k, x) =&#62; fprintln! (stdout_ref, "k=", k, " and ", "x=", x)
-) (* myhashtbl_foreach_cloref *)
-//
-</PRE
+<span class="keyword">,</span> <span class="keyword">lam</span> <span class="keyword">(</span>k<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">fprintln!</span> <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> <span class="dynstr">"k="</span><span class="keyword">,</span> k<span class="keyword">,</span> <span class="dynstr">" and "</span><span class="keyword">,</span> <span class="dynstr">"x="</span><span class="keyword">,</span> x<span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* myhashtbl_foreach_cloref *)</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV

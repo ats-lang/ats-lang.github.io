@@ -1,0 +1,434 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Stack-Allocated Closure-Functions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Advanced Tutorial Topics"
+HREF="p1193.html"><LINK
+REL="PREVIOUS"
+TITLE="Linear Closure-Functions"
+HREF="c1220.html"><LINK
+REL="NEXT"
+TITLE="Linear Stream-Based Lazy Evaluation"
+HREF="c1304.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c1220.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c1304.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="stkclo"
+></A
+>Chapter 27. Stack-Allocated Closure-Functions</H1
+><P
+>&#13;Higher-order functions are a very convenient programming feature for
+supporting certain forms of code reuse. Often a function passed as an
+argument to a higher-order function call is a closure-function created on
+heap at run-time, and it is most likely of no more use after the call. If
+the closure-function is linear, then it needs to be freed explicitly by the
+programmer (or a type-error would occur during typechecking).  If the
+closure-function is non-linear, then its memory should be reclaimed through
+garbage-collection (GC) (or the memory is leaked).
+
+</P
+><P
+>&#13;Creating heap-allocated closure-functions implies the need for dynamic
+memory allocation (DMA). In a restricted environment (e.g., one for
+embedded programming), DMA may not be (fully) supported. One option for
+constructing a closure-function in the absence of support for DMA is to
+store it in the stack-frame of the calling function, and there is special
+systax in ATS for doing so.
+
+</P
+><P
+>&#13;Let us see a concrete example of stack-allocated closure.
+The following code implements a higher-order function template:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1272"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>res<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+ifold<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">res</span><span class="keyword">,</span> <span class="staexp">natLt</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">res</span><span class="keyword">,</span> ini<span class="keyword">:</span> <span class="staexp">res</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">res</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+loop
+<span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i &lt;= n<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="staexp">-</span><span class="staexp">i</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span><span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">res</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">res</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> i <span class="keyword">&lt;</span> n <span class="keyword">then</span> loop<span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">,</span> fopr<span class="keyword">(</span>res<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> res</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  loop<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> ini<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [ifold]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Essentially, <FONT
+COLOR="RED"
+>ifold(n, fopr, ini)</FONT
+> evaluates the expression
+<FONT
+COLOR="RED"
+>fopr(...fopr(fopr(ini, 0), 1)..., n-1)</FONT
+>.  For instance, the
+function <FONT
+COLOR="RED"
+>dotprod</FONT
+> for computing the dot product (or inner
+product) of two vectors can be implemented with a call to <FONT
+COLOR="RED"
+>ifold</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1278"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">res <span class="keyword">=</span> <span class="staexp">double</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+dotprod
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">,</span> A<span class="keyword">:</span> <span class="staexp">arrayref</span><span class="keyword">(</span><span class="staexp">res</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">,</span> B<span class="keyword">:</span> <span class="staexp">arrayref</span><span class="keyword">(</span><span class="staexp">res</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">res</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  ifold&lt;<span class="staexp">res</span><span class="keyword">&gt;</span><span class="keyword">(</span>n<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>res<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=&gt;</span> res + <span class="dynexp">A[i<span class="keyword">]</span></span>*<span class="dynexp">B[i<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">0.0</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The second argument passed to the call to <FONT
+COLOR="RED"
+>ifold</FONT
+> is a
+closure created on heap at run-time, and it is of no more use
+after the call returns. The function <FONT
+COLOR="RED"
+>dotprod</FONT
+> can also be
+implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1282"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+dotprod
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">,</span> A<span class="keyword">:</span> <span class="staexp">arrayref</span><span class="keyword">(</span><span class="staexp">res</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">,</span> B<span class="keyword">:</span> <span class="staexp">arrayref</span><span class="keyword">(</span><span class="staexp">res</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">res</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">var</span>
+fopr <span class="keyword">=</span>
+<span class="keyword">lam@</span><span class="keyword">(</span>res<span class="keyword">:</span> <span class="staexp">res</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">natLt</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">res</span> <span class="keyword">=&gt;</span> res + <span class="dynexp">A[i<span class="keyword">]</span></span>*<span class="dynexp">B[i<span class="keyword">]</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  ifold&lt;<span class="staexp">res</span><span class="keyword">&gt;</span><span class="keyword">(</span>n<span class="keyword">,</span> $UNSAFE<span class="keyword">.</span>cast<span class="keyword">(</span><span class="dynexp"><span class="keyword">addr@</span></span>fopr<span class="keyword">)</span><span class="keyword">,</span> <span class="dynexp">0.0</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [dotprod]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The keyword <FONT
+COLOR="RED"
+>lam@</FONT
+> (instead of <FONT
+COLOR="RED"
+>lam</FONT
+>) initiates the
+creation of an unboxed closure at a given location. In the above case, the
+variable <FONT
+COLOR="RED"
+>fopr</FONT
+> is located in the stack-frame of
+<FONT
+COLOR="RED"
+>dotprod</FONT
+>, and the created closure is stored in the memory
+reserved for <FONT
+COLOR="RED"
+>fopr</FONT
+>. It is the obligation of the compiler of ATS
+to make sure that the memory is large enough for storing the closure. The
+call to the (unsafe) cast turns the address of <FONT
+COLOR="RED"
+>fopr</FONT
+> into a
+boxed closure so that it can be passed to <FONT
+COLOR="RED"
+>ifold</FONT
+>.
+
+</P
+><P
+>&#13;In order to remove the (unsafe) cast in the implementation of
+<FONT
+COLOR="RED"
+>dotprod</FONT
+>, we need to implement a slight variant
+of <FONT
+COLOR="RED"
+>ifold</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1294"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>res<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+ifold_<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="keyword">(</span><span class="staexp">res</span><span class="keyword">,</span> <span class="staexp">natLt</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">clo1</span><span class="keyword">&gt;</span> <span class="staexp">res</span><span class="keyword">,</span> ini<span class="keyword">:</span> <span class="staexp">res</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">res</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+loop
+<span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i &lt;= n<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="staexp">-</span><span class="staexp">i</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span>
+<span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="keyword">(</span><span class="staexp">res</span><span class="keyword">,</span> <span class="staexp">natLt</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">clo1</span><span class="keyword">&gt;</span> <span class="staexp">res</span><span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">res</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">res</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> i <span class="keyword">&lt;</span> n
+    <span class="keyword">then</span> loop<span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">,</span> fopr<span class="keyword">,</span> fopr<span class="keyword">(</span>res<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> res</span>
+  <span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  loop<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> fopr<span class="keyword">,</span> ini<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [ifold_]</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+dotprod_
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">,</span> A<span class="keyword">:</span> <span class="staexp">arrayref</span><span class="keyword">(</span><span class="staexp">res</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">,</span> B<span class="keyword">:</span> <span class="staexp">arrayref</span><span class="keyword">(</span><span class="staexp">res</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">res</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">var</span>
+fopr <span class="keyword">=</span>
+<span class="keyword">lam@</span><span class="keyword">(</span>res<span class="keyword">:</span> <span class="staexp">res</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">natLt</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">res</span> <span class="keyword">=&gt;</span> res + <span class="dynexp">A[i<span class="keyword">]</span></span>*<span class="dynexp">B[i<span class="keyword">]</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  ifold_&lt;<span class="staexp">res</span><span class="keyword">&gt;</span><span class="keyword">(</span>n<span class="keyword">,</span> fopr<span class="keyword">,</span> <span class="dynexp">0.0</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [dotprod_]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the second argument of <FONT
+COLOR="RED"
+>ifold_</FONT
+> is call-by-reference.
+The anotated arrow <FONT
+COLOR="RED"
+>-&#60;clo1&#62;</FONT
+> is used to form function types
+for unboxed closures. So only a left value (representing some unboxed
+closure) can be passed as the second argument to a call to
+<FONT
+COLOR="RED"
+>ifold_</FONT
+>, and what is really passed at run-time is the address of
+the left value. The function <FONT
+COLOR="RED"
+>dotprod</FONT
+> can be safely implemented
+as <FONT
+COLOR="RED"
+>dotprod_</FONT
+> with a call to <FONT
+COLOR="RED"
+>ifold_</FONT
+>.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_stkclo.dats"
+TARGET="_top"
+>on-line</A
+> the entirety of the
+code used in this chapter plus some testing code.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c1220.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c1304.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Linear Closure-Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p1193.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Linear Stream-Based Lazy Evaluation</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2TUTORIAL-BOOK.js"></SCRIPT></BODY
+></HTML
+>

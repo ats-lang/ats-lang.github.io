@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Persistent Matrices-with-size</TITLE
+>Persistent Arrays-with-size</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Basic Tutorial Topics"
 HREF="p34.html"><LINK
 REL="PREVIOUS"
-TITLE="Persistent Matrices"
-HREF="c828.html"><LINK
+TITLE="Persistent Arrays"
+HREF="c791.html"><LINK
 REL="NEXT"
-TITLE="Persistent Hashtables"
-HREF="c883.html"><LINK
+TITLE="Persistent Matrices"
+HREF="c887.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c828.html"
+HREF="c791.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c883.html"
+HREF="c887.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,179 +75,201 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="mtrxszref"
+NAME="arrszref"
 ></A
->Chapter 19. Persistent Matrices-with-size</H1
+>Chapter 17. Persistent Arrays-with-size</H1
 ><P
 >&#13;I use the name <SPAN
 CLASS="emphasis"
 ><I
 CLASS="emphasis"
->matrix-with-size</I
+>array-with-size</I
 ></SPAN
 > to refer to a persistent
-matrix with attached dimension information (that is, number of rows and
-number of columns).  Given a viewtype VT, the type for a matrix-with-size
-that contains M rows and N columns of elements of viewtype VT is
+array with attached size information.  Given a viewtype VT, the type for an
+array-with-size that contains N values of viewtype VT is
 <FONT
 COLOR="RED"
->mtrxszref(VT, M, N)</FONT
->. Essentially, such a value is a boxed
-record of three components of types <FONT
+>arrszref(VT, N)</FONT
+>. Essentially, such a value is a boxed pair of
+two components of types <FONT
 COLOR="RED"
 >arrayref(VT, N)</FONT
->,
+> and
 <FONT
 COLOR="RED"
->size_t(M)</FONT
-> and <FONT
-COLOR="RED"
 >size_t(N)</FONT
->. The interfaces for various
-functions on persistent matrices-with-size can be found in
+>. The interfaces for various functions on persistent
+arrays-with-size can be found in
 <A
-HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/matrixref.sats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/arrayref.sats"
 TARGET="_top"
->prelude/SATS/matrixref.sats</A
+>prelude/SATS/arrayref.sats</A
 >.
 
 </P
 ><P
->&#13;The following function is commonly used to create a matrix-with-size:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN862"
-></A
-><PRE
-CLASS="programlisting"
->fun{a:t0p}
-mtrxszref_make_elt (m: size_t, n: size_t, x0: a): mtrxref (a)
-// end of [mtrxszref_make_elt]
-</PRE
-><P
-></P
-></DIV
->
-
-
-Given two sizes m and n plus an element x0, <FONT
-COLOR="RED"
->mtrxszref_make_elt</FONT
->
-returns a matrix-with-size of the dimension m by n in which each matrix-cell
-is initialized with the given element x0.
-</P
-><P
->&#13;For accessing and updating the content of a matrix-cell, the following
-two functions <FONT
-COLOR="RED"
->mtrxszref_get_at</FONT
-> and <FONT
-COLOR="RED"
->mtrxszref_set_at</FONT
->
-can be called:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN868"
-></A
-><PRE
-CLASS="programlisting"
->fun{a:t0p}
-mtrxszref_get_at (M: mtrxszref(a), i: size_t, j: size_t): (a)
-fun{a:t0p}
-mtrxszref_set_at (M: mtrxszref(a), i: size_t, j: size_t, x: a): void
-</PRE
-><P
-></P
-></DIV
->
-
-
-Given a matrix-with-size M, two indices i and j, and a value v,
+>&#13;For creating an array-with-size, the following functions
 <FONT
 COLOR="RED"
->mtrxszref_get_at(M, i, j)</FONT
+>arrszref_make_arrpsz</FONT
 > and <FONT
 COLOR="RED"
->mtrxszref_set_at(M, i,
-j, v)</FONT
-> can be written as <FONT
+>arrszref_make_arrayref</FONT
+> can
+be called:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN863"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+arrszref_make_arrpsz
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span><span class="staexp">arrpsz</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">arrszref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+arrszref_make_arrayref
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span><span class="staexp">arrayref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">size_t</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">arrszref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [arrszref_make_arrayref]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+As an example, the following code creates an array-with-size containing
+all the decimal digits:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN865"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> DIGITS <span class="keyword">=</span>
+  <span class="keyword">(</span>arrszref<span class="keyword">)</span><span class="keyword">$arrpsz</span><span class="keyword">{</span><span class="staexp">int</span><span class="keyword">}</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">,</span> <span class="dynexp">3</span><span class="keyword">,</span> <span class="dynexp">4</span><span class="keyword">,</span> <span class="dynexp">5</span><span class="keyword">,</span> <span class="dynexp">6</span><span class="keyword">,</span> <span class="dynexp">7</span><span class="keyword">,</span> <span class="dynexp">8</span><span class="keyword">,</span> <span class="dynexp">9</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
 COLOR="RED"
->M[i,j]</FONT
+>arrszref</FONT
+> is overloaded with <FONT
+COLOR="RED"
+>arrszref_make_arrpsz</FONT
+>.
+
+</P
+><P
+>&#13;For reading from and writing to an array-with-size, the function templates
+<FONT
+COLOR="RED"
+>arrszref_get_at</FONT
 > and <FONT
 COLOR="RED"
->M[i,j] := v</FONT
+>arrszref_set_at</FONT
+> can be used,
+respectively, which are assigned the following interfaces:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN872"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+arrszref_get_at <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+arrszref_set_at <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given an array-with-size A, an index i and a value v,
+<FONT
+COLOR="RED"
+>arrszref_get_at(A, i)</FONT
+> and <FONT
+COLOR="RED"
+>arrszref_set_at(A, i, v)</FONT
+>
+can be written as <FONT
+COLOR="RED"
+>A[i]</FONT
+> and <FONT
+COLOR="RED"
+>A[i] := v</FONT
 >,
-respectively. Notice that matrix-bounds checking is performed at run-time
+respectively. Notice that array-bounds checking is performed at run-time
 whenever <FONT
 COLOR="RED"
->mtrxszref_get_at</FONT
+>arrszref_get_at</FONT
 > or <FONT
 COLOR="RED"
->mtrxszref_set_at</FONT
+>arrszref_set_at</FONT
 > is
 called, and the exception <FONT
 COLOR="RED"
->MatrixSubscriptExn</FONT
+>ArraySubscriptExn</FONT
 > is raised in case
-of out-of-bounds matrix access being detected.
+of out-of-bounds array access being detected.
 
 </P
 ><P
 >&#13;As a simple example, the following code implements a function that
-transpose the content of the matrix inside a given matrix-with-size:
+reverses the content of the array inside a given array-with-size:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN878"
+NAME="AEN882"
 ></A
 ><PRE
 CLASS="programlisting"
->//
-extern
-fun{a:t0p}
-mtrxszref_transpose (M: mtrxszref (a)): void
-//
-implement{a}
-mtrxszref_transpose
-  (M) = let
-//
-val n = M.nrow()
-//
-val ((*void*)) = assertloc (M.nrow() = M.ncol())
-//
-fun loop
-(
-  i: size_t, j: size_t
-) : void =
-  if j &#60; n then let
-    val x = M[i,j]
-    val () = M[i,j] := M[j,i]
-    val () = M[j,i] := x
-  in
-    loop (i, succ(j))
-  end else let
-    val i1 = succ (i)
-  in
-    if i1 &#60; n then loop (i1, succ(i1)) else ()
-  end // end of [if]
-//
-in
-  if n &#62; 0 then loop (i2sz(0), i2sz(1)) else ()
-end // end of [mtrxszref_transpose]
-</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+arrszref_reverse
+<span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrszref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> n <span class="keyword">=</span> A<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> n2 <span class="keyword">=</span> half <span class="keyword">(</span>n<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+  <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> i <span class="keyword">&lt;</span> n2 <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> tmp <span class="keyword">=</span> <span class="dynexp">A[i<span class="keyword">]</span></span></span>
+    <span class="dynexp"><span class="keyword">val</span> ni <span class="keyword">=</span> pred<span class="keyword">(</span>n<span class="keyword">)</span>-i</span>
+  <span class="keyword">in</span>
+    <span class="dynexp">A[i<span class="keyword">]</span></span> := <span class="dynexp">A[ni<span class="keyword">]</span></span><span class="keyword">;</span> <span class="dynexp">A[ni<span class="keyword">]</span></span> := tmp<span class="keyword">;</span> loop <span class="keyword">(</span>succ<span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="comment">// end of [if]</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [loop]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span>i2sz<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [arrszref_reverse]</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -256,16 +278,16 @@ end // end of [mtrxszref_transpose]
 
 </P
 ><P
->&#13;Like arrays-with-size, matrices-with-size are easier to program with than
-dependently typed matrices. However, the latter can not only lead to more
-effective error detection at compile-time but also more efficent code
-execution at run-time. For someone programming in ATS, it is quite
-reasonable to start out with matrices-with-size and then replace them with
-matrices when there are clear benefits from doing so.
+>&#13;Arrays-with-size can be a good choice over arrays in a prototype
+implementation as it is often more demanding to program with arrays. Also,
+for programmers who are yet to become familiar with dependent types, it is
+definitely easier to work with arrays-with-size than arrays. When
+programming in ATS, I often start out with arrays-with-size and then
+replace them with arrays when I can see clear benefits from doing so.
 </P
 ><P
 >&#13;Please find <A
-HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_mtrxszref.dats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_arrszref.dats"
 TARGET="_top"
 >on-line</A
 > the entirety of the
@@ -288,7 +310,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c828.html"
+HREF="c791.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -306,7 +328,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c883.html"
+HREF="c887.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -316,7 +338,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Persistent Matrices</TD
+>Persistent Arrays</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -330,7 +352,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Persistent Hashtables</TD
+>Persistent Matrices</TD
 ></TR
 ></TABLE
 ></DIV

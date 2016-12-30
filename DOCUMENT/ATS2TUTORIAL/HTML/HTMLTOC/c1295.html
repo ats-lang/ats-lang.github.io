@@ -1,0 +1,459 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Linear Stream-Based Lazy Evaluation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Advanced Tutorial Topics"
+HREF="p1184.html"><LINK
+REL="PREVIOUS"
+TITLE="Stack-Allocated Closure-Functions"
+HREF="c1258.html"><LINK
+REL="NEXT"
+TITLE="Automatic Code Generation"
+HREF="c1351.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c1258.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c1351.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="linear-stream-based-lazy-evaluation"
+></A
+>Chapter 28. Linear Stream-Based Lazy Evaluation</H1
+><P
+>&#13;In ATS, there is also support for lazy evaluation based on linear
+streams. As far as I can tell, linear stream-based lazy evaluation is
+currently a unique language feature of ATS.
+
+</P
+><P
+>&#13;In practice, it is most likely that (non-linear) stream-based lazy
+evaluation requires the support of garbage collection (GC). As the behavior
+of GC can in general be very difficult to predict, lazy evaluation may not
+be suitable in a setting where great precision in control is needed.  With
+linear stream-based lazy evaluation, the need for GC to reclaim values
+representing streams is eliminated as such values can be explicitly freed
+in a safe manner.
+</P
+><P
+>&#13;There is a special language construct <FONT
+COLOR="RED"
+>$ldelay</FONT
+> for delaying or
+suspending the evaluation of an expression (by forming a linear thunk), and
+there are also a pair of special functions <FONT
+COLOR="RED"
+>lazy_vt_force</FONT
+> and
+<FONT
+COLOR="RED"
+>lazy_vt_free</FONT
+> for resuming and freeing, respectively, a
+suspended evaluation (represented by a linear thunk).  Unlike
+<FONT
+COLOR="RED"
+>delay</FONT
+>, <FONT
+COLOR="RED"
+>$ldelay</FONT
+> applies to two expressions to
+form a linear lazy stream; the first expression is the one whose evaluation
+is suspended; the second expression is the one whose evaluation results in
+all the linear values contained in the first expression being freed.
+
+</P
+><P
+>&#13;The abstract type constructor <FONT
+COLOR="RED"
+>lazy_vt</FONT
+> of the sort
+<FONT
+COLOR="RED"
+>(vt@ype) =&#62; vtype</FONT
+> forms a (boxed) viewtype when applied to a
+viewtype.  Given two expressions exp1 of some type T and exp2 of the type
+<FONT
+COLOR="RED"
+>void</FONT
+>, the value <FONT
+COLOR="RED"
+>$ldelay(exp1, exp2)</FONT
+> is of the type
+<FONT
+COLOR="RED"
+>lazy_vt(T)</FONT
+>; calling <FONT
+COLOR="RED"
+>lazy_vt_force</FONT
+> on
+<FONT
+COLOR="RED"
+>$ldelay(exp1, exp2)</FONT
+> resumes the suspended evaluation of exp1;
+calling <FONT
+COLOR="RED"
+>lazy_vt_free</FONT
+> on <FONT
+COLOR="RED"
+>$ldelay(exp1, exp2)</FONT
+>
+initiates the evaluation of exp2 (to free linear values contained in exp1).
+
+</P
+><P
+>&#13;The interface for the
+function template <FONT
+COLOR="RED"
+>lazy_vt_force</FONT
+> is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1317"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">}</span></span> lazy_vt_force <span class="keyword">(</span>lazyval<span class="keyword">:</span> <span class="staexp">lazy_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the special prefix operator <FONT
+COLOR="RED"
+>!</FONT
+> in ATS is overloaded
+with <FONT
+COLOR="RED"
+>lazy_vt_force</FONT
+>.
+</P
+><P
+>&#13;The interface for the
+function <FONT
+COLOR="RED"
+>lazy_vt_free</FONT
+> is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1323"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> lazy_vt_free <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">}</span></span> <span class="keyword">(</span>lazyval<span class="keyword">:</span> <span class="staexp">lazy_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the special prefix operator <FONT
+COLOR="RED"
+>~</FONT
+> in ATS is overloaded
+with <FONT
+COLOR="RED"
+>lazy_vt_free</FONT
+>.
+</P
+><P
+>&#13;In <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/stream_vt.sats"
+TARGET="_top"
+>prelude/SATS/stream_vt.sats</A
+>,
+the following viewtypes <FONT
+COLOR="RED"
+>stream_vt_con</FONT
+> and
+<FONT
+COLOR="RED"
+>stream_vt</FONT
+> are declared mutually recursively for representing
+linear lazy streams:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1331"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">datavtype</span>
+<span class="staexp">stream_vt_con <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype+</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="dynexp">stream_vt_nil <span class="keyword">of</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">stream_vt_cons <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="keyword">where</span> <span class="staexp">stream_vt <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">vt@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">lazy_vt</span> <span class="keyword">(</span><span class="staexp">stream_vt_con</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Also, a number of common functions on linear streams are declared in
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/stream_vt.sats"
+TARGET="_top"
+>prelude/SATS/stream_vt.sats</A
+> and
+implemented in <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/DATS/stream_vt.dats"
+TARGET="_top"
+>prelude/DATS/stream_vt.dats</A
+>.
+
+</P
+><P
+>&#13;The following code gives an implementation of the sieve
+of Eratosthenes in which a linear stream of all the prime numbers is
+constructed:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1336"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+from <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="dynexp"><span class="keyword">$ldelay</span> <span class="keyword">(</span>stream_vt_cons <span class="keyword">(</span>n<span class="keyword">,</span> from <span class="keyword">(</span>n+1<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> sieve
+<span class="keyword">(</span>
+  ns<span class="keyword">:</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$ldelay</span>
+<span class="keyword">(</span>
+<span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="comment">// [val-] means no warning message from the compiler</span>
+<span class="comment">//</span>
+  <span class="keyword">val</span> ns_con <span class="keyword">=</span> <span class="keyword">!</span>ns
+  <span class="keyword">val-</span><span class="keyword">@</span>stream_vt_cons<span class="keyword">(</span>n<span class="keyword">,</span> ns1<span class="keyword">)</span> <span class="keyword">=</span> ns_con
+  <span class="keyword">val</span> n <span class="keyword">=</span> n
+  <span class="keyword">val</span> ns1_ <span class="keyword">=</span> ns1
+  <span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> ns1 := sieve <span class="keyword">(</span>stream_vt_filter_cloptr&lt;int<span class="keyword">&gt;</span> <span class="keyword">(</span>ns1_<span class="keyword">,</span> <span class="keyword">lam</span> x <span class="keyword">=&gt;</span> x mod n <span class="keyword">&gt;</span> 0<span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">prval</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span><span class="keyword">(</span>ns_con<span class="keyword">)</span>
+<span class="keyword">in</span>
+  ns_con
+<span class="keyword">end</span> <span class="comment">// end of [let]</span>
+<span class="keyword">,</span>
+<span class="keyword">~</span>ns <span class="comment">// [ns] is freed</span>
+<span class="keyword">)</span></span></span> <span class="comment">(* end of [$ldelay] *)</span> <span class="comment">// end of [sieve]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> thePrimes <span class="keyword">=</span> sieve<span class="keyword">(</span>from<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The function template <FONT
+COLOR="RED"
+>stream_vt_filter_cloptr</FONT
+> is given
+the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1340"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+stream_vt_filter_cloptr
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> pred<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">&amp;</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloptr</span><span class="keyword">&gt;</span> <span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [stream_vt_filter_cloptr]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a stream <FONT
+COLOR="RED"
+>xs</FONT
+> and a predicate <FONT
+COLOR="RED"
+>pred</FONT
+>, the
+function <FONT
+COLOR="RED"
+>stream_vt_filter_cloptr</FONT
+> returns another stream
+consisting of all the elements in the stream <FONT
+COLOR="RED"
+>xs</FONT
+> satisfying
+the predicate <FONT
+COLOR="RED"
+>pred</FONT
+>.  Note that both xs and pred are
+consumed by the call to <FONT
+COLOR="RED"
+>stream_vt_filter_cloptr</FONT
+>.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_stream_vt.dats"
+TARGET="_top"
+>on-line</A
+> the entirety of
+the code used in this chapter. One can readily use a tool like
+<A
+HREF="http://www.valgrind.org"
+TARGET="_top"
+>valgrind</A
+> to verify that the
+implementation given above leaks no memory.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c1258.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c1351.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Stack-Allocated Closure-Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p1184.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Automatic Code Generation</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2TUTORIAL-BOOK.js"></SCRIPT></BODY
+></HTML
+>

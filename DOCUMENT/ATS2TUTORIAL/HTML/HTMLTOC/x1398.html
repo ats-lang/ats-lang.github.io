@@ -1,0 +1,788 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Generating a fprint-function</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Automatic Code Generation"
+HREF="c1342.html"><LINK
+REL="PREVIOUS"
+TITLE="Generating a datcontag-function"
+HREF="x1379.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1379.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 29. Automatic Code Generation</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+>&nbsp;</TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="codegen2_fprint"
+>Generating a fprint-function</A
+></H1
+><P
+>&#13;A fprint-function takes a file-handle (of the type
+<FONT
+COLOR="RED"
+>FILEref</FONT
+>) and a value and then outputs a text
+representation of the value to the file-handle.  Given a datatype, one
+is often in need of a function that can output certain kind of text
+representation for values of this datatype. For instance, such a
+function can be of great use in debugging.
+</P
+><P
+>&#13;Let us first declare a function template <FONT
+COLOR="RED"
+>fprint_expr_</FONT
+> as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1404"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_ <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">FILEref</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span> <span class="comment">// a function template</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+We can then use the directive below to indicate (to the ATS compiler) that
+the fprint-function for the datatype <FONT
+COLOR="RED"
+>expr</FONT
+> needs to be generated:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1407"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">#codegen2</span><span class="keyword">(</span>"fprint"<span class="keyword">,</span> expr<span class="keyword">,</span> fprint_expr_<span class="keyword">)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The third argument of the <FONT
+COLOR="RED"
+>codegen2</FONT
+>-directive can be omitted
+in this case as it coincides with the default. The generated code that
+implements <FONT
+COLOR="RED"
+>fprint_expr_</FONT
+> is listed as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1411"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Int<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Var<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Add<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Sub<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Mul<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Div<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_
+  <span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> arg0 <span class="keyword">of</span>
+<span class="keyword">|</span> Int _ <span class="keyword">=&gt;</span> fprint_expr_$Int&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span>
+<span class="keyword">|</span> Var _ <span class="keyword">=&gt;</span> fprint_expr_$Var&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span>
+<span class="keyword">|</span> Add _ <span class="keyword">=&gt;</span> fprint_expr_$Add&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span>
+<span class="keyword">|</span> Sub _ <span class="keyword">=&gt;</span> fprint_expr_$Sub&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span>
+<span class="keyword">|</span> Mul _ <span class="keyword">=&gt;</span> fprint_expr_$Mul&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span>
+<span class="keyword">|</span> Div _ <span class="keyword">=&gt;</span> fprint_expr_$Div&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span>
+<span class="keyword">|</span> Ifgtz _ <span class="keyword">=&gt;</span> fprint_expr_$Ifgtz&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span>
+<span class="keyword">|</span> Ifgtez _ <span class="keyword">=&gt;</span> fprint_expr_$Ifgtez&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$sep<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">FILEref</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$sep<span class="keyword">(</span>out<span class="keyword">)</span> <span class="keyword">=</span> fprint<span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">","</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$lpar<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">FILEref</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$lpar<span class="keyword">(</span>out<span class="keyword">)</span> <span class="keyword">=</span> fprint<span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"("</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$rpar<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">FILEref</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$rpar<span class="keyword">(</span>out<span class="keyword">)</span> <span class="keyword">=</span> fprint<span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">")"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+fprint_expr_$carg<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">FILEref</span><span class="keyword">,</span> <span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg<span class="keyword">)</span> <span class="keyword">=</span> fprint_val&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Int$con<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Int$lpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Int$rpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Int$arg1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Int<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span> 
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Int$con&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Int$lpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Int$arg1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Int$rpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Int$con<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint<span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"Int"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Int$lpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$lpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Int$rpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$rpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Int$arg1<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Int<span class="keyword">(</span>arg1<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg1<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Var$con<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Var$lpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Var$rpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Var$arg1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Var<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span> 
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Var$con&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Var$lpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Var$arg1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Var$rpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Var$con<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint<span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"Var"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Var$lpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$lpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Var$rpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$rpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Var$arg1<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Var<span class="keyword">(</span>arg1<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg1<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Add$con<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Add$lpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Add$rpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Add$sep1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Add$arg1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Add$arg2<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Add<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span> 
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Add$con&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Add$lpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Add$arg1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Add$sep1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Add$arg2&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Add$rpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Add$con<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint<span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"Add"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Add$lpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$lpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Add$rpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$rpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Add$sep1<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$sep&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Add$arg1<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Add<span class="keyword">(</span>arg1<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg1<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Add$arg2<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Add<span class="keyword">(</span>_<span class="keyword">,</span> arg2<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg2<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Sub$con<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Sub$lpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Sub$rpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Sub$sep1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Sub$arg1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Sub$arg2<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Sub<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span> 
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Sub$con&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Sub$lpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Sub$arg1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Sub$sep1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Sub$arg2&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Sub$rpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Sub$con<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint<span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"Sub"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Sub$lpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$lpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Sub$rpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$rpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Sub$sep1<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$sep&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Sub$arg1<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Sub<span class="keyword">(</span>arg1<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg1<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Sub$arg2<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Sub<span class="keyword">(</span>_<span class="keyword">,</span> arg2<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg2<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Mul$con<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Mul$lpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Mul$rpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Mul$sep1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Mul$arg1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Mul$arg2<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Mul<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span> 
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Mul$con&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Mul$lpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Mul$arg1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Mul$sep1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Mul$arg2&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Mul$rpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Mul$con<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint<span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"Mul"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Mul$lpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$lpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Mul$rpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$rpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Mul$sep1<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$sep&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Mul$arg1<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Mul<span class="keyword">(</span>arg1<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg1<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Mul$arg2<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Mul<span class="keyword">(</span>_<span class="keyword">,</span> arg2<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg2<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Div$con<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Div$lpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Div$rpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Div$sep1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Div$arg1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Div$arg2<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Div<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span> 
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Div$con&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Div$lpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Div$arg1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Div$sep1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Div$arg2&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Div$rpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Div$con<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint<span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"Div"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Div$lpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$lpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Div$rpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$rpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Div$sep1<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$sep&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Div$arg1<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Div<span class="keyword">(</span>arg1<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg1<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Div$arg2<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Div<span class="keyword">(</span>_<span class="keyword">,</span> arg2<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg2<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$con<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$lpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$rpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$sep1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$sep2<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$arg1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$arg2<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$arg3<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span> 
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtz$con&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtz$lpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtz$arg1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtz$sep1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtz$arg2&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtz$sep2&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtz$arg3&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtz$rpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$con<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint<span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"Ifgtz"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$lpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$lpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$rpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$rpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$sep1<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$sep&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$sep2<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$sep&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$arg1<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Ifgtz<span class="keyword">(</span>arg1<span class="keyword">,</span> _<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg1<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$arg2<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Ifgtz<span class="keyword">(</span>_<span class="keyword">,</span> arg2<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg2<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtz$arg3<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Ifgtz<span class="keyword">(</span>_<span class="keyword">,</span> _<span class="keyword">,</span> arg3<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg3<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$con<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$lpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$rpar<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$sep1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$sep2<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$arg1<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$arg2<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$arg3<span class="keyword">:</span> <span class="staexp"><span class="keyword">$d2ctype</span><span class="keyword">(</span>fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span> 
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtez$con&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtez$lpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtez$arg1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtez$sep1&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtez$arg2&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtez$sep2&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtez$arg3&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$Ifgtez$rpar&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$con<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint<span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"Ifgtez"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$lpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$lpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$rpar<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$rpar<span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$sep1<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$sep&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$sep2<span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_$sep&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$arg1<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Ifgtez<span class="keyword">(</span>arg1<span class="keyword">,</span> _<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg1<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$arg2<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Ifgtez<span class="keyword">(</span>_<span class="keyword">,</span> arg2<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg2<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span>
+fprint_expr_$Ifgtez$arg3<span class="keyword">(</span>out<span class="keyword">,</span> arg0<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val-</span>Ifgtez<span class="keyword">(</span>_<span class="keyword">,</span> _<span class="keyword">,</span> arg3<span class="keyword">)</span> <span class="keyword">=</span> arg0</span> <span class="keyword">in</span> fprint_expr_$carg<span class="keyword">(</span>out<span class="keyword">,</span> arg3<span class="keyword">)</span> <span class="keyword">end</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The code for <FONT
+COLOR="RED"
+>fprint_expr_</FONT
+> is entirely template-based. This style
+makes the code extremely flexible for adaption through template re-mplementation.
+As the datatype <FONT
+COLOR="RED"
+>expr</FONT
+> is recursively defined, the following template
+implementation needs to be added in order to make <FONT
+COLOR="RED"
+>fprint_expr_</FONT
+> work:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1416"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span> fprint_expr_$card&lt;<span class="staexp">expr</span><span class="keyword">&gt;</span> <span class="keyword">=</span> fprint_expr_</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For instance,
+applying <FONT
+COLOR="RED"
+>fprint_expr_</FONT
+>
+to the expression <FONT
+COLOR="RED"
+>Add(Int(10),Mul(Int(1),Int(2)))</FONT
+>
+outputs the same text representation.
+
+As an example of adaptation, let us add the following template implementations:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1420"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+fprint_expr_$Add$con&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>_<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span>
+fprint_expr_$Add$sep1&lt;<span class="keyword">&gt;</span> <span class="keyword">(</span>out<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">fprint!</span> <span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"+"</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+When <FONT
+COLOR="RED"
+>fprint_expr_</FONT
+> is applied to the expression
+<FONT
+COLOR="RED"
+>Add(Int(10),Mul(Int(1),Int(2)))</FONT
+> this time, the output is
+expected to read <FONT
+COLOR="RED"
+>(Int(10)+Mul(Int(1),Int(2)))</FONT
+>.
+
+</P
+><P
+>&#13;After proper adaptation is done, one can introduce a (non-template)
+function as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1426"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fprint_expr
+  <span class="keyword">(</span>out<span class="keyword">:</span> <span class="staexp">FILEref</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">expr</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+fprint_expr<span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> fprint_expr_&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>out<span class="keyword">,</span> x<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+In this way, only one instance of <FONT
+COLOR="RED"
+>fprint_expr_</FONT
+> is compiled
+even if repeated calls to <FONT
+COLOR="RED"
+>fprint_expr</FONT
+> are made.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/CHAP_CODEGEN2"
+TARGET="_top"
+>on-line</A
+>
+the entirety of this presented example plus a Makefile (for illustrating
+the code generation process).
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1379.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Generating a datcontag-function</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1342.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2TUTORIAL-BOOK.js"></SCRIPT></BODY
+></HTML
+>

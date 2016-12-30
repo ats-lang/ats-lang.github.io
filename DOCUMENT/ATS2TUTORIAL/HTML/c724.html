@@ -1,0 +1,594 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Boxed Tuples and Records</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Tutorial Topics"
+HREF="p34.html"><LINK
+REL="PREVIOUS"
+TITLE="References"
+HREF="c651.html"><LINK
+REL="NEXT"
+TITLE="Persistent Arrays"
+HREF="c782.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c651.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c782.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="boxed_tuprec"
+></A
+>Chapter 15. Boxed Tuples and Records</H1
+><P
+>&#13;A <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>boxed</I
+></SPAN
+> tuple/record is just a reference to
+some location in memory where a flat tuple/record is stored.
+Often the word <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>unboxed</I
+></SPAN
+> is also used to describe a
+flat tuple/record.
+
+</P
+><P
+>&#13;In the following code,
+the types <FONT
+COLOR="RED"
+>abc_tup</FONT
+>
+and <FONT
+COLOR="RED"
+>abc_rec</FONT
+> are for boxed tuples and records, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN732"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">typedef</span>
+<span class="staexp">abc_tup <span class="keyword">=</span> <span class="keyword">'(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">string</span><span class="keyword">)</span></span> <span class="comment">// for tuples</span>
+<span class="keyword">typedef</span>
+<span class="staexp">abc_rec <span class="keyword">=</span> <span class="keyword">'{</span><span class="stalab">a</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">b</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">c</span><span class="keyword">=</span><span class="staexp">string</span><span class="keyword">}</span></span> <span class="comment">// for records</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that a tuple is just a special record in the sense that the
+labels in the tuple are fixed to be ranging from 0 to n-1, inclusive,
+where n is the tuple length. In the case of <FONT
+COLOR="RED"
+>abc_tup</FONT
+>, the
+three associated labels are 0, 1, and 2. Note that <FONT
+COLOR="RED"
+>'(</FONT
+> and
+<FONT
+COLOR="RED"
+>'{</FONT
+> are special symbols in ATS and there is no space
+allowed after the single quote. If the use of these special symbols is
+to be avoided, then one can declare the types <FONT
+COLOR="RED"
+>abc_tup</FONT
+> and
+<FONT
+COLOR="RED"
+>abc_rec</FONT
+> as follows in a slightly different syntax:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN739"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">typedef</span>
+<span class="staexp">abc_tup <span class="keyword">=</span> <span class="keyword">$tup</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">string</span><span class="keyword">)</span></span> <span class="comment">// for tuples</span>
+<span class="keyword">typedef</span>
+<span class="staexp">abc_rec <span class="keyword">=</span> <span class="keyword">$rec</span><span class="keyword">{</span><span class="stalab">a</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">b</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">c</span><span class="keyword">=</span><span class="staexp">string</span><span class="keyword">}</span></span> <span class="comment">// for records</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Also, the keywords
+<FONT
+COLOR="RED"
+>$tup</FONT
+> and <FONT
+COLOR="RED"
+>$rec</FONT
+> can be replaced with
+<FONT
+COLOR="RED"
+>$tuple</FONT
+> and <FONT
+COLOR="RED"
+>$record</FONT
+>, respectively.
+
+</P
+><P
+>&#13;The following code demonstrates how tuples and records can be created
+and their components (i.e., fields) taken out:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN746"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x_tup <span class="keyword">=</span> <span class="keyword">'(</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">"2"</span><span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">abc_tup</span></span>
+<span class="dynexp"><span class="keyword">val</span> x_rec <span class="keyword">=</span> <span class="keyword">'{</span><span class="dynlab">a</span><span class="keyword">=</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynlab">b</span><span class="keyword">=</span><span class="dynexp">1</span><span class="keyword">,</span> <span class="dynlab">c</span><span class="keyword">=</span><span class="dynstr">"2"</span><span class="keyword">}</span> <span class="keyword">:</span> <span class="staexp">abc_rec</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup<span class="dynexp"><span class="keyword">.0</span></span> <span class="keyword">=</span> x_rec<span class="dynexp"><span class="keyword">.</span>a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup<span class="dynexp"><span class="keyword">.1</span></span> <span class="keyword">=</span> x_rec<span class="dynexp"><span class="keyword">.</span>b</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup<span class="dynexp"><span class="keyword">.2</span></span> <span class="keyword">=</span> x_rec<span class="dynexp"><span class="keyword">.</span>c</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;It should be noted that both <FONT
+COLOR="RED"
+>x_tup</FONT
+> and <FONT
+COLOR="RED"
+>x_rec</FONT
+>
+are immutable. If one tries to typecheck the following code, then he
+or she should see error messages reporting that <FONT
+COLOR="RED"
+>x_tup.0</FONT
+>
+and <FONT
+COLOR="RED"
+>x_rec.a</FONT
+> are non-left-values:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN753"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x_tup<span class="dynexp"><span class="keyword">.0</span></span> := <span class="dynexp">100</span></span> <span class="comment">// *ERROR*: x_tup.0 not a left-value</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x_rec<span class="dynexp"><span class="keyword">.</span>a</span> := <span class="dynexp">100</span></span> <span class="comment">// *ERROR*: x_tup.0 not a left-value</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;In order to have a tuple/record with mutable fields, we can just
+literally create a reference to a flat tuple/record. In the following
+code, the types <FONT
+COLOR="RED"
+>abc_tup_</FONT
+> and <FONT
+COLOR="RED"
+>abc_rec_</FONT
+> are
+declcared for flat tuples and records, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN758"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">typedef</span>
+<span class="staexp">abc_tup_ <span class="keyword">=</span> <span class="keyword">@(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">string</span><span class="keyword">)</span></span> <span class="comment">// for tuples</span>
+<span class="keyword">typedef</span>
+<span class="staexp">abc_rec_ <span class="keyword">=</span> <span class="keyword">@{</span><span class="stalab">a</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">b</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">c</span><span class="keyword">=</span><span class="staexp">string</span><span class="keyword">}</span></span> <span class="comment">// for records</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+and the types <FONT
+COLOR="RED"
+>abc_tup_r</FONT
+> and <FONT
+COLOR="RED"
+>abc_rec_r</FONT
+> are for
+references to tuples and records classified by <FONT
+COLOR="RED"
+>abc_tup_</FONT
+>
+and <FONT
+COLOR="RED"
+>abc_rec_</FONT
+>, respetively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN764"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">abc_tup_r <span class="keyword">=</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">abc_tup_</span><span class="keyword">)</span></span> <span class="comment">// for tuples</span>
+<span class="keyword">typedef</span> <span class="staexp">abc_rec_r <span class="keyword">=</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">abc_rec_</span><span class="keyword">)</span></span> <span class="comment">// for records</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The code below demonstrates how tuples and records with mutable fields
+can be created and their fields accessed and updated.
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN766"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x_tup_r <span class="keyword">=</span> ref&lt;<span class="staexp">abc_tup_</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="keyword">@(</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">"2"</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> x_rec_r <span class="keyword">=</span> ref&lt;<span class="staexp">abc_rec_</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="keyword">@{</span><span class="dynlab">a</span><span class="keyword">=</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynlab">b</span><span class="keyword">=</span><span class="dynexp">1</span><span class="keyword">,</span> <span class="dynlab">c</span><span class="keyword">=</span><span class="dynstr">"2"</span><span class="keyword">}</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup_r<span class="dynexp"><span class="keyword">-&gt;</span>0</span> <span class="keyword">=</span> x_rec_r<span class="dynexp"><span class="keyword">-&gt;</span>a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup_r<span class="dynexp"><span class="keyword">-&gt;</span>1</span> <span class="keyword">=</span> x_rec_r<span class="dynexp"><span class="keyword">-&gt;</span>b</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup_r<span class="dynexp"><span class="keyword">-&gt;</span>2</span> <span class="keyword">=</span> x_rec_r<span class="dynexp"><span class="keyword">-&gt;</span>c</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x_tup_r<span class="dynexp"><span class="keyword">-&gt;</span>0</span> := <span class="dynexp">100</span></span> <span class="comment">// *OKAY*: x_tup_r.0 is a left-value</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x_rec_r<span class="dynexp"><span class="keyword">-&gt;</span>a</span> := <span class="dynexp">100</span></span> <span class="comment">// *OKAY*: x_rec_r.a is a left-value</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;If we want to have records of a type where certain fields are
+read-only while the others may be updated, we can do this by making
+use of the support for abstract types in ATS.  In the following
+example, <FONT
+COLOR="RED"
+>myrec</FONT
+> is declared to be abstract; there are three
+fields associated with <FONT
+COLOR="RED"
+>myrec</FONT
+> that are of the names
+<FONT
+COLOR="RED"
+>a</FONT
+>, <FONT
+COLOR="RED"
+>b</FONT
+>, and <FONT
+COLOR="RED"
+>c</FONT
+>; the first two may be
+updated while the third one is read-only:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN774"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">abstype</span> myrec <span class="keyword">=</span> ptr</span>  
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_make
+<span class="keyword">(</span>
+  a<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> b<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> c<span class="keyword">:</span> <span class="staexp">string</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">myrec</span></span> <span class="comment">// end-of-function</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_get_a <span class="keyword">:</span> <span class="staexp">myrec</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">int</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_set_a <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">myrec</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_get_b <span class="keyword">:</span> <span class="staexp">myrec</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">int</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_set_b <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">myrec</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_get_c <span class="keyword">:</span> <span class="staexp">myrec</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">string</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>a <span class="keyword">with</span> myrec_get_a</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>a <span class="keyword">with</span> myrec_set_a</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>b <span class="keyword">with</span> myrec_get_b</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>b <span class="keyword">with</span> myrec_set_b</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>c <span class="keyword">with</span> myrec_get_c</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">local</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">assume</span> myrec <span class="keyword">=</span> abc_rec_r</span>
+<span class="comment">//</span>
+<span class="keyword">in</span> <span class="comment">(* in-of-local *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+myrec_make
+  <span class="keyword">(</span>a<span class="keyword">,</span> b<span class="keyword">,</span> c<span class="keyword">)</span> <span class="keyword">=</span> ref<span class="keyword">(</span><span class="keyword">@{</span><span class="dynlab">a</span><span class="keyword">=</span>a<span class="keyword">,</span> <span class="dynlab">b</span><span class="keyword">=</span>b<span class="keyword">,</span> <span class="dynlab">c</span><span class="keyword">=</span>c<span class="keyword">}</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_get_a<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>a</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_set_a<span class="keyword">(</span>x<span class="keyword">,</span> a<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>a</span> := a</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_get_b<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>b</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_set_b<span class="keyword">(</span>x<span class="keyword">,</span> b<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>b</span> := b</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_get_c<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>c</span></span>
+<span class="comment">(*
+//
+// there is no update for the c-field:
+//
+implement{} myrec_set_a(x, c) = x-&gt;c := c
+*)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Following is some code that creates a
+record of the type <FONT
+COLOR="RED"
+>myrec</FONT
+> and then
+accesses and updates certain fields of the
+created record:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN777"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x_abc <span class="keyword">=</span> myrec_make<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">"2"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>a</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>b</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>c</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">"2"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> x_abc<span class="dynexp"><span class="keyword">.</span>a</span><span class="keyword">(</span><span class="dynexp">100</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>a</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">100</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> x_abc<span class="dynexp"><span class="keyword">.</span>b</span><span class="keyword">(</span><span class="dynexp">101</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>b</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">101</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(*
+val ((*void*)) = x_abc.c("102") // *ERROR*: unsupported
+*)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+While this example (<FONT
+COLOR="RED"
+>myrec</FONT
+>) demonstrates an approach
+to constructing records containing both read-only fields and fields that
+can be updated, this approach does seem a bit too verbose. One
+possibilty is to develop meta-programming support so as to greatly
+reduce the verbosity (due to the need for boilerplate code).
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_tuprec_1.dats"
+TARGET="_top"
+>on-line</A
+> the
+entirety of the code used in this chapter plus some testing code.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c651.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c782.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>References</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p34.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Persistent Arrays</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

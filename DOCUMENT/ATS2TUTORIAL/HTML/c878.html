@@ -1,0 +1,348 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Persistent Matrices</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Tutorial on Programming Features in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Basic Tutorial Topics"
+HREF="p34.html"><LINK
+REL="PREVIOUS"
+TITLE="Persistent Arrays-with-size"
+HREF="c843.html"><LINK
+REL="NEXT"
+TITLE="Persistent Matrices-with-size"
+HREF="c902.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Tutorial on Programming Features in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c843.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c902.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="matrixref"
+></A
+>Chapter 18. Persistent Matrices</H1
+><P
+>&#13;A persistent matrix of dimension m by n is just a persistent array of size
+m*n. Like in C, the representation of a matrix in ATS is row-major. In
+other words, element (i, j) in a matrix of dimension m by n is element
+i*n+j in the underlying array that represents the matrix.
+
+</P
+><P
+>&#13;Given a viewtype VT and two integers M and N, the type
+<FONT
+COLOR="RED"
+>matrixref(VT, M, N)</FONT
+> is for persistent matrices of dimension M
+by N that contain elements of the viewtype VT.  There is no dimension
+information attached to matrixref-values explicitly. The interfaces for various
+functions on persistent matrices can be found in the SATS file
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/matrixref.sats"
+TARGET="_top"
+>prelude/SATS/matrixref.sats</A
+>, which is automatically loaded by
+<B
+CLASS="command"
+>atsopt</B
+>.
+
+</P
+><P
+>&#13;The following function is commonly used to create a matrixref-value:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN886"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+matrixref_make_elt<span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>m<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="staexp">m</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="staexp">n</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">matrixref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">// end of [matrixref_make_elt]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given two sizes m and n plus an element x0,
+<FONT
+COLOR="RED"
+>matrixref_make_elt</FONT
+> returns a matrix of dimension m by n
+in which each cell is initialized with the element x0.
+</P
+><P
+>&#13;Also, the following cast function can be called to turn an array into
+a matrix:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN890"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">castfn</span>
+arrayref2matrixref
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrayref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="staexp">*</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp">matrixref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">// end of [arrayref2matrixref]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;For accessing and updating the content of a matrix-cell, the following
+two functions <FONT
+COLOR="RED"
+>matrixref_get_at</FONT
+> and <FONT
+COLOR="RED"
+>matrixref_set_at</FONT
+>
+can be called:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN895"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+matrixref_get_at
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">matrixref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">sizeLt</span><span class="keyword">(</span><span class="staexp">m</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">sizeLt</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">ref</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span> <span class="comment">// end of [matrixref_get_at]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+matrixref_set_at
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">matrixref</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">sizeLt</span><span class="keyword">(</span><span class="staexp">m</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">size_t</span> <span class="staexp">n</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">sizeLt</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">refwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span> <span class="comment">// end of [matrixref_set_at]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that it is not enough to just supply the coordinates of a
+matrix-cell in order to access it; the column dimension of the matrix
+needs to be supplied as well.
+
+</P
+><P
+>&#13;In the following presentation, I give an implementation of a function that
+turns a given square matrix into its transpose:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN898"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+matrixref_transpose
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  M<span class="keyword">:</span> <span class="staexp">matrixref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span></span> <span class="comment">// end of [matrixref_transpose]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+matrixref_transpose
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span> <span class="keyword">(</span>M<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">macdef</span>
+mget<span class="dynexp"><span class="keyword">(</span>i<span class="keyword">,</span> j<span class="keyword">)</span></span> <span class="keyword">=</span>
+  matrixref_get_at<span class="keyword">(</span>M<span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>i<span class="keyword">)</span></span><span class="keyword">,</span> n<span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>j<span class="keyword">)</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">macdef</span>
+mset<span class="dynexp"><span class="keyword">(</span>i<span class="keyword">,</span> j<span class="keyword">,</span> x<span class="keyword">)</span></span> <span class="keyword">=</span>
+  matrixref_set_at<span class="keyword">(</span>M<span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>i<span class="keyword">)</span></span><span class="keyword">,</span> n<span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>j<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>x<span class="keyword">)</span></span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+  <span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">:</span>nat <span class="keyword">|</span>
+   i <span class="keyword">&lt;</span> j<span class="keyword">;</span> j &lt;= n
+  <span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="staexp">-</span><span class="staexp">i</span><span class="keyword">,</span><span class="staexp">n</span><span class="staexp">-</span><span class="staexp">j</span><span class="keyword">&gt;.</span> 
+<span class="keyword">(</span>
+  i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">(</span><span class="staexp">j</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">if</span> j <span class="keyword">&lt;</span> n <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span> mget<span class="keyword">(</span>i<span class="keyword">,</span> j<span class="keyword">)</span></span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mset<span class="keyword">(</span>i<span class="keyword">,</span> j<span class="keyword">,</span> mget<span class="keyword">(</span>j<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">)</span></span>
+    <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> mset<span class="keyword">(</span>j<span class="keyword">,</span> i<span class="keyword">,</span> x<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    loop <span class="keyword">(</span>i<span class="keyword">,</span> j+<span class="dynexp">1</span><span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> i1 <span class="keyword">=</span> succ <span class="keyword">(</span>i<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">if</span> i1 <span class="keyword">&lt;</span> n <span class="keyword">then</span> loop<span class="keyword">(</span>i1<span class="keyword">,</span> succ<span class="keyword">(</span>i1<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="comment">// end of [if]</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [loop] *)</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> loop<span class="keyword">(</span>i2sz<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span><span class="keyword">,</span> i2sz<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [matrixref_transpose]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_matrixref.dats"
+TARGET="_top"
+>on-line</A
+> the entirety of the
+code used in this chapter.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c843.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c902.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Persistent Arrays-with-size</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p34.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Persistent Matrices-with-size</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

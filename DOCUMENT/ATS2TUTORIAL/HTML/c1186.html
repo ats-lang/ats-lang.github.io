@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Linear Closure-Functions</TITLE
+>Extvar-Declaration</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -11,13 +11,13 @@ TITLE="A Tutorial on Programming Features in ATS"
 HREF="book1.html"><LINK
 REL="UP"
 TITLE="Advanced Tutorial Topics"
-HREF="p1159.html"><LINK
+HREF="p1184.html"><LINK
 REL="PREVIOUS"
-TITLE="Extvar-Declaration"
-HREF="c1161.html"><LINK
+TITLE="Advanced Tutorial Topics"
+HREF="p1184.html"><LINK
 REL="NEXT"
-TITLE="Automatic Code Generation"
-HREF="c1233.html"><LINK
+TITLE="Linear Closure-Functions"
+HREF="c1211.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c1161.html"
+HREF="p1184.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c1233.html"
+HREF="c1211.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,136 +75,122 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="cloptr"
+NAME="extvar-declaration"
 ></A
->Chapter 26. Linear Closure-Functions</H1
+>Chapter 25. Extvar-Declaration</H1
 ><P
->&#13;
-A closure-function is a boxed record that contains a pointer to an envless
-function plus bindings that map certain names in the body of the envless
-function to values. In practice, a function argument of a higher-order
-function is often a closure-function (instead of an envless function). For
-instance, the following higher-order function <FONT
-COLOR="RED"
->list_map_cloref</FONT
->
-takes a closure-function as its second argument:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1190"
-></A
-><PRE
-CLASS="programlisting"
->fun{
-a:t@ype}{b:t@ype
-} list_map_cloref{n:int}
-  (xs: list (a, n), f: (a) -&#60;cloref&#62; b): list_vt (b, n)
-</PRE
-><P
-></P
-></DIV
->
-
+>&#13;ATS puts great emphasis on interacting with other programming
+languages.
 
 </P
 ><P
->&#13;Closure-functions can be either linear or non-linear, and linear ones can
-be explicitly freed in a safe manner. The keyword
-<FONT
-COLOR="RED"
->-&#60;cloref&#62;</FONT
-> is used to form a type for non-linear
-closure-functions. As a variant of <FONT
-COLOR="RED"
->list_map_cloref</FONT
->, the
-following higher-order function <FONT
-COLOR="RED"
->list_map_cloptr</FONT
-> takes a linear
-closure-function as its second argument:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1196"
-></A
-><PRE
-CLASS="programlisting"
->fun{
-a:t@ype}{b:t@ype
-} list_map_cloptr{n:int}
-  (xs: list (a, n), f: !(a) -&#60;cloptr&#62; b): list_vt (b, n)
-</PRE
-><P
-></P
-></DIV
->
-
-
-As can be easily guessed, the keyword <FONT
-COLOR="RED"
->-&#60;cloptr&#62;</FONT
-> is used
-to form a type for linear closure-functions.  Note that the symbol
-<FONT
-COLOR="RED"
->!</FONT
-> indicates that the second argument is still available after
-a call to <FONT
-COLOR="RED"
->list_map_cloptr</FONT
-> returns.
-
-</P
-><P
->&#13;A typical example making use of <FONT
-COLOR="RED"
->list_map_cloptr</FONT
-> is given as follows:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1203"
-></A
-><PRE
-CLASS="programlisting"
->fun foo{n:int}
-(
-  x0: int, xs: list (int, n)
-) : list_vt (int, n) = res where
-{
-//
-val f = lam (x) =&#60;cloptr&#62; x0 + x
-val res = list_map_cloptr (xs, f)
-val () = cloptr_free ($UNSAFE.cast{cloptr(void)}(f))
-//
-} (* end of [foo] *)
-</PRE
-><P
-></P
-></DIV
->
-
-
-Note that a linear closure is first created in the body of the function
+>&#13;Suppose that I have in some C code a (global) integer variable of the name
 <FONT
 COLOR="RED"
 >foo</FONT
->, and it is explicitly freed after its use. The function
+> and I want to increase in some ATS code the value stored in
 <FONT
 COLOR="RED"
->cloptr_free</FONT
-> is given the following interface:
+>foo</FONT
+> by 1. This can be done as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1192"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> x0 <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$extval</span><span class="keyword">(</span>int<span class="keyword">,</span> "foo"<span class="keyword">)</span></span></span> <span class="comment">// get the value of foo</span>
+<span class="dynexp"><span class="keyword">val</span> p_foo <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$extval</span><span class="keyword">(</span>ptr<span class="keyword">,</span> "&amp;foo"<span class="keyword">)</span></span></span> <span class="comment">// get the address of foo</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> $UNSAFE<span class="keyword">.</span>ptr_set&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p_foo<span class="keyword">,</span> x0 + <span class="dynexp">1</span><span class="keyword">)</span></span> <span class="comment">// update foo</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the address-of operator (&#38;) in C is needed for taking the address
+of <FONT
+COLOR="RED"
+>foo</FONT
+>. If I want to interact in ATS with a language that does
+not support the address-of operator (e.g., JavaScript and Python), then I
+can do it as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1195"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="extcode"><span class="keyword">extvar</span> "foo" <span class="keyword">=</span> x0 + <span class="dynexp">1</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the keyword <FONT
+COLOR="RED"
+>extvar</FONT
+> indicates that the string following it
+refers to an external variable (or left-value) that should be updated with
+the value of the expression on the right-hand side of the equality symbol
+following the string. Of course, this works for languages like C that do
+support the address-of operator as well. This so-called extvar-declaration
+can also be written as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1198"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">extern</span> <span class="extcode"><span class="keyword">var</span> "foo" <span class="keyword">=</span> x0 + <span class="dynexp">1</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>extvar</FONT
+> expands into <FONT
+COLOR="RED"
+>extern var</FONT
+>.
+
+</P
+><P
+>&#13;As for another example, let us suppose that <FONT
+COLOR="RED"
+>foo2</FONT
+> is a record
+variable that contains two integer fields named <FONT
+COLOR="RED"
+>first</FONT
+> and
+<FONT
+COLOR="RED"
+>second</FONT
+>. Then the following code assigns integers 1 and 2 to
+these two fields of <FONT
+COLOR="RED"
+>foo2</FONT
+>:
 
 <DIV
 CLASS="informalexample"
@@ -215,154 +201,26 @@ NAME="AEN1207"
 ></A
 ><PRE
 CLASS="programlisting"
->fun cloptr_free {a:t0p} (pclo: cloptr (a)): void
-</PRE
+><p class="patsyntax"><span class="extcode"><span class="keyword">extvar</span> "foo2.first" <span class="keyword">=</span> <span class="dynexp">1</span></span>
+<span class="extcode"><span class="keyword">extvar</span> "foo2.second" <span class="keyword">=</span> <span class="dynexp">2</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
 >
 
 
-where <FONT
-COLOR="RED"
->cloptr</FONT
-> is abstract. The cast
-<FONT
-COLOR="RED"
->$UNSAFE.cast{cloptr(void)}(f)</FONT
-> can certainly be replaced with
-something safer but it would make programming more curbersome.
-
-</P
-><P
->&#13;There is also some interesting interaction between currying and linear
-closure-functions. In functional programming, currying means turning a
-function taking multiple arguments simutaneously into a corresponding one
-that takes these arguments sequentially. For instance, the function
-<FONT
-COLOR="RED"
->acker2</FONT
-> in the following code is a curried version of the
-function <FONT
-COLOR="RED"
->acker</FONT
->, which implements the famous Ackermann function
-(that is recursive but not primitive recursive):
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1214"
-></A
-><PRE
-CLASS="programlisting"
->fun
-acker(m:int, n:int): int =
-(
-  case+ (m, n) of
-  | (0, _) =&#62; n + 1
-  | (m, 0) =&#62; acker (m-1, 1)
-  | (_, _) =&#62; acker (m-1, acker (m, n-1))
-) (* end of [acker] *)
-
-fun acker2 (m:int) (n:int): int = acker (m, n)
-</PRE
-><P
-></P
-></DIV
->
-
-
-Suppose that we apply <FONT
-COLOR="RED"
->acker2</FONT
-> to two integers 3 and 4:
-<FONT
-COLOR="RED"
->acker2(3)(4)</FONT
->; the application <FONT
-COLOR="RED"
->acker2(3)</FONT
-> evaluates
-to a (non-linear) closure-function; the application of this
-closure-function to 4 evaluates to <FONT
-COLOR="RED"
->acker(3,4)</FONT
->, which further
-evaluates to the integer 125. Note that the closure-function generated from
-evaluating <FONT
-COLOR="RED"
->acker2(3)</FONT
-> becomes a heap-allocated value that is no
-longer accessible after the evaluation of <FONT
-COLOR="RED"
->acker2(3)(4)</FONT
->
-finishes, and the memory for such a value can only to be safely reclaimed
-through garbage collection (GC).
-
-</P
-><P
->&#13;It is also possible to define a curried version of <FONT
-COLOR="RED"
->acker</FONT
-> as
-follows:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1224"
-></A
-><PRE
-CLASS="programlisting"
->fun acker3 (m:int) = lam (n:int): int =&#60;cloptr1&#62; acker (m, n)
-</PRE
-><P
-></P
-></DIV
->
-
-
-While the evaluation of <FONT
-COLOR="RED"
->acker3(3)(4)</FONT
-> yields the same result as
-<FONT
-COLOR="RED"
->acker2(3)(4)</FONT
->, the compiler of ATS (ATS/Postiats) inserts code
-that automatically frees the linear closure-function generated from evaluating
-<FONT
-COLOR="RED"
->acker3(3)</FONT
-> after the evaluation of <FONT
-COLOR="RED"
->acker3(3)(4)</FONT
-> finishes.
-
-</P
-><P
->&#13;In ATS1, linear closure-functions play a pivotal role in supporting
-programming with higher-order functions in the absence of GC. Due to
-advanced support for templates in ATS2, the role played by linear
-closure-functions in ATS1 is greatly diminished. However, if
-closure-functions need to be stored in a data structure but GC is
-unavailable or undesirable, then using linear closure-functions can lead to
-a solution that avoids the risk of generatig memory leaks at run-time.
+By its very nature, the feature of extvar-declaration is inherently
+unsafe, and it should only be used with caution.
 
 </P
 ><P
 >&#13;Please find <A
-HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_cloptr.dats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_extvar.dats"
 TARGET="_top"
 >on-line</A
 > the entirety of the
-code used in this chapter.
+code presented in this chapter.
 </P
 ></DIV
 ><DIV
@@ -381,7 +239,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c1161.html"
+HREF="p1184.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -399,7 +257,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c1233.html"
+HREF="c1211.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -409,13 +267,13 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Extvar-Declaration</TD
+>Advanced Tutorial Topics</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
 ><A
-HREF="p1159.html"
+HREF="p1184.html"
 ACCESSKEY="U"
 >Up</A
 ></TD
@@ -423,7 +281,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Automatic Code Generation</TD
+>Linear Closure-Functions</TD
 ></TR
 ></TABLE
 ></DIV

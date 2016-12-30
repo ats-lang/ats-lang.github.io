@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Persistent Arrays</TITLE
+>Boxed Tuples and Records</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -13,11 +13,11 @@ REL="UP"
 TITLE="Basic Tutorial Topics"
 HREF="p34.html"><LINK
 REL="PREVIOUS"
-TITLE="Boxed Tuples and Records"
-HREF="c715.html"><LINK
+TITLE="References"
+HREF="c660.html"><LINK
 REL="NEXT"
-TITLE="Persistent Arrays-with-size"
-HREF="c794.html"><LINK
+TITLE="Persistent Arrays"
+HREF="c791.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2TUTORIAL-BOOK.css"></HEAD
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c715.html"
+HREF="c660.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c794.html"
+HREF="c791.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -75,38 +75,38 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="arrayref"
+NAME="boxed_tuprec"
 ></A
->Chapter 16. Persistent Arrays</H1
+>Chapter 15. Boxed Tuples and Records</H1
 ><P
->&#13;A persistent array of size n is just n heap-allocated cells (or references)
-in a row.  It is persistent in the sense that the memory allocated for the
-array cannot be freed manually. Instead, it can only be safely reclaimed
-through garbage collection (GC).
-</P
-><P
->&#13;Given a viewtype VT, the type for persistent arrays containing N values of
-viewtype VT is <FONT
-COLOR="RED"
->arrayref(VT, N)</FONT
->.  Note that arrays in ATS are
-the same as those in C: There is no size information attached to them. The
-interfaces for various functions on persistent arrays can be found in
-the SATS file
-<A
-HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS-Postiats/prelude/SATS/arrayref.sats"
-TARGET="_top"
->prelude/SATS/arrayref.sats</A
->,
-which is automatically loaded by <B
-CLASS="command"
->atsopt</B
->.
+>&#13;A <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>boxed</I
+></SPAN
+> tuple/record is just a reference to
+some location in memory where a flat tuple/record is stored.
+Often the word <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>unboxed</I
+></SPAN
+> is also used to describe a
+flat tuple/record.
 
 </P
 ><P
->&#13;There are various functions in ATSLIB for array creation. For instance, the
-following two are commonly used:
+>&#13;In the following code,
+the types <FONT
+COLOR="RED"
+>abc_tup</FONT
+>
+and <FONT
+COLOR="RED"
+>abc_rec</FONT
+> are for boxed tuples and records, respectively:
 
 <DIV
 CLASS="informalexample"
@@ -117,45 +117,40 @@ NAME="AEN741"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:t@ype}
-arrayref_make_elt
-  {n:nat} (asz: size_t n, elt: a):&#60;!wrt&#62; arrayref (a, n)
-// end of [arrayref_make_elt]
-
-fun{a:t@ype}
-arrayref_make_listlen
-  {n:int} (xs: list (a, n), n: int n):&#60;!wrt&#62; arrayref (a, n)
-// end of [arrayref_make_listlen]
-</PRE
+><p class="patsyntax"><span class="keyword">typedef</span>
+<span class="staexp">abc_tup <span class="keyword">=</span> <span class="keyword">'(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">string</span><span class="keyword">)</span></span> <span class="comment">// for tuples</span>
+<span class="keyword">typedef</span>
+<span class="staexp">abc_rec <span class="keyword">=</span> <span class="keyword">'{</span><span class="stalab">a</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">b</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">c</span><span class="keyword">=</span><span class="staexp">string</span><span class="keyword">}</span></span> <span class="comment">// for records</span>
+</p></PRE
 ><P
 ></P
 ></DIV
 >
 
 
-Applied to a size and an element, <FONT
+Note that a tuple is just a special record in the sense that the
+labels in the tuple are fixed to be ranging from 0 to n-1, inclusive,
+where n is the tuple length. In the case of <FONT
 COLOR="RED"
->arrayref_make_elt</FONT
-> returns an
-array of the given size in which each cell is initialized with the given
-element.  Applied to a list of elements and the length of the list,
+>abc_tup</FONT
+>, the
+three associated labels are 0, 1, and 2. Note that <FONT
+COLOR="RED"
+>'(</FONT
+> and
 <FONT
 COLOR="RED"
->arrayref_make_listlen</FONT
-> returns an array of size equal to the
-given length in which each cell is initialized with the corresponding
-element in the given list.
-</P
-><P
->&#13;For reading from and writing to an array, the function templates
+>'{</FONT
+> are special symbols in ATS and there is no space
+allowed after the single quote. If the use of these special symbols is
+to be avoided, then one can declare the types <FONT
+COLOR="RED"
+>abc_tup</FONT
+> and
 <FONT
 COLOR="RED"
->arrayref_get_at</FONT
-> and <FONT
-COLOR="RED"
->arrayref_set_at</FONT
-> can be used,
-respectively, which are assigned the following interfaces:
+>abc_rec</FONT
+> as follows in a slightly different syntax:
 
 <DIV
 CLASS="informalexample"
@@ -166,84 +161,95 @@ NAME="AEN748"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:t@ype}
-arrayref_get_at
-  {n:int} (A: arrayref (a, n), i: sizeLt (n)):&#60;!ref&#62; a
-
-fun{a:t@ype}
-arrayref_set_at
-  {n:int} (A: arrayref (a, n), i: sizeLt (n), x: a):&#60;!ref&#62; void
-</PRE
+><p class="patsyntax"><span class="keyword">typedef</span>
+<span class="staexp">abc_tup <span class="keyword">=</span> <span class="keyword">$tup</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">string</span><span class="keyword">)</span></span> <span class="comment">// for tuples</span>
+<span class="keyword">typedef</span>
+<span class="staexp">abc_rec <span class="keyword">=</span> <span class="keyword">$rec</span><span class="keyword">{</span><span class="stalab">a</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">b</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">c</span><span class="keyword">=</span><span class="staexp">string</span><span class="keyword">}</span></span> <span class="comment">// for records</span>
+</p></PRE
 ><P
 ></P
 ></DIV
 >
 
 
-Given an array <FONT
-COLOR="RED"
->A</FONT
->, an index <FONT
-COLOR="RED"
->i</FONT
-> and a value
+Also, the keywords
 <FONT
 COLOR="RED"
->v</FONT
->, <FONT
+>$tup</FONT
+> and <FONT
 COLOR="RED"
->arrayref_get_at(A, i)</FONT
-> and
+>$rec</FONT
+> can be replaced with
 <FONT
 COLOR="RED"
->arrayref_set_at(A, i, v)</FONT
-> can be written as <FONT
+>$tuple</FONT
+> and <FONT
 COLOR="RED"
->A[i]</FONT
+>$record</FONT
+>, respectively.
+
+</P
+><P
+>&#13;The following code demonstrates how tuples and records can be created
+and their components (i.e., fields) taken out:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN755"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x_tup <span class="keyword">=</span> <span class="keyword">'(</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">"2"</span><span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">abc_tup</span></span>
+<span class="dynexp"><span class="keyword">val</span> x_rec <span class="keyword">=</span> <span class="keyword">'{</span><span class="dynlab">a</span><span class="keyword">=</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynlab">b</span><span class="keyword">=</span><span class="dynexp">1</span><span class="keyword">,</span> <span class="dynlab">c</span><span class="keyword">=</span><span class="dynstr">"2"</span><span class="keyword">}</span> <span class="keyword">:</span> <span class="staexp">abc_rec</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup<span class="dynexp"><span class="keyword">.0</span></span> <span class="keyword">=</span> x_rec<span class="dynexp"><span class="keyword">.</span>a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup<span class="dynexp"><span class="keyword">.1</span></span> <span class="keyword">=</span> x_rec<span class="dynexp"><span class="keyword">.</span>b</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup<span class="dynexp"><span class="keyword">.2</span></span> <span class="keyword">=</span> x_rec<span class="dynexp"><span class="keyword">.</span>c</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;It should be noted that both <FONT
+COLOR="RED"
+>x_tup</FONT
+> and <FONT
+COLOR="RED"
+>x_rec</FONT
+>
+are immutable. If one tries to typecheck the following code, then he
+or she should see some error messages reporting that <FONT
+COLOR="RED"
+>x_tup.0</FONT
 >
 and <FONT
 COLOR="RED"
->A[i] := v</FONT
->, respectively.
-</P
-><P
->&#13;
-As an example, the following function template reverses the content of a
-given array:
+>x_rec.a</FONT
+> are non-left-values:
+
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN758"
+NAME="AEN762"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:t@ype}
-arrayref_reverse{n:nat}
-(
-  A: arrayref (a, n), n: size_t (n)
-) : void = let
-//
-fun loop
-  {i: nat | i &#60;= n} .&#60;n-i&#62;.
-(
-  A: arrayref (a, n), n: size_t n, i: size_t i
-) : void = let
-  val n2 = half (n)
-in
-  if i &#60; n2 then let
-    val tmp = A[i]
-    val ni = pred(n)-i
-  in
-    A[i] := A[ni]; A[ni] := tmp; loop (A, n, succ(i))
-  end else () // end of [if]
-end // end of [loop]
-//
-in
-  loop (A, n, i2sz(0))
-end // end of [arrayref_reverse]
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x_tup<span class="dynexp"><span class="keyword">.0</span></span> := <span class="dynexp">100</span></span> <span class="comment">// *ERROR*: x_tup.0 not a left-value</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x_rec<span class="dynexp"><span class="keyword">.</span>a</span> := <span class="dynexp">100</span></span> <span class="comment">// *ERROR*: x_tup.0 not a left-value</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -252,168 +258,222 @@ end // end of [arrayref_reverse]
 
 </P
 ><P
->&#13;If the test <FONT
+>&#13;In order to have a tuple/record with mutable fields, we can just
+literally create a reference to a flat tuple/record. In the following
+code, the types <FONT
 COLOR="RED"
->i &#60; n2</FONT
-> is changed to <FONT
+>abc_tup_</FONT
+> and <FONT
 COLOR="RED"
->i &#60;= n2</FONT
->, a type-error
-is to be reported. Why? The reason is that <FONT
+>abc_rec_</FONT
+> are
+declcared for flat tuples and records, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN767"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">typedef</span>
+<span class="staexp">abc_tup_ <span class="keyword">=</span> <span class="keyword">@(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">string</span><span class="keyword">)</span></span> <span class="comment">// for tuples</span>
+<span class="keyword">typedef</span>
+<span class="staexp">abc_rec_ <span class="keyword">=</span> <span class="keyword">@{</span><span class="stalab">a</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">b</span><span class="keyword">=</span><span class="staexp">int</span><span class="keyword">,</span> <span class="stalab">c</span><span class="keyword">=</span><span class="staexp">string</span><span class="keyword">}</span></span> <span class="comment">// for records</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+and the types <FONT
 COLOR="RED"
->A[n-1-i]</FONT
-> becomes
-out-of-bounds array subscripting in the case where <FONT
+>abc_tup_r</FONT
+> and <FONT
 COLOR="RED"
->n</FONT
-> and
-<FONT
+>abc_rec_r</FONT
+> are for
+references to tuples and records classified by <FONT
 COLOR="RED"
->i</FONT
-> both equal zero. Given that it is very unlikely to encounter a
-case where an array of size 0 is involved, a bug like this, if not detected
-early, can be buried so scarily deep!
+>abc_tup_</FONT
+>
+and <FONT
+COLOR="RED"
+>abc_rec_</FONT
+>, respetively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN773"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">abc_tup_r <span class="keyword">=</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">abc_tup_</span><span class="keyword">)</span></span> <span class="comment">// for tuples</span>
+<span class="keyword">typedef</span> <span class="staexp">abc_rec_r <span class="keyword">=</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">abc_rec_</span><span class="keyword">)</span></span> <span class="comment">// for records</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The code below demonstrates how tuples and records with mutable fields
+can be created and their fields accessed and updated.
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN775"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x_tup_r <span class="keyword">=</span> ref&lt;<span class="staexp">abc_tup_</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="keyword">@(</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">"2"</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> x_rec_r <span class="keyword">=</span> ref&lt;<span class="staexp">abc_rec_</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="keyword">@{</span><span class="dynlab">a</span><span class="keyword">=</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynlab">b</span><span class="keyword">=</span><span class="dynexp">1</span><span class="keyword">,</span> <span class="dynlab">c</span><span class="keyword">=</span><span class="dynstr">"2"</span><span class="keyword">}</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup_r<span class="dynexp"><span class="keyword">-&gt;</span>0</span> <span class="keyword">=</span> x_rec_r<span class="dynexp"><span class="keyword">-&gt;</span>a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup_r<span class="dynexp"><span class="keyword">-&gt;</span>1</span> <span class="keyword">=</span> x_rec_r<span class="dynexp"><span class="keyword">-&gt;</span>b</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_tup_r<span class="dynexp"><span class="keyword">-&gt;</span>2</span> <span class="keyword">=</span> x_rec_r<span class="dynexp"><span class="keyword">-&gt;</span>c</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x_tup_r<span class="dynexp"><span class="keyword">-&gt;</span>0</span> := <span class="dynexp">100</span></span> <span class="comment">// *OKAY*: x_tup_r.0 is a left-value</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x_rec_r<span class="dynexp"><span class="keyword">-&gt;</span>a</span> := <span class="dynexp">100</span></span> <span class="comment">// *OKAY*: x_rec_r.a is a left-value</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
 </P
 ><P
->&#13;The careful reader may have already noticed that the sort <FONT
+>&#13;If we want to have records of a type where certain fields are
+read-only while the others may be updated, we can do this by making
+use of the support for abstract types in ATS.  In the following
+example, <FONT
 COLOR="RED"
->t@ype</FONT
->
-is assigned to the template parameter <FONT
+>myrec</FONT
+> is declared to be abstract; there are three
+fields associated with <FONT
+COLOR="RED"
+>myrec</FONT
+> that are of the names
+<FONT
 COLOR="RED"
 >a</FONT
->. In other words, the
-above implementation of <FONT
+>, <FONT
 COLOR="RED"
->arrayref_reverse</FONT
-> cannot handle a case
-where the values stored in a given array are of some linear type. The
-reason for choosing the sort <FONT
+>b</FONT
+>, and <FONT
 COLOR="RED"
->t@ype</FONT
-> is that both
-<FONT
-COLOR="RED"
->arrayref_get_at</FONT
-> and <FONT
-COLOR="RED"
->arrayref_set_at</FONT
-> can only be
-applied to an array containing values of a nonlinear type. In the following
-implementation, the template parameter is given the sort <FONT
-COLOR="RED"
->vt@ype</FONT
->
-so that an array containing linear values, that is, values of some linear
-type can be handled:
-</P
-><DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN774"
-></A
-><PRE
-CLASS="programlisting"
->fun{a:vt@ype}
-arrayref_reverse{n:nat}
-(
-  A: arrayref (a, n), n: size_t (n)
-) : void = let
-//
-fun loop
-  {i: nat | i &#60;= n} .&#60;n-i&#62;.
-(
-  A: arrayref (a, n), n: size_t n, i: size_t i
-) : void = let
-  val n2 = half (n)
-in
-  if i &#60; n2 then let
-    val () = arrayref_interchange (A, i, pred(n)-i) in loop (A, n, succ(i))
-  end else () // end of [if]
-end // end of [loop]
-//
-in
-  loop (A, n, i2sz(0))
-end // end of [arrayref_reverse]
-</PRE
-><P
-></P
-></DIV
-><P
->&#13;
-The interface for the function template <FONT
-COLOR="RED"
->arrayref_interchange</FONT
-> is
-given below:
+>c</FONT
+>; the first two may be
+updated while the third one is read-only:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN778"
+NAME="AEN783"
 ></A
 ><PRE
 CLASS="programlisting"
->fun{a:vt@ype}
-arrayref_interchange{n:int}
-  (A: arrayref (a, n), i: sizeLt n, j: sizeLt n):&#60;!ref&#62; void
-// end of [arrayref_interchange]
-</PRE
+><p class="patsyntax"><span class="comment">(* ****** ****** *)</span>
+
+<span class="staexp"><span class="keyword">abstype</span> myrec <span class="keyword">=</span> ptr</span>  
+
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_make
+<span class="keyword">(</span>
+  a<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> b<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> c<span class="keyword">:</span> <span class="staexp">string</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">myrec</span></span> <span class="comment">// end-of-function</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_get_a <span class="keyword">:</span> <span class="staexp">myrec</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">int</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_set_a <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">myrec</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_get_b <span class="keyword">:</span> <span class="staexp">myrec</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">int</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_set_b <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">myrec</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+myrec_get_c <span class="keyword">:</span> <span class="staexp">myrec</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">string</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>a <span class="keyword">with</span> myrec_get_a</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>a <span class="keyword">with</span> myrec_set_a</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>b <span class="keyword">with</span> myrec_get_b</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>b <span class="keyword">with</span> myrec_set_b</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>c <span class="keyword">with</span> myrec_get_c</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+
+<span class="keyword">local</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">assume</span> myrec <span class="keyword">=</span> abc_rec_r</span>
+<span class="comment">//</span>
+<span class="keyword">in</span> <span class="comment">(* in-of-local *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
+myrec_make
+  <span class="keyword">(</span>a<span class="keyword">,</span> b<span class="keyword">,</span> c<span class="keyword">)</span> <span class="keyword">=</span> ref<span class="keyword">(</span><span class="keyword">@{</span><span class="dynlab">a</span><span class="keyword">=</span>a<span class="keyword">,</span> <span class="dynlab">b</span><span class="keyword">=</span>b<span class="keyword">,</span> <span class="dynlab">c</span><span class="keyword">=</span>c<span class="keyword">}</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_get_a<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>a</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_set_a<span class="keyword">(</span>x<span class="keyword">,</span> a<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>a</span> := a</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_get_b<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>b</span></span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_set_b<span class="keyword">(</span>x<span class="keyword">,</span> b<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>b</span> := b</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span> myrec_get_c<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> x<span class="dynexp"><span class="keyword">-&gt;</span>c</span></span>
+<span class="comment">(*
+//
+// there is no update for the c-field:
+//
+implement{} myrec_set_a(x, c) = x-&gt;c := c
+*)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+
+<span class="comment">(* ****** ****** *)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
 >
 
 
-Note that <FONT
+Following is some code that creates a
+record of the type <FONT
 COLOR="RED"
->arrayref_interchange</FONT
-> can not be implemented in terms
-of <FONT
-COLOR="RED"
->arrayref_get_at</FONT
-> and <FONT
-COLOR="RED"
->arrayref_set_at</FONT
-> (unless some
-form of type-unsafe code is employed).
-</P
-><P
->&#13;There are various functions available for traversing an array from left to
-right or from right to left. Also, the following two functions can be conveniently
-called to traverse an array from left to right:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN784"
-></A
-><PRE
-CLASS="programlisting"
->//
-fun{a:t0p}
-arrayref_head{n:pos} (A: arrayref (a, n)): (a) // A[0]
-fun{a:t0p}
-arrayref_tail{n:pos} (A: arrayref (a, n)): arrayref (a, n-1)
-//
-overload .head with arrayref_head
-overload .tail with arrayref_tail
-//
-</PRE
-><P
-></P
-></DIV
->
-
-
-For instance, the fold-left function for arrays can be implemented
-as follows:
+>myrec</FONT
+> and then
+accesses and updates certain fields of the
+created record:
 
 <DIV
 CLASS="informalexample"
@@ -424,49 +484,47 @@ NAME="AEN786"
 ></A
 ><PRE
 CLASS="programlisting"
->&#13;fun{a,b:t@ype}
-arrayref_foldleft{n:int}
-(
-  f: (a, b) -&#62; a, x: a, A: arrayref (b, n), n: size_t(n)
-) : a =
-(
-if n &#62; 0
-  then arrayref_foldleft&#60;a,b&#62; (f, f (x, A.head()), A.tail(), pred(n))
-  else x
-// end of [if]
-) (* end of [arrayref_foldleft] *)
-</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x_abc <span class="keyword">=</span> myrec_make<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">"2"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>a</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>b</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>c</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynstr">"2"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> x_abc<span class="dynexp"><span class="keyword">.</span>a</span><span class="keyword">(</span><span class="dynexp">100</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>a</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">100</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> x_abc<span class="dynexp"><span class="keyword">.</span>b</span><span class="keyword">(</span><span class="dynexp">101</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>x_abc<span class="dynexp"><span class="keyword">.</span>b</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">101</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(*
+val ((*void*)) = x_abc.c("102") // *ERROR*: unsupported
+*)</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
 >
 
 
-As can be expected, <FONT
+While this example (<FONT
 COLOR="RED"
->A.head</FONT
-> and <FONT
-COLOR="RED"
->A.tail</FONT
-> translate
-into <FONT
-COLOR="RED"
->A[0]</FONT
-> and <FONT
-COLOR="RED"
->ptr_succ&#60;T&#62;(p0)</FONT
->, respectively, where T
-is the type for the elements stored in A and p0 is the starting address of
-A.
+>myrec</FONT
+>) demonstrates an approach
+to constructing records containing both read-only fields and fields that
+can be updated, this approach does seem a bit too verbose. One
+possibilty is to develop meta-programming support so as to greatly
+reduce the verbosity (due to the need for boilerplate code).
 
 </P
 ><P
 >&#13;Please find <A
-HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_arrayref.dats"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2TUTORIAL/CODE/chap_tuprec_1.dats"
 TARGET="_top"
 >on-line</A
-> the entirety of the
-code used in this chapter.
+> the
+entirety of the code used in this chapter plus some testing code.
 </P
 ></DIV
 ><DIV
@@ -485,7 +543,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c715.html"
+HREF="c660.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -503,7 +561,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c794.html"
+HREF="c791.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -513,7 +571,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Boxed Tuples and Records</TD
+>References</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -527,7 +585,7 @@ ACCESSKEY="U"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Persistent Arrays-with-size</TD
+>Persistent Arrays</TD
 ></TR
 ></TABLE
 ></DIV
