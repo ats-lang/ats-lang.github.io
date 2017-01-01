@@ -224,13 +224,13 @@ The function [myserver_process_request] is implemented as follows:
 
 <span class="dynexp"><span class="keyword">val</span>
 theRespFmt <span class="keyword">=</span> <span class="dynstr">"\
-HTTP/1.0 200 OK\r\n\
-Content-type: text/html\r\n\r\n\
+HTTP/1.0 200 OK\\r\\n\\
+Content-type: text/html\\r\\n\\r\\n\\
 &lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
-&lt;meta charset=\"UTF-8\"&gt;
-&lt;meta http-equiv=\"Content-Type\" content=\"text/html\"&gt;
+&lt;meta charset=\\\"UTF-8\\\"&gt;
+&lt;meta http-equiv=\\\"Content-Type\\\" content=\\\"text/html\\\"&gt;
 &lt;/head&gt;
 &lt;body&gt;
 &lt;h1&gt;
@@ -326,8 +326,9 @@ A side note
 
 <p>
 For someone interested in <a href="http://www.zeromq.org">ZMQ</a>,
-please find in the file <u>myserver2.dats</u> a ZMQ-based implementation
-of a http-server that is essentially equivalent to the one given above.
+please find a ZMQ-based implementation of a minimal http-server in the
+file <u>myserver2.dats</u> that is essentially equivalent to the one
+given above.
 </p>
 
 <hr size="2">

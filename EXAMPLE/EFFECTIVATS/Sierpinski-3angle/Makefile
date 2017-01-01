@@ -26,8 +26,6 @@ main_html.atxt: main_html.php; $(PHP) -f $< > $@
 #
 ######
 
-all_demo:: \
-Sierpinski-3angle.js
 Sierpinski-3angle.js: \
 Sierpinski-3angle_dats.c; $(ATSCC2JS) -o $@ -i $<
 Sierpinski-3angle_dats.c: \

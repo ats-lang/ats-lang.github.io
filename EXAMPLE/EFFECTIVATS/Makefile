@@ -91,8 +91,8 @@ make -C $@ $(TARGET)
 
 # all :: \
 # http-server
-http-server:: ; \
-make -C $@ $(TARGET)
+# http-server:: ; \
+# make -C $@ $(TARGET)
 
 all :: \
 Sierpinski-3angle
@@ -124,6 +124,18 @@ linear-streams
 linear-streams:: ; \
 make -C $@ $(TARGET)
 
+all :: \
+FRP-bacon.js
+FRP-bacon.js:: ; make -C $@ $(TARGET)
+
+all :: \
+funcomb-style
+funcomb-style:: ; make -C $@ $(TARGET)
+
+all :: \
+GraphSearch
+GraphSearch:: ; make -C $@ $(TARGET)
+
 ######
 
 cleanall::
@@ -149,6 +161,9 @@ cleanall:: ; make -C parsing-cmbntr-cps cleanall
 cleanall:: ; make -C ssntyped-channels-1 cleanall
 cleanall:: ; make -C ssntyped-channels-2 cleanall
 cleanall:: ; make -C linear-streams cleanall
+cleanall:: ; make -C FRP-bacon.js cleanall
+cleanall:: ; make -C funcomb-style cleanall
+cleanall:: ; make -C GraphSearch cleanall
 
 ######
 
@@ -175,6 +190,9 @@ uploadall::upload_parsing-cmbntr-cps
 uploadall::upload_ssntyped-channels-1
 uploadall::upload_ssntyped-channels-2
 uploadall::upload_linear-streams
+uploadall::upload_FRP-bacon.js
+uploadall::upload_funcomb-style
+uploadall::upload_GraphSearch
 
 ######
 
@@ -415,6 +433,30 @@ upload_linear-streams:: ; \
   linear-streams/index.html \
   linear-streams/Makefile linear-streams/*.?ats \
   ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/EFFECTIVATS/linear-streams/
+
+######
+
+upload_FRP-bacon.js:: ; \
+  $(SCP) -r \
+  FRP-bacon.js/index.html \
+  FRP-bacon.js/Makefile FRP-bacon.js/JS \
+  ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/EFFECTIVATS/FRP-bacon.js/
+
+######
+
+upload_funcomb-style:: ; \
+  $(SCP) \
+  funcomb-style/index.html \
+  funcomb-style/Makefile funcomb-style/*.?ats \
+  ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/EFFECTIVATS/funcomb-style/
+
+######
+
+upload_GraphSearch:: ; \
+  $(SCP) \
+  GraphSearch/index.html \
+  GraphSearch/Makefile GraphSearch/*.?ats \
+  ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/EFFECTIVATS/GraphSearch/
 
 ######
 

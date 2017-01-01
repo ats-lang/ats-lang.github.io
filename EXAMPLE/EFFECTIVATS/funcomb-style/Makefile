@@ -14,23 +14,43 @@ PATSCC2=$(PATSCC) \
 
 ######
 
-MYTEXTING=./../ATEXT/bin/mytexting
+MYTEXTING=./../MYTEXT/bin/mytexting
 
 ######
-
-all:: main.html
+#
+all:: \
+main.html
 main.html: main.atxt ; $(MYTEXTING) -o $@ -i $<
-
+#
 ######
 
 upload_main: \
   main.html ; \
   scp main.html \
-  ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/EFFECTIVATS/list-folding/
+  ats-hwxi,ats-lang@web.sourceforge.net:htdocs/EXAMPLE/EFFECTIVATS/funcomb-style/
 
 ######
 
-regress::
+permute: \
+permute.dats; $(PATSCC) -DATS_MEMALLOC_LIBC -o $@ $<
+
+######
+
+queen-puzzle-bfs: \
+queen-puzzle-bfs.dats; $(PATSCC) -DATS_MEMALLOC_LIBC -o $@ $<
+
+######
+
+queen-puzzle-dfs: \
+queen-puzzle-dfs.dats; $(PATSCC) -DATS_MEMALLOC_LIBC -o $@ $<
+queen-puzzle-dfs-2: \
+queen-puzzle-dfs-2.dats; $(PATSCC) -DATS_MEMALLOC_LIBC -o $@ $<
+
+######
+
+regress:: queen-puzzle-bfs; ./$<
+regress:: queen-puzzle-dfs; ./$<
+regress:: queen-puzzle-dfs-2; ./$<
 
 ######
 
@@ -47,13 +67,16 @@ clean:: ; $(RMF) *~
 clean:: ; $(RMF) *_?ats.c
 
 ######
-
+#
 cleanall:: clean
+#
 cleanall:: ; $(RMF) main.html
-cleanall:: ; $(RMF) list_fold_left
-cleanall:: ; $(RMF) list_fold_right
-cleanall:: ; $(RMF) list_fold_split
-
+#
+cleanall:: ; $(RMF) permute
+cleanall:: ; $(RMF) queen-puzzle-bfs
+cleanall:: ; $(RMF) queen-puzzle-dfs
+cleanall:: ; $(RMF) queen-puzzle-dfs-2
+#
 ######
 
 ###### end of [Makefile] ######

@@ -86,13 +86,14 @@ implement main0 () = myserver ()
 
 (* ****** ****** *)
 //
-staload "libc/SATS/time.sats"
-staload "libc/SATS/unistd.sats"
+staload "libats/libc/SATS/time.sats"
+staload "libats/libc/SATS/unistd.sats"
 //
-staload "libc/sys/SATS/socket.sats"
-staload "libc/arpa/SATS/inet.sats"
-staload "libc/netinet/SATS/in.sats"
-staload "libc/sys/SATS/socket_in.sats"
+staload "libats/libc/SATS/sys/socket.sats"
+staload "libats/libc/SATS/sys/socket_in.sats"
+//
+staload "libats/libc/SATS/arpa/inet.sats"
+staload "libats/libc/SATS/netinet/in.sats"
 //
 (* ****** ****** *)
 
@@ -123,8 +124,11 @@ val
 sockfd =
 $extfcall
 (
-  int, "socket", AF_INET, SOCK_STREAM, 0
-) (* end of [val] *)
+  int
+, "socket"
+, AF_INET, SOCK_STREAM, 0
+) (* $extfcall *)
+//
 val ((*void*)) = assertloc (sockfd >= 0)
 //
 extvar "theSockID" = sockfd
@@ -132,11 +136,17 @@ extvar "theSockID" = sockfd
 val () =
 $extfcall
 (
-  void, "atslib_bind_exn", sockfd, addr@servaddr, socklen_in
-) (* end of [val] *)
+  void
+, "atslib_libats_libc_bind_exn"
+, sockfd, addr@servaddr, socklen_in
+) (* $extfcall *)
 //
 val () =
-$extfcall (void, "atslib_listen_exn", sockfd, 5(*LISTENQSZ*))
+$extfcall
+(
+  void
+, "atslib_libats_libc_listen_exn", sockfd, 5(*LISTENQSZ*)
+) (* $extfcall *)
 //
 } (* end of [myserver_init] *)
 
@@ -147,7 +157,12 @@ myserver_waitfor_request
   ((*void*)) = let
 //
 val fd = $extval(int, "theSockID")
-val fd2 = $extfcall (int, "accept", fd, 0(*addr*), 0(*addrlen*))
+val fd2 =
+$extfcall
+(
+  int
+, "accept", fd, 0(*addr*), 0(*addrlen*)
+) (* $extfcall *)
 //
 in
   $UN.cast{request}(fd2)
