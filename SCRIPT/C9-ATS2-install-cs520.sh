@@ -86,24 +86,24 @@ sudo apt-get install -y erlang
 # For parsing C code
 # generated from ATS source
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-parsemit && time make DATS_C)
+(cd ATS2/contrib/CATS-parsemit && time make all)
 #
 # For building atscc2js
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2js && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2js && mv -f atscc2js ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2js && time make all)
+(cd ATS2/contrib/CATS-atscc2js && mv -f atscc2js ${PATSHOME}/bin)
 # (cd ATS2-contrib/contrib/libatscc/libatscc2js && time make all && time make all_in_one)
 #
 # For building atscc2py3
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2py3 && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2py3 && mv -f atscc2py3 ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2py3 && time make all)
+(cd ATS2/contrib/CATS-atscc2py3 && mv -f atscc2py3 ${PATSHOME}/bin)
 # (cd ATS2-contrib/contrib/libatscc/libatscc2py3 && time make all && time make all_in_one)
 #
 # For building atscc2clj
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2clj && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2clj && mv -f atscc2clj ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2clj && time make all)
+(cd ATS2/contrib/CATS-atscc2clj && mv -f atscc2clj ${PATSHOME}/bin)
 # (cd ATS2-contrib/contrib/libatscc/libatscc2clj && time make all && time make all_in_one)
 #
 ######

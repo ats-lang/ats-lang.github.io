@@ -164,18 +164,18 @@ mv ${PWD}/ATS2/prelude/CATS/CODEGEN/*.cats ${PWD}/ATS2/prelude/CATS/
 # For parsing C code
 # generated from ATS source
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-parsemit && time make DATS_C)
+(cd ATS2/contrib/CATS-parsemit && time make all)
 #
 # For building atscc2js
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2js && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2js && mv -f atscc2js ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2js && time make all)
+(cd ATS2/contrib/CATS-atscc2js && mv -f atscc2js ${PATSHOME}/bin)
 (cd ATS2-contrib/contrib/libatscc/libatscc2js && time make all && time make all_in_one)
 #
 # For building atscc2erl
 #
-#(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && time make build)
-#(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && mv -f atscc2erl ${PATSHOME}/bin)
+#(cd ATS2/contrib/CATS-atscc2erl && time make all)
+#(cd ATS2/contrib/CATS-atscc2erl && mv -f atscc2erl ${PATSHOME}/bin)
 #(cd ATS2-contrib/contrib/libatscc/libatscc2erl && time make all && time make all_in_one)
 #(cd ATS2-contrib/contrib/libatscc/libatscc2erl/Session && time make all && time make all_in_one)
 #

@@ -108,7 +108,7 @@ echo "export PATH=\${PATSHOME}/bin:\${PATH}" >> ${HOME}/.bashrc
 (cd ATS2/src/CBOOT && make -C libats)
 (cd ATS2/utils/libatsopt && make && make clean)
 #
-cp ATS2/utils/libatsopt/libatsopt.a ${ATSHOME}/ccomp/lib
+cp -f ATS2/utils/libatsopt/libatsopt.a ${ATSHOME}/ccomp/lib
 #
 ######
 #
@@ -116,7 +116,7 @@ cp ATS2/utils/libatsopt/libatsopt.a ${ATSHOME}/ccomp/lib
 #
 (cd ATS2/utils/libatsynmark && make && make clean)
 #
-cp ATS2/utils/libatsynmark/libatsynmark.a ${ATSHOME}/ccomp/lib
+cp -f ATS2/utils/libatsynmark/libatsynmark.a ${ATSHOME}/ccomp/lib
 #
 ######
 #
@@ -147,42 +147,48 @@ sudo apt-get install -y libjson-c-dev
 # For parsing C code
 # generated from ATS source
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-parsemit && time make DATS_C)
+(cd ATS2/contrib/CATS-parsemit && time make all)
 #
 # For building atscc2js
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2js && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2js && mv -f atscc2js ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2js && time make all)
+(cd ATS2/contrib/CATS-atscc2js && mv -f atscc2js ${PATSHOME}/bin)
 (cd ATS2-contrib/contrib/libatscc/libatscc2js && time make all && time make all_in_one)
+#
+# For building atscc2pl
+#
+(cd ATS2/contrib/CATS-atscc2pl && time make all)
+(cd ATS2/contrib/CATS-atscc2pl && mv -f atscc2pl ${PATSHOME}/bin)
+(cd ATS2-contrib/contrib/libatscc/libatscc2pl && time make all && time make all_in_one)
 #
 # For building atscc2py3
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2py3 && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2py3 && mv -f atscc2py3 ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2py3 && time make all)
+(cd ATS2/contrib/CATS-atscc2py3 && mv -f atscc2py3 ${PATSHOME}/bin)
 (cd ATS2-contrib/contrib/libatscc/libatscc2py3 && time make all && time make all_in_one)
 #
 # For building atscc2php
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2php && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2php && mv -f atscc2php ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2php && time make all)
+(cd ATS2/contrib/CATS-atscc2php && mv -f atscc2php ${PATSHOME}/bin)
 (cd ATS2-contrib/contrib/libatscc/libatscc2php && time make all && time make all_in_one)
 #
 # For building atscc2scm
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2scm && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2scm && mv -f atscc2scm ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2scm && time make all)
+(cd ATS2/contrib/CATS-atscc2scm && mv -f atscc2scm ${PATSHOME}/bin)
 (cd ATS2-contrib/contrib/libatscc/libatscc2scm && time make all && time make all_in_one)
 #
 # For building atscc2clj
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2clj && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2clj && mv -f atscc2clj ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2clj && time make all)
+(cd ATS2/contrib/CATS-atscc2clj && mv -f atscc2clj ${PATSHOME}/bin)
 (cd ATS2-contrib/contrib/libatscc/libatscc2clj && time make all && time make all_in_one)
 #
 # For building atscc2erl
 #
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && time make build)
-(cd ATS2-contrib/projects/MEDIUM/CATS-atsccomp/CATS-atscc2erl && mv -f atscc2erl ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2erl && time make all)
+(cd ATS2/contrib/CATS-atscc2erl && mv -f atscc2erl ${PATSHOME}/bin)
 (cd ATS2-contrib/contrib/libatscc/libatscc2erl && time make all && time make all_in_one)
 (cd ATS2-contrib/contrib/libatscc/libatscc2erl/Session && time make all && time make all_in_one)
 #
