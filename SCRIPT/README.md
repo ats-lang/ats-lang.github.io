@@ -72,7 +72,7 @@ Ebuilds related to ATS2 include
 *       app-emacs/ats2-mode           -- install ats2-mode and optionally also install flymake
 
 You can have multiple versions of ATS2 and ATS2-contrib installed
-simultaneously, using eselect or settings of PATSHOME and/or PATSHOMERELOC
+simultaneously, using eselect or settings of PATSHOME and/or PATSCONTRIB
 to control which versions are used. The ATS2 and ATS2-contrib versions are
 controlled independently. (I thought this better than trying to impose
 version-matching constraints.)
