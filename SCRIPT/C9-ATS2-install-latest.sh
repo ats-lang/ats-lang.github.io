@@ -54,6 +54,8 @@ tar -zxf ${ATSPACKTGZ}
 export ATSHOME=${PWD}/${ATSPACK}
 export ATSHOMERELOC=ATS-${ATSVER}
 #
+######
+#
 (cd ${ATSHOME} && ./configure&&make CC=${GCC} all_ngc)
 #
 (cd $ATSHOME/bootstrap1 && rm -f *.o)
@@ -65,24 +67,25 @@ git clone https://github.com/githwxi/ATS-Postiats ATS2
 git clone https://github.com/githwxi/ATS-Postiats-contrib.git ATS2-contrib
 
 ######
-
+#
 export PATSHOME=${PWD}/ATS2
-export PATSHOMERELOC=${PWD}/ATS2-contrib
-
-######
 #
 export PATH=${PATSHOME}/bin:${PATH}
+#
+export PATSCONTRIB=${PWD}/ATS2-contrib
 #
 ######
 #
 echo "export ATSHOME=${PWD}/${ATSPACK}" >> ${HOME}/.bashrc
 echo "export ATSHOMERELOC=ATS-${ATSVER}" >> ${HOME}/.bashrc 
 #
+######
+#
 echo "export PATSHOME=${PWD}/ATS2" >> ${HOME}/.bashrc
-echo "export PATSHOMERELOC=${PWD}/ATS2-contrib" >> ${HOME}/.bashrc
-echo "export PATSHOME_contrib=${PWD}/ATS2-contrib" >> ${HOME}/.bashrc
 #
 echo "export PATH=\${PATSHOME}/bin:\${PATH}" >> ${HOME}/.bashrc
+#
+echo "export PATSCONTRIB=${PWD}/ATS2-contrib" >> ${HOME}/.bashrc
 #
 ######
 #
@@ -106,6 +109,7 @@ echo "export PATH=\${PATSHOME}/bin:\${PATH}" >> ${HOME}/.bashrc
 (cd ATS2/src/CBOOT && make -C prelude)
 (cd ATS2/src/CBOOT && make -C libc)
 (cd ATS2/src/CBOOT && make -C libats)
+#
 (cd ATS2/utils/libatsopt && make && make clean)
 #
 cp -f ATS2/utils/libatsopt/libatsopt.a ${ATSHOME}/ccomp/lib
@@ -130,17 +134,17 @@ sudo apt-get install -y libjson-c-dev
 #
 # For parsing constraints 
 #
-(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve && time make DATS_C)
+(cd ATS2/contrib/ATS-extsolve && time make DATS_C)
 #
 # For building patsolve_z3
 #
-(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-z3 && time make build)
-(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
+(cd ATS2/contrib/ATS-extsolve-z3 && time make build)
+(cd ATS2/contrib/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
 #
 # For building patsolve_smt2
 #
-(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-smt2 && time make build)
-(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-smt2 && mv -f patsolve_smt2 ${PATSHOME}/bin)
+(cd ATS2/contrib/ATS-extsolve-smt2 && time make build)
+(cd ATS2/contrib/ATS-extsolve-smt2 && mv -f patsolve_smt2 ${PATSHOME}/bin)
 #
 ######
 #

@@ -32,7 +32,7 @@ git clone https://github.com/githwxi/ATS-Postiats-contrib.git ATS2-contrib
 ######
 
 export PATSHOME=${PWD}/ATS2
-export PATSHOMERELOC=${PWD}/ATS2-contrib
+export PATSCONTRIB=${PWD}/ATS2-contrib
 
 ######
 #
@@ -41,10 +41,10 @@ export PATH=${PATSHOME}/bin:${PATH}
 ######
 #
 echo "export PATSHOME=${PWD}/ATS2" >> ${HOME}/.bashrc
-echo "export PATSHOMERELOC=${PWD}/ATS2-contrib" >> ${HOME}/.bashrc
-echo "export PATSHOME_contrib=${PWD}/ATS2-contrib" >> ${HOME}/.bashrc
 #
 echo "export PATH=\${PATSHOME}/bin:\${PATH}" >> ${HOME}/.bashrc
+#
+echo "export PATSCONTRIB=${PWD}/ATS2-contrib" >> ${HOME}/.bashrc
 #
 ######
 #
@@ -67,15 +67,15 @@ sudo apt-get install -y libjson-c-dev
 #
 # For parsing constraints 
 #
-(cd ATS2-contrib/projects/MEDIUM/ATS-extsolve && time make DATS_C)
+(cd ATS2/contrib/ATS-extsolve && time make DATS_C)
 #
 # For building patsolve_z3
-# (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-z3 && time make build)
-# (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
+# (cd ATS2/contrib/ATS-extsolve-z3 && time make build)
+# (cd ATS2/contrib/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
 #
 # For building patsolve_smt2
-# (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-smt2 && time make build)
-# (cd ATS2-contrib/projects/MEDIUM/ATS-extsolve/ATS-extsolve-smt2 && mv -f patsolve_smt2 ${PATSHOME}/bin)
+# (cd ATS2/contrib/ATS-extsolve-smt2 && time make build)
+# (cd ATS2/contrib/ATS-extsolve-smt2 && mv -f patsolve_smt2 ${PATSHOME}/bin)
 #
 ######
 
