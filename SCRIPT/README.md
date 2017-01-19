@@ -1,4 +1,4 @@
-# Scripts for ATS2
+# Scripts for Installing ATS2+utils
 
 ## [Homebrew for ATS2](https://github.com/Homebrew/homebrew-core/blob/master/Formula/ats2-postiats.rb)
 

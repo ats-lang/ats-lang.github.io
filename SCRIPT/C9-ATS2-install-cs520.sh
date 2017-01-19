@@ -3,7 +3,7 @@
 ######
 #
 # A shell script for
-# installing ATS2 + ATS2-contrib
+# installing ATS-Postiats + utils
 #
 # This is mainly for teaching CS520
 #
