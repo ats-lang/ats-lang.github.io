@@ -40,7 +40,7 @@
 
 %{#
 //
-#include "libgmp/CATS/gmp.cats"
+#include "gmp/CATS/gmp.cats"
 //
 %} // end of [%{#]
 

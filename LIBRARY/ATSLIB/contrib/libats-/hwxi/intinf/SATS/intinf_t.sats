@@ -28,6 +28,12 @@
 
 (* ****** ****** *)
 //
+#define
+ATS_PACKNAME
+"ATSCNTRB.libats-hwxi.intinf_t"
+//
+(* ****** ****** *)
+//
 // Author: Hongwei Xi
 // Authoremail: hwxi AT gmail DOT com
 // Start Time: February, 2013
@@ -36,11 +42,6 @@
 //
 // HX-2013-02:
 // For multiple-precision integers
-//
-(* ****** ****** *)
-//
-#define
-ATS_PACKNAME "ATSCNTRB.libats-hwxi.intinf_t"
 //
 (* ****** ****** *)
 

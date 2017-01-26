@@ -28,6 +28,12 @@
 
 (* ****** ****** *)
 //
+#define
+ATS_PACKNAME
+"ATSCNTRB.libats-hwxi.intinf"
+//
+(* ****** ****** *)
+//
 // Author: Hongwei Xi
 // Start Time: February, 2013
 // Authoremail: gmhwxiATgmailDOTcom
@@ -37,11 +43,6 @@
 // HX-2013-02:
 // For multiple-precision integers
 //
-(* ****** ****** *)
-
-#define
-ATS_PACKNAME "ATSCNTRB.libats-hwxi.intinf"
-
 (* ****** ****** *)
 //
 abstype intinf_type(i:int) = ptr
