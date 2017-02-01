@@ -40,15 +40,20 @@
 
 %{#
 //
-#include "gmp/CATS/gmp.cats"
+#include "libgmp/CATS/gmp.cats"
 //
 %} // end of [%{#]
 
 (* ****** ****** *)
-
-#define ATS_PACKNAME "ATSCNTRB.libgmp"
-#define ATS_EXTERN_PREFIX "atscntrb_libgmp_" // prefix for external names
-
+//
+#define
+ATS_PACKNAME "ATSCNTRB.libgmp"
+//
+// HX: prefix for extern names
+//
+#define
+ATS_EXTERN_PREFIX "atscntrb_libgmp_"
+//
 (* ****** ****** *)
 //
 // integral numbers
