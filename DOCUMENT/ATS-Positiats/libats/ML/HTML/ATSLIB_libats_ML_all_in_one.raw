@@ -1,0 +1,2527 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
+(* Author: Hongwei Xi *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+(* Start time: January, 2013 *)
+
+(* ****** ****** *)
+
+#define ATS_PACKNAME "ATSLIB.libats.ML"
+#define ATS_EXTERN_PREFIX "atslib_ML_" // prefix for external names
+
+(* ****** ****** *)
+
+staload "libats/ML/SATS/basis.sats"
+
+(* ****** ****** *)
+
+typedef SHR(a:type) = a // for commenting purpose
+typedef NSH(a:type) = a // for commenting purpose
+
+(* ****** ****** *)
+
+typedef charlst0 = list0 (char)
+typedef stringlst0 = list0 (string)
+
+(* ****** ****** *)
+
+(*
+fun fileref_open_opt
+  (path: NSH(string), fm: file_mode): option0 (FILEref)
+// end of [fileref_open_opt]
+*)
+
+(* ****** ****** *)
+//
+fun
+fileref_get_line_charlst(filr: FILEref): charlst0
+//
+(*
+** HX: for handling files of "tiny" size
+*)
+fun
+fileref_get_lines_charlstlst(filr: FILEref): list0(charlst0)
+//
+(* ****** ****** *)
+//
+fun
+fileref_get_line_string(filr: FILEref): string
+//
+(*
+** HX: for handling files of "tiny" size
+*)
+fun
+fileref_get_lines_stringlst(filr: FILEref): stringlst0
+//
+(* ****** ****** *)
+//
+fun{}
+streamize_fileref_char(inp: FILEref): stream_vt(char)
+//
+fun{}
+streamize_fileref_line(inp: FILEref): stream_vt(string)
+//
+(* ****** ****** *)
+//
+(*
+fun{}
+fileref_get_word$isalpha(c0: charNZ): bool
+*)
+fun{}
+streamize_fileref_word(inp: FILEref): stream_vt(string)
+//
+(* ****** ****** *)
+//
+fun
+dirname_get_fnamelst(dirname: string): list0(string)
+//
+(* ****** ****** *)
+//
+fun{}
+streamize_dirname_fname(dirname: string): stream_vt(string)
+//
+(* ****** ****** *)
+
+(* end of [filebas.sats] *)
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2014 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
+(* ****** ****** *)
+
+(* Author: Hongwei Xi *)
+(* Authoremail: gmhwxiATgmailDOTcom*)
+(* Start time: September, 2014 *)
+
+(* ****** ****** *)
+//
+// HX-2013-04:
+// intrange (l, r) is for integers i satisfying l <= i < r
+//
+(* ****** ****** *)
+//
+#define
+ATS_PACKNAME "ATSLIB.libats.ML"
+#define
+ATS_EXTERN_PREFIX "atslib_ML_" // prefix for external names
+//
+(* ****** ****** *)
+
+staload "libats/ML/SATS/basis.sats"
+
+(* ****** ****** *)
+//
+fun{}
+int_repeat_lazy
+  (n: int, f: lazy(void)): void
+fun{}
+int_repeat_cloref
+  (n: int, f: cfun0(void)): void
+fun{}
+int_repeat_method
+  (n: int)(f: cfun0(void)): void
+//
+overload repeat with int_repeat_lazy
+overload repeat with int_repeat_cloref
+overload .repeat with int_repeat_method
+//
+(* ****** ****** *)
+//
+fun{}
+int_forall_cloref
+  (n: int, f: cfun1 (int, bool)): bool
+fun{}
+int_forall_method
+  (n: int) (f: cfun1 (int, bool)): bool
+//
+overload .forall with int_forall_method
+//
+(* ****** ****** *)
+//
+fun{}
+int_foreach_cloref
+  (n: int, f: cfun1 (int, void)): void
+fun{}
+int_foreach_method
+  (n: int) (f: cfun1 (int, void)): void
+//
+overload .foreach with int_foreach_method
+//
+(* ****** ****** *)
+//
+fun{res:vt0p}
+int_foldleft_cloref
+  (n: int, ini: res, f: cfun2 (res, int, res)): res
+//
+fun{res:vt0p}
+int_foldleft_method
+  (int, TYPE(res))(ini: res, f: cfun2 (res, int, res)): res
+//
+overload .foldleft with int_foldleft_method
+//
+(* ****** ****** *)
+//
+fun{}
+intrange_forall_cloref
+  (l: int, r: int, f: cfun1 (int, bool)): bool
+fun{}
+intrange_forall_method
+  (lr: @(int, int)) (f: cfun1 (int, bool)): bool
+//
+overload .forall with intrange_forall_method
+//
+(* ****** ****** *)
+//
+fun{}
+intrange_foreach_cloref
+  (l: int, r: int, f: cfun1 (int, void)): void
+fun{}
+intrange_foreach_method
+  (lr: @(int, int)) (f: cfun1 (int, void)): void
+//
+overload .foreach with intrange_foreach_method
+//
+(* ****** ****** *)
+//
+fun{res:vt0p}
+intrange_foldleft_cloref
+  (l: int, r: int, ini: res, f: cfun2 (res, int, res)): res
+//
+fun{res:vt0p}
+intrange_foldleft_method
+  ((int, int), TYPE(res))(ini: res, f: cfun2 (res, int, res)): res
+//
+overload .foldleft with intrange_foldleft_method
+//
+(* ****** ****** *)
+//
+fun{}
+int_streamGte(n: int): stream(int)
+//
+overload .streamGte with int_streamGte
+//
+fun{}
+int_streamGte_vt(n: int): stream_vt(int)
+//
+overload .streamGte_vt with int_streamGte_vt
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+int_list0_map_cloref
+  {n:nat}
+  (n: int(n), fopr: cfun(natLt(n), a)): list0(a)
+fun{a:t0p}
+int_list0_map_method
+  {n:nat}
+  (n: int(n), TYPE(a))(f: cfun(natLt(n), a)): list0(a)
+//
+overload .list0_map with int_list0_map_method
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+int_array0_map_cloref
+  {n:nat}
+  (n: int(n), fopr: cfun(natLt(n), a)): array0(a)
+fun{a:t0p}
+int_array0_map_method
+  {n:nat}
+  (n: int(n), TYPE(a))(f: cfun(natLt(n), a)): array0(a)
+//
+overload .array0_map with int_array0_map_method
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+int_stream_map_cloref
+  {n:nat}
+  (n: int(n), fopr: cfun(natLt(n), a)): stream(a)
+fun{a:t0p}
+int_stream_map_method
+  {n:nat}
+  (n: int(n), TYPE(a))(f: cfun(natLt(n), a)): stream(a)
+//
+overload .stream_map with int_stream_map_method
+//
+(* ****** ****** *)
+//
+fun{a:vt0p}
+int_stream_vt_map_cloref
+  {n:nat}
+  (n: int(n), fopr: cfun(natLt(n), a)): stream_vt(a)
+fun{a:vt0p}
+int_stream_vt_map_method
+  {n:nat}
+  (n: int(n), TYPE(a))(f: cfun(natLt(n), a)): stream_vt(a)
+//
+overload .stream_vt_map with int_stream_vt_map_method
+//
+(* ****** ****** *)
+//
+fun{}
+int2_foreach_cloref
+  (n1: int, n2: int, f: cfun2(int, int, void)): void
+//
+fun{}
+intrange2_foreach_cloref
+  (l1: int, r1: int, l2: int, r2: int, f: cfun2(int, int, void)): void
+//
+(* ****** ****** *)
+
+(* end of [intrange.sats] *)
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
+(* Author: Hongwei Xi *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+(* Start time: August, 2013 *)
+
+(* ****** ****** *)
+
+#define
+ATS_PACKNAME "ATSLIB.libats.ML"
+#define
+ATS_EXTERN_PREFIX "atslib_ML_" // prefix for external names
+
+(* ****** ****** *)
+
+staload "libats/ML/SATS/basis.sats"
+
+(* ****** ****** *)
+//
+// HX: for maps of elements of type (a)
+//
+abstype
+map_type
+(
+  key:t@ype
+, itm:t0ype+
+) = ptr(*boxed*)
+//
+typedef
+map(key:t0p, itm:t0p) = map_type(key, itm)
+//
+(* ****** ****** *)
+//
+fun{key:t0p}
+compare_key_key(x1: key, x2: key):<> int
+//
+(* ****** ****** *)
+//
+fun{}
+funmap_nil{key,itm:t0p}():<> map(key, itm)
+fun{}
+funmap_make_nil{key,itm:t0p}():<> map(key, itm)
+//
+(* ****** ****** *)
+
+fun{}
+funmap_is_nil
+  {key,itm:t0p}(map: map(key, INV(itm))):<> bool
+fun{}
+funmap_isnot_nil
+  {key,itm:t0p}(map: map(key, INV(itm))):<> bool
+
+(* ****** ****** *)
+
+fun{
+key,itm:t0p
+} funmap_size(map: map(key, INV(itm))):<> size_t
+
+(* ****** ****** *)
+
+fun{
+key,itm:t0p
+} funmap_search
+  (map: map(key, INV(itm)), k: key): Option_vt(itm)
+// end of [funmap_search]
+
+(* ****** ****** *)
+//
+fun{
+key,itm:t0p
+} funmap_insert
+(
+  &map(key, INV(itm)) >> _, key, itm
+) : Option_vt(itm) // end of [funmap_insert]
+//
+(* ****** ****** *)
+//
+fun{
+key,itm:t0p
+} funmap_takeout
+(
+  map: &map(key, INV(itm)) >> _, k: key
+) : Option_vt(itm) // end of [funmap_takeout]
+//
+(* ****** ****** *)
+//
+fun{
+key,itm:t0p
+} funmap_remove
+  (map: &map(key, INV(itm)) >> _, k: key): bool
+//
+(* ****** ****** *)
+//
+fun{
+key,itm:t@ype
+} fprint_funmap
+(
+  out: FILEref, map: map(key, itm)
+) : void // end of [fprint_funmap]
+//
+fun{}
+fprint_funmap$sep(out: FILEref): void // fprint("; ")
+fun{}
+fprint_funmap$mapto(out: FILEref): void // fprint("->")
+//
+overload fprint with fprint_funmap
+//
+(* ****** ****** *)
+//
+fun{
+key,itm:t0p
+} funmap_foreach
+  (map: map(key, itm)): void
+fun
+{key:t0p
+;itm:t0p}
+{env:vt0p}
+funmap_foreach_env
+  (map: map(key, itm), env: &(env) >> _): void
+//
+fun
+{key:t0p
+;itm:t0p}
+{env:vt0p}
+funmap_foreach$fwork
+  (key: key, itm: &itm >> _, env: &(env) >> _): void
+//
+(* ****** ****** *)
+//
+fun{
+key,itm:t0p
+} funmap_foreach_cloref
+(
+  map: map(key, itm)
+, fwork: (key, itm) -<cloref1> void
+) : void // end-of-function
+//
+(* ****** ****** *)
+//
+fun{
+key,itm:t0p
+} funmap_listize
+  (map: map(key, INV(itm))): list0 @(key, itm)
+//
+(* ****** ****** *)
+//
+fun{
+key,itm:t0p
+} funmap_streamize
+  (map: map(key, INV(itm))): stream_vt @(key, itm)
+//
+(* ****** ****** *)
+
+typedef
+map_modtype
+(
+  key: t0p, itm: t0p
+) = $rec{
+//
+nil = () -<> map(key,itm)
+,
+size = $d2ctype(funmap_size<key,itm>)
+,
+is_nil = (map(key,itm)) -<> bool
+,
+isnot_nil = (map(key,itm)) -<> bool
+,
+search = $d2ctype(funmap_search<key,itm>)
+,
+insert = $d2ctype(funmap_insert<key,itm>)
+,
+remove = $d2ctype(funmap_remove<key,itm>)
+,
+takeout = $d2ctype(funmap_takeout<key,itm>)
+,
+listize = $d2ctype(funmap_listize<key,itm>)
+,
+streamiize = $d2ctype(funmap_streamize<key,itm>)
+//
+} (* end of [set_modtype] *)
+
+(* ****** ****** *)
+//
+fun
+{key:t0p
+;itm:t0p}
+funmap_make_module((*void*)): map_modtype(key,itm)
+//
+(* ****** ****** *)
+
+(* end of [funmap.sats] *)
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
+(* Author: Hongwei Xi *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+(* Start time: August, 2013 *)
+
+(* ****** ****** *)
+
+#define ATS_PACKNAME "ATSLIB.libats.ML"
+#define ATS_EXTERN_PREFIX "atslib_ML_" // prefix for external names
+
+(* ****** ****** *)
+
+staload "libats/ML/SATS/basis.sats"
+
+(* ****** ****** *)
+//
+// HX-2013-08:
+// for sets of elements of type a
+//
+abstype
+set_type
+(
+  a:t@ype+
+) = ptr(*boxed*)
+//
+typedef set(a:t0p) = set_type(a)
+//
+(* ****** ****** *)
+
+fun{a:t0p}
+compare_elt_elt(x: a, y: a):<> int
+
+(* ****** ****** *)
+
+fun{} funset_nil{a:t0p}():<> set(a)
+fun{} funset_make_nil{a:t0p}():<> set(a)
+
+(* ****** ****** *)
+
+fun{a:t0p} funset_sing(x: a): set(a)
+fun{a:t0p} funset_make_sing(x: a): set(a)
+
+(* ****** ****** *)
+
+fun{a:t0p}
+funset_make_list(xs: list0(INV(a))): set(a)
+
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+fprint_funset
+(
+  out: FILEref, set: set(INV(a))
+) : void // end of [fprint_funset]
+//
+fun{}
+fprint_funset$sep(out: FILEref): void // fprint(", ")
+//
+overload fprint with fprint_funset
+//
+(* ****** ****** *)
+
+fun{}
+funset_is_nil{a:t0p}(xs: set(INV(a))):<> bool
+fun{}
+funset_isnot_nil{a:t0p}(xs: set(INV(a))):<> bool
+
+(* ****** ****** *)
+
+fun{a:t0p}
+funset_size(xs: set(INV(a))):<> size_t
+
+(* ****** ****** *)
+
+fun{a:t0p}
+funset_is_member(xs: set(INV(a)), x0: a):<> bool
+fun{a:t0p}
+funset_isnot_member(xs: set(INV(a)), x0: a):<> bool
+
+(* ****** ****** *)
+
+fun{a:t0p}
+funset_insert
+  (xs: &set(INV(a)) >> _, x0: a): bool(*[x0] in [xs]*)
+// end of [funset_insert]
+
+(* ****** ****** *)
+
+fun{a:t0p}
+funset_remove
+  (xs: &set(INV(a)) >> _, x0: a): bool(*[x0] in [xs]*)
+// end of [funset_remove]
+
+(* ****** ****** *)
+
+fun{a:t0p}
+funset_getmax_opt(xs: set(INV(a))): Option_vt(a)
+fun{a:t0p}
+funset_getmin_opt(xs: set(INV(a))): Option_vt(a)
+
+(* ****** ****** *)
+
+fun{a:t0p}
+funset_takeoutmax_opt(xs: &set(INV(a)) >> _): Option_vt(a)
+fun{a:t0p}
+funset_takeoutmin_opt(xs: &set(INV(a)) >> _): Option_vt(a)
+
+(* ****** ****** *)
+
+fun{a:t0p}
+funset_union(xs1: set(INV(a)), xs2: set(a)):<> set(a)
+fun{a:t0p}
+funset_intersect(xs1: set(INV(a)), xs2: set(a)):<> set(a)
+fun{a:t0p}
+funset_differ(xs1: set(INV(a)), xs2: set(a)):<> set(a)
+fun{a:t0p}
+funset_symdiff(xs1: set(INV(a)), xs2: set(a)):<> set(a)
+
+(* ****** ****** *)
+
+fun{a:t0p}
+funset_equal(xs1: set(INV(a)), xs2: set(a)):<> bool
+
+(* ****** ****** *)
+//
+// HX: set ordering induced by the ordering on elements
+//
+fun{a:t0p}
+funset_compare(xs1: set(INV(a)), xs2: set(a)):<> int
+
+(* ****** ****** *)
+//
+fun{a:t0p}
+funset_is_subset(xs1: set(INV(a)), xs2: set(a)):<> bool
+fun{a:t0p}
+funset_is_supset(xs1: set(INV(a)), xs2: set(a)):<> bool
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+funset_foreach(set: set(INV(a))): void
+fun
+{a:t0p}
+{env:vt0p}
+funset_foreach_env
+  (set: set(INV(a)), env: &(env) >> _): void
+// end of [funset_foreach_env]
+//
+fun
+{a:t0p}
+{env:vt0p}
+funset_foreach$fwork(x: a, env: &(env) >> _): void
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+funset_foreach_cloref
+  (set: set(INV(a)), fwork: (a) -<cloref1> void): void
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+funset_tabulate_cloref
+  {n:nat}(int(n), fopr: (natLt(n)) -<cloref1> a): set(a)
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+funset_listize(xs: set(INV(a))):<> list0(a)
+//
+fun{a:t0p}
+funset_streamize(xs: set(INV(a))):<> stream_vt(a)
+//
+(* ****** ****** *)
+
+typedef
+set_modtype
+(
+  elt:t@ype
+) = $rec{
+//
+nil = () -<> set(elt)
+,
+sing =
+$d2ctype(funset_sing<elt>)
+,
+make_list =
+$d2ctype(funset_make_list<elt>)
+,
+size = $d2ctype(funset_size<elt>)
+,
+is_nil = (set(elt)) -<> bool
+,
+isnot_nil = (set(elt)) -<> bool
+,
+insert = $d2ctype(funset_insert<elt>)
+,
+remove = $d2ctype(funset_remove<elt>)
+,
+union = $d2ctype(funset_union<elt>)
+,
+intersect = $d2ctype(funset_intersect<elt>)
+,
+listize = $d2ctype(funset_listize<elt>)
+,
+streamiize = $d2ctype(funset_streamize<elt>)
+//
+} (* end of [set_modtype] *)
+
+(* ****** ****** *)
+//
+fun
+{a:t@ype}
+funset_make_module((*void*)): set_modtype(a)
+//
+(* ****** ****** *)
+
+(* end of [funset.sats] *)
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
+(* Author: Hongwei Xi *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+(* Start time: August, 2013 *)
+
+(* ****** ****** *)
+
+#define
+ATS_PACKNAME "ATSLIB.libats.ML"
+#define
+ATS_EXTERN_PREFIX "atslib_ML_" // prefix for external names
+
+(* ****** ****** *)
+
+staload "libats/ML/SATS/basis.sats"
+
+(* ****** ****** *)
+//
+typedef
+hashtbl // introduced in [basis.sats]
+(key:t@ype, itm:t@ype) = hashtbl(key, itm)
+//
+(* ****** ****** *)
+//
+fun{
+key:t0p
+} hash_key(x: key):<> ulint
+//
+fun{
+key:t0p
+} equal_key_key(x1: key, x2: key):<> bool
+//
+(* ****** ****** *)
+//
+fun{
+key,itm:t0p
+} hashtbl_make_nil
+  (cap: sizeGte(1)): hashtbl(key, itm)
+//
+(* ****** ****** *)
+
+fun{}
+hashtbl_get_size
+  {key,itm:t0p}(hashtbl(key, itm)): size_t
+fun{}
+hashtbl_get_capacity
+  {key,itm:t0p}(hashtbl(key, itm)): sizeGte(1)
+
+(* ****** ****** *)
+
+fun{
+key,itm:t0p
+} hashtbl_search
+  (hashtbl(key, itm), key): Option_vt(itm)
+// end of [hashtbl_search]
+
+fun{
+key,itm:t0p
+} hashtbl_search_ref
+  (tbl: hashtbl(key, itm), k: key): cPtr0(itm)
+// end of [hashtbl_search_ref]
+
+(* ****** ****** *)
+
+fun{
+key,itm:t0p
+} hashtbl_insert
+  (hashtbl(key, itm), key, itm): Option_vt(itm)
+// end of [hashtbl_insert]
+
+fun{
+key,itm:t0p
+} hashtbl_insert_any(hashtbl(key, itm), key, itm): void
+
+(* ****** ****** *)
+
+fun{
+key,itm:t0p
+} hashtbl_takeout
+  (kxs: hashtbl(key, itm), k0: key): Option_vt(itm)
+// end of [hashtbl_takeout]
+
+(* ****** ****** *)
+
+fun{
+key,itm:t0p
+} hashtbl_remove
+  (kxs: hashtbl(key, itm), key): bool
+
+(* ****** ****** *)
+
+fun{
+key,itm:t0p
+} hashtbl_takeout_all
+  (kxs: hashtbl(key, itm)): list0 @(key, itm)
+// end of [hashtbl_takeout_all]
+
+(* ****** ****** *)
+//
+fun{
+key,itm:t@ype
+} fprint_hashtbl
+  (out: FILEref, tbl: hashtbl(key, itm)): void
+//
+overload fprint with fprint_hashtbl
+//
+fun{}
+fprint_hashtbl$sep (out: FILEref): void // default: fprint("; ")
+fun{}
+fprint_hashtbl$mapto (out: FILEref): void // default: fprint("->")
+//
+(* ****** ****** *)
+//
+fun{
+key,itm:t@ype
+} fprint_hashtbl_sep_mapto
+(
+  out: FILEref, tbl: hashtbl(key, itm), sep: string, mapto: string
+) : void // end of [fprint_hashtbl_sep_mapto]
+//
+(* ****** ****** *)
+//
+fun{
+key,itm:t0p
+} hashtbl_foreach
+  (tbl: hashtbl(key, itm)): void
+fun
+{key:t0p
+;itm:t0p}
+{env:vt0p}
+hashtbl_foreach_env
+  (tbl: hashtbl(key, itm), env: &(env) >> _): void
+//
+fun
+{key:t0p
+;itm:t0p}
+{env:vt0p}
+hashtbl_foreach$fwork
+  (key: key, itm: &itm >> _, env: &(env) >> _): void
+//
+(* ****** ****** *)
+//
+fun{
+key,itm:t0p
+} hashtbl_foreach_cloref
+(
+  tbl: hashtbl(key, itm), fwork: (key, &itm >> _) -<cloref1> void
+) : void // end of [hashtbl_foreach_cloref]
+//
+(* ****** ****** *)
+//
+fun{
+key,itm:t0p
+} hashtbl_listize1(hashtbl(key, itm)): list0 @(key, itm)
+//
+(* ****** ****** *)
+
+(* end of [hashtblref.sats] *)
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
+(* Author: Hongwei Xi *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+(* Start time: January, 2013 *)
+
+(* ****** ****** *)
+
+#define ATS_DYNLOADFLAG 0 // no dynloading at run-time
+
+(* ****** ****** *)
+
+staload
+UN = "prelude/SATS/unsafe.sats"
+
+(* ****** ****** *)
+
+staload
+_(*anon*) = "prelude/DATS/integer.dats"
+staload
+_(*anon*) = "prelude/DATS/integer_size.dats"
+
+(* ****** ****** *)
+
+staload _(*anon*) = "prelude/DATS/filebas.dats"
+
+(* ****** ****** *)
+
+(*
+macdef
+prelude_fileref_open_opt = fileref_open_opt
+*)
+macdef
+prelude_fileref_get_line_charlst = fileref_get_line_charlst
+macdef
+prelude_fileref_get_lines_charlstlst = fileref_get_lines_charlstlst
+macdef
+prelude_fileref_get_line_string = fileref_get_line_string
+macdef
+prelude_fileref_get_lines_stringlst = fileref_get_lines_stringlst
+
+(* ****** ****** *)
+
+macdef
+prelude_streamize_fileref_char = streamize_fileref_char
+macdef
+prelude_streamize_fileref_line = streamize_fileref_line
+
+(* ****** ****** *)
+
+staload "libats/ML/SATS/basis.sats"
+staload "libats/ML/SATS/list0.sats"
+staload "libats/ML/SATS/option0.sats"
+
+(* ****** ****** *)
+
+staload "libats/ML/SATS/filebas.sats"
+
+(* ****** ****** *)
+
+(*
+implement
+fileref_open_opt
+  (path, mode) = let
+  val opt = prelude_fileref_open_opt (path, mode)
+in
+  option0_of_option_vt (opt)
+end // end of [fileref_open_opt]
+*)
+
+(* ****** ****** *)
+
+implement
+fileref_get_line_charlst
+  (filr) =
+(
+list0_of_list_vt
+  (prelude_fileref_get_line_charlst (filr))
+) // end of [fileref_get_line_charlst]
+
+implement
+fileref_get_lines_charlstlst
+  (filr) =
+(
+$UN.castvwtp0{list0(charlst0)}
+  (prelude_fileref_get_lines_charlstlst (filr))
+) // end of [fileref_get_lines_charlstlst]
+
+(* ****** ****** *)
+
+local
+
+staload _(*anon*) = "prelude/DATS/strptr.dats"
+
+in (* in of [local] *)
+
+implement
+fileref_get_line_string
+  (filr) =
+(
+strptr2string
+  (prelude_fileref_get_line_string(filr))
+) // end of [fileref_get_line_string]
+
+implement
+fileref_get_lines_stringlst
+  (filr) =
+(
+$UN.castvwtp0{list0(string)}
+  (prelude_fileref_get_lines_stringlst(filr))
+) // end of [fileref_get_lines_stringlst]
+
+end // end of [local]
+
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+streamize_fileref_char
+  (filr) =
+  prelude_streamize_fileref_char(filr)
+//
+implement
+{}(*tmp*)
+streamize_fileref_line
+  (filr) =
+(
+$UN.castvwtp0{stream_vt(string)}
+  (prelude_streamize_fileref_line(filr))
+) // end of [streamize_fileref_line]
+//
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+streamize_fileref_word
+  (filr) =
+  auxmain(filr) where
+{
+//
+fun
+auxmain
+(
+  filr: FILEref
+) :
+stream_vt(string) =
+$ldelay (
+//
+let
+//
+  val
+  word =
+  fileref_get_word<>(filr)
+  val test = strptr_is_null(word)
+//
+  prval () = lemma_strptr_param(word)
+//
+in
+  if test
+    then let
+    prval () =
+      strptr_free_null(word) in stream_vt_nil()
+    // end of [prval]
+    end // end of [then]
+    else stream_vt_cons(strptr2string(word), auxmain(filr))
+  // end of [if]
+end // end of [let]
+//
+) (* end of [auxmain] *)
+//
+} (* end of [streamize_fileref_word] *)
+
+(* ****** ****** *)
+
+(* end of [filebas.dats] *)
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
+(* Author: Hongwei Xi *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+(* Start time: September, 2014 *)
+
+(* ****** ****** *)
+
+staload "libats/ML/SATS/basis.sats"
+
+(* ****** ****** *)
+
+staload "libats/ML/SATS/list0.sats"
+staload "libats/ML/SATS/array0.sats"
+staload "libats/ML/SATS/intrange.sats"
+
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+int_repeat_lazy
+  (n, fopr) =
+  int_repeat_cloref<> (n, lazy2cloref(fopr))
+//
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+int_repeat_cloref
+  (n, fopr) = let
+//
+fun
+loop
+(
+  n: int, f: cfun0(void)
+) : void = (
+//
+if n > 0
+  then let val () = fopr() in loop(n-1, fopr) end
+  else ((*void*))
+//
+) (* end of [loop] *)
+//
+in
+  loop (n, fopr)
+end // end of [int_repeat_cloref]
+
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+int_repeat_method
+  (n) = lam(fopr) => int_repeat_cloref(n, fopr)
+//
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+int_forall_cloref
+  (n, f) =
+  intrange_forall_cloref<> (0, n, f)
+//
+implement
+{}(*tmp*)
+int_forall_method
+  (n) = lam(f) => int_forall_cloref (n, f)
+//
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+int_foreach_cloref
+  (n, f) =
+  intrange_foreach_cloref<> (0, n, f)
+//
+implement
+{}(*tmp*)
+int_foreach_method
+  (n) = lam(f) => int_foreach_cloref (n, f)
+//
+(* ****** ****** *)
+//
+implement
+{res}(*tmp*)
+int_foldleft_cloref
+  (n, ini, f) =
+  intrange_foldleft_cloref<res> (0, n, ini, f)
+//
+implement
+{res}(*tmp*)
+int_foldleft_method
+  (n, tres) =
+  lam(ini, f) => int_foldleft_cloref (n, ini, f)
+//
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+intrange_forall_cloref
+  (l, r, f) = let
+//
+fun
+loop
+(
+  l: int, r: int
+, f: cfun1(int, bool)
+) : bool = (
+//
+if l < r
+  then (
+    if f(l) then loop(l+1, r, f) else false
+  ) else true
+//
+) (* end of [loop] *)
+//
+in
+  loop (l, r, f)
+end // end of [intrange_forall_cloref]
+//
+implement
+{}(*tmp*)
+intrange_forall_method
+  ( @(l, r) ) = lam(f) => intrange_forall_cloref (l, r, f)
+//
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+intrange_foreach_cloref
+  (l, r, f) = let
+//
+fun
+loop
+(
+  l: int, r: int, f: cfun1(int, void)
+) : void = (
+//
+if l < r
+  then let val () = f(l) in loop(l+1, r, f) end
+  else ()
+//
+) (* end of [loop] *)
+//
+in
+  loop (l, r, f)
+end // end of [intrange_foreach_cloref]
+
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+intrange_foreach_method
+  ( @(l, r) ) = lam(f) => intrange_foreach_cloref (l, r, f)
+//
+(* ****** ****** *)
+
+implement
+{res}(*tmp*)
+intrange_foldleft_cloref
+  (l, r, ini, fopr) = let
+//
+fun
+loop
+(
+  l: int, r: int
+, ini: res, f: cfun2(res, int, res)
+) : res = (
+//
+if l < r then loop (l+1, r, f(ini, l), f) else ini
+//
+) (* end of [loop] *)
+//
+in
+  loop (l, r, ini, fopr)
+end // end of [intrange_foldleft_cloref]
+
+(* ****** ****** *)
+//
+implement
+{res}(*tmp*)
+intrange_foldleft_method
+  ( @(l, r), tres ) =
+(
+//
+lam(ini, f) =>
+  intrange_foldleft_cloref<res> (l, r, ini, f)
+//
+) (* end of [intrange_foldleft_method] *)
+//
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+int_streamGte(n) =
+(
+fix
+aux
+(
+  n:int
+) : stream(int) => $delay(stream_cons(n, aux(n+1)))
+) (n) // end of [int_streamGte]
+//
+implement
+{}(*tmp*)
+int_streamGte_vt(n) =
+(
+fix
+aux
+(
+  n:int
+) : stream_vt(int) => $ldelay(stream_vt_cons(n, aux(n+1)))
+) (n) // end of [int_streamGte_vt]
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+int_list0_map_cloref
+  (n, f) = list0_tabulate<a> (n, f)
+//
+implement
+{a}(*tmp*)
+int_list0_map_method
+  (n, tres) = lam(f) => int_list0_map_cloref<a> (n, f)
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+int_array0_map_cloref
+  (n, fopr) =
+(
+array0_tabulate<a>
+  (i2sz(n), lam(i) => fopr(sz2i(i)))
+)
+//
+implement
+{a}(*tmp*)
+int_array0_map_method
+  (n, tres) = lam(f) => int_array0_map_cloref<a> (n, f)
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+int_stream_map_cloref
+  (n, f) = auxmain(0) where
+{
+//
+fun
+auxmain
+(
+  i: Nat
+) : stream(a) = $delay
+(
+if
+(i < n)
+then stream_cons(f(i), auxmain(i+1)) else stream_nil()
+) (* end of [auxmain] *)
+//
+} (* end of [int_stream_map_cloref] *)
+//
+implement
+{a}(*tmp*)
+int_stream_map_method
+  (n, tres) = lam(f) => int_stream_map_cloref<a> (n, f)
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+int_stream_vt_map_cloref
+  (n, f) = auxmain(0) where
+{
+//
+fun
+auxmain
+(
+  i: Nat
+) : stream_vt(a) = $ldelay
+(
+if
+(i < n)
+then stream_vt_cons(f(i), auxmain(i+1)) else stream_vt_nil()
+) : stream_vt_con(a) // [auxmain]
+//
+} (* end of [int_stream_vt_map_cloref] *)
+//
+implement
+{a}(*tmp*)
+int_stream_vt_map_method
+  (n, tres) = lam(f) => int_stream_vt_map_cloref<a> (n, f)
+//
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+int2_foreach_cloref
+  (n1, n2, f) =
+  intrange2_foreach_cloref<> (0, n1, 0, n2, f)
+//
+implement
+{}(*tmp*)
+intrange2_foreach_cloref
+  (l1, r1, l2, r2, f) = let
+//
+fnx
+loop1
+(
+  m1: int, r1: int
+, l2: int, r2: int
+, f: cfun2 (int, int, void)
+) : void = (
+//
+if
+m1 < r1
+then loop2(m1, r1, l2, l2, r2, f)
+else ()
+//
+) (* end of [loop1] *)
+//
+and
+loop2
+(
+  m1: int, r1: int
+, l2: int, m2: int, r2: int
+, f: cfun2 (int, int, void)
+) : void = (
+//
+if
+m2 < r2
+then (
+//
+f(m1, m2);
+loop2(m1, r1, l2, m2+1, r2, f)
+//
+) (* end of [then] *)
+else loop1(m1+1, r1, l2, r2, f)
+//
+) (* end of [loop2] *)
+//
+in
+  loop1 (l1, r1, l2, r2, f)
+end // end of [intrange2_foreach_cloref]
+//
+(* ****** ****** *)
+
+(* end of [intrange.dats] *)
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
+(* Author: Hongwei Xi *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+(* Start time: August, 2013 *)
+
+(* ****** ****** *)
+//
+// HX-2012-12:
+// the map implementation is based on AVL trees
+//
+(* ****** ****** *)
+//
+staload FM =
+"libats/SATS/funmap_avltree.sats"
+//
+(* ****** ****** *)
+
+staload "libats/ML/SATS/list0.sats"
+
+(* ****** ****** *)
+
+staload "libats/ML/SATS/funmap.sats"
+
+(* ****** ****** *)
+//
+assume
+map_type(key, itm) = $FM.map (key, itm)
+//
+(* ****** ****** *)
+
+implement{a}
+compare_key_key = gcompare_val_val<a>
+implement{a}
+$FM.compare_key_key = compare_key_key<a>
+
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+funmap_nil() = $FM.funmap_nil<>()
+implement
+{}(*tmp*)
+funmap_make_nil() = $FM.funmap_make_nil<>()
+
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+funmap_is_nil(map) = $FM.funmap_is_nil<>(map)
+implement
+{}(*tmp*)
+funmap_isnot_nil(map) = $FM.funmap_isnot_nil<>(map)
+
+(* ****** ****** *)
+//
+implement
+{key,itm}
+funmap_size
+  (map) = $FM.funmap_size<key,itm>(map)
+//
+(* ****** ****** *)
+//
+implement
+{key,itm}
+funmap_search
+  (map, k) =
+  $FM.funmap_search_opt<key,itm>(map, k)
+//
+(* ****** ****** *)
+//
+implement
+{key,itm}
+funmap_insert
+  (map, k, x) =
+  $FM.funmap_insert_opt<key,itm>(map, k, x)
+//
+(* ****** ****** *)
+//
+implement
+{key,itm}
+funmap_takeout
+  (map, k) =
+  $FM.funmap_takeout_opt<key,itm>(map, k)
+//
+(* ****** ****** *)
+//
+implement
+{key,itm}
+funmap_remove
+  (map, k) = $FM.funmap_remove<key,itm>(map, k)
+//
+(* ****** ****** *)
+
+implement
+{key,itm}
+fprint_funmap
+  (out, map) = let
+//
+implement
+$FM.fprint_funmap$sep<> = fprint_funmap$sep<>
+implement
+$FM.fprint_funmap$mapto<> = fprint_funmap$mapto<>
+//
+val () = $FM.fprint_funmap<key,itm>(out, map)
+//
+in
+  // nothing
+end // end of [fprint_funmap]
+
+(* ****** ****** *)
+
+implement{}
+fprint_funmap$sep(out) = fprint(out, "; ")
+implement{}
+fprint_funmap$mapto(out) = fprint(out, "->")
+
+(* ****** ****** *)
+
+implement
+{key,itm}
+funmap_foreach_cloref
+  (map, fwork) = () where
+{
+//
+var env: void = ((*void*))
+//
+implement
+(env)(*tmp*)
+$FM.funmap_foreach$fwork<key,itm><env>
+  (k, x, env) = fwork(k, x)
+//
+val ((*void*)) =
+$FM.funmap_foreach_env<key,itm><void>(map, env)
+//
+} (* end of [funmap_foreach_cloref] *)
+
+(* ****** ****** *)
+//
+implement
+{key,itm}
+funmap_listize
+  (map) =
+(
+$effmask_wrt
+(
+list0_of_list_vt
+  ($FM.funmap_listize<key,itm>(map))
+)
+) (* end of [funmap_listize] *)
+//
+(* ****** ****** *)
+
+implement
+{key,itm}
+funmap_streamize
+  (map) =
+(
+$effmask_wrt
+  ($FM.funmap_streamize<key,itm>(map))
+) (* end of [funmap_streamize] *)
+
+(* ****** ****** *)
+//
+implement
+{key,itm}
+funmap_make_module
+  ((*void*)) = $rec
+{
+//
+nil = funmap_nil{key,itm}
+,
+size = funmap_size<key,itm>
+,
+is_nil = funmap_is_nil{key,itm}
+,
+isnot_nil = funmap_isnot_nil{key,itm}
+,
+search = funmap_search<key,itm>
+,
+insert = funmap_insert<key,itm>
+,
+remove = funmap_remove<key,itm>
+,
+takeout = funmap_takeout<key,itm>
+,
+listize = funmap_listize<key,itm>
+,
+streamiize = funmap_streamize<key,itm>
+//
+} (* end of [funmap_make_module] *)
+//
+(* ****** ****** *)
+
+(* end of [funmap.dats] *)
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
+(* Author: Hongwei Xi *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+(* Start time: December, 2012 *)
+
+(* ****** ****** *)
+//
+// HX-2012-12: the set implementation is based on AVL trees
+//
+(* ****** ****** *)
+//
+staload
+UN = "prelude/SATS/unsafe.sats"
+//
+(* ****** ****** *)
+//
+staload
+FS =
+"libats/SATS/funset_avltree.sats"
+//
+(* ****** ****** *)
+
+staload "libats/ML/SATS/basis.sats"
+
+(* ****** ****** *)
+
+staload "libats/ML/SATS/list0.sats"
+
+(* ****** ****** *)
+
+staload "libats/ML/SATS/funset.sats"
+
+(* ****** ****** *)
+
+implement{a}
+compare_elt_elt = gcompare_val_val<a>
+implement{a}
+$FS.compare_elt_elt = compare_elt_elt<a>
+
+(* ****** ****** *)
+
+assume set_type (a:t0p) = $FS.set (a)
+
+(* ****** ****** *)
+
+implement{}
+funset_nil () = $FS.funset_nil ()
+implement{}
+funset_make_nil () = $FS.funset_make_nil ()
+
+(* ****** ****** *)
+
+implement{a}
+funset_sing (x) = $FS.funset_sing<a> (x)
+implement{a}
+funset_make_sing (x) = $FS.funset_make_sing<a> (x)
+
+(* ****** ****** *)
+
+implement{a}
+funset_make_list
+  (xs) = let
+//
+val xs = g1ofg0_list(xs)
+implement
+$FS.compare_elt_elt<a> = compare_elt_elt<a>
+//
+in
+  $FS.funset_make_list<a>(xs)
+end // end of [funset_make_list]
+
+(* ****** ****** *)
+//
+implement{}
+fprint_funset$sep
+  (out) =
+  fprint_string (out, ", ")
+//
+implement{a}
+fprint_funset
+  (out, xs) = let
+//
+implement
+$FS.fprint_funset$sep<>
+  (out) = fprint_funset$sep<>(out)
+//
+in
+  $FS.fprint_funset<a>(out, xs)
+end // end of [fprint_funset]
+//
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+funset_is_nil
+  (xs) = $FS.funset_is_nil<>(xs)
+implement
+{}(*tmp*)
+funset_isnot_nil
+  (xs) = $FS.funset_isnot_nil<>(xs)
+//
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+funset_size(xs) = $FS.funset_size<a>(xs)
+
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+funset_is_member
+  (xs, x0) = let
+//
+implement
+$FS.compare_elt_elt<a> = compare_elt_elt<a>
+//
+in
+  $FS.funset_is_member<a>(xs, x0)
+end // end of [funset_is_member]
+//
+implement
+{a}(*tmp*)
+funset_isnot_member
+  (xs, x0) = ~funset_is_member<a>(xs, x0)
+//
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+funset_insert
+  (xs, x0) = let
+//
+implement
+$FS.compare_elt_elt<a> = compare_elt_elt<a>
+//
+in
+  $FS.funset_insert<a>(xs, x0)
+end // end of [funset_insert]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+funset_remove
+  (xs, x0) = let
+//
+implement
+$FS.compare_elt_elt<a> = compare_elt_elt<a>
+//
+in
+  $FS.funset_remove<a>(xs, x0)
+end // end of [funset_remove]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+funset_getmax_opt = $FS.funset_getmax_opt<a>
+implement
+{a}(*tmp*)
+funset_getmin_opt = $FS.funset_getmin_opt<a>
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+funset_takeoutmax_opt = $FS.funset_takeoutmax_opt<a>
+implement
+{a}(*tmp*)
+funset_takeoutmin_opt = $FS.funset_takeoutmin_opt<a>
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+funset_union
+  (xs1, xs2) = let
+//
+implement
+$FS.compare_elt_elt<a> = compare_elt_elt<a>
+//
+in
+  $FS.funset_union<a>(xs1, xs2)
+end // end of [funset_union]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+funset_intersect
+  (xs1, xs2) = let
+//
+implement
+$FS.compare_elt_elt<a> = compare_elt_elt<a>
+//
+in
+  $FS.funset_intersect<a>(xs1, xs2)
+end // end of [funset_intersect]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+funset_differ
+  (xs1, xs2) = let
+//
+implement
+$FS.compare_elt_elt<a> = compare_elt_elt<a>
+//
+in
+  $FS.funset_differ<a>(xs1, xs2)
+end // end of [funset_differ]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+funset_symdiff
+  (xs1, xs2) = let
+//
+implement
+$FS.compare_elt_elt<a> = compare_elt_elt<a>
+//
+in
+  $FS.funset_symdiff<a>(xs1, xs2)
+end // end of [funset_symdiff]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+funset_equal
+  (xs1, xs2) = let
+//
+implement
+$FS.compare_elt_elt<a> = compare_elt_elt<a>
+//
+in
+  $FS.funset_equal<a>(xs1, xs2)
+end // end of [funset_equal]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+funset_compare
+  (xs1, xs2) = let
+//
+implement
+$FS.compare_elt_elt<a> = compare_elt_elt<a>
+//
+in
+  $FS.funset_compare<a>(xs1, xs2)
+end // end of [funset_compare]
+
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+funset_is_subset
+  (xs1, xs2) = let
+//
+implement
+$FS.compare_elt_elt<a> = compare_elt_elt<a>
+//
+in
+  $FS.funset_is_subset<a>(xs1, xs2)
+end // end of [funset_is_subset]
+//
+implement
+{a}(*tmp*)
+funset_is_supset
+  (xs1, xs2) = funset_is_subset<a>(xs2, xs1)
+//
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+funset_foreach(xs) = let
+//
+var env: void = ((*void*))
+//
+in
+  funset_foreach_env<a><void>(xs, env)
+end // end of [funset_foreach]
+
+implement
+{a}{env}
+funset_foreach_env(xs, env) = let
+//
+implement
+$FS.funset_foreach$fwork<a><env>
+  (x, env) = funset_foreach$fwork<a><env>(x, env)
+//
+in
+  $FS.funset_foreach_env<a><env>(xs, env)
+end // end of [funset_foreach_env]
+
+implement
+{a}(*tmp*)
+funset_foreach_cloref
+  (xs, fwork) = let
+//
+var env: void = ((*void*))
+//
+implement
+(env)(*tmp*)
+$FS.funset_foreach$fwork<a><env>(x, env) = fwork(x)
+//
+in
+  $FS.funset_foreach_env<a><void> (xs, env)
+end // end of [funset_foreach_cloref]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+funset_tabulate_cloref
+  {n}(n, fopr) = let
+//
+implement
+$FS.funset_tabulate$fopr<a>(i) = fopr($UN.cast{natLt(n)}(i))
+//
+in
+  $FS.funset_tabulate<a> (n)
+end // end of [funset_tabulate]
+
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+funset_listize
+  (xs) = (
+//
+$effmask_wrt
+(
+  list0_of_list_vt{a}($FS.funset_listize<a>(xs))
+) (* $effmask_wrt *)
+//
+) (* funset_listize *)
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+funset_streamize
+  (xs) = $effmask_wrt($FS.funset_streamize<a>(xs))
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+funset_make_module
+  ((*void*)) = $rec
+{
+//
+nil = funset_nil{a}
+,
+sing = funset_sing<a>
+,
+make_list = funset_make_list<a>
+,
+size = funset_size<a>
+,
+is_nil = funset_is_nil{a}
+,
+isnot_nil = funset_isnot_nil{a}
+,
+insert= funset_insert<a>
+,
+remove= funset_remove<a>
+,
+union= funset_union<a>
+,
+intersect= funset_intersect<a>
+,
+listize = funset_listize<a>
+,
+streamiize = funset_streamize<a>
+//
+} (* end of [funset_make_module] *)
+//
+(* ****** ****** *)
+
+(* end of [funset.dats] *)
+(***********************************************************************)
+(*                                                                     *)
+(*                         Applied Type System                         *)
+(*                                                                     *)
+(***********************************************************************)
+
+(*
+** ATS/Postiats - Unleashing the Potential of Types!
+** Copyright (C) 2010-2013 Hongwei Xi, ATS Trustful Software, Inc.
+** All rights reserved
+**
+** ATS is free software;  you can  redistribute it and/or modify it under
+** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
+** Free Software Foundation; either version 3, or (at  your  option)  any
+** later version.
+**
+** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
+** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
+** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
+** for more details.
+**
+** You  should  have  received  a  copy of the GNU General Public License
+** along  with  ATS;  see the  file COPYING.  If not, please write to the
+** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
+** 02110-1301, USA.
+*)
+
+(* ****** ****** *)
+
+(* Author: Hongwei Xi *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+(* Start time: August, 2013 *)
+
+(* ****** ****** *)
+
+staload
+UN = "prelude/SATS/unsafe.sats"
+
+(* ****** ****** *)
+//
+staload HT =
+"libats/SATS/hashtbl_chain.sats"
+//
+(* ****** ****** *)
+
+staload "libats/ML/SATS/basis.sats"
+
+(* ****** ****** *)
+
+staload "libats/ML/SATS/list0.sats"
+
+(* ****** ****** *)
+
+staload "libats/SATS/hashfun.sats"
+staload "libats/ML/SATS/hashtblref.sats"
+
+(* ****** ****** *)
+
+(*
+implement
+{key}(*tmp*)
+hash_key = ghash_val<key>
+*)
+
+(* ****** ****** *)
+
+implement
+{key}(*tmp*)
+equal_key_key = gequal_val_val<key>
+
+(* ****** ****** *)
+//
+implement
+hash_key<int> (key) = let
+  val key = $UN.cast{uint32}(key)
+in
+  $UN.cast{ulint}(inthash_jenkins<>(key))
+end // end of [hash_key<int>]
+//
+implement
+hash_key<uint> (key) = let
+  val key = $UN.cast{uint32}(key)
+in
+  $UN.cast{ulint}(inthash_jenkins<>(key))
+end // end of [hash_key<uint>]
+//
+(* ****** ****** *)
+//
+// HX: 31 and 37 are top choices
+//
+implement
+hash_key<string> (key) =
+  string_hash_multiplier (31UL, 31415926536UL, key)
+//
+(* ****** ****** *)
+//
+implement
+{key}(*tmp*)
+$HT.hash_key = hash_key<key>
+//
+implement
+{key}(*tmp*)
+$HT.equal_key_key = equal_key_key<key>
+//
+(* ****** ****** *)
+//
+extern
+castfn
+hashtbl_encode
+  {key,itm:t0p}
+(
+  $HT.hashtbl(key, INV(itm))
+) : hashtbl(key, itm)
+//
+extern
+castfn
+hashtbl_decode
+  {key,itm:t0p}
+  (hashtbl(key, INV(itm))): $HT.hashtbl(key, itm)
+//
+(* ****** ****** *)
+
+#define htencode hashtbl_encode
+#define htdecode hashtbl_decode
+
+(* ****** ****** *)
+//
+implement
+{key,itm}
+hashtbl_make_nil (cap) =
+  htencode($HT.hashtbl_make_nil<key,itm> (cap))
+//
+(* ****** ****** *)
+
+implement{}
+hashtbl_get_size
+  (tbl) = nitm where
+{
+//
+val tbl = htdecode (tbl)
+val nitm = $HT.hashtbl_get_size (tbl)
+prval () = $UN.cast2void (tbl)
+//
+} (* end of [hashtbl_get_size] *)
+
+(* ****** ****** *)
+
+implement{}
+hashtbl_get_capacity
+  (tbl) = cap where
+{
+//
+val tbl = htdecode (tbl)
+val cap = $HT.hashtbl_get_capacity (tbl)
+prval () = $UN.cast2void (tbl)
+//
+} (* end of [hashtbl_get_capacity] *)
+
+(* ****** ****** *)
+
+implement
+{key,itm}
+hashtbl_search
+  (tbl, k) = opt where
+{
+//
+val tbl = htdecode (tbl)
+val opt = $HT.hashtbl_search_opt (tbl, k)
+prval () = $UN.cast2void (tbl)
+//
+} (* end of [hashtbl_search] *)
+
+(* ****** ****** *)
+
+implement
+{key,itm}
+hashtbl_search_ref
+  (tbl, k) = cptr where
+{
+//
+val tbl = htdecode (tbl)
+val cptr = $HT.hashtbl_search_ref (tbl, k)
+prval () = $UN.cast2void (tbl)
+//
+} (* end of [hashtbl_search_ref] *)
+
+(* ****** ****** *)
+
+implement
+{key,itm}
+hashtbl_insert
+  (tbl, k, x) = opt where
+{
+//
+val tbl = htdecode (tbl)
+val opt = $HT.hashtbl_insert_opt<key,itm> (tbl, k, x)
+prval () = $UN.cast2void (tbl)
+//
+} (* hashtbl_insert *)
+
+(* ****** ****** *)
+
+implement
+{key,itm}
+hashtbl_insert_any
+  (tbl, k, x) = () where
+{
+//
+val tbl = htdecode (tbl)
+val () = $HT.hashtbl_insert_any<key,itm> (tbl, k, x)
+prval () = $UN.cast2void (tbl)
+//
+} (* hashtbl_insert_any *)
+
+(* ****** ****** *)
+
+implement
+{key,itm}
+hashtbl_takeout
+  (tbl, k) = opt where
+{
+//
+val tbl = htdecode (tbl)
+val opt = $HT.hashtbl_takeout_opt (tbl, k)
+prval () = $UN.cast2void (tbl)
+//
+} (* end of [hashtbl_takeout] *)
+
+(* ****** ****** *)
+
+implement
+{key,itm}
+hashtbl_remove
+  (tbl, k) = ans where
+{
+//
+val tbl = htdecode (tbl)
+val ans = $HT.hashtbl_remove (tbl, k)
+prval () = $UN.cast2void (tbl)
+//
+} (* end of [hashtbl_remove] *)
+
+(* ****** ****** *)
+
+implement
+{key,itm}
+hashtbl_takeout_all
+  (tbl) = kxs where
+{
+//
+val tbl = htdecode (tbl)
+val kxs = $HT.hashtbl_takeout_all (tbl)
+prval () = $UN.cast2void (tbl)
+val kxs = list0_of_list_vt{(key,itm)}(kxs)
+//
+} (* end of [hashtbl_takeout_all] *)
+
+(* ****** ****** *)
+
+implement
+{key,itm}
+fprint_hashtbl
+  (out, tbl) = let
+//
+implement
+$HT.fprint_hashtbl$sep<> = fprint_hashtbl$sep<>
+implement
+$HT.fprint_hashtbl$mapto<> = fprint_hashtbl$mapto<>
+//
+val tbl = htdecode (tbl)
+val () = $HT.fprint_hashtbl (out, tbl)
+prval () = $UN.cast2void (tbl)
+//
+in
+  // nothing
+end // end of [fprint_hashtbl]
+
+(* ****** ****** *)
+
+implement{}
+fprint_hashtbl$sep (out) = fprint (out, "; ")
+implement{}
+fprint_hashtbl$mapto (out) = fprint (out, "->")
+
+(* ****** ****** *)
+
+implement
+{key,itm}
+fprint_hashtbl_sep_mapto
+  (out, tbl, sep, mapto) = let
+//
+implement
+fprint_hashtbl$sep<> (out) = fprint (out, sep)
+implement
+fprint_hashtbl$mapto<> (out) = fprint (out, mapto)
+//
+in
+  fprint_hashtbl<key,itm>(out, tbl)
+end // end of [fprint_hashtbl_sep_mapto]
+
+(* ****** ****** *)
+
+implement
+{key,itm}
+hashtbl_foreach_cloref
+  (tbl, fwork) = () where
+{
+//
+var env: void = ((*void*))
+//
+implement
+(env)(*tmp*)
+$HT.hashtbl_foreach$fwork<key,itm><env> (k, x, env) = fwork(k, x)
+//
+val tbl = htdecode (tbl)
+val ((*void*)) = $HT.hashtbl_foreach_env<key,itm><void> (tbl, env)
+prval ((*void*)) = $UN.cast2void (tbl)
+//
+} (* end of [hashtbl_foreach_cloref] *)
+
+(* ****** ****** *)
+
+implement
+{key,itm}
+hashtbl_listize1
+  (tbl) = kxs where
+{
+//
+typedef ki = @(key, itm)
+//
+val tbl = htdecode (tbl)
+val kxs = $HT.hashtbl_listize1 (tbl)
+prval () = $UN.cast2void (tbl)
+val kxs = list0_of_list_vt{(key,itm)}(kxs)
+//
+} (* end of [hashtbl_listize1] *)
+
+(* ****** ****** *)
+
+(* end of [hashtblref.dats] *)
+
+(* end of [ATSLIB_ML_all_in_one.raw] *)
