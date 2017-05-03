@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/string.atxt
-** Time of generation: Sat Nov 26 17:28:20 2016
+** Time of generation: Wed Jan  4 13:58:15 2017
 *)
 
 (* ****** ****** *)
@@ -129,16 +129,18 @@ string_char (str: string):<> char
 (* ****** ****** *)
 //
 fun{}
-string_nil ((*void*)):<!wrt> strnptr(0)
+string_nil((*void*)):<!wrt> strnptr(0)
 fun{}
-string_sing (chr: charNZ):<!wrt> strnptr(1)
+string_sing(chr: charNZ):<!wrt> strnptr(1)
 //
 (* ****** ****** *)
 //
-fun{
-} string_is_empty{n:int} (str: string(n)):<> bool(n==0)
-fun{
-} string_isnot_empty{n:int} (str: string(n)):<> bool(n > 0)
+fun{}
+string_is_empty
+  {n:int}(str: string(n)):<> bool(n==0)
+fun{}
+string_isnot_empty
+  {n:int}(str: string(n)):<> bool(n > 0)
 //
 (* ****** ****** *)
 //
@@ -329,14 +331,18 @@ string_make_substring
 // end of [string_make_substring]
 
 (* ****** ****** *)
-
-fun print_string (x: string): void = "mac#%"
-fun prerr_string (x: string): void = "mac#%"
-fun fprint_string (out: FILEref, x: string): void = "mac#%"
-
+//
+fun
+print_string(x: string): void = "mac#%"
+fun
+prerr_string(x: string): void = "mac#%"
+fun
+fprint_string(out: FILEref, x: string): void = "mac#%"
+//
 (* ****** ****** *)
 //
-fun fprint_substring
+fun
+fprint_substring
   {n:int}{st,ln:nat | st+ln <= n}
 (
   out: FILEref, str: string(n), st: size_t(st), ln: size_t(ln)
@@ -502,20 +508,27 @@ overload string_append with string0_append5 of 0
 overload string_append with string0_append6 of 0
 //
 (* ****** ****** *)
-
+//
 fun{}
 stringarr_concat{n:int}
-  (arrayref(string, n), size_t(n)):<!wrt> Strptr1
+(
+xs: arrayref(string, n), n: size_t(n)
+) :<!wrt> Strptr1 // end of [stringarr]
+//
 fun{}
-stringlst_concat(xs: List(string)):<!wrt> Strptr1
-
+stringlst_concat(List(string)):<!wrt> Strptr1
+//
 (* ****** ****** *)
-
+//
+fun{}
+string_implode
+  {n:int}
+  (cs: list(charNZ, n)):<!wrt> strnptr(n)
+//
 fun{}
 string_explode
   {n:int} (x: string(n)):<!wrt> list_vt(charNZ, n)
-// end of [string_explode]
-
+//
 (* ****** ****** *)
 //
 fun{}
@@ -533,8 +546,6 @@ fun{}
 string_forall(str: string): bool
 fun{}
 string_forall$pred(c: char): bool
-//
-(* ****** ****** *)
 //
 fun{}
 string_iforall(str: string): bool
@@ -577,16 +588,17 @@ fun{}
 streamize_string_char(string): stream_vt(charNZ)
 //
 (* ****** ****** *)
-
+//
 (*
-** HX: [stropt_none] is just the null pointer
+** HX:
+** [stropt_none] is just the null pointer
 *)
-fun stropt_none (): stropt (~1) = "mac#%"
-
+fun stropt_none((*void*)): stropt(~1) = "mac#%"
+//
 (* ****** ****** *)
 //
 castfn stropt0_some(x: SHR(string)): Stropt1
-castfn stropt1_some{n:int}(x: SHR(string n)): stropt(n)
+castfn stropt1_some{n:int}(x: SHR(string(n))): stropt(n)
 //
 symintr stropt_some
 overload stropt_some with stropt0_some of 0
@@ -610,14 +622,14 @@ fun{}
 stropt_length{n:int}(opt: stropt(n)):<> ssize_t(n)
 //
 (* ****** ****** *)
-
+//
 fun
 print_stropt(opt: Stropt0): void = "mac#%"
 fun
 prerr_stropt(opt: Stropt0): void = "mac#%"
 fun
 fprint_stropt(out: FILEref, opt: Stropt0): void = "mac#%"
-
+//
 (* ****** ****** *)
 //
 // overloading for certain symbols
@@ -629,15 +641,22 @@ overload
 overload
 [] with string_get_at_guint of 0
 //
-overload iseqz with string_is_empty
-overload isneqz with string_isnot_empty
-//
-overload .head with string_head
-overload .tail with string_tail
+overload
+iseqz with string_is_empty of 10
+overload
+isneqz with string_isnot_empty of 10
 //
 overload length with string_length
 //
+(* ****** ****** *)
+//
+overload .head with string_head of 10
+overload .tail with string_tail of 10
+//
+(* ****** ****** *)
+//
 overload copy with string0_copy of 0
+//
 (*
 //
 // HX: too much of a surprise!
@@ -649,10 +668,14 @@ overload print with print_string of 0
 overload prerr with prerr_string of 0
 overload fprint with fprint_string of 0
 //
+(* ****** ****** *)
+//
+overload unsome with stropt_unsome
+//
 overload iseqz with stropt_is_none
 overload isneqz with stropt_is_some
 //
-overload length with stropt_length
+overload length with stropt_length of 0
 //
 overload print with print_stropt of 0
 overload prerr with prerr_stropt of 0

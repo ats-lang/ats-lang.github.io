@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/filebas.atxt
-** Time of generation: Sun Nov 20 21:18:18 2016
+** Time of generation: Mon Apr 24 22:47:01 2017
 *)
 
 (* ****** ****** *)
@@ -63,9 +63,9 @@ fun{} dirname_parent ():<> string
 (* ****** ****** *)
 
 fun{}
-filename_get_ext (name: string):<> vStrptr0
+filename_get_ext(name: string):<> vStrptr0
 fun{}
-filename_test_ext (name: string, ext: string):<> bool
+filename_test_ext(name: string, ext: string):<> bool
 
 (* ****** ****** *)
 
@@ -77,19 +77,19 @@ filename_test_base (name: string, base: string):<> bool
 (* ****** ****** *)
 //
 val file_mode_r
-  : file_mode (file_mode_r()) = "mac#%" // = "r"
+  : file_mode(file_mode_r()) = "mac#%" // = "r"
 val file_mode_rr
-  : file_mode (file_mode_rw()) = "mac#%" // = "r+"
+  : file_mode(file_mode_rw()) = "mac#%" // = "r+"
 //
 val file_mode_w
-  : file_mode (file_mode_w()) = "mac#%" // = "w"
+  : file_mode(file_mode_w()) = "mac#%" // = "w"
 val file_mode_ww
-  : file_mode (file_mode_rw()) = "mac#%" // = "w+"
+  : file_mode(file_mode_rw()) = "mac#%" // = "w+"
 //
 val file_mode_a
-  : file_mode (file_mode_rw()) = "mac#%" // = "a"
+  : file_mode(file_mode_rw()) = "mac#%" // = "a"
 val file_mode_aa
-  : file_mode (file_mode_rw()) = "mac#%" // = "a+"
+  : file_mode(file_mode_rw()) = "mac#%" // = "a+"
 //
 (* ****** ****** *)
 //
@@ -191,40 +191,40 @@ fileref_puts
 (* ****** ****** *)
 //
 fun
-fileref_is_eof (inp: FILEref): bool = "mac#%"
+fileref_is_eof(inp: FILEref): bool = "mac#%"
 //
 macdef
-fileref_isnot_eof(inp) = ~fileref_is_eof (,(inp))
+fileref_isnot_eof(inp) = ~fileref_is_eof(,(inp))
 //
 (* ****** ****** *)
 
 typedef
 fileref_load_type(a:t@ype) =
-  (FILEref, &a? >> opt (a, b)) -<fun1> #[b:bool] bool (b)
+  (FILEref, &a? >> opt(a, b)) -<fun1> #[b:bool] bool(b)
 // end of [fileref_load_type]
 //
 fun{a:t0p}
 fileref_load : fileref_load_type (a)
 //
 fun
-fileref_load_int : fileref_load_type (int) = "mac#%"
+fileref_load_int : fileref_load_type(int) = "mac#%"
 fun
-fileref_load_lint : fileref_load_type (lint) = "mac#%"
+fileref_load_lint : fileref_load_type(lint) = "mac#%"
 fun
-fileref_load_uint : fileref_load_type (uint) = "mac#%"
+fileref_load_uint : fileref_load_type(uint) = "mac#%"
 fun
-fileref_load_ulint : fileref_load_type (ulint) = "mac#%"
+fileref_load_ulint : fileref_load_type(ulint) = "mac#%"
 //
 fun
-fileref_load_float : fileref_load_type (float) = "mac#%"
+fileref_load_float : fileref_load_type(float) = "mac#%"
 fun
-fileref_load_double : fileref_load_type (double) = "mac#%"
+fileref_load_double : fileref_load_type(double) = "mac#%"
 //
 (* ****** ****** *)
 
 fun{a:t0p}
 fileref_get_optval
-  (inp: FILEref): Option_vt (a)
+  (inp: FILEref): Option_vt(a)
 // end of [fileref_get_optval]
 
 fun{
@@ -240,8 +240,8 @@ fileref_get_exnloc
 
 (* ****** ****** *)
 
-typedef charlst = List0 (char)
-vtypedef charlst_vt = List0_vt (char)
+typedef charlst = List0(char)
+vtypedef charlst_vt = List0_vt(char)
 
 (* ****** ****** *)
 //
@@ -254,7 +254,7 @@ fileref_get_line_charlst(inp: FILEref): charlst_vt
 ** HX: only for files of "tiny" size
 *)
 fun
-fileref_get_lines_charlstlst(inp: FILEref): List0_vt (charlst_vt)
+fileref_get_lines_charlstlst(inp: FILEref): List0_vt(charlst_vt)
 //
 (* ****** ****** *)
 //
@@ -262,9 +262,9 @@ fileref_get_lines_charlstlst(inp: FILEref): List0_vt (charlst_vt)
 ** HX: for handling files of "tiny" size
 *)
 fun
-fileref_get_file_charlst(inp: FILEref): List0_vt (char)
+fileref_get_file_charlst(inp: FILEref): List0_vt(char)
 fun
-fileref_get2_file_charlst(inp: FILEref, n: int): List0_vt (char)
+fileref_get2_file_charlst(inp: FILEref, n: int): List0_vt(char)
 //
 (* ****** ****** *)
 //

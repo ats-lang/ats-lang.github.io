@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/prelude/CATS/CODEGEN/bool.atxt
-** Time of generation: Sun Nov 20 15:37:53 2016
+** Time of generation: Wed Dec 14 18:44:55 2016
 */
 
 /* ****** ****** */
@@ -189,6 +189,14 @@ atspre_bool2string (
 ) {
   return (x) ? "true" : "false" ;
 } // end of [atspre_bool2string]
+
+ATSinline()
+atstype_string
+atspre_bool_tostring (
+  atstype_bool x
+) {
+  return (x) ? "true" : "false" ;
+} // end of [atspre_bool_tostring]
 
 /* ****** ****** */
 

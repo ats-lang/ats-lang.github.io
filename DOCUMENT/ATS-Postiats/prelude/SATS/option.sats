@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/option.atxt
-** Time of generation: Sun Nov 20 22:20:19 2016
+** Time of generation: Thu Dec 22 00:36:39 2016
 *)
 
 (* ****** ****** *)
@@ -159,10 +159,11 @@ option_equal$eqfn(x1: a, x2: a):<> bool
 (* ****** ****** *)
 //
 fun{a:t0p}
-fprint_option
-  (out: FILEref, opt: Option(INV(a))): void
-//
-overload fprint with fprint_option
+print_option(opt: Option(INV(a))): void
+fun{a:t0p}
+prerr_option(opt: Option(INV(a))): void
+fun{a:t0p}
+fprint_option(FILEref, Option(INV(a))): void
 //
 (* ****** ****** *)
 //
@@ -173,10 +174,16 @@ overload fprint with fprint_option
 overload = with option_equal
 
 (* ****** ****** *)
-
+//
+overload unsome with option_unsome
+//
 overload iseqz with option_is_none
 overload isneqz with option_is_some
-
+//
+overload print with print_option of 0
+overload prerr with prerr_option of 0
+overload fprint with fprint_option of 0
+//
 (* ****** ****** *)
 
 (* end of [option.sats] *)

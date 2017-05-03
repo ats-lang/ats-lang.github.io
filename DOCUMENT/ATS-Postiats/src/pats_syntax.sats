@@ -69,12 +69,18 @@ typedef filename = $FIL.filename
 //
 abstype synent // a boxed union
 //
-castfn synent_encode {a:type} (x: a): synent
-castfn synent_decode {a:type} (x: synent): (a)
+(* ****** ****** *)
 //
-fun synent_null {a:type} (): a // = null
-fun synent_is_null {a:type} (x: a):<> bool
-fun synent_isnot_null {a:type} (x: a):<> bool
+castfn
+synent_encode{a:type}(x: a): synent
+castfn
+synent_decode{a:type}(x: synent): (a)
+//
+(* ****** ****** *)
+//
+fun synent_null{a:type}(): a // = null
+fun synent_is_null{a:type}(x: a):<> bool
+fun synent_isnot_null{a:type}(x: a):<> bool
 //
 (* ****** ****** *)
 
@@ -225,7 +231,10 @@ datatype
 s0taq_node =
   | S0TAQnone
   | S0TAQsymdot of symbol
+(*
+// HX-2017-01-24:
   | S0TAQsymcolon of symbol
+*)
 (*
   | S0TAQfildot of string (* filename *)
 *)
@@ -234,12 +243,17 @@ s0taq_node =
 typedef s0taq = '{
   s0taq_loc= location, s0taq_node= s0taq_node
 }
-
+//
 val the_s0taq_none : s0taq
+//
 fun s0taq_none (loc: location): s0taq
 fun s0taq_symdot (ent1: i0de, tok2: token): s0taq
+//
+(*
+// HX-2017-01-24:
 fun s0taq_symcolon (ent1: i0de, tok2: token): s0taq
-
+*)
+//
 fun s0taq_is_none (q: s0taq): bool
 
 fun print_s0taq (x: s0taq): void
@@ -251,7 +265,7 @@ fun fprint_s0taq : fprint_type (s0taq)
 typedef sqi0de = '{
   sqi0de_loc= location
 , sqi0de_qua= s0taq, sqi0de_sym= symbol
-} // end of [sqi0de]
+} (* end of [sqi0de] *)
 
 fun sqi0de_make_none (ent: i0de): sqi0de
 fun sqi0de_make_some (ent1: s0taq, ent2: i0de): sqi0de
@@ -264,11 +278,17 @@ datatype
 d0ynq_node =
   | D0YNQnone of ()
   | D0YNQsymdot of symbol
+(*
+//
+// HX-2017-01-24:
+// removed due to no use
+//
   | D0YNQsymcolon of symbol
   | D0YNQsymdotcolon of (symbol, symbol)
+*)
 (*
-  | D0YNQfildot of string (* filename *)
-  | D0YNQfildot_symcolon of (string (* filename *), symbol)
+  | D0YNQfildot of string (*filename*)
+  | D0YNQfildot_symcolon of (string (*filename*), symbol)
 *)
 // end of [d0ynq_node]
 
@@ -288,10 +308,17 @@ d0ynq_none(loc: location): d0ynq
 //
 fun d0ynq_symdot
   (ent1: i0de, tok2: token): d0ynq
+//
+(*
+//
+// HX-2017-01-24:
+// removed due to no use
+//
 fun d0ynq_symcolon
   (ent1: i0de, tok2: token): d0ynq
 fun d0ynq_symdotcolon
   (ent1: i0de, ent2: i0de, ent3: token): d0ynq
+*)
 //
 fun d0ynq_is_none (q: d0ynq): bool
 //
@@ -1424,11 +1451,17 @@ d0ecl_node =
   | D0Cstacsts of (s0tacstlst) (* static constants *)
   | D0Cstacons of (int(*knd*), s0taconlst) (* abstype defintion *)
 (*
-  | D0Cstavars of (s0tavarlst) (* static constants *) // HX-2012-05-23: removed
+  | D0Cstavars of
+      (s0tavarlst) (* static constants *) // HX-2012-05-23: removed
+    // end of [D0Cstavars]
 *)
   | D0Ctkindef of t0kindef (* primitive tkind *)
-  | D0Csexpdefs of (int(*knd*), s0expdeflst) (* staexp definition *)
+  | D0Csexpdefs of
+      (int(*knd*), s0expdeflst) (* staexp definition *)
+    // end of [D0Csexpdefs]
+//
   | D0Csaspdec of s0aspdec (* static assumption *)
+  | D0Creassume of sqi0de(*abstype*) // static re-assumption
 //
   | D0Cexndecs of (e0xndeclst)
   | D0Cdatdecs of (int(*knd*), d0atdeclst, s0expdeflst)
@@ -1472,7 +1505,7 @@ d0ecl_node =
   | D0Cstaloadloc of
       (filename(*pfil*), symbol(*nspace*), d0eclist) // HX: { ... }
 //
-  | D0Crequire of (filename(*pfil*), string(*path*)) // HX: for pkgreloc
+  | D0Crequire of (filename(*pfil*), string(*path*)) // HX: for atsreloc
 //
   | D0Cdynload of (filename(*pfil*), string(*path*)) // HX: dynloading(*initization*)
 //
@@ -2284,14 +2317,25 @@ d0ecl_stacsts (_1: token, _2: s0tacstlst): d0ecl
 fun
 d0ecl_stavars (_1: token, _2: s0tavarlst): d0ecl
 *)
-fun d0ecl_tkindef (_1: token, _2: t0kindef): d0ecl
-fun d0ecl_saspdec (_1: token, _2: s0aspdec): d0ecl
+//
+fun
+d0ecl_tkindef (_1: token, _2: t0kindef): d0ecl
 //
 fun
 d0ecl_sexpdefs
   (knd: int, _1: token, _2: s0expdeflst): d0ecl
 //
-fun d0ecl_exndecs (_1: token, _2: e0xndeclst): d0ecl
+(* ****** ****** *)
+//
+fun
+d0ecl_saspdec(tok: token, d0: s0aspdec): d0ecl
+fun
+d0ecl_reassume(tok: token, qid: sqi0de): d0ecl
+//
+(* ****** ****** *)
+//
+fun
+d0ecl_exndecs (tok: token, d0: e0xndeclst): d0ecl
 //
 (* ****** ****** *)
 //

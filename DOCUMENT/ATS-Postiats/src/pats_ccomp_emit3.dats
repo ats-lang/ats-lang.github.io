@@ -236,7 +236,8 @@ end // end of [emit_extcode]
 
 local
 
-fun auxloc
+fun
+auxloc
 (
   out: FILEref, loc: location
 ) : void = let
@@ -247,88 +248,150 @@ in
   // nothing
 end // end of [auxloc]
 
-fun auxsta
+fun
+auxsta
+(
+  out: FILEref, d2cs: d2eclist
+) : void = let
+//
+(*
+val () = println! ("auxsta")
+*)
+//
+in
+//
+case+ d2cs of
+| list_nil
+    ((*void*)) => ()
+  // end of [list_nil]
+| list_cons
+  (
+    d2c, d2cs
+  ) => auxsta(out, d2cs) where
+  {
+    val () =
+    (
+    case+
+    d2c.d2ecl_node
+    of // case+
+//
+    | $D2E.D2Cextcode
+        (knd, pos, code) =>
+      (
+(*
+      println! ("auxsta: pos = ", pod);
+*)
+//
+      if
+      (pos = 0) // %{#
+      then let
+        val loc = d2c.d2ecl_loc
+      in
+        auxloc(out, loc); emit_text(out, code)
+      end // end of [then] // end of [if]
+//
+      ) (* end of [D2Cextcode] *)
+//
+    | $D2E.D2Cstaload
+      (
+        idopt
+      , fil, flag, fenv, _(*loaded*)
+      ) => let
+        val () =
+          auxloc(out, d2c.d2ecl_loc)
+        val d2cs =
+          $TR2ENV.filenv_get_d2eclist(fenv)
+        val issta =
+          $FIL.filename_is_sats(fil)
+      in
+        if issta then auxsta(out, d2cs) else ((*void*))
+      end // end of [D2Cstaload]
+//
+    | _ (* rest-of-d2ecl *) => ((*skipped*))
+//
+    ) : void // end of [val]
+  } (* end of [where] *) // end of [list_cons]
+//
+end // end of [auxsta]
+
+fun
+auxdyn
 (
   out: FILEref, d2cs: d2eclist
 ) : void = let
 in
 //
 case+ d2cs of
+//
+| list_nil
+    ((*void*)) => ()
+  // end of [list_nil]
+//
 | list_cons
-    (d2c, d2cs) => let
-    val () = (
+  (
+    d2c, d2cs
+  ) => auxdyn(out, d2cs) where
+  {
+    val () =
+    (
     case+
-      d2c.d2ecl_node of
+    d2c.d2ecl_node
+    of // case+
+//
     | $D2E.D2Cextcode
-        (knd, pos, code) => let
-        val () =
-          auxloc (out, d2c.d2ecl_loc)
-        // end of [val]
+        (knd, pos, code) =>
+      (
+(*
+      println! ("auxdyn: knd = ", knd);
+*)
+//
+      if
+      (pos = 0) // %{#
+      then let
+        val loc = d2c.d2ecl_loc
       in
-        emit_text (out, code)
-      end // end of [D2Cextcode]
+        auxloc(out, loc); emit_text(out, code)
+      end // end of [then] // end of [if]
+//
+      ) (* end of [D2Cextcode] *)
+//
     | $D2E.D2Cstaload
       (
-        idopt, fil, flag, fenv, loaded
+        idopt
+      , fil, flag, fenv, loaded
       ) => let
         val () =
-          auxloc (out, d2c.d2ecl_loc)
+          auxloc(out, d2c.d2ecl_loc)
         val d2cs =
-          $TR2ENV.filenv_get_d2eclist (fenv)
+          $TR2ENV.filenv_get_d2eclist(fenv)
         val issta =
-          $FIL.filename_is_sats (fil)
-      in
-        if issta then auxsta (out, d2cs) else ()
-      end // end of [D2Cstaload]
-    | _ (*skipped*) => ((*void*))
-    ) : void // end of [val]
-  in
-    auxsta (out, d2cs)
-  end // end of [list_cons]
-| list_nil () => ()
-//
-end // end of [auxsta]
-
-fun auxdyn (
-  out: FILEref, d2cs: d2eclist
-) : void = let
-in
-//
-case+ d2cs of
-| list_cons
-    (d2c, d2cs) => let
-    val (
-    ) = (
-    case+
-      d2c.d2ecl_node of
-    | $D2E.D2Cstaload
-      (
-        idopt, fil, flag, fenv, loaded
-      ) => let
-        val () =
-          auxloc (out, d2c.d2ecl_loc)
-        val d2cs =
-          $TR2ENV.filenv_get_d2eclist (fenv)
-        val issta =
-          $FIL.filename_is_sats (fil)
+          $FIL.filename_is_sats(fil)
       in
         if issta
-          then auxsta (out, d2cs) else auxdyn (out, d2cs)
+          then auxsta(out, d2cs) else auxdyn(out, d2cs)
         // end of [if]
       end // end of [D2Cstaload]
+//
     | $D2E.D2Clocal
       (
         d2cs_head, d2cs_body
-      ) => let
-        val () = auxdyn (out, d2cs_head)
-        val () = auxdyn (out, d2cs_body) in (*nothing*)
-      end // end of [D2Clocal]
-    | _ => ()
+      ) =>
+      (
+        auxdyn(out, d2cs_head); auxdyn(out, d2cs_body)
+      ) // end of [D2Clocal]
+//
+    | $D2E.D2Cinclude
+        (knd, d2cs) =>
+      (
+        if knd = 0
+          then auxsta(out, d2cs) else auxdyn(out, d2cs)
+        // end of [if]
+      ) (* end of [D2Cinclude] *)
+    | _ (* rest-of-d2ecl *) => ((*skipped*))
+//
     ) : void // end of [val]
-  in
-    auxdyn (out, d2cs)
-  end // end of [list_cons]
-| list_nil () => ()
+//
+  } (* end of [where] *) // end of [list_cons]
 //
 end // end of [auxdyn]
 
@@ -346,23 +409,26 @@ val-HIDstaload
 val () = 
   println! ("emit_staload: flag = ", flag)
 *)
-val d2cs = $TR2ENV.filenv_get_d2eclist (fenv)
+val d2cs =
+  $TR2ENV.filenv_get_d2eclist(fenv)
 //
-val issta = $FIL.filename_is_sats (fil)
+val issta = $FIL.filename_is_sats(fil)
 //
 in
-  if issta then auxsta (out, d2cs) else auxdyn (out, d2cs)
+  if issta then auxsta(out, d2cs) else auxdyn(out, d2cs)
 end // end of [emit_staload]
 
 end // end of [local]
 
 (* ****** ****** *)
-
+//
 extern
-fun emit_tmprimval (out: FILEref, tpmv: tmprimval): void
+fun
+emit_tmprimval(out: FILEref, tpmv: tmprimval): void
 extern
-fun emit_tmpmovlst (out: FILEref, tmvlst: tmpmovlst): void
-
+fun
+emit_tmpmovlst(out: FILEref, tmvlst: tmpmovlst): void
+//
 (* ****** ****** *)
 
 implement
@@ -771,28 +837,29 @@ end // end of [local]
 
 local
 
-fun auxfun
+fun
+auxfun
 (
   out: FILEref, fent: funent
 ) : void = let
 //
-val flab = funent_get_lab (fent)
-val istmp = (funlab_get_tmpknd (flab) > 0)
+val flab = funent_get_lab(fent)
+val istmp = (funlab_get_tmpknd(flab) > 0)
 //
-val qopt = funlab_get_d2copt (flab)
+val qopt = funlab_get_d2copt(flab)
 val isqua =
 (
-  case+ qopt of Some (d2c) => true | None () => false
+  case+ qopt of Some(d2c) => true | None() => false
 ) : bool // end of [val]
 val isext =
 (
 case+ qopt of
 | Some (d2c) =>
-    if $D2E.d2cst_is_static (d2c) then false else true
+    if $D2E.d2cst_is_static(d2c) then false else true
 | None _ => false
 ) : bool // end of [val]
 //
-val flopt = funlab_get_origin (flab)
+val flopt = funlab_get_origin(flab)
 val isqua =
 (
   case+ flopt of Some _ => false | None () => isqua
@@ -1791,7 +1858,7 @@ case+ pmd.primdec_node of
     (knd, hvds, inss) =>
     emit_instrlst_ln (out, $UN.cast{instrlst}(inss))
 //
-| PMDvardecs (hvds, inss) =>
+| PMDvardecs(hvds, inss) =>
     emit_instrlst_ln (out, $UN.cast{instrlst}(inss))
 //
 | PMDinclude

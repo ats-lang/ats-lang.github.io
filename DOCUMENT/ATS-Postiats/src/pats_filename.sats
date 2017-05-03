@@ -150,18 +150,30 @@ fun the_filenamelst_push_check
   (fil: filename): (the_filenamelst_push_v | bool)
 // end of [the_filenamelst_push_check]
 //
-fun the_filenamelst_ppop (): void 
-fun the_filenamelst_ppush (fil: filename): void
+fun the_filenamelst_ppop(): void 
+fun the_filenamelst_ppush(fil: filename): void
+(*
+// HX-2017-01-31: push from the back!
+fun the_filenamelst_ppushb(fil: filename): void
 //
+*)
 fun fprint_the_filenamelst (out: FILEref): void
 //
 (* ****** ****** *)
 //
-typedef
-path = string
+typedef path = string
+typedef pathlst = List0(path)
 //
-fun path_normalize (s0: NSHARED(path)): path
-fun path_normalize_vt (s0: NSHARED(path)): Strptr1
+(* ****** ****** *)
+//
+fun print_pathlst(xs: pathlst): void
+fun prerr_pathlst(xs: pathlst): void
+fun fprint_pathlst(out: FILEref, xs: pathlst): void
+//
+(* ****** ****** *)
+//
+fun path_normalize(s0: NSHARED(path)): path
+fun path_normalize_vt(s0: NSHARED(path)): Strptr1
 //
 (* ****** ****** *)
 //
@@ -179,8 +191,17 @@ the_pathlst_pop
 fun
 the_pathlst_push
   (x: path): (the_pathlst_push_v | void)
-fun
-the_pathlst_ppush(x: path): void // HX: permanent push
+//
+// HX: permanent push
+//
+fun the_pathlst_ppush(x: path): void
+//
+(*
+// HX: permanent push from the back!
+fun the_pathlst_ppushb(x: path): void
+*)
+//
+(* ****** ****** *)
 //
 fun
 the_prepathlst_push
@@ -198,10 +219,21 @@ fun
 pkgsrcname_relocatize (given: string, ngurl: int): string
 //
 (* ****** ****** *)
-
-fun filenameopt_make_local (name: string): filenameopt_vt
-fun filenameopt_make_relative (name: string): filenameopt_vt
-
+//
+fun
+filenameopt_make_local(name: string): filenameopt_vt
+//
+fun
+filenameopt_make_relative
+  (given: string, given2: &string? >> string): filenameopt_vt
+//
+(* ****** ****** *)
+//
+vtypedef
+pathlst_vt = List0_vt(path)
+//
+fun the_PATSHOMELOCS_get_pathlst((*void*)): pathlst
+//
 (* ****** ****** *)
 
 (* end of [pats_filename.sats] *)

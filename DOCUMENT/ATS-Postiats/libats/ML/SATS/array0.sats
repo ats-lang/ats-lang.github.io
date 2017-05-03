@@ -39,7 +39,8 @@
 (* ****** ****** *)
 
 %{#
-#include "libats/ML/CATS/array0.cats"
+#include \
+"libats/ML/CATS/array0.cats"
 %} // end of [%{#]
 
 (* ****** ****** *)
@@ -60,9 +61,10 @@ typedef NSH(a:type) = a // for commenting purpose
 abstype
 array0_vt0ype_type
   (a: vt@ype(*invariant*)) = ptr
+//
 stadef array0 = array0_vt0ype_type
 //
-#endif
+#endif // end of [#if(0)]
 
 (* ****** ****** *)
 
@@ -220,14 +222,16 @@ fprint_array0_sep
 (* ****** ****** *)
 
 fun{a:t0p}
-array0_copy(A: array0(a)):<!refwrt> array0(a)
+array0_copy(array0(a)):<!refwrt> array0(a)
 
 (* ****** ****** *)
 //
 fun{a:t0p}
 array0_append
-  (A1: array0(a), A2: array0(a)):<!refwrt> array0(a)
+  (array0(a), array0(a)):<!refwrt> array0(a)
 // end of [array0_append]
+//
+overload + with array0_append
 //
 (* ****** ****** *)
 //
@@ -238,6 +242,15 @@ array0_map
 (
 A0: array0(a), fopr: (&a) -<cloref1> b
 ) : array0(b) // end of [array0_map]
+fun
+{a:vt0p}
+{b:vt0p}
+array0_map_method
+(
+A0: array0(a), TYPE(b)) (fopr: (&a) -<cloref1> b
+) : array0(b) // end of [array0_map_method]
+//
+overload .map with array0_map_method
 //
 (* ****** ****** *)
 //
@@ -251,16 +264,111 @@ array0_tabulate
 //
 (* ****** ****** *)
 //
+(*
+** HX:
+** Raising NotFoundExn
+** if no satisfying element is found
+*)
+fun
+{a:vt0p}
+array0_find_exn
+(
+  A: array0(a), pred: (&a) -<cloref1> bool
+) : size_t // end of [array0_find_exn]
+//
+fun
+{a:vt0p}
+array0_find_opt
+(
+  A: array0(a), pred: (&a) -<cloref1> bool
+) : Option_vt(size_t) // end-of-function
+//
+(* ****** ****** *)
+//
+fun
+{a:vt0p}
+array0_exists
+(
+  A0: array0(a), pred: (&a) -<cloref1> bool
+) : bool // end of [array0_exists]
+fun
+{a:vt0p}
+array0_exists_method
+(
+  A0: array0(a)) (pred: (&a) -<cloref1> bool
+) : bool // end of [array0_exists_method]
+//
+overload .exists with array0_exists_method
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+array0_iexists
+(
+  xs: array0(a), pred: cfun(size_t, a, bool)
+) : bool // end of [array0_iexists]
+//
+fun
+{a:t0p}
+array0_iexists_method
+(
+  xs: array0(a)) (pred: cfun(size_t, a, bool)
+) : bool // end of [array0_iexists_method]
+//
+overload .iexists with array0_iexists_method
+//
+(* ****** ****** *)
+//
+fun
+{a:vt0p}
+array0_forall
+(
+  A0: array0(a), pred: (&a) -<cloref1> bool
+) : bool // end of [array0_forall]
+fun
+{a:vt0p}
+array0_forall_method
+(
+  A0: array0(a)) (pred: (&a) -<cloref1> bool
+) : bool // end of [array0_forall_method]
+//
+overload .forall with array0_forall_method
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+array0_iforall
+(
+  xs: array0(a), pred: cfun(size_t, a, bool)
+) : bool // end of [array0_iforall]
+//
+fun
+{a:t0p}
+array0_iforall_method
+(
+  xs: array0(a)) (pred: cfun(size_t, a, bool)
+) : bool // end of [array0_iforall_method]
+//
+overload .iforall with array0_iforall_method
+//
+(* ****** ****** *)
+//
 fun
 {a:vt0p}
 array0_foreach
-  (A: array0(a), fwork: (&a >> _) -<cloref1> void): void
-// end of [array0_foreach]
+(
+  A0: array0(a)
+, fwork: (&a >> _) -<cloref1> void
+) : void // end of [array0_foreach]
 //
 fun
 {a:vt0p}
 array0_foreach_method
-  (A: array0(a)) (fwork: (&a >> _) -<cloref1> void): void
+(
+  A0: array0(a)
+) (fwork: (&a >> _) -<cloref1> void): void
 // end of [array0_foreach_methon]
 //
 overload .foreach with array0_foreach_method
@@ -270,13 +378,17 @@ overload .foreach with array0_foreach_method
 fun
 {a:vt0p}
 array0_iforeach
-  (A: array0(a), fwork: (size_t, &a >> _) -<cloref1> void): void
-// end of [array0_iforeach]
+(
+  A0: array0(a)
+, fwork: (size_t, &a >> _) -<cloref1> void
+) : void // end of [array0_iforeach]
 //
 fun
 {a:vt0p}
 array0_iforeach_method
-  (A: array0(a)) (fwork: (size_t, &a >> _) -<cloref1> void): void
+(
+  A0: array0(a)
+) (fwork: (size_t, &a >> _) -<cloref1> void): void
 // end of [array0_iforeach_method]
 //
 overload .iforeach with array0_iforeach_method
@@ -299,35 +411,22 @@ overload .rforeach with array0_rforeach_method
 //
 (* ****** ****** *)
 //
-(*
-** HX: raising NotFoundExn if no satisfying element is found
-*)
-fun
-{a:vt0p}
-array0_find_exn
-  (A: array0(a), p: (&a) -<cloref1> bool): size_t
-// end of [array0_find_exn]
-//
-fun
-{a:vt0p}
-array0_find_opt
-  (A: array0(a), p: (&a) -<cloref1> bool): option0(size_t)
-// end of [array0_find_opt]
-//
-(* ****** ****** *)
-//
 fun{
 res:vt0p}{a:vt0p
 } array0_foldleft
 (
-  A: array0(a), ini: res, fopr: (res, &a) -<cloref1> res
+  A0: array0(a)
+, ini: res, fopr: (res, &a) -<cloref1> res
 ) : res // end of [array0_foldleft]
 //
 fun{
 res:vt0p}{a:vt0p
 } array0_foldleft_method
 (
-  A: array0(a), TYPE(res)) (ini: res, fopr: (res, &a) -<cloref1> res
+  A: array0(a), TYPE(res)
+)
+(
+  ini: res, fopr: (res, &a) -<cloref1> res
 ) : res // end of [array0_foldleft_method]
 //
 overload .foldleft with array0_foldleft_method
@@ -338,14 +437,18 @@ fun{
 res:vt0p}{a:vt0p
 } array0_ifoldleft
 (
-  A: array0(a), ini: res, fopr: (res, size_t, &a) -<cloref1> res
+  A0: array0(a)
+, ini: res, fopr: (res, size_t, &a) -<cloref1> res
 ) : res // end of [array0_ifoldleft]
 //
 fun{
 res:vt0p}{a:vt0p
 } array0_ifoldleft_method
 (
-  A: array0(a), TYPE(res)) (ini: res, fopr: (res, size_t, &a) -<cloref1> res
+  A: array0(a), TYPE(res)
+)
+(
+  ini: res, fopr: (res, size_t, &a) -<cloref1> res
 ) : res // end of [array0_ifoldleft_method]
 //
 overload .ifoldleft with array0_ifoldleft_method
@@ -358,37 +461,46 @@ fun{
 a:vt0p}{res:vt0p
 } array0_foldright
 (
-  A: array0(a), fopr: (&a, res) -<cloref1> res, snk: res
+  A0: array0(a)
+, fopr: (&a, res) -<cloref1> res, snk: res
 ) : res // end of [array0_foldright]
 //
 fun{
 a:vt0p}{res:vt0p
 } array0_foldright_method
 (
-  A: array0(a), TYPE(res)) (fopr: (&a, res) -<cloref1> res, snk: res
+  A: array0(a), TYPE(res)
+)
+(
+  fopr: (&a, res) -<cloref1> res, snk: res
 ) : res // end of [array0_foldright_method]
 //
 overload .foldright with array0_foldright_method
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 streamize_array0_elt(array0(a)):<!wrt> stream_vt(a)
 //
 (* ****** ****** *)
 //
 fun
 {a:vt0p}
-array0_quicksort(array0(a), cmp: (&a, &a) -<cloref1> int): void
+array0_is_ordered
+  (A0: array0(a), cmp: (&a, &a) -<cloref1> int): bool
+//
+(* ****** ****** *)
+//
+fun
+{a:vt0p}
+array0_quicksort
+  (A0: array0(a), cmp: (&a, &a) -<cloref1> int): void
 //
 (* ****** ****** *)
 //
 // Overloading certain symbols
 //
-(* ****** ****** *)
-
-overload .size with array0_get_size
-
 (* ****** ****** *)
 
 overload [] with array0_get_at_gint
@@ -398,10 +510,19 @@ overload [] with array0_set_at_guint
 
 (* ****** ****** *)
 
+overload size with array0_get_size
+overload .size with array0_get_size
+
+(* ****** ****** *)
+
 overload print with print_array0
 overload prerr with print_array0
 overload fprint with fprint_array0
 overload fprint with fprint_array0_sep
+
+(* ****** ****** *)
+
+overload append with array0_append
 
 (* ****** ****** *)
 

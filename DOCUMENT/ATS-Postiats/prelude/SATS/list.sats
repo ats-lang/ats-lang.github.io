@@ -36,7 +36,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/list.atxt
-** Time of generation: Sun Nov 20 21:18:19 2016
+** Time of generation: Sun Feb 19 15:08:15 2017
 *)
 
 (* ****** ****** *)
@@ -63,7 +63,9 @@ list_t0ype_int_type
     list_cons (a, n+1) of (a, list_t0ype_int_type(a, n))
 // end of [list_t0ype_int_type]
 //
-stadef list = list_t0ype_int_type
+stadef
+list = list_t0ype_int_type
+//
 typedef
 List(a:t0p) = [n:int] list(a, n)
 typedef
@@ -165,7 +167,7 @@ list_make_elt
 fun{
 } list_make_intrange
   {l,r:int | l <= r}
-  (l: int l, r: int r):<!wrt> list_vt(intBtw (l, r), r-l)
+  (l: int l, r: int r):<!wrt> list_vt(intBtw(l, r), r-l)
 // end of [list_make_intrange]
 
 (* ****** ****** *)
@@ -343,7 +345,8 @@ x:t0p
 
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 list_append
   {m,n:int}
 (
@@ -352,15 +355,15 @@ list_append
 //
 (* ****** ****** *)
 
-fun{
-a:t0p
-} list_append1_vt
+fun
+{a:t0p}
+list_append1_vt
   {i,j:int} (
   xs: list_vt(INV(a), i), ys: SHR(list(a, j))
 ) :<!wrt> list(a, i+j) // endfun
-fun{
-a:t0p
-} list_append2_vt
+fun
+{a:t0p}
+list_append2_vt
   {i,j:int} (
   xs: NSH(list(INV(a), i)), ys: list_vt(a, j)
 ) :<!wrt> list_vt(a, i+j) // endfun
@@ -375,6 +378,14 @@ x:t0p
 
 macdef list_snoc (xs, x) = list_extend (,(xs), ,(x))
 
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+mul_int_list
+  {m,n:int | m >= 0}
+  (m: int(m), xs: list(a, n)):<!wrt> list_vt(a, m*n)
+//
 (* ****** ****** *)
 
 fun{x:t0p}
@@ -731,9 +742,10 @@ list_zipwith$fopr (x: x, y: y): (res)
 //
 (* ****** ****** *)
 //
-fun{
-x,y:t0p
-} list_cross{m,n:int}
+fun
+{x,y:t0p}
+list_cross
+  {m,n:int}
 (
   xs: list(INV(x), m)
 , ys: list(INV(y), n)
@@ -742,7 +754,8 @@ x,y:t0p
 fun
 {x,y:t0p}
 {res:vt0p}
-list_crosswith{m,n:int}
+list_crosswith
+  {m,n:int}
 (
   xs: list(INV(x), m)
 , ys: list(INV(y), n)
@@ -751,62 +764,72 @@ list_crosswith{m,n:int}
 fun
 {x,y:t0p}
 {res:vt0p}
-list_crosswith$fopr (x: x, y: y): (res)
+list_crosswith$fopr(x: x, y: y): (res)
 //
 (* ****** ****** *)
 
-fun{
-x:t0p
-} list_foreach (xs: List(INV(x))): void
-fun{
-x:t0p}{env:vt0p
-} list_foreach_env
+fun
+{x:t0p}
+list_foreach(xs: List(INV(x))): void
+fun
+{x:t0p}
+{env:vt0p}
+list_foreach_env
   (xs: List(INV(x)), env: &(env) >> _): void
 //
-fun{
-x:t0p}{env:vt0p
-} list_foreach$cont (x: x, env: &env): bool
-fun{
-x:t0p}{env:vt0p
-} list_foreach$fwork (x: x, env: &(env) >> _): void
+fun
+{x:t0p}
+{env:vt0p}
+list_foreach$cont (x: x, env: &env): bool
+fun
+{x:t0p}
+{env:vt0p}
+list_foreach$fwork (x: x, env: &(env) >> _): void
 //
 (* ****** ****** *)
-
-fun{x:t0p}
+//
+fun
+{x:t0p}
 list_foreach_fun
   {fe:eff} (
   xs: List(INV(x)), f: (x) -<fun,fe> void
 ) :<fe> void // end of [list_foreach_fun]
-
-fun{x:t0p}
+//
+fun
+{x:t0p}
 list_foreach_clo
   {fe:eff} (
   xs: List(INV(x)), f: &(x) -<clo,fe> void
 ) :<fe> void // end of [list_foreach_clo]
-fun{x:t0p}
+fun
+{x:t0p}
 list_foreach_vclo
   {v:view}{fe:eff} (
   pf: !v | xs: List(INV(x)), f: &(!v | x) -<clo,fe> void
 ) :<fe> void // end of [list_foreach_vclo]
-
-fun{x:t0p}
+//
+fun
+{x:t0p}
 list_foreach_cloptr
   {fe:eff} (
   xs: List(INV(x)), f: !(x) -<cloptr,fe> void
 ) :<fe> void // end of [list_foreach_cloptr]
-fun{x:t0p}
+fun
+{x:t0p}
 list_foreach_vcloptr
   {v:view}{fe:eff} (
   pf: !v | xs: List(INV(x)), f: !(!v | x) -<cloptr,fe> void
 ) :<fe> void // end of [list_foreach_vcloptr]
-
-fun{x:t0p}
+//
+fun
+{x:t0p}
 list_foreach_cloref
   {fe:eff} (
   xs: List(INV(x)), f: (x) -<cloref,fe> void
 ) :<fe> void // end of [list_foreach_cloref]
-
-fun{x:t0p}
+//
+fun
+{x:t0p}
 list_foreach_funenv
   {v:view}{env:viewtype}{fe:eff}
 (
@@ -815,7 +838,7 @@ list_foreach_funenv
 , f: (!v | x, !env) -<fun,fe> void
 , env: !env
 ) :<fe> void // end of [list_foreach_funenv]
-
+//
 (* ****** ****** *)
 //
 fun{
@@ -930,11 +953,19 @@ x:t0p}{res:vt0p
   (xs: List(INV(x)), fopr: (x, res) -<cloref1> res, snk: res): res
 //
 (* ****** ****** *)
-
-fun{
-a:t0p
-} list_mergesort{n:int}
-  (xs: list(INV(a), n)) :<!wrt> list_vt(a, n)
+//
+// HX-2017-02-19:
+// Using [gcompare_val_val] to check
+//
+fun
+{a:t0p}
+list_is_ordered(xs: List(INV(a))): bool
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+list_mergesort{n:int}
+  (xs: list(INV(a), n)):<!wrt> list_vt(a, n)
 //
 fun{a:t0p}
 list_mergesort$cmp(x1: a, x2: a):<> int (* sign *)
@@ -1005,11 +1036,18 @@ streamize_list_cross
 //
 (* ****** ****** *)
 //
-// overloading for certain symbols
+// HX: overloading
+// for certain symbols
+//
+(* ****** ****** *)
 //
 overload = with list_equal
 //
 overload + with list_append
+//
+(*
+overload * with mul_int_list
+*)
 //
 overload [] with list_get_at
 //

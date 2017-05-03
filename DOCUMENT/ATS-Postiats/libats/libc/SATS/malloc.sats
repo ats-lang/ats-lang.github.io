@@ -44,12 +44,13 @@ ATS_PACKNAME "ATSLIB.libats.libc"
 //
 // HX: prefix for external names
 //
-#define ATS_EXTERN_PREFIX "atslib_libc_"
+#define
+ATS_EXTERN_PREFIX "atslib_libats_libc_"
 //
 (* ****** ****** *)
 
-#define NSH (x) x // for commenting: no sharing
-#define SHR (x) x // for commenting: it is shared
+#define NSH(x) x // for commenting: no sharing
+#define SHR(x) x // for commenting: it is shared
 
 (* ****** ****** *)
 //

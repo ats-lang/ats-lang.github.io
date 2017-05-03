@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/filebas.atxt
-** Time of generation: Tue Dec  6 22:21:12 2016
+** Time of generation: Sat Apr 15 18:08:10 2017
 *)
 
 (* ****** ****** *)
@@ -660,7 +660,7 @@ fun loop
 #define CNUL '\000'
 //
 val nw =
-$extfcall(size_t, "atslib_libc_fread", p1, 1, n1, inp)
+$extfcall(size_t, "atslib_libats_libc_fread", p1, 1, n1, inp)
 //
 in (* in-of-let *)
 //
@@ -689,7 +689,8 @@ and loop2
   val (pf, pfgc | p0_) = malloc_gc (bsz2)
   val p0_ = $UN.castvwtp0{ptr}((pf, pfgc | p0_))
 //
-  val _(*ptr*) = $extfcall(ptr, "atslib_libc_memcpy", p0_, p0, n0)
+  val _(*ptr*) =
+  $extfcall(ptr, "atslib_libats_libc_memcpy", p0_, p0, n0)
 //
   val () = strptr_free ($UN.castvwtp0{Strptr1}(p0))
   val n0_ = pred(g0ofg1(bsz2))
@@ -779,74 +780,96 @@ vtypedef
 res = List0_vt(charNZ)
 //
 fun
-loop1 (): res = let
+loop1
+(
+// argless
+) : res = let
 //
-val c = $STDIO.fgetc0 (inp)
+val c = $STDIO.fgetc0(inp)
 //
 in
 //
 if
 (c > 0)
 then let
-  val c = $UN.cast{charNZ}(c)
-  val test = fileref_get_word$isalpha<> (c)
+  val c =
+    $UN.cast{charNZ}(c)
+  val test =
+    fileref_get_word$isalpha<>(c)
+  // end of [val]
 in
-  if test then loop2 (c, list_vt_nil()) else loop1 ()
+  if test
+    then loop2(c, list_vt_nil()) else loop1()
 end // end of [then]
 else list_vt_nil ((*void*))
 //
 end // end of [loop1]
 
-and loop2
+and
+loop2
 (
   c: charNZ, cs: res
 ) : res = let
 //
-val c2 = $STDIO.fgetc0 (inp)
+val c2 =
+  $STDIO.fgetc0(inp)
+val cs =
+  list_vt_cons{charNZ}(c, cs)
 //
 in
 //
 if
 (c2 > 0)
 then let
-  val c2 = $UN.cast{charNZ}(c2)
-  val test = fileref_get_word$isalpha<> (c2)
+//
+val c2 =
+  $UN.cast{charNZ}(c2)
+val test =
+  fileref_get_word$isalpha<>(c2)
+//
 in
-  if test then loop2 (c2, list_vt_cons(c, cs)) else list_vt_cons(c, cs)
+  if test then loop2(c2, cs) else cs
 end // end of [then]
-else list_vt_cons(c, cs)
+else (cs) // end of [else]
 //
 end // end of [loop2]
 //
-val cs = loop1 ()
+val cs = loop1((*void*))
 //
 in
   case+ cs of
   | list_vt_cons _ => let
       val str =
-        string_make_rlist ($UN.list_vt2t(cs))
-      val () = list_vt_free (cs)
+        string_make_rlist
+          ($UN.list_vt2t(cs))
+        // string_make_rlist
+      val () =
+        list_vt_free<char>(cs)
+      // end of [val]
     in
-      strnptr2strptr (str)
+      strnptr2strptr(str)
     end // end of [list_vt_cons]
-  | ~list_vt_nil () => strptr_null ()
+  | ~list_vt_nil() => strptr_null()
 end // end of [fileref_get_word]
 
 (* ****** ****** *)
-
+//
 implement
 {}(*tmp*)
-fileref_get_word$isalpha (charNZ) = isalpha (charNZ)
-
+fileref_get_word$isalpha
+  (charNZ) = isalpha(charNZ)
+//
 (* ****** ****** *)
 
 implement
 {}(*tmp*)
 fileref_foreach
   (inp) = let
+//
   var env: void = ()
+//
 in
-  fileref_foreach_env (inp, env)
+  fileref_foreach_env(inp, env)
 end // end of [fileref_foreach]
 
 (* ****** ****** *)
@@ -861,7 +884,7 @@ fun
 fread
 (
   ptr, size_t, size_t, FILEref
-) : Size = "mac#atslib_libc_fread"
+) : Size = "mac#atslib_libats_libc_fread"
 //
 in (* in of [local] *)
 

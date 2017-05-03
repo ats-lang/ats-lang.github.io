@@ -45,7 +45,8 @@ ATS_PACKNAME "ATSLIB.libats.libc"
 //
 // HX: prefix for external names
 //
-#define ATS_EXTERN_PREFIX "atslib_libc_"
+#define
+ATS_EXTERN_PREFIX "atslib_libats_libc_"
 
 (* ****** ****** *)
 
@@ -78,40 +79,41 @@ CLOCK_PROCESS_CPUTIME_ID = $extval (clockid_t, "CLOCK_PROCESS_CPUTIME_ID")
 //
 (* ****** ****** *)
 
-fun difftime
+fun
+difftime
 (
-  finish: time_t, start: time_t
+  t1: time_t
+, t2: time_t
 ) :<> double = "mac#%" // endfun
 
 (* ****** ****** *)
 //
-symintr time
-//
 fun
-time_get ():<> time_t = "mac#%"
+time_get():<!wrt> time_t = "mac#%"
 //
 fun
 time_getset
 (
-  t: &time_t? >> opt (time_t, b)
-) :<> #[b:bool] bool (b) = "mac#%"
+  t0: &time_t? >> opt(time_t, b)
+) :<!wrt> #[b:bool] bool (b) = "mac#%"
 //
+symintr time
 overload time with time_get
 overload time with time_getset
 //
 (* ****** ****** *)
-
+//
 fun ctime // non-reentrant
 (
-  t: &RD(time_t) // read-only
-) :<!ref> [l:agez] vttakeout0 (strptr l) = "mac#%" // endfun
-
+  t0: &RD(time_t) // read-only
+) :<!ref> [l:agez] vttakeout0(strptr(l)) = "mac#%"
+//
 (* ****** ****** *)
 //
 #define CTIME_BUFSZ 26
 //
 dataview
-ctime_v (m:int, addr, addr) =
+ctime_v(m:int, addr, addr) =
   | {l:addr}
     ctime_v_fail (m, l, null) of b0ytes_v (l, m)
   | {l:agz}
@@ -130,7 +132,8 @@ fun{
 
 typedef
 tm_struct =
-$extype_struct"atslib_libc_tm_struct_type" of
+$extype_struct
+"atslib_libats_libc_tm_struct_type" of
 {
   tm_sec= int // natLt(60)
 , tm_min= int // natLt(60)
@@ -188,8 +191,10 @@ strftime
   char *s, size_t max, const char *format, const struct tm *tm
 ) ; // end of [strftime]
 */
-fun strftime
-  {l:addr}{m:pos} (
+fun
+strftime
+{l:addr}{m:pos}
+(
   pf: !b0ytes(m) @ l >> strbuf(m, n) @ l
 | p: ptr l, m: size_t m, fmt: string, tm: &RD(tm_struct)
 ) :<> #[n:nat | n < m] size_t n = "mac#%" // endfun
@@ -204,13 +209,15 @@ gmtime // non-reentrant
 [
   l:addr
 ] (
-  option_v (vtakeout0 (tm_struct@l), l > null) | ptr l
+  option_v(vtakeout0(tm_struct@l), l > null)
+| ptr(l)
 ) = "mac#%" // end of [gmtime]
 
 fun
 gmtime_r // reentrant-version
 (
-  tval: &RD(time_t), tm: &tm_struct? >> opt (tm_struct, l > null)
+  tval: &RD(time_t)
+, tm: &tm_struct? >> opt(tm_struct, l > null)
 ) :<> #[l:addr] ptr (l) = "mac#%" // endfun
 
 (* ****** ****** *)
@@ -223,30 +230,31 @@ localtime // non-reentrant
 [
   l:addr
 ] (
-  option_v (vtakeout0 (tm_struct@l), l > null) | ptr l
+  option_v(vtakeout0(tm_struct@l), l > null) | ptr(l)
 ) = "mac#%" // end of [localtime]
 
 fun
 localtime_r // reentrant-version
 (
-  tval: &RD(time_t), tm: &tm_struct? >> opt (tm_struct, l > null)
+  tval: &RD(time_t), tm: &tm_struct? >> opt(tm_struct, l > null)
 ) :<> #[l:addr] ptr (l) = "mac#%" // endfun
 
 (* ****** ****** *)
 
-fun tzset ():<!ref> void = "mac#%"
+fun tzset():<!ref> void = "mac#%" // endfun
 
 (* ****** ****** *)
 
-fun clock (): clock_t = "mac#%" // -1 for error
+fun clock():<!wrt> clock_t = "mac#%" // err: -1
 
 (* ****** ****** *)
 
 typedef
 timespec =
-$extype_struct"atslib_libc_timespec_type" of
+$extype_struct
+"atslib_libats_libc_timespec_type" of
 {
-  tv_sec= time_t (*secs*), tv_nsec= lint (*nanosecs*)
+  tv_sec= time_t(*secs*), tv_nsec= lint(*nanosecs*)
 } // end of [extype_struct] // end of [timespec]
 
 (* ****** ****** *)
@@ -255,11 +263,11 @@ fun
 nanosleep
 (
   tms: &RD(timespec)
-, rem: &timespec? >> opt (timespec, i==0)
+, rem: &timespec? >> opt(timespec, i==0)
 ) : #[i:int | i <= 0] int(i) = "mac#%"
 
 fun
-nanosleep_null (tms: &RD(timespec)): int = "mac#%"
+nanosleep_null(tms: &RD(timespec)): int = "mac#%"
 
 (* ****** ****** *)
 //
@@ -270,14 +278,14 @@ fun
 clock_getres
 (
   id: clockid_t
-, res: &timespec? >> opt (timespec, i==0)
+, res: &timespec? >> opt(timespec, i==0)
 ) : #[i:int | i <= 0] int(i) = "mac#%"
 //
 fun
 clock_gettime
 (
   id: clockid_t
-, tms: &timespec? >> opt (timespec, i==0)
+, tms: &timespec? >> opt(timespec, i==0)
 ) : #[i:int | i <= 0] int(i) = "mac#%"
 //
 // HX: this one requires SUPERUSER previlege

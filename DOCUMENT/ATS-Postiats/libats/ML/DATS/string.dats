@@ -42,9 +42,21 @@
 "share/atspre_staload.hats"
 //
 (* ****** ****** *)
-
-staload UN = "prelude/SATS/unsafe.sats"
-
+//
+staload
+UN = "prelude/SATS/unsafe.sats"
+//
+(* ****** ****** *)
+//
+extern
+fun
+memcpy
+( d0: ptr
+, s0: ptr
+, n0: size_t
+) :<!wrt> ptr = "mac#atspre_string_memcpy"
+// end of [memcpy]
+//
 (* ****** ****** *)
 //
 macdef
@@ -85,6 +97,8 @@ prelude_string0_append6 = string0_append6
 macdef
 prelude_stringlst_concat = stringlst_concat
 //
+macdef
+prelude_string_implode = string_implode
 macdef
 prelude_string_explode = string_explode
 //
@@ -381,12 +395,87 @@ end // end of [string_append6]
 
 implement
 {}(*tmp*)
-stringlst_concat (xs) = let
-  val res = $effmask_wrt (prelude_stringlst_concat (g1ofg0_list(xs)))
+mul_int_string
+(
+  n, x0
+) = let
+//
+val n = g1ofg0(n)
+val x0 = g1ofg0(x0)
+//
+in
+//
+if
+(n > 0)
+then let
+//
+val
+nx0 = length(x0)
+val
+(
+  pf, pfgc | p0
+) =
+$effmask_wrt
+(
+malloc_gc(n*nx0)
+)
+//
+val () =
+loop(p0, n) where
+{
+//
+val x0 =
+  string2ptr(x0)
+//
+fun
+loop
+{n:nat} .<n>.
+(
+p0: ptr, n: int(n)
+) :<> void =
+(
+if
+(n > 0)
+then let
+  val _(*p0*) =
+  $effmask_all(memcpy(p0, x0, nx0))
+in
+  loop(ptr_add<char>(p0, nx0), pred(n))
+end // end of [then]
+) (* end of [loop] *)
+//
+} (* end of [val] *)
+//
+in
+  $UN.castvwtp0{string}((pf, pfgc | p0))
+end // end of [then]
+else "" // end of [else]
+//
+end (* end of [mul_int_string] *)
+
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+stringlst_concat
+  (xs) = let
+//
+val res =
+$effmask_wrt
+(
+  prelude_stringlst_concat(g1ofg0_list(xs))
+) (* $effmask_wrt *)
 in
   strptr2string (res)
 end // end of [stringlst_concat]
 
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+string_implode
+  (cs) = string_make_list<>(cs)
+//
 (* ****** ****** *)
 
 implement
@@ -411,12 +500,6 @@ end // end of [string_explode]
 
 implement
 {}(*tmp*)
-string_implode(cs) = string_make_list(cs)
-
-(* ****** ****** *)
-
-implement
-{}(*tmp*)
 string_tabulate
   {n}(n0, fopr) = let
 //
@@ -434,40 +517,83 @@ end // end of [string_tabulate]
 
 implement
 {}(*tmp*)
-string_forall
-  (str, f) = let
+string_exists
+  (str, pred) = let
 //
-val str = g1ofg0_string(str)
+val
+str = g1ofg0_string(str)
 //
 implement
-string_forall$pred<> (c) = f(c)
+string_forall$pred<> (c) = not(pred(c))
 //
 in
-  prelude_string_forall (str)
+  not(prelude_string_forall(str))
+end // end of [string_exists]
+
+implement
+{}(*tmp*)
+string_iexists
+  (str, pred) = let
+//
+val
+str = g1ofg0_string(str)
+//
+implement
+string_iforall$pred<>(i, c) = not(pred(i, c))
+//
+in
+  not(prelude_string_iforall(str))
+end // end of [string_iexists]
+
+(* ****** ****** *)
+//
+implement{}
+string_exists_method
+  (cs) = lam(pred) => string_exists(cs, pred)
+implement{}
+string_iexists_method
+  (cs) = lam(pred) => string_iexists(cs, pred)
+//
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+string_forall
+  (str, pred) = let
+//
+val
+str = g1ofg0_string(str)
+//
+implement
+string_forall$pred<>(c) = pred(c)
+//
+in
+  prelude_string_forall(str)
 end // end of [string_forall]
 
 implement
 {}(*tmp*)
 string_iforall
-  (str, f) = let
+  (str, pred) = let
 //
-val str = g1ofg0_string(str)
+val
+str = g1ofg0_string(str)
 //
 implement
-string_iforall$pred<> (i, c) = f(i, c)
+string_iforall$pred<>(i, c) = pred(i, c)
 //
 in
-  prelude_string_iforall (str)
+  prelude_string_iforall(str)
 end // end of [string_iforall]
 
 (* ****** ****** *)
 //
 implement{}
 string_forall_method
-  (cs) = lam(f) => string_forall(cs, f)
+  (cs) = lam(pred) => string_forall(cs, pred)
 implement{}
 string_iforall_method
-  (cs) = lam(f) => string_iforall(cs, f)
+  (cs) = lam(pred) => string_iforall(cs, pred)
 //
 (* ****** ****** *)
 
@@ -509,7 +635,7 @@ loop
 in
 //
 if isneqz(c)
-  then (f(i, c); loop(i, ptr_succ<char>(p0))) else ()
+  then (f(i, c); loop(i+1, ptr_succ<char>(p0))) else ()
 //
 end // end of [loop]
 //

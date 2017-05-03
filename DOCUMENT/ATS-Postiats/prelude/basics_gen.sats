@@ -54,19 +54,25 @@ gidentity_vt (x: INV(a)):<> a
 (* ****** ****** *)
 //
 fun
-{a:t0p}
-gcopy_val (x: INV(a)):<> a
+{a:vt0p}
+gcopy_val (x: !INV(a)):<!wrt> a
 //
 fun
 {a:vt0p}
 gcopy_ref (x: &INV(a)):<!wrt> a
 //
 (* ****** ****** *)
-
+//
 fun
 {a:vt0p}
 gfree_val (x: INV(a)):<!wrt> void
-
+//
+(*
+fun
+{a:vt0p}
+gfree_ref (x: &INV(a) >> a?):<!wrt> void
+*)
+//
 (* ****** ****** *)
 
 fun

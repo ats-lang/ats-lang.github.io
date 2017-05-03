@@ -38,10 +38,13 @@
 // higher-order functions should not be annotated!
 //
 (* ****** ****** *)
-
-#define ATS_PACKNAME "ATSLIB.libats.ML"
-#define ATS_EXTERN_PREFIX "atslib_ML_" // prefix for external names
-
+//
+#define
+ATS_PACKNAME "ATSLIB.libats.ML"
+//
+#define
+ATS_EXTERN_PREFIX "atslib_ML_" // prefix for external names
+//
 (* ****** ****** *)
 
 staload "libats/ML/SATS/basis.sats"
@@ -135,21 +138,30 @@ overload list0_make_intrange with list0_make_intrange_lr
 overload list0_make_intrange with list0_make_intrange_lrd
 //
 (* ****** ****** *)
-
+//
 fun{a:t0p}
-list0_is_nil (list0(a)):<> bool
+list0_is_nil(list0(a)):<> bool
 fun{a:t0p}
-list0_is_cons (list0(a)):<> bool
-
+list0_is_cons(list0(a)):<> bool
+//
 (* ****** ****** *)
 //
 fun{a:t0p}
-list0_is_empty (list0(a)):<> bool
+list0_is_empty(list0(a)):<> bool
 fun{a:t0p}
-list0_isnot_empty (list0(a)):<> bool
+list0_isnot_empty(list0(a)):<> bool
 //
 overload iseqz with list0_is_empty
 overload isneqz with list0_isnot_empty
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+list0_length
+  (xs: list0(INV(a))):<> intGte(0)
+//
+overload length with list0_length of 0
 //
 (* ****** ****** *)
 //
@@ -162,32 +174,47 @@ list0_head_opt
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 list0_tail_exn
   (xs: SHR(list0(INV(a)))):<!exn> list0(a)
-fun{a:t0p}
+fun
+{a:t0p}
 list0_tail_opt
   (xs: SHR(list0(INV(a)))):<> Option_vt(list0(a))
 //
 (* ****** ****** *)
 //
-overload .head with list0_head_exn
-overload .tail with list0_tail_exn
+overload head with list0_head_exn of 0
+overload tail with list0_tail_exn of 0
+//
+overload .head with list0_head_exn of 0
+overload .tail with list0_tail_exn of 0
+//
+overload head_opt with list0_head_opt of 0
+overload tail_opt with list0_tail_opt of 0
+//
+overload .head_opt with list0_head_opt of 0
+overload .tail_opt with list0_tail_opt of 0
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
-list0_length(list0(INV(a))):<> int
-//
-overload length with list0_length of 0
+fun
+{a:t0p}
+list0_last_exn(xs: list0(INV(a))):<!exn> (a)
+fun
+{a:t0p}
+list0_last_opt(xs: list0(INV(a))):<> Option_vt(a)
 //
 (* ****** ****** *)
-
-fun{a:t0p}
-list0_last_exn (xs: list0(INV(a))):<!exn> (a)
-fun{a:t0p}
-list0_last_opt (xs: list0(INV(a))):<> Option_vt(a)
-
+//
+fun
+{a:t0p}
+list0_init_exn(xs: list0(INV(a))):<!exn> list0(a)
+fun
+{a:t0p}
+list0_init_opt(xs: list0(INV(a))):<!exn> Option_vt(list0(a))
+//
 (* ****** ****** *)
 //
 fun{a:t0p}
@@ -201,21 +228,25 @@ list0_nth_opt
 //
 fun{a:t0p}
 list0_get_at_exn
-  (xs: list0(INV(a)), index: int):<!exn> (a)
+  (xs: list0(INV(a)), i0: int):<!exn> (a)
 //
 overload [] with list0_get_at_exn
 //
 (* ****** ****** *)
 //
 fun{a:t0p}
-print_list0 (xs: list0(INV(a))): void
+list0_fset_at_exn
+  (list0(INV(a)), i0: int, x0: a):<!exn> list0(a)
 fun{a:t0p}
-prerr_list0 (xs: list0(INV(a))): void
-//
-overload print with print_list0
-overload prerr with prerr_list0
+list0_fset_at_opt
+  (list0(INV(a)), i0: int, x0: a):<!exn> Option_vt(list0(a))
 //
 (* ****** ****** *)
+//
+fun{a:t0p}
+print_list0(xs: list0(INV(a))): void
+fun{a:t0p}
+prerr_list0(xs: list0(INV(a))): void
 //
 fun{a:t0p}
 fprint_list0
@@ -227,6 +258,9 @@ fprint_list0_sep
 (
   out: FILEref, xs: list0(INV(a)), sep: string
 ) : void // end of [fprint_list0_sep]
+//
+overload print with print_list0
+overload prerr with prerr_list0
 //
 overload fprint with fprint_list0
 overload fprint with fprint_list0_sep
@@ -277,24 +311,39 @@ overload + with list0_append
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 list0_extend
-  (xs: NSH(list0(INV(a))), y: a):<> list0(a)
+  (xs: NSH(list0(INV(a))), y0: a):<> list0(a)
 //
 macdef list0_snoc = list0_extend
 //
 (* ****** ****** *)
-
+//
 fun{a:t0p}
-list0_reverse (xs: list0(INV(a))):<> list0(a)
-
+mul_int_list0
+(
+  m0: intGte(0), xs: NSH(list0(INV(a)))
+) :<> list0(a) // end of [mul_int_list0]
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+list0_reverse
+  (xs: list0(INV(a))):<> list0(a)
+//
+overload reverse with list0_reverse
+//
 fun{a:t0p}
 list0_reverse_append
   (xs: list0(INV(a)), ys: list0(a)):<> list0(a)
 // end of [list0_reverse_append]
-
-macdef list0_revapp = list0_reverse_append
-
+//
+macdef
+list0_revapp = list0_reverse_append
+//
+overload revapp with list0_reverse_append
+//
 (* ****** ****** *)
 //
 fun{a:t0p}
@@ -563,19 +612,32 @@ list0_equal
 fun
 {a:t0p}
 list0_find_exn
-  (xs: list0(INV(a)), p: cfun(a, bool)): (a)
-//
+  (xs: list0(INV(a)), pred: cfun(a, bool)): (a)
 fun
 {a:t0p}
 list0_find_opt
-  (xs: list0(INV(a)), p: cfun(a, bool)): Option_vt(a)
+  (xs: list0(INV(a)), pred: cfun(a, bool)): Option_vt(a)
+//
+fun
+{a:t0p}
+list0_find_exn_method
+  (xs: list0(INV(a)))(pred: cfun(a, bool)): (a)
+fun
+{a:t0p}
+list0_find_opt_method
+  (xs: list0(INV(a)))(pred: cfun(a, bool)): Option_vt(a)
+//
+overload .find with list0_find_exn_method
+overload .find_opt with list0_find_opt_method
 //
 (* ****** ****** *)
 //
 fun
 {a:t0p}
 list0_find_index
-  (xs: list0(INV(a)), p: cfun(a, bool)): intGte(~1)
+(
+  xs: list0(INV(a)), pred: cfun(a, bool)
+) : intGte(~1) // end of [list0_find_index]
 //
 (* ****** ****** *)
 //
@@ -656,6 +718,12 @@ fun{
 a:t0p}{b:t0p
 } list0_imap
   (list0(INV(a)), fopr: cfun2(int, a, b)): list0(b)
+fun{
+a:t0p}{b:t0p
+} list0_imap_method
+  (list0(INV(a)), TYPE(b))(fopr: cfun2(int, a, b)): list0(b)
+//
+overload .imap with list0_imap_method
 //
 (* ****** ****** *)
 
@@ -797,18 +865,24 @@ streamize_list0_cross
   (list0(INV(a)), list0(INV(b))):<!wrt> stream_vt(@(a, b))
 //
 (* ****** ****** *)
-
+//
 fun{a:t0p}
-list0_quicksort
-  (NSH(list0(INV(a))), cmp: (a, a) -<cloref> int):<> list0(a)
-// end of [list0_quicksort]
-
+list0_is_ordered
+  (xs: list0(INV(a)), cmp:  (a, a) -<cloref> int): bool
+//
 (* ****** ****** *)
 
 fun{a:t0p}
 list0_mergesort
   (NSH(list0(INV(a))), cmp: (a, a) -<cloref> int):<> list0(a)
 // end of [list0_mergesort]
+
+(* ****** ****** *)
+
+fun{a:t0p}
+list0_quicksort
+  (NSH(list0(INV(a))), cmp: (a, a) -<cloref> int):<> list0(a)
+// end of [list0_quicksort]
 
 (* ****** ****** *)
 

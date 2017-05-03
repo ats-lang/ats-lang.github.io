@@ -196,7 +196,7 @@ val tok =
 //
 val loc = tok.token_loc
 //
-macdef incby1() = tokbuf_incby1 (buf)
+macdef incby1() = tokbuf_incby1(buf)
 //
 in
 //
@@ -305,9 +305,15 @@ case+ 0 of
     | T_DOT () => let
         val () = incby1 () in s0taq_symdot (ent1, tok2)
       end
+(*
+//
+// HX-2017-01-24:
+// it is never in use
+//
     | T_COLON () => let
         val () = incby1 () in s0taq_symcolon (ent1, tok2)
       end
+*)
     | _ (*non-DOT-COLON*) => let
         val () = the_parerrlst_add_ifnbt (bt, loc, PE_s0taq)
       in

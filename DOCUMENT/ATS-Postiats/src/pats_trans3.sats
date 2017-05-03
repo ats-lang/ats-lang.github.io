@@ -114,6 +114,8 @@ datatype trans3err =
   | T3E_d2exp_trdn_exist of (d2exp, s2exp)
   | T3E_d2exp_trdn_lam_dyn of (d2exp, s2exp)
 //
+  | T3E_d2exp_trup_arg_body_linpat of (p2at)
+//
   | T3E_d3exp_delay of (loc_t, d3exp)
 //
   | T3E_d3exp_foldat of (loc_t, d3exp)
@@ -206,6 +208,8 @@ datatype trans3err =
   | T3E_dmacro_eval0_app_mac_arity of (loc_t, d2mac, d2exparglst)
   | T3E_dmacro_evalctx_extend of (loc_t, d2mac)
   | T3E_dmacro_eval1_d2exp of (loc_t, d2exp)
+//
+  | T3E_reassume_tr_isnotasp of (loc_t, s2cst)
 //
   | T3E_f2undeclst_tr_termetsrtck of (f2undec, s2rtlstopt)
   | T3E_v2aldeclst_rec_tr_linearity of (v2aldec, s2exp(*linear*))

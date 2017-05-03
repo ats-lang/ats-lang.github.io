@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/list_vt.atxt
-** Time of generation: Sat Dec  3 10:18:27 2016
+** Time of generation: Mon Mar 27 16:55:22 2017
 *)
 
 (* ****** ****** *)
@@ -55,27 +55,34 @@ List0_vt_(a:vt@ype+) = List0_vt(a)
 //
 implement
 {a}(*tmp*)
-list_vt_make_sing (x) =
+list_vt_make_sing(x) =
   list_vt_cons{a}(x, list_vt_nil)
 implement
 {a}(*tmp*)
-list_vt_make_pair (x1, x2) =
-  list_vt_cons{a}(x1, list_vt_cons{a}(x2, list_vt_nil))
+list_vt_make_pair(x1, x2) =
+  list_vt_cons{a}
+  (
+    x1, list_vt_cons{a}(x2, list_vt_nil())
+  ) (* list_vt_cons *)
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+print_list_vt(xs) =
+  fprint_list_vt<a>(stdout_ref, xs)
+//
+implement
+{a}(*tmp*)
+prerr_list_vt(xs) =
+  fprint_list_vt<a>(stderr_ref, xs)
 //
 (* ****** ****** *)
 
 implement
-{a}(*tmp*)
-print_list_vt (xs) = fprint_list_vt<a> (stdout_ref, xs)
-implement
-{a}(*tmp*)
-prerr_list_vt (xs) = fprint_list_vt<a> (stderr_ref, xs)
-
-(* ****** ****** *)
-
-implement
 {}(*tmp*)
-fprint_list_vt$sep (out) = fprint_list$sep<> (out)
+fprint_list_vt$sep
+  (out) = fprint_list$sep<(*none*)>(out)
 
 implement
 {a}(*tmp*)
@@ -85,9 +92,12 @@ fprint_list_vt
 implement(env)
 list_vt_iforeach$fwork<a><env>
   (i, x, env) = let
-  val () =
-    if i > 0 then fprint_list_vt$sep<(*none*)> (out)
-  // end of [val]
+//
+val () =
+if (i > 0)
+  then fprint_list_vt$sep<(*none*)>(out)
+// end of [val]
+//
 in
   fprint_ref<a> (out, x)
 end // end of [list_iforeach$fwork]
@@ -104,10 +114,11 @@ fprint_list_vt_sep
   (out, xs, sep) = let
 //
 implement
-fprint_list_vt$sep<(*none*)> (out) = fprint_string (out, sep)
+fprint_list_vt$sep<(*none*)>
+  (out) = fprint_string(out, sep)
 //
 in
-  fprint_list_vt<a> (out, xs)
+  fprint_list_vt<a>(out, xs)
 end // end of [fprint_list_vt_sep]
 
 (* ****** ****** *)
@@ -423,34 +434,35 @@ __assert (xs) where
 //
 implement
 {a}(*tmp*)
-list_vt_copy (xs) =
-  list_copy<a> ($UN.list_vt2t(xs))
+list_vt_copy(xs) =
+  list_copy<a>($UN.list_vt2t(xs))
 //
 (* ****** ****** *)
 
 implement
 {a}(*tmp*)
-list_vt_free (xs) = let
+list_vt_free(xs) = let
 //
 implement
 (a2:t0p)
 list_vt_freelin$clear<a2>
   (x) = let
-  prval () = topize (x) in (*void*)
+  prval () = topize(x) in (*void*)
 end // end of [list_vt_freelin$clear]
 //
 in
-  list_vt_freelin<a> (xs)
+  list_vt_freelin<a>(xs)
 end // end of [list_vt_free]
 
 (* ****** ****** *)
 
 implement
 {a}(*tmp*)
-list_vt_freelin$clear (x) = gclear_ref (x)
+list_vt_freelin$clear
+  (x) = gclear_ref<a>(x)
 implement
 {a}(*tmp*)
-list_vt_freelin (xs) = let
+list_vt_freelin(xs) = let
 //
 prval () = lemma_list_vt_param (xs)
 //
@@ -1337,6 +1349,99 @@ $effmask_all(loop(g1ofg0_int(i0), list_vt_nil(*void*)))
 ) (* $UN.castvwtp0 *)
 //
 end // end of [listize_g0int_rep]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+list_vt_permute
+  {n}(xs) = xs where
+{
+//
+prval() =
+lemma_list_vt_param(xs)
+//
+fun
+loop1
+{n:nat} .<n>.
+(
+p0: ptr, xs: !list_vt(a, n)
+) : void =
+(
+case+ xs of
+| list_vt_nil() => ()
+| list_vt_cons
+    (_, xs_tl) => let
+    val () =
+    $UN.ptr0_set<ptr>
+      (p0, $UN.castvwtp1{ptr}(xs))
+    // end of [val]
+  in
+    loop1(ptr_succ<ptr>(p0), xs_tl)
+  end // end of [loop1]
+)
+//
+val n0 =
+  i2sz(list_vt_length<a>(xs))
+//
+val A0 =
+  arrayptr_make_uninitized<ptr>(n0)
+val () = loop1(ptrcast(A0), xs)
+val xs = $UN.castvwtp0{ptr}(xs)
+val A0 = $UN.castvwtp0{arrayptr(ptr,n)}(A0)
+//
+local
+//
+implement
+array_permute$randint<>(n) =
+i2sz(list_vt_permute$randint<>(sz2i(n)))
+//
+in (* in-of-local *)
+//
+val
+(pf | p0) =
+arrayptr_takeout_viewptr{ptr}(A0)
+//
+val
+((*void*)) = array_permute<ptr>(!p0, n0)
+//
+prval
+((*void*)) = arrayptr_addback{ptr}(pf | A0)
+//
+end // end of [local]
+//
+fun
+loop2
+{i:nat|i <= n} .<i>.
+(
+pz: ptr, i0: size_t(i), res: list_vt(a, n-i)
+) : list_vt(a, n) =
+(
+//
+if
+(i0 > 0)
+then let
+//
+val pz = ptr_pred<ptr>(pz)
+val xs =
+$UN.ptr0_get<
+  list_vt_cons_pstruct(a,ptr?)>(pz)
+//
+val+list_vt_cons(_, xs_tl) = xs
+val () = (xs_tl := res); prval () = fold@(xs)
+in
+  loop2(pz, pred(i0), xs(*res*))
+end // end of [then]
+else res // end of [else]
+//
+) (* end of [loop2] *)
+//
+val pz = ptr_add<ptr>(ptrcast(A0), n0)
+val xs = loop2(pz, n0, list_vt_nil(*void*))
+//
+val ((*freed*)) = arrayptr_free{ptr}(A0)
+//
+} (* end of [list_vt_permute] *)
 
 (* ****** ****** *)
 

@@ -45,7 +45,8 @@ ATS_PACKNAME "ATSLIB.libats.libc"
 //
 // HX: prefix for external names
 //
-#define ATS_EXTERN_PREFIX "atslib_libc_"
+#define
+ATS_EXTERN_PREFIX "atslib_libats_libc_"
 //
 (* ****** ****** *)
 
@@ -57,7 +58,7 @@ ATS_PACKNAME "ATSLIB.libats.libc"
 fun alloca
   {dummy:addr}{n:int}
 (
-  pf: void@dummy | n: size_t (n)
+  pf: void@dummy | n: size_t(n)
 ) : [l:addr]
 (
   bytes(n) @ l, bytes(n) @ l -> void@dummy | ptr(l)
@@ -69,7 +70,8 @@ fun alloca
 fun{
 a:vt0p
 } ptr_alloca
-  {dummy:addr} (
+  {dummy:addr}
+(
   pf: void@dummy | (*void*)
 ) : [l:addr] (a? @ l, a? @ l -> void@dummy | ptr(l))
 *)

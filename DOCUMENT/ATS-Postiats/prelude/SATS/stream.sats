@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/stream.atxt
-** Time of generation: Sun Nov 20 21:18:21 2016
+** Time of generation: Sat Apr 22 15:55:46 2017
 *)
 
 (* ****** ****** *)
@@ -339,6 +339,13 @@ stream_tabulate_cloref
 //
 fun
 {a:t0p}
+stream_labelize
+  (stream(INV(a))): stream(@(intGte(0), a))
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
 stream_foreach (xs: stream(a)): void
 fun
 {a:t0p}
@@ -382,8 +389,21 @@ fprint_stream
 //
 (* ****** ****** *)
 //
+fun{a:t0p}
+stream_skip_while_cloref
+  (xs: &stream(INV(a)) >> _, test: (a) -<cloref1> bool): intGte(0)
+fun{a:t0p}
+stream_skip_until_cloref
+  (xs: &stream(INV(a)) >> _, test: (a) -<cloref1> bool): intGte(0)
+//
+(* ****** ****** *)
+//
 // overloading for certain symbols
 //
+(* ****** ****** *)
+
+overload + with stream_append
+
 (* ****** ****** *)
 
 overload [] with stream_nth_exn

@@ -41,10 +41,12 @@
 
 (* ****** ****** *)
 //
-fun{a:vt0p}
-grandom_val (): a // for randval generation
+fun
+{a:vt0p}
+grandom_val((*void*)): a // for randval generation
 //
-fun{a:vt0p} // for random value
+fun
+{a:vt0p} // for random value
 grandom_ref (x: &(a?) >> a): void // initialization
 //
 (* ****** ****** *)

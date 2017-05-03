@@ -35,9 +35,10 @@
 #define
 ATS_PACKNAME "ATSLIB.libats.libc"
 #define
-ATS_DYNLOADFLAG 0 // no need for dynloading at run-time
+ATS_DYNLOADFLAG 0 // no dynloading at run-time
 #define
-ATS_EXTERN_PREFIX "atslib_libc_" // prefix for external names
+ATS_EXTERN_PREFIX
+"atslib_libats_libc_" // prefix for external names
 //
 (* ****** ****** *)
 //
@@ -54,7 +55,7 @@ staload
 
 implement
 {}(*tmp*)
-ctime_r_gc (tval) = let
+ctime_r_gc(tval) = let
 //
 val bsz = g1i2u(CTIME_BUFSZ)
 val (pf, pfgc | p) = malloc_gc (bsz)
@@ -78,4 +79,4 @@ end // end of [ctime_r_gc]
 
 (* ****** ****** *)
 
-(* end of [stdlib.dats] *)
+(* end of [time.dats] *)

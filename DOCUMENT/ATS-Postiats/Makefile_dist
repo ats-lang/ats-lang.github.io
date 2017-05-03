@@ -16,11 +16,15 @@ MAKEJ4=make -j4
 
 ######
 #
-all: \
-  config.mk \
-  bin2_patsopt \
-  bin_patscc \
-  ccomp/atslib/lib/libatslib.a \
+all:: config.mk
+#
+all:: bin2_patsopt
+all:: lib2_libatsopt
+#
+all:: bin_patscc
+all:: bin_myatscc
+#
+all:: ccomp/atslib/lib/libatslib.a
 #
 ######
 
@@ -56,16 +60,32 @@ LDFLAGS=
 ######
 #
 src2_patsopt: ; \
-$(MAKEJ4) -C src/CBOOT \
-  CCOMP=$(CCOMP) GCFLAG=$(GCFLAG) LDFLAGS=$(LDFLAGS) patsopt
+$(MAKEJ4) -C src/CBOOT patsopt \
+CCOMP=$(CCOMP) GCFLAG=$(GCFLAG) LDFLAGS=$(LDFLAGS) 
 #
 bin2_patsopt: src2_patsopt ; $(CPF) src/CBOOT/patsopt bin/patsopt
 #
 ######
 
-utl_atscc: ; $(MAKE) -C utils/atscc patscc
-bin_patscc: utl_atscc ; $(CPF) utils/atscc/patscc bin/patscc
+utl_atscc: ; \
+$(MAKE) -C utils/atscc patscc
+bin_patscc: utl_atscc ; \
+$(CPF) utils/atscc/patscc bin/patscc
 
+######
+
+utl_myatscc: ; \
+$(MAKE) -C utils/myatscc myatscc
+bin_myatscc: utl_myatscc ; \
+$(CPF) utils/myatscc/myatscc bin/myatscc
+
+######
+#
+src2_libatsopt: ; \
+$(MAKE) -C src/CBOOT CCOMP=$(CCOMP) libatsopt
+lib2_libatsopt: src2_libatsopt ; \
+$(CPF) src/CBOOT/libatsopt.a ccomp/atslib/lib/.
+#
 ######
 
 ccomp/atslib/lib/libatslib.a: ; $(MAKE) -C ccomp/atslib atslib
@@ -114,12 +134,12 @@ install_dirs: ; \
   cd "$(abs_top_srcdir)" && \
   $(MKDIR_P) $(PATSLIBHOME2)/bin && \
   if [ ! -d $(bindir2) ] ; then $(MKDIR_P) $(bindir2) ; fi && \
-  for x in share ccomp prelude libc libats ; do \
+  for x in share ccomp prelude libats contrib ; do \
     find "$$x" -type d -exec $(MKDIR_P) $(PATSLIBHOME2)/\{} \; -print; \
   done
 
 install_files_0: install_dirs ; \
-  for x in share ccomp/runtime prelude libc libats ; do \
+  for x in share ccomp/runtime prelude libats contrib ; do \
     cd "$(abs_top_srcdir)" && \
     $(INSTALL) -d $(PATSLIBHOME2)/"$$x" && \
     find "$$x" -type l -exec cp -d \{} $(PATSLIBHOME2)/\{} \; -print && \

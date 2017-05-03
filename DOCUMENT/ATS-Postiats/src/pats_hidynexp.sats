@@ -92,21 +92,26 @@ hipat_node =
 //
   | HIPempty of () // empty pattern
 //
-  | HIPcon of (* constructor pattern *)
-      (pckind, d2con, hisexp(*tysum*), labhipatlst)
+  | HIPcon of (* con-pattern *)
+    (
+      pckind
+    , d2con, hisexp(*tysum*), labhipatlst(*arg*)
+    ) (* HIPcon *)
   | HIPcon_any of (pckind, d2con) // HX: unused arg
 //
 (*
   | HIPlst of (hisexp(*element*), hipatlst)
 *)
-  | HIPrec of (* record pattern *)
-      (int(*knd*), labhipatlst, hisexp(*tyrec*))
+  | HIPrec of (* rec-pattern *)
+    (
+    int(*knd*), pckind, labhipatlst, hisexp(*tyrec*)
+    ) (* HIPrec *)
 //
   | HIPrefas of (d2var, hipat) // referenced pattern
 //
-  | HIPann of (hipat, hisexp)
+  | HIPann of (hipat, hisexp(*ann*))
 //
-  | HIPerr of () // HX: error indication
+  | HIPerr of ((*placeholder-for-error*)) // HX: error indication
 // end of [hipat_node]
 
 and labhipat = LABHIPAT of (label, hipat)
@@ -211,12 +216,14 @@ fun hipat_lst
 fun
 hipat_rec (
   loc: loc_t
-, hse: hisexp, knd: int, lhips: labhipatlst, hse_rec: hisexp
+, hse: hisexp
+, knd: int, pck: pckind, lhips: labhipatlst, hse_rec: hisexp
 ) : hipat // end of [hipat_rec]
 fun
 hipat_rec2 (
   loc: loc_t
-, hse: hisexp, knd: int, lhips: labhipatlst, hse_rec: hisexp
+, hse: hisexp
+, knd: int, pck: pckind, lhips: labhipatlst, hse_rec: hisexp
 ) : hipat // end of [hipat_rec2]
 
 (* ****** ****** *)
@@ -261,6 +268,7 @@ hidecl_node =
   | HIDlist of hideclist
 //
   | HIDsaspdec of (s2aspdec)
+  | HIDreassume of (s2cst)(*abstype*)
 //
   | HIDextype of (string(*name*), hisexp)
   | HIDextvar of (string(*name*), hidexp)
@@ -578,6 +586,12 @@ fun hidexplst_get_type (hdes: hidexplst): hisexplst
 fun labhidexplst_get_type (lhdes: labhidexplst): labhisexplst
 
 (* ****** ****** *)
+//
+fun hidexp_is_empty (hde: hidexp): bool
+fun hidexplst_isall_empty (hdes: hidexplst): bool
+fun hidexplst_isexi_empty (hdes: hidexplst): bool
+//
+(* ****** ****** *)
 
 fun hidexp_is_value (hde: hidexp): bool
 fun hidexp_is_lvalue (hde: hidexp): bool
@@ -759,11 +773,14 @@ hidexp_rec2 (
 ) : hidexp // end of [hidexp_rec2]
 
 (* ****** ****** *)
-
+//
 fun hidexp_seq
   (loc: loc_t, hse: hisexp, hdes: hidexplst): hidexp
 // end of [hidexp_seq]
-
+fun hidexp_seq_simplify
+  (loc: loc_t, hse: hisexp, hdes: hidexplst): hidexp
+// end of [hidexp_seq_simply]
+//
 (* ****** ****** *)
 
 fun hidexp_selab (
@@ -1001,13 +1018,20 @@ fun hidecl_is_empty (hid: hidecl): bool
 fun hidecl_none (loc: loc_t): hidecl
 fun hidecl_list (loc: loc_t, hids: hideclist): hidecl
 
-fun hidecl_saspdec (loc: loc_t, d2c: s2aspdec): hidecl
-
 (* ****** ****** *)
 //
-fun hidecl_extype
+fun
+hidecl_saspdec (loc: loc_t, d2c: s2aspdec): hidecl
+fun
+hidecl_reassume (loc: loc_t, s2c_abs: s2cst): hidecl
+//
+(* ****** ****** *)
+//
+fun
+hidecl_extype
   (loc: loc_t, name: string, hse_def: hisexp): hidecl
-fun hidecl_extvar
+fun
+hidecl_extvar
   (loc: loc_t, name: string, hde_def: hidexp): hidecl
 //
 (* ****** ****** *)

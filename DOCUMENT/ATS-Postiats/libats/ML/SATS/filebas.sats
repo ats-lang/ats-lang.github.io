@@ -82,15 +82,25 @@ fileref_get_lines_stringlst(filr: FILEref): stringlst0
 //
 (* ****** ****** *)
 //
-fun
-dirname_get_fnamelst(dirname: string): list0(string)
+fun{}
+streamize_fileref_char(inp: FILEref): stream_vt(char)
+//
+fun{}
+streamize_fileref_line(inp: FILEref): stream_vt(string)
 //
 (* ****** ****** *)
 //
+(*
 fun{}
-streamize_fileref_char(inp: FILEref): stream_vt(char)
+fileref_get_word$isalpha(c0: charNZ): bool
+*)
 fun{}
-streamize_fileref_line(inp: FILEref): stream_vt(string)
+streamize_fileref_word(inp: FILEref): stream_vt(string)
+//
+(* ****** ****** *)
+//
+fun
+dirname_get_fnamelst(dirname: string): list0(string)
 //
 (* ****** ****** *)
 //

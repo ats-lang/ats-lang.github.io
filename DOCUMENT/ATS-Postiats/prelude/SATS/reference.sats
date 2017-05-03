@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/reference.atxt
-** Time of generation: Sun Nov 20 21:18:17 2016
+** Time of generation: Sun Mar 26 07:39:45 2017
 *)
 
 (* ****** ****** *)
@@ -59,12 +59,20 @@ macdef ptr_of_ref = ref_get_ptr
 
 (* ****** ****** *)
 
-fun{a:vt0p} ref (x: a):<!wrt> ref a
-fun{a:vt0p} ref_make_elt (x: a):<!wrt> ref a
+fun{a:vt0p} ref(x: a):<!wrt> ref(a)
+fun{a:vt0p} ref_make_elt(x: a):<!wrt> ref(a)
 
-castfn ref_make_viewptr
-  {a:vt0p}{l:addr} (pf: a @ l | p: ptr l):<> ref (a)
+(* ****** ****** *)
+
+castfn
+ref_make_viewptr
+  {a:vt0p}{l:addr} (pf: a @ l | p: ptr l):<> ref(a)
 // end of [ref_make_viewptr]
+
+(* ****** ****** *)
+
+fun{a:vt0p}
+ref_make_type_elt(TYPE(a), a):<!wrt> ref(a)
 
 (* ****** ****** *)
 //

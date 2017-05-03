@@ -45,15 +45,22 @@ staload "./pats_global.sats"
 #include "./pats_params.hats"
 
 (* ****** ****** *)
+//
+staload UN = "prelude/SATS/unsafe.sats"
+staload _(*anon*) = "prelude/DATS/unsafe.dats"
+//
+(* ****** ****** *)
 
 local
-
-val the_PACKNAME = ref<Stropt> (stropt_none)
-
+//
+val
+the_PACKNAME =
+ref<Stropt>(stropt_none)
+//
 in (* in of [local] *)
 
-implement the_PACKNAME_get () = !the_PACKNAME
-
+implement
+the_PACKNAME_get() = !the_PACKNAME
 implement
 the_PACKNAME_set (opt) = !the_PACKNAME := opt
 
@@ -61,34 +68,35 @@ end // end of [local]
 
 implement
 the_PACKNAME_set_name
-  (ns) = the_PACKNAME_set (stropt_some (ns))
+  (ns) = the_PACKNAME_set(stropt_some (ns))
 // end of [the_PACKNAME_set]
 implement
 the_PACKNAME_set_none
-  ((*none*)) = the_PACKNAME_set (stropt_none)
+  ((*none*)) = the_PACKNAME_set(stropt_none)
 // end of [the_PACKNAME_set_none]
 
 (* ****** ****** *)
 
 local
 //
-val the_PKGRELOC = ref<int> (0)
-val the_PKGRELOC_decl = ref<ptr> (null)
+val the_ATSRELOC = ref<int>(0)
+val the_ATSRELOC_decl = ref<ptr>(null)
 //
 in (* in-of-local *)
 //
 implement
-the_PKGRELOC_get () = !the_PKGRELOC
+the_ATSRELOC_get() = !the_ATSRELOC
 implement
-the_PKGRELOC_set (flag) = !the_PKGRELOC := flag
+the_ATSRELOC_set(flag) = !the_ATSRELOC := flag
 //
 implement
-the_PKGRELOC_get_decl () = let
-  val d0c = !the_PKGRELOC_decl
-  val ((*void*)) = !the_PKGRELOC_decl := null in d0c
-end // end of [the_PKGRELOC_get_decl]
+the_ATSRELOC_get_decl() = let
+  val d0c = !the_ATSRELOC_decl
+  val ((*void*)) = !the_ATSRELOC_decl := null in d0c
+end // end of [the_ATSRELOC_get_decl]
+//
 implement
-the_PKGRELOC_set_decl (d0c) = !the_PKGRELOC_decl := d0c
+the_ATSRELOC_set_decl(d0c) = !the_ATSRELOC_decl := d0c
 //
 end // end of [local]
 
@@ -171,26 +179,58 @@ end // end of [local]
 local
 //
 typedef
-dirlst = List (string)
+dirlst = List0(string)
 //
 val
-the_IATS_dirlst = ref<dirlst> (list_nil)
+the_IATS_dirlst =
+ref<dirlst>(list_nil(*void*))
 //
 in (*in-of-local*)
 //
 implement
-the_IATS_dirlst_get () = !the_IATS_dirlst
+the_IATS_dirlst_get
+  () = !the_IATS_dirlst
 //
 implement
 the_IATS_dirlst_ppush
   (dir) = let
   val dirs = !the_IATS_dirlst
 in
-  !the_IATS_dirlst := list_cons (dir, dirs)
+  !the_IATS_dirlst := list_cons(dir, dirs)
 end // end of [the_IATS_dirlst_ppush]
+//
+(*
+//
+// HX-2017-02-01: reverted
+// HX-2017-01-31: push from the back!
+//
+implement
+the_IATS_dirlst_ppushb
+  (dir) = let
+  val dirs = !the_IATS_dirlst
+in
+  !the_IATS_dirlst :=
+    list_of_list_vt(list_extend(dirs, dir))
+end // end of [the_IATS_dirlst_ppushb]
+*)
 //
 end // end of [local]
 
+(* ****** ****** *)
+(*
+local
+//
+val rasmflag = ref<int> (1)
+//
+in
+//
+implement
+the_ASSUME_check_get() = !rasmflag
+implement
+the_ASSUME_check_set(flag) = !rasmflag := flag
+//
+end // end of [local]
+*)
 (* ****** ****** *)
 
 local

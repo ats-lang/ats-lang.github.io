@@ -1,3 +1,4 @@
+######
 #
 # The main Makefile
 # for C-bootstrapping ATS2
@@ -339,11 +340,11 @@ AR=ar
 MV=mv
 #
 libatsopt: \
-pats_main_dats.o \
+pats_main_none_dats.o \
 $(OBJECTSstadyn) \
 prelude_libats.o \
 libc_libats.o libats_libats.o ; \
-$(AR) -r libatsopt.a $^ $(gcats_o) && $(MV) -f libatsopt.a $(PATSHOME)/utils/libatsopt/.
+$(AR) -r libatsopt.a $^ $(gcats_o)
 #
 ######
 #

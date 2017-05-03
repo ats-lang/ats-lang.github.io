@@ -135,6 +135,9 @@ tmprimval2pmv2
 implement
 tmprimval2pmv
   (tpmv) = let
+(*
+val () = println! ("tmprimval2pmv")
+*)
 in
 //
 case+ tpmv of
@@ -179,7 +182,8 @@ fprint_tmprimval
   (out, x) = let
 //
 macdef
-prstr (s) = fprint_string (out, ,(s))
+prstr(str) =
+fprint_string (out, ,(str))
 //
 in
 //
@@ -218,9 +222,13 @@ tmpmovlst_add
   (tmvlst, tpmv1, tpmv2) = let
 //
 (*
-val out = stdout_ref
-val () = fprintln! (out, "tmpmovlst_add: tpmv1 = ", tpmv1)
-val () = fprintln! (out, "tmpmovlst_add: tpmv2 = ", tpmv2)
+val
+out = stdout_ref
+//
+val () =
+fprintln! (out, "tmpmovlst_add: tpmv1 = ", tpmv1)
+val () =
+fprintln! (out, "tmpmovlst_add: tpmv2 = ", tpmv2)
 *)
 //
 in
@@ -230,7 +238,7 @@ case+ tpmv2 of
 | TPMVsome (tmp2, _) =>
   (
     tmvlst := list_vt_cons ((tpmv1, tmp2), tmvlst)
-  )
+  ) (* end of [TPMVsome] *)
 end // end of [tmpmovlst_add]
 
 (* ****** ****** *)
@@ -1374,17 +1382,19 @@ case+
   end // end of [HIPcon_any]
 //
 | HIPrec
-    (knd, lxs, hse_rec) => let
-    val tl = tmplab_make (loc0)
-    val mtks = addrparen (mtks)
-    val mtks = addselect (tpmv, hse_rec, lxs, mtks)
-    val ptcmp0 = PTCMPreclparen (tpmv, tl)
-    val ptcmps = auxcomplst (lvl0, mtks)
+  (
+    knd, pck, lxs, hse_rec
+  ) => let
+    val tl = tmplab_make(loc0)
+    val mtks = addrparen(mtks)
+    val mtks = addselect(tpmv, hse_rec, lxs, mtks)
+    val ptcmp0 = PTCMPreclparen(tpmv, tl)
+    val ptcmps = auxcomplst(lvl0, mtks)
   in
     list_vt_cons (ptcmp0, ptcmps)
   end // end of [HIPrec]
 //
-| HIPrefas (d2v, hip) => let
+| HIPrefas(d2v, hip) => let
     val (
     ) = d2var_set_level (d2v, lvl0)
     val ptcmp0 = PTCMPasvar (d2v, tpmv)
@@ -1393,13 +1403,14 @@ case+
     list_vt_cons (ptcmp0, ptcmps)
   end // end of [HIPrefas]
 //
-| HIPann (hip, _(*ann*)) =>
+| HIPann(hip, _(*ann*)) =>
     auxcomplst_pat (lvl0, tpmv, hip, mtks)
+  // end of [HIPann]
 //
 | _ => let
     val () = prerr_interror_loc (loc0)
     val () = prerrln! (": himatchlst_patcomp: auxcomplst_pat: hip0 = ", hip0)
-    val () = assertloc (false) in list_vt_nil ()
+    val () = assertloc (false) in list_vt_nil(*void*)
   end // end of [_]
 //
 end // end of [auxcomplst_pat]
@@ -1606,9 +1617,9 @@ in
 case+ opt of
 | Some (knd) => (
   case+ ptck of
-  | PATCKcon (d2c) =>
-      ccompenv_add_freeconenv_if (env, pmv, knd, d2c)
-  | _ => ((*nothing*))
+  | PATCKcon(d2c) =>
+      ccompenv_add_freeconenv_if(env, pmv, knd, d2c)
+  | _(*non-PATCKcon*) => ((*nothing*))
   ) (* end of [Some] *)
 | None ((*void*)) => ()
 //
@@ -1620,22 +1631,26 @@ fun
 fptcmplst
 (
   env: !ccompenv
-, xs: patcomplst
+, xs0: patcomplst
 , res1: instrlst_vt
 , res2: instrlst_vt
 ) : instrlst_vt = let
+(*
+val () = println! ("fptcmplst")
+*)
 in
 //
-case+ xs of
+case+ xs0 of
 | list_nil() => let
-    val res2 = list_vt_reverse (res2)
+    val
+    res2 = list_vt_reverse(res2)
   in
-    list_vt_reverse_append (res1, res2)
+    list_vt_reverse_append(res1, res2)
   end // end of [list_nil]
-| list_cons(x, xs) => let
-  in
-    fptcmplst2 (env, x, xs, res1, res2)
-  end // end of [list_cons]
+| list_cons(x0, xs1) =>
+  (
+    fptcmplst2(env, x0, xs1, res1, res2)
+  ) (* end of [list_cons] *)
 //
 end (* end of [fptcmplst] *)
 
@@ -1643,72 +1658,78 @@ and
 fptcmplst2
 (
   env: !ccompenv
-, x: patcomp, xs: patcomplst
+, x0: patcomp, xs1: patcomplst
 , res1: instrlst_vt
 , res2: instrlst_vt
 ) : instrlst_vt = let
+(*
+val () = println! ("fptcmplst2")
+*)
 in
 //
-case+ x of
-| PTCMPany (d2v) =>
-    fptcmplst (env, xs, res1, res2)
+case+ x0 of
+| PTCMPany(d2v) =>
+    fptcmplst(env, xs1, res1, res2)
   // end of [PTCMPany]
-| PTCMPvar (d2v, tpmv) => let
-    val pmv = tmprimval2pmv2 (tpmv, d2v)
-    val (
-    ) = ccompenv_add_vbindmapenvall (env, d2v, pmv)
+| PTCMPvar(d2v, tpmv) => let
+    val pmv = tmprimval2pmv2(tpmv, d2v)
+    val ((*void*)) =
+      ccompenv_add_vbindmapenvall(env, d2v, pmv)
     val res2 = let
-      val ismut = d2var_is_mutabl (d2v)
+      val ismut = d2var_is_mutabl(d2v)
     in
-      if ismut then res2 else addtpmv (res2, tpmv)
+      if ismut then res2 else addtpmv(res2, tpmv)
     end : instrlst_vt // end of [val]
   in
-    fptcmplst (env, xs, res1, res2)
+    fptcmplst (env, xs1, res1, res2)
   end // end of [PTCMPvar]
-| PTCMPasvar (d2v, tpmv) => let
-    val pmv = tmprimval2pmv2 (tpmv, d2v)
-    val (
-    ) = ccompenv_add_vbindmapenvall (env, d2v, pmv)
+| PTCMPasvar(d2v, tpmv) => let
+    val pmv = tmprimval2pmv2(tpmv, d2v)
+    val ((*void*)) =
+      ccompenv_add_vbindmapenvall(env, d2v, pmv)
   in
-    fptcmplst (env, xs, res1, res2)
+    fptcmplst (env, xs1, res1, res2)
   end // end of [PTCMPasvar]
 //
 | PTCMPpatlparen
   (
     ptck, tpmv, tlab, opt, kntr
   ) => let
-    val res1 = addtpmv (res1, tpmv)
-    val res1 = addtlab (res1, tlab)
-    val pmv = tmprimval2pmv (tpmv)
-    val ((*void*)) = addfreecon (env, pmv, opt, ptck)
-    val ins = instr_patck (pmv.primval_loc, pmv, ptck, !kntr)
-    val res1 = list_vt_cons (ins, res1)
+    val res1 = addtpmv(res1, tpmv)
+    val res1 = addtlab(res1, tlab)
+//
+    val pmv = tmprimval2pmv(tpmv)
+    val ((*void*)) = addfreecon(env, pmv, opt, ptck)
+    val ins = instr_patck(pmv.primval_loc, pmv, ptck, !kntr)
+//
+    val res1 = list_vt_cons(ins, res1)
+//
   in
-    fptcmplst (env, xs, res1, res2)
+    fptcmplst (env, xs1, res1, res2)
   end // end of [PTCMPreclparen]
 //
 | PTCMPreclparen
     (tpmv, tlab) => let
-    val res1 = addtpmv (res1, tpmv)
-    val res1 = addtlab (res1, tlab)
+    val res1 = addtpmv(res1, tpmv)
+    val res1 = addtlab(res1, tlab)
   in
-    fptcmplst (env, xs, res1, res2)
+    fptcmplst (env, xs1, res1, res2)
   end // end of [PTCMPreclparen]
 //
 | PTCMPtmplabend
     (tlab) => let
-    val res1 = addtlab (res1, tlab)
+    val res1 = addtlab(res1, tlab)
   in
-    fptcmplst (env, xs, res1, res2)
+    fptcmplst (env, xs1, res1, res2)
   end // end of [PTCMPtmplabend]
 | PTCMPtmplabgua
     (tlab, _) => let
-    val res1 = addtlab (res1, tlab)
+    val res1 = addtlab(res1, tlab)
   in
-    fptcmplst (env, xs, res1, res2)
+    fptcmplst (env, xs1, res1, res2)
   end // end of [PTCMPtmplabgua]
 //
-| _ => fptcmplst (env, xs, res1, res2)
+| _ (*non-PTCMP*) => fptcmplst(env, xs1, res1, res2)
 //
 end (* end of [fptcmplst2] *)
 
@@ -1717,14 +1738,20 @@ in (* in of [local] *)
 implement
 patcomplst_ccomp
   (env, xs) = let
+//
+(*
+val () =
+println! ("patcomplst_ccomp")
+*)
+//
 in
-  fptcmplst (env, xs, list_vt_nil, list_vt_nil)
+  fptcmplst (env, xs, list_vt_nil(), list_vt_nil())
 end // end of [patcomplst_ccomp]
 
 end // end of [local]
 
 (* ****** ****** *)
-
+//
 extern
 fun
 higmat_ccomp
@@ -1732,6 +1759,7 @@ higmat_ccomp
   env: !ccompenv, res: !instrseq
 , lvl0: int, hig: higmat, fail: patckont
 ) : void // end of [higmat_ccomp]
+//
 extern
 fun
 higmatlst_ccomp
@@ -1739,7 +1767,7 @@ higmatlst_ccomp
   env: !ccompenv, res: !instrseq
 , lvl0: int, higs: higmatlst, fail: patckont
 ) : void // end of [higmatlst_ccomp]
-
+//
 (* ****** ****** *)
 
 implement
@@ -1764,10 +1792,10 @@ hig.higmat_pat of
 ) : hipat // end of [val]
 //
 val
-pmv = hidexp_ccomp (env, res, hde)
+pmv = hidexp_ccomp(env, res, hde)
 //
-val () = hipatck_ccomp (env, res, fail, hip, pmv)
-val () = himatch_ccomp (env, res, lvl0, hip, pmv)
+val () = hipatck_ccomp(env, res, fail, hip, pmv)
+val () = himatch_ccomp(env, res, lvl0, hip, pmv)
 //
 in
   // nothing
@@ -1827,7 +1855,7 @@ case+ higs of
     instrseq_add_comment(res, "ibranch-guard:")
     val fail = patcomplst_find_guafail (ptcmps)
   in
-    higmatlst_ccomp (env, res, lvl0, higs, fail)
+    higmatlst_ccomp(env, res, lvl0, higs, fail)
   end // end of [list_cons]
 //
 ) : void // end of [val]
@@ -1841,14 +1869,14 @@ pmvs_freecon =
 val () =
   instrseq_add_freeconlst(res, loc, pmvs_freecon)
 //
-val () = instrseq_add_comment (res, "ibranch-mbody:")
+val () = instrseq_add_comment(res, "ibranch-mbody:")
 //
 val () =
-hidexp_ccomp_ret (env, res, tmpret, hicl.hiclau_body)
+hidexp_ccomp_ret(env, res, tmpret, hicl.hiclau_body)
 //
-val () = ccompenv_pop (pf0 | env)
+val () = ccompenv_pop(pf0 | env)
 //
-val inss = instrseq_get_free (res)
+val inss = instrseq_get_free(res)
 //
 (*
 val () =
@@ -1858,7 +1886,7 @@ fprintln!
 *)
 //
 in
-  ibranch_make (hicl.hiclau_loc, inss)
+  ibranch_make(hicl.hiclau_loc, inss)
 end (* end of [auxcl] *)
 
 fun
@@ -1882,9 +1910,9 @@ case+ hicls of
     val-list_cons(ptcmps, ptcmpss) = ptcmpss
 //
     val ibranch =
-      auxcl (env, lvl0, hicl, ptcmps, tmpret)
+      auxcl(env, lvl0, hicl, ptcmps, tmpret)
     val ibranchs =
-      auxclist (env, lvl0, hicls, ptcmpss, tmpret)
+      auxclist(env, lvl0, hicls, ptcmpss, tmpret)
 //
   in
     list_cons(ibranch, ibranchs)
@@ -1901,16 +1929,16 @@ hiclaulst_ccomp
 ) = let
 //
 val ptcmpss =
-  hiclaulst_patcomp (lvl0, hicls, pmvs)
+  hiclaulst_patcomp(lvl0, hicls, pmvs)
 val ((*void*)) =
-  patcomplstlst_jumpfill (ptcmpss, fail)
+  patcomplstlst_jumpfill(ptcmpss, fail)
 //
 (*
 val () = fprintln! (stdout_ref, "ptcmpss =\n", ptcmpss)
 *)
 //
 in
-  auxclist (env, lvl0, hicls, ptcmpss, tmpret)
+  auxclist(env, lvl0, hicls, ptcmpss, tmpret)
 end // end of [hiclaulst_ccomp]
 
 end // end of [local]

@@ -73,7 +73,7 @@ overload isneqz with string_isnot_empty
 fun{}
 string_is_prefix
 (
-  str1: string, str2: string
+  str1: NSH(string), str2: NSH(string)
 ) :<> bool // string_is_prefix
 //
 (* ****** ****** *)
@@ -84,13 +84,13 @@ string_is_prefix
 fun{}
 string_is_suffix
 (
-  str1: string, str2: string
+  str1: NSH(string), str2: NSH(string)
 ) :<> bool // string_is_suffix
 //
 (* ****** ****** *)
 //
 fun{}
-string_copy(x: NSH(string)):<> string
+string_copy(str: NSH(string)):<> string
 //
 (* ****** ****** *)
 //
@@ -108,18 +108,22 @@ string_make_substring
 ) :<> string // end-of-function
 
 (* ****** ****** *)
-
+//
 fun{}
 string_append
-  (x1: NSH(string), x2: NSH(string)):<> string
+(
+  x1: NSH(string), x2: NSH(string)
+) :<> string // end of [string_append]
+//
 overload + with string_append of 0
-
+//
 (* ****** ****** *)
 //
 fun{}
 string_append3
 (
-  x1: NSH(string), x2: NSH(string), x3: NSH(string)
+  x1: NSH(string)
+, x2: NSH(string), x3: NSH(string)
 ) :<> string // end of [string_append3]
 //
 (* ****** ****** *)
@@ -133,20 +137,32 @@ string_append4
 fun{}
 string_append5
 (
-  x1: NSH(string), x2: NSH(string)
-, x3: NSH(string), x4: NSH(string), x5: NSH(string)
+  x1: NSH(string)
+, x2: NSH(string), x3: NSH(string)
+, x4: NSH(string), x5: NSH(string)
 ) :<> string // end of [string_append5]
 fun{}
 string_append6
 (
-  x1: NSH(string), x2: NSH(string), x3: NSH(string)
-, x4: NSH(string), x5: NSH(string), x6: NSH(string)
+  x1: NSH(string), x2: NSH(string)
+, x3: NSH(string), x4: NSH(string)
+, x5: NSH(string), x6: NSH(string)
 ) :<> string // end of [string_append6]
 //
 (* ****** ****** *)
 //
 fun{}
-stringlst_concat(xs: list0 (string)):<> string
+mul_int_string
+(
+  ntime: int, x0: NSH(string)
+) :<> string // end-of-function
+//
+overload * with mul_int_string of 0
+//
+(* ****** ****** *)
+//
+fun{}
+stringlst_concat(xs: list0(string)):<> string
 //
 (* ****** ****** *)
 
@@ -163,6 +179,23 @@ string_tabulate
 (
   n0: size_t(n), fopr: (sizeLt(n)) -<cloref1> charNZ
 ) : string // end of [string_tabulate]
+//
+(* ****** ****** *)
+//
+fun{}
+string_exists
+  (x: string, f: cfun(char, bool)): bool
+fun{}
+string_iexists
+  (x: string, f: cfun2(int, char, bool)): bool
+//
+fun{}
+string_exists_method(string)(cfun(char, bool)): bool
+fun{}
+string_iexists_method(string)(cfun2(int, char, bool)): bool
+//
+overload .exists with string_exists_method
+overload .iexists with string_iexists_method
 //
 (* ****** ****** *)
 //

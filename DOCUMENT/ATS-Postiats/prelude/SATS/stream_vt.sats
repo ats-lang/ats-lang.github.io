@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/stream_vt.atxt
-** Time of generation: Sat Nov 26 08:26:49 2016
+** Time of generation: Sun Jan  1 19:08:53 2017
 *)
 
 (* ****** ****** *)
@@ -112,19 +112,25 @@ stream2list_vt
 // end of [stream2list_vt]
 
 (* ****** ****** *)
-
+//
+fun
+{a:vt0p}
+stream_vt_free
+  (xs: stream_vt(a)):<!wrt> void
+//
 fun{a:t0p}
-stream_vt_free (xs: stream_vt a):<!wrt> void
-fun{a:t0p}
-stream_vt_con_free (xs: stream_vt_con(a)):<!wrt> void
-
+stream_vt_con_free
+  (xs_con: stream_vt_con(a)):<!wrt> void
+//
 (* ****** ****** *)
-
-fun{a:t0p}
+//
+fun{a:vt0p}
 stream_vt_takeLte
   (xs: stream_vt(INV(a)), n: intGte(0)): stream_vt(a)
 // end of [stream_vt_takeLte]
-
+//
+overload .takeLte with stream_vt_takeLte
+//
 (* ****** ****** *)
 //
 fun{a:t0p}

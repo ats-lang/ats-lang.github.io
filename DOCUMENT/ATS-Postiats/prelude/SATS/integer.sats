@@ -36,7 +36,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/integer.atxt
-** Time of generation: Tue Dec  6 09:50:54 2016
+** Time of generation: Mon Jan 30 09:02:14 2017
 *)
 
 (* ****** ****** *)
@@ -228,8 +228,8 @@ overload isneqz with g0int_isneqz of 0
 (* ****** ****** *)
 
 typedef
-g0int_cmp_type (tk:tk) =
-  (g0int (tk), g0int (tk)) -<fun0> bool
+g0int_cmp_type(tk:tk) =
+  (g0int(tk), g0int(tk)) -<fun0> bool
 // end of [g0int_cmp_type]
 
 fun
@@ -261,12 +261,18 @@ overload != with g0int_neq of 0
 overload <> with g0int_neq of 0
 
 (* ****** ****** *)
-
+//
+fun{tk:tk}
+g0int_sgn(g0int(tk)): intBtwe(~1,1)
+//
+(* ****** ****** *)
+//
 fun{tk:tk}
 g0int_compare
-  (x: g0int (tk), y: g0int (tk)):<> int
+  (x: g0int(tk), y: g0int(tk)):<> int
+//
 overload compare with g0int_compare of 0
-
+//
 (* ****** ****** *)
 
 fun

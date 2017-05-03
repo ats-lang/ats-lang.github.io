@@ -372,7 +372,7 @@ primval_select2
 implement
 primval_selptr
   (loc, hse, pmv, hse_rt, pmls) =
-  primval_make_node (loc, hse, PMVselptr (pmv, hse_rt, pmls))
+  primval_make_node(loc, hse, PMVselptr (pmv, hse_rt, pmls))
 // end of [primval_selptr]
 
 (* ****** ****** *)
@@ -380,22 +380,24 @@ primval_selptr
 implement
 primval_ptrof
   (loc, hse, pmv) =
-  primval_make_node (loc, hse, PMVptrof (pmv))
+  primval_make_node(loc, hse, PMVptrof(pmv))
 // end of [primval_ptrof]
 
 implement
-primval_ptrofsel (
+primval_ptrofsel
+(
   loc, hse, pmv, hse_rt, pmls
 ) =
-  primval_make_node (loc, hse, PMVptrofsel (pmv, hse_rt, pmls))
-// end of [primval_ptrofsel]
+(
+  primval_make_node(loc, hse, PMVptrofsel(pmv, hse_rt, pmls))
+) // end of [primval_ptrofsel]
 
 (* ****** ****** *)
 
 implement
 primval_refarg
   (loc, hse, knd, freeknd, pmv) =
-  primval_make_node (loc, hse, PMVrefarg (knd, freeknd, pmv))
+  primval_make_node(loc, hse, PMVrefarg(knd, freeknd, pmv))
 // end of [primval_refarg]
 
 (* ****** ****** *)
@@ -403,13 +405,13 @@ primval_refarg
 implement
 primval_funlab
   (loc, hse, fl) =
-  primval_make_node (loc, hse, PMVfunlab (fl))
+  primval_make_node(loc, hse, PMVfunlab(fl))
 // end of [primval_funlab]
 
 implement
 primval_cfunlab
   (loc, hse, knd, fl) =
-  primval_make_node (loc, hse, PMVcfunlab (knd, fl))
+  primval_make_node(loc, hse, PMVcfunlab(knd, fl))
 // end of [primval_cfunlab]
 
 (* ****** ****** *)
@@ -417,7 +419,7 @@ primval_cfunlab
 implement
 primval_d2vfunlab
   (loc, hse, d2v, fl) =
-  primval_make_node (loc, hse, PMVd2vfunlab (d2v, fl))
+  primval_make_node(loc, hse, PMVd2vfunlab(d2v, fl))
 // end of [primval_d2vfunlab]
 
 (* ****** ****** *)
@@ -430,7 +432,7 @@ val loc = pmv_funval.primval_loc
 val hse = pmv_funval.primval_type
 //
 in
-  primval_make_node (loc, hse, PMVlamfix (knd, pmv_funval))
+  primval_make_node(loc, hse, PMVlamfix(knd, pmv_funval))
 end // end of [primval_lamfix]
 
 (* ****** ****** *)
@@ -438,12 +440,12 @@ end // end of [primval_lamfix]
 implement
 primval_tmpltcst
   (loc, hse, d2c, t2mas) =
-  primval_make_node(loc, hse, PMVtmpltcst (d2c, t2mas))
+  primval_make_node(loc, hse, PMVtmpltcst(d2c, t2mas))
 // end of [primval_tmpltcst]
 implement
 primval_tmpltvar
   (loc, hse, d2v, t2mas) =
-  primval_make_node(loc, hse, PMVtmpltvar (d2v, t2mas))
+  primval_make_node(loc, hse, PMVtmpltvar(d2v, t2mas))
 // end of [primval_tmpltvar]
 
 (* ****** ****** *)
@@ -451,16 +453,25 @@ primval_tmpltvar
 implement
 primval_tmpltcstmat
   (loc, hse, d2c, t2mas, mat) =
-  primval_make_node
-    (loc, hse, PMVtmpltcstmat (d2c, t2mas, mat))
-// end of [primval_tmpltcstmat]
+(
+primval_make_node(loc, hse, PMVtmpltcstmat(d2c, t2mas, mat))
+) // end of [primval_tmpltcstmat]
 //
 implement
 primval_tmpltvarmat
   (loc, hse, d2v, t2mas, mat) =
-  primval_make_node
-    (loc, hse, PMVtmpltvarmat (d2v, t2mas, mat))
-// end of [primval_tmpltvarmat]
+(
+primval_make_node(loc, hse, PMVtmpltvarmat(d2v, t2mas, mat))
+) // end of [primval_tmpltvarmat]
+//
+(* ****** ****** *)
+//
+(*
+implement
+primval_tempenver
+  (loc, hse, d2vs) =
+  primval_make_node(loc, hse, PMVtempenver(d2vs))
+*)
 //
 (* ****** ****** *)
 
@@ -810,7 +821,8 @@ instr_store_ptrofs
   loc, pmv_l, hse_rt, ofs, pmv_r
 ) = let
 //
-val ins = INSstore_ptrofs (pmv_l, hse_rt, ofs, pmv_r)
+val ins =
+INSstore_ptrofs (pmv_l, hse_rt, ofs, pmv_r)
 //
 in
   instr_make_node (loc, ins)
@@ -822,7 +834,8 @@ instr_xstore_ptrofs
   loc, tmp, pmv_l, hse_rt, ofs, pmv_r
 ) = let
 //
-val ins = INSxstore_ptrofs (tmp, pmv_l, hse_rt, ofs, pmv_r)
+val ins =
+INSxstore_ptrofs(tmp, pmv_l, hse_rt, ofs, pmv_r)
 //
 in
   instr_make_node (loc, ins)
@@ -842,14 +855,21 @@ implement
 instr_move_delay
   (loc, tmp, lin, hse, thunk) = let
 in
-  instr_make_node (loc, INSmove_delay (tmp, lin, hse, thunk))
+//
+instr_make_node
+  (loc, INSmove_delay (tmp, lin, hse, thunk))
+// instr_make_node
+//
 end // end of [instr_move_delay]
 
 implement
 instr_move_lazyeval
   (loc, tmp, lin, hse, pmv_lazy) = let
 in
-  instr_make_node (loc, INSmove_lazyeval (tmp, lin, hse, pmv_lazy))
+//
+instr_make_node
+  (loc, INSmove_lazyeval (tmp, lin, hse, pmv_lazy))
+// instr_make_node
 end // end of [instr_move_lazyeval]
 
 (* ****** ****** *)
@@ -865,11 +885,13 @@ end // end of [instr_trywith]
 
 implement
 instr_move_list_nil
-  (loc, tmp) = instr_make_node (loc, INSmove_list_nil (tmp))
+  (loc, tmp) =
+  instr_make_node (loc, INSmove_list_nil (tmp))
 // end of [instr_move_list_nil]
 implement
 instr_pmove_list_nil
-  (loc, tmp) = instr_make_node (loc, INSpmove_list_nil (tmp))
+  (loc, tmp) =
+  instr_make_node (loc, INSpmove_list_nil (tmp))
 // end of [instr_pmove_list_nil]
 implement
 instr_pmove_list_cons
@@ -882,13 +904,15 @@ instr_pmove_list_cons
 implement
 instr_move_list_phead
   (loc, tmphd, tmptl, hse_elt) =
-  instr_make_node (loc, INSmove_list_phead (tmphd, tmptl, hse_elt))
+  instr_make_node
+  (loc, INSmove_list_phead (tmphd, tmptl, hse_elt))
 // end of [instr_move_list_phead]
 
 implement
 instr_move_list_ptail
   (loc, tl_new, tl_old, hse_elt) =
-  instr_make_node (loc, INSmove_list_ptail (tl_new, tl_old, hse_elt))
+  instr_make_node
+  (loc, INSmove_list_ptail (tl_new, tl_old, hse_elt))
 // end of [instr_move_list_ptail]
 
 (* ****** ****** *)
@@ -896,7 +920,8 @@ instr_move_list_ptail
 implement
 instr_move_arrpsz_ptr
   (loc, tmp, psz) =
-  instr_make_node (loc, INSmove_arrpsz_ptr (tmp, psz))
+  instr_make_node
+  (loc, INSmove_arrpsz_ptr (tmp, psz))
 // end of [instr_move_arrpsz_ptr]
 
 (* ****** ****** *)
@@ -904,55 +929,74 @@ instr_move_arrpsz_ptr
 implement
 instr_store_arrpsz_asz
   (loc, tmp, asz) =
-  instr_make_node (loc, INSstore_arrpsz_asz (tmp, asz))
+  instr_make_node
+  (loc, INSstore_arrpsz_asz (tmp, asz))
 // end of [instr_store_arrpsz_asz]
 
 implement
 instr_store_arrpsz_ptr
   (loc, tmp, hse_elt, asz) =
-  instr_make_node (loc, INSstore_arrpsz_ptr (tmp, hse_elt, asz))
-// end of [instr_store_arrpsz_ptr]
+(
+instr_make_node
+(
+loc, INSstore_arrpsz_ptr(tmp, hse_elt, asz)
+)
+) // end of [instr_store_arrpsz_ptr]
 
 (* ****** ****** *)
 
 implement
 instr_update_ptrinc
   (loc, tmpelt, hse_elt) =
-  instr_make_node (loc, INSupdate_ptrinc (tmpelt, hse_elt))
+  instr_make_node
+  (loc, INSupdate_ptrinc (tmpelt, hse_elt))
 // end of [instr_update_ptrinc]
 
 implement
 instr_update_ptrdec
   (loc, tmpelt, hse_elt) =
-  instr_make_node (loc, INSupdate_ptrdec (tmpelt, hse_elt))
+  instr_make_node
+  (loc, INSupdate_ptrdec (tmpelt, hse_elt))
 // end of [instr_update_ptrdec]
 
 (* ****** ****** *)
 //
 implement
 instr_closure_initize
-  (loc, tmpret, flab) =
-  instr_make_node (loc, INSclosure_initize (tmpret, flab))
+  (loc, tmpret, knd, flab) =
+  instr_make_node
+  (loc, INSclosure_initize(tmpret, knd, flab))
 //
 (* ****** ****** *)
 
 implement
 instr_tmpdec
-  (loc, tmp) = instr_make_node (loc, INStmpdec (tmp))
+  (loc, tmp) =
+  instr_make_node(loc, INStmpdec(tmp))
 // end of [instr_tmpdec]
 
 (* ****** ****** *)
 
 implement
 instr_extvar
-  (loc, xnm, pmv) = instr_make_node (loc, INSextvar (xnm, pmv))
+  (loc, xnm, pmv) =
+  instr_make_node(loc, INSextvar(xnm, pmv))
 // end of [instr_extvar]
 
 (* ****** ****** *)
 
 implement
 instr_dcstdef
-  (loc, d2c, pmv) = instr_make_node (loc, INSdcstdef (d2c, pmv))
+  (loc, d2c, pmv) =
+  instr_make_node(loc, INSdcstdef(d2c, pmv))
+// end of [instr_dcstdef]
+
+(* ****** ****** *)
+
+implement
+instr_tempenver
+  (loc, d2vs) =
+  instr_make_node(loc, INStempenver( d2vs ))
 // end of [instr_dcstdef]
 
 (* ****** ****** *)

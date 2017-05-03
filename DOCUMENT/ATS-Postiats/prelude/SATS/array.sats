@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/array.atxt
-** Time of generation: Sun Nov 20 21:18:19 2016
+** Time of generation: Mon Feb 20 12:15:44 2017
 *)
 
 (* ****** ****** *)
@@ -691,7 +691,7 @@ fun
 array_quicksort_stdlib
   {n:int}
 (
-  A: &(@[INV(a)][n]) >> @[a][n], n: size_t n, cmp: cmpref (a)
+  A: &(@[INV(a)][n]) >> @[a][n], n: size_t(n), cmp: cmpref(a)
 ) :<!wrt> void // end of [array_quicksort_stdlib]
 
 (* ****** ****** *)
@@ -727,12 +727,17 @@ a,b:vt0p}{c:vt0p
 //
 (* ****** ****** *)
 //
+(*
+HX-2016:
+Fisher–Yates shuffle
+*)
+//
 fun{a:vt0p}
 array_permute{n:int}
   (A: &(@[INV(a)][n]) >> @[a][n], n: size_t(n)): void
 //
 fun{(*void*)}
-array_permute$randint {n:int | n > 0} (size_t n): sizeLt (n)
+array_permute$randint{n:int | n > 0}(size_t(n)): sizeLt(n)
 //
 (* ****** ****** *)
 

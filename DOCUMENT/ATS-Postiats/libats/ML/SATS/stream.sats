@@ -45,10 +45,24 @@ staload "libats/ML/SATS/basis.sats"
 (* ****** ****** *)
 //
 fun
+{a:t0p}
+stream2list0
+  (xs: stream(a)):<!laz> list0(a)
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+stream_make_list0
+  (xs: list0(a)):<!laz> stream(a)
+//
+(* ****** ****** *)
+//
+fun
 {a:t0p}{b:t0p}
 stream_map_method
 (
-  stream(a), TYPE(b)
+  stream(INV(a)), TYPE(b)
 ) (fopr: (a) -<cloref> b):<!laz> stream(b)
 //
 overload .map with stream_map_method
@@ -59,7 +73,7 @@ fun
 {a:t0p}{b:t0p}
 stream_imap_method
 (
-  stream(a), TYPE(b)
+  stream(INV(a)), TYPE(b)
 ) (fopr: (intGte(0), a) -<cloref> b):<!laz> stream(b)
 //
 overload .imap with stream_imap_method
@@ -69,8 +83,12 @@ overload .imap with stream_imap_method
 fun
 {a:t0p}
 stream_filter_method
-  (xs: stream(a))
-  (pred: (a) -<cloref> bool):<!laz> stream(a)
+(
+  xs: stream(INV(a))
+)
+(
+  pred: (a) -<cloref> bool
+) :<!laz> stream(a) // end-of-fun
 //
 overload .filter with stream_filter_method
 //
@@ -80,8 +98,8 @@ fun{
 res:t0p}{x:t0p
 } stream_scan_method
 (
-  stream(INV(x)), TYPE(res))(res, (res, x) -<cloref> res
-) :<!laz> stream(res) // end-of-function
+  stream(INV(x)), TYPE(res)
+) (res, (res, x) -<cloref> res) :<!laz> stream(res)
 //
 overload .scan with stream_scan_method
 //
@@ -90,7 +108,7 @@ overload .scan with stream_scan_method
 fun
 {a:t0p}
 stream_foreach_method
-  (xs: stream(a))(fwork: (a) -<cloref1> void): void
+  (xs: stream(INV(a)))(fwork: (a) -<cloref1> void): void
 //
 overload .foreach with stream_foreach_method
 //
@@ -99,7 +117,7 @@ overload .foreach with stream_foreach_method
 fun{
 res:vt0p}{a:t0p
 } stream_foldleft_method
-  (stream(a), TYPE(res))(res, (res, a) -<cloref1> res): res
+  (stream(INV(a)), TYPE(res))(res, (res, a) -<cloref1> res): res
 //
 overload .foldleft with stream_foldleft_method
 //

@@ -70,17 +70,22 @@ staload "./pats_hidynexp.sats"
 implement
 fprint_hipat
   (out, x) = let
-  macdef prstr (s) = fprint_string (out, ,(s))
+//
+macdef
+prstr(str) =
+fprint_string (out, ,(str))
+//
 in
 //
-case+ x.hipat_node of
+case+
+x.hipat_node of
 //
-| HIPany (d2v) => {
+| HIPany(d2v) => {
     val () = prstr "HIPany("
     val () = fprint_d2var (out, d2v)
     val () = prstr ")"
   } (* end of [HIPany] *)
-| HIPvar (d2v) => {
+| HIPvar(d2v) => {
     val () = prstr "HIPvar("
     val () = fprint_d2var (out, d2v)
     val () = prstr ")"
@@ -98,13 +103,13 @@ case+ x.hipat_node of
     val () = prstr ")"
     val () = prstr ")"
   }
-| HIPcon_any (pck, d2c) => {
+| HIPcon_any(pck, d2c) => {
     val () = prstr "HIPcon_any("
     val () = fprint_d2con (out, d2c)
     val () = prstr ")"
   }
 //
-| HIPint (i) => {
+| HIPint(i) => {
     val () = prstr "HIPint("
     val () = fprint_int (out, i)
     val () = prstr ")"
@@ -115,39 +120,39 @@ case+ x.hipat_node of
     val () = fprint_string (out, intrep)
     val () = prstr ")"
   }
-| HIPbool (b) => {
+| HIPbool(b) => {
     val () = prstr "HIPbool("
     val () = fprint_bool (out, b)
     val () = prstr ")"
   }
-| HIPchar (c) => {
+| HIPchar(c) => {
     val () = prstr "HIPchar("
     val () = fprint_char (out, c)
     val () = prstr ")"
   }
-| HIPstring (str) => {
+| HIPstring(str) => {
     val () = prstr "HIPstring("
     val () = fprint_string (out, str)
     val () = prstr ")"
   }
-| HIPfloat (rep) => {
+| HIPfloat(rep) => {
     val () = prstr "HIPfloat("
     val () = fprint_string (out, rep)
     val () = prstr ")"
   }
 //
-| HIPi0nt (tok) => {
+| HIPi0nt(tok) => {
     val () = prstr "HIPi0nt("
     val () = $SYN.fprint_i0nt (out, tok)
     val () = prstr ")"
   }
-| HIPf0loat (tok) => {
+| HIPf0loat(tok) => {
     val () = prstr "HIPf0loat("
     val () = $SYN.fprint_f0loat (out, tok)
     val () = prstr ")"
   } // end of [HIPf0lat]
 //
-| HIPempty () => prstr "HIPempty()"
+| HIPempty((*void*)) => prstr "HIPempty()"
 //
 (*
 | HIPlst (
@@ -162,7 +167,7 @@ case+ x.hipat_node of
 *)
 //
 | HIPrec (
-    knd, lhips, hse_rec
+    knd, pck, lhips, hse_rec
   ) => {
     val () = prstr "HIPrec("
     val () = fprintf (out, "knd= %i", @(knd))
@@ -813,32 +818,46 @@ fprint_hiclau (out, x) = {
 (* ****** ****** *)
 //
 implement
-print_hidecl
-  (hid) = fprint_hidecl (stdout_ref, hid)
-implement
-prerr_hidecl
-  (hid) = fprint_hidecl (stderr_ref, hid)
-//
-implement
 fprint_hidecl
   (out, hid) = let
-  macdef prstr (s) = fprint_string (out, ,(s))
-in
 //
-case+ hid.hidecl_node of
+macdef
+prstr(str) =
+fprint_string(out, ,(str))
 //
-| HIDnone () => prstr "HIDnone()"
+in (* in-of-let *)
 //
-| HIDlist (hids) => {
-    val () = prstr "HIDlist(\n"
-    val () = $UT.fprintlst (out, hids, "\n", fprint_hidecl)
+case+
+hid.hidecl_node
+of // case+
+//
+| HIDnone() =>
+  prstr "HIDnone()"
+//
+| HIDlist(hids) =>
+  {
+    val () =
+    prstr "HIDlist(\n"
+    val () =
+    $UT.fprintlst
+      (out, hids, "\n", fprint_hidecl)
+    // end of [val]
     val () = prstr "\n)"
   }
 //
+| HIDsaspdec _ => prstr "HIDsaspdec(...)"
+| HIDreassume _ => prstr "HIDreassume(...)"
+//
 | HIDextcode
-    (knd, pos, code) => {
-    val () = prstr "HIDextcode("
-    val () = fprintf (out, "knd=%i, pos=%i, code=...", @(knd, pos))
+    (knd, pos, code) =>
+  {
+    val () =
+    prstr "HIDextcode("
+    val () =
+    fprintf
+    (
+      out, "knd=%i, pos=%i, code=...", @(knd, pos)
+    ) (* fprintf *)
     val () = prstr ")"
   } (* end of [HIDextcode] *)
 //
@@ -871,27 +890,38 @@ case+ hid.hidecl_node of
     (knd, decarg, hfds) =>
   {
     val () = prstr "HIDfundecs(\n"
-    val () = $UT.fprintlst (out, hfds, "\n", fprint_hifundec)
+    val () =
+    $UT.fprintlst
+      (out, hfds, "\n", fprint_hifundec)
+    // end of [val]
     val () = prstr "\n)"
   } // end of [HIDfundec]
 //
 | HIDvaldecs
     (knd, hvds) => {
     val () = prstr "HIDvaldecs(\n"
-    val () = $UT.fprintlst (out, hvds, "\n", fprint_hivaldec)
+    val () =
+    $UT.fprintlst
+      (out, hvds, "\n", fprint_hivaldec)
+    // end of [val]
     val () = prstr "\n)"
   } // end of [HIDvaldec]
 | HIDvaldecs_rec
     (knd, hvds) => {
     val () = prstr "HIDvaldecs_rec(\n"
-    val () = $UT.fprintlst (out, hvds, "\n", fprint_hivaldec)
+    val () =
+    $UT.fprintlst
+      (out, hvds, "\n", fprint_hivaldec)
+    // end of [val]
     val () = prstr "\n)"
   } // end of [HIDvaldec_rec]
 //
 | HIDvardecs (hvds) => {
     val () = prstr "HIDvardecs(\n"
     val () =
-      $UT.fprintlst (out, hvds, "\n", fprint_hivardec)
+    $UT.fprintlst
+      (out, hvds, "\n", fprint_hivardec)
+    // end of [val]
     val () = prstr "\n)"
   } // end of [HIDvardec]
 //
@@ -899,16 +929,20 @@ case+ hid.hidecl_node of
     (knd, himpdec) =>
   {
     val () = prstr "HIDimpdec(\n"
-    val () = fprint_hiimpdec (out, himpdec)
+    val () = fprint_hiimpdec(out, himpdec)
     val () = prstr "\n)"
   } (* end of [HIDimpdec] *)
 //
 | HIDinclude
-    (knd, hids) => {
-    val () = prstr "HIDinclude("
-    val () = fprint_int (out, knd)
+    (knd, hids) =>
+  {
+    val () = prstr("HIDinclude(")
+    val () = fprint_int(out, knd)
     val () = prstr "\n"
-    val () = $UT.fprintlst (out, hids, "\n", fprint_hidecl)
+    val () =
+    $UT.fprintlst
+      (out, hids, "\n", fprint_hidecl)
+    // end of [val]
     val () = prstr "\n)"
   } (* end of [HIDinclude] *)
 //
@@ -916,7 +950,8 @@ case+ hid.hidecl_node of
     (idopt, cfil, _, _, _) =>
   {
     val () = prstr "HIDstaload("
-    val () = $FIL.fprint_filename_full (out, cfil)
+    val () =
+    $FIL.fprint_filename_full(out, cfil)
     val () = prstr ")"
   } (* end of [HIDstaload] *)
 | HIDstaloadloc
@@ -924,16 +959,22 @@ case+ hid.hidecl_node of
   {
     val () = prstr "HIDstaloadloc("
     val () =
-      $FIL.fprint_filename_full (out, pfil)
-    val () = $SYM.fprint_symbol (out, nspace)
+    $FIL.fprint_filename_full(out, pfil)
+    val () = $SYM.fprint_symbol(out, nspace)
     val () = prstr ")"
   } (* end of [HIDstaloadloc] *)
 //
-| _ => {
-    val () = prstr "HID...(...)"
-  } // end of [_]
+| _ (* rest-of-hidecl *) =>
+  let val () = prstr "HID...(...)" in (*nothing*) end
 //
 end // end of [fprint_hidecl]
+//
+implement
+print_hidecl
+  (hid) = fprint_hidecl(stdout_ref, hid)
+implement
+prerr_hidecl
+  (hid) = fprint_hidecl(stderr_ref, hid)
 //
 (* ****** ****** *)
 

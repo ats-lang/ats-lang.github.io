@@ -30,14 +30,14 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/pointer.atxt
-** Time of generation: Sun Nov 20 21:18:14 2016
+** Time of generation: Tue Mar 28 23:58:07 2017
 *)
 
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: hwxi AT cs DOT bu DOT edu *)
 (* Start time: March, 2012 *)
+(* Authoremail: hwxi AT cs DOT bu DOT edu *)
 
 (* ****** ****** *)
 
@@ -132,8 +132,8 @@ overload - with sub_ptr0_ptr0 of 0
 
 (* ****** ****** *)
 //
-fun{a:vt0p} ptr0_succ (p: ptr):<> ptr
-fun{a:vt0p} ptr0_pred (p: ptr):<> ptr
+fun{a:vt0p} ptr0_succ(p: ptr):<> ptr
+fun{a:vt0p} ptr0_pred(p: ptr):<> ptr
 //
 overload ptr_succ with ptr0_succ of 0
 overload ptr_pred with ptr0_pred of 0
@@ -141,11 +141,17 @@ overload ptr_pred with ptr0_pred of 0
 (* ****** ****** *)
 //
 fun{
-a:vt0p}{tk:tk
-} ptr0_add_gint (p: ptr, ofs: g0int (tk)):<> ptr
+a:vt0p
+} ptr0_diff(p1: ptr, p2: ptr): ssize_t
+//
+(* ****** ****** *)
+//
 fun{
 a:vt0p}{tk:tk
-} ptr0_add_guint (p: ptr, ofs: g0uint (tk)):<> ptr
+} ptr0_add_gint(p: ptr, ofs: g0int(tk)):<> ptr
+fun{
+a:vt0p}{tk:tk
+} ptr0_add_guint(p: ptr, ofs: g0uint(tk)):<> ptr
 //
 overload ptr_add with ptr0_add_gint of 0
 overload ptr_add with ptr0_add_guint of 0
@@ -485,43 +491,50 @@ typedef constcharptr1 = charptr1 // HX: for commenting purpose
 (* ****** ****** *)
 //
 absprop
-is_nullable (a: vt@ype+) // covariant
+is_nullable(a: vt@ype+) // covariant
 //
 fun{a:vt0p}
 ptr_nullize
   (pf: is_nullable (a) | x: &a? >> a):<!wrt> void
 fun
-ptr_nullize_tsz
-  {a:vt0p} (
-  pf: is_nullable (a) | x: &a? >> a, tsz: sizeof_t (a)
+ptr_nullize_tsz{a:vt0p}
+(
+  pf: is_nullable(a) | x: &a? >> a, tsz: sizeof_t(a)
 ) :<!wrt> void = "mac#%" // end of [ptr_nullize_tsz]
 //
 (* ****** ****** *)
 
-fun{
-a:vt0p
-} ptr_alloc ()
-  :<> [l:agz] (a? @ l, mfree_gc_v (l) | ptr l)
+fun
+{a:vt0p}
+ptr_alloc((*void*))
+  :<> [l:agz] (a? @ l, mfree_gc_v(l) | ptr(l))
 // end of [ptr_alloc]
 
-fun ptr_alloc_tsz
-  {a:vt0p} (tsz: sizeof_t a)
-  :<> [l:agz] (a? @ l, mfree_gc_v (l) | ptr l) = "mac#%"
+fun
+ptr_alloc_tsz
+  {a:vt0p}(tsz: sizeof_t(a))
+  :<> [l:agz] (a? @ l, mfree_gc_v(l) | ptr(l)) = "mac#%"
 // end of [ptr_alloc_tsz]
 
-fun ptr_free
-  {a:t@ype}{l:addr}
-  (pfgc: mfree_gc_v (l), pfat: a @ l | p: ptr l):<> void = "mac#%"
+(* ****** ****** *)
+
+fun
+ptr_free{a:t@ype}{l:addr}
+  (pfgc: mfree_gc_v(l), pfat: a @ l | p: ptr(l)):<> void = "mac#%"
 // end of [ptr_free]
 
 (* ****** ****** *)
 //
-absvtype ptrlin (l:addr) = ptr
+absvtype
+ptrlin_vtype(l:addr) = ptr
 //
-praxi ptrlin_free{l:addr} (p: ptrlin (l)): void
+vtypedef
+ptrlin(l:addr) = ptrlin_vtype(l)
 //
-castfn ptr2ptrlin{l:addr} (p: ptr l):<> ptrlin (l)
-castfn ptrlin2ptr{l:addr} (p: ptrlin l):<> ptr (l)
+praxi ptrlin_free{l:addr} (p: ptrlin(l)): void
+//
+castfn ptr2ptrlin{l:addr} (p: ptr(l)):<> ptrlin(l)
+castfn ptrlin2ptr{l:addr} (p: ptrlin(l)):<> ptr(l)
 //
 (* ****** ****** *)
 //
@@ -533,8 +546,8 @@ aptr_vt0ype_addr_type
   (a:vt@ype+, addr) = ptr // HX: for safe ATS pointers
 //
 stadef aptr = aptr_vt0ype_addr_type
-stadef aPtr0 (a:vt0p) = [l:addr] aptr (a, l)
-stadef aPtr1 (a:vt0p) = [l:addr | l > null] aptr (a, l)
+stadef aPtr0 (a:vt0p) = [l:addr] aptr(a, l)
+stadef aPtr1 (a:vt0p) = [l:addr | l > null] aptr(a, l)
 //
 castfn
 aptr2ptr{a:vt0p}{l:addr}(ap: !aptr(INV(a), l)):<> ptr(l)
@@ -549,28 +562,39 @@ fun
 aptr_getfree_elt{l:agz}(aptr(a, l)):<!wrt> (a)
 //
 fun
-{a:t0p}
-aptr_get_elt{l:agz}(ap: !aptr(INV(a), l)):<!wrt> (a)
+{a:vt0p}
+aptr_get_elt
+  {l:agz}
+  (ap: !aptr(a, l) >> aptr(a?!, l)):<!wrt> (a)
 fun
-{a:t0p}
+{a:vt0p}
 aptr_set_elt
-  {l:agz}(ap: !aptr(INV(a), l) >> _, x: a):<!wrt> void
-fun
-{a:t0p}
-aptr_exch_elt
-  {l:agz}(ap: !aptr(INV(a), l) >> _, x: &(a)>>_):<!wrt> void
+  {l:agz}
+  (ap: !aptr(a?, l) >> aptr(a, l), x: a):<!wrt> void
 //
-overload [] with aptr_get_elt
-overload [] with aptr_set_elt
+fun
+{a:vt0p}
+aptr_exch_elt
+  {l:agz}
+  (ap: !aptr(INV(a), l) >> _, x: &(a) >> _):<!wrt> void
+//
+(*
+overload [] with aptr_get_elt // HX: template arg needed
+overload [] with aptr_set_elt // HX: template arg needed
+*)
 //
 (* ****** ****** *)
 //
 fun aptr_null{a:vt0p}():<> aptr(a, null) = "mac#%"
 //
-fun aptr_is_null
-  {a:vt0p}{l:addr}(ap: !aptr(INV(a), l)):<> bool(l==null) = "mac#%"
-fun aptr_isnot_null
-  {a:vt0p}{l:addr}(ap: !aptr(INV(a), l)):<> bool(l > null) = "mac#%"
+fun
+aptr_is_null
+{a:vt0p}{l:addr}
+  (ap: !aptr(INV(a), l)):<> bool(l==null) = "mac#%"
+fun
+aptr_isnot_null
+{a:vt0p}{l:addr}
+  (ap: !aptr(INV(a), l)):<> bool(l > null) = "mac#%"
 //
 overload iseqz with aptr_is_null
 overload isneqz with aptr_isnot_null

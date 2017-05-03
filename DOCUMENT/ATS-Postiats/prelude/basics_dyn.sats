@@ -36,6 +36,11 @@
 #include "prelude/params.hats"
 
 (* ****** ****** *)
+//
+fun
+patsopt_version(): string = "ext#%"
+//
+(* ****** ****** *)
 
 #if VERBOSE_PRELUDE #then
 #print "Loading [basics_dyn.sats] starts!\n"
@@ -661,20 +666,28 @@ stadef argv = argv_int_vtype
 (* ****** ****** *)
 
 praxi
-lemma_argv_param {n:int} (argv: !argv(n)): [n >= 0] void
+lemma_argv_param
+  {n:int}(argv: !argv(n)): [n >= 0] void
 // end of [praxi]
 
 (* ****** ****** *)
 //
 fun
 argv_get_at{n:int}
-  (argv: !argv (n), i: natLt n):<> string = "mac#%"
+  (argv: !argv(n), i: natLt(n)):<> string = "mac#%"
 fun
 argv_set_at{n:int}
-  (argv: !argv (n), i: natLt n, x: string):<!wrt> void = "mac#%"
+  (argv: !argv(n), i: natLt(n), x: string):<!wrt> void = "mac#%"
 //
 overload [] with argv_get_at
 overload [] with argv_set_at
+//
+(* ****** ****** *)
+//
+fun{}
+listize_argc_argv
+  {n:int}
+  (argc: int(n), argv: !argv(n)): list_vt(string, n)
 //
 (* ****** ****** *)
 //
@@ -682,7 +695,9 @@ symintr main0
 //
 fun
 main_void_0
-  ((*void*)): void = "ext#mainats_void_0"
+(
+  (*void*)
+) : void = "ext#mainats_void_0"
 fun
 main_argc_argv_0
   {n:int | n >= 1}
@@ -697,7 +712,9 @@ symintr main
 //
 fun
 main_void_int
-  ((*void*)): int = "ext#mainats_void_int"
+(
+  (*void*)
+) : int = "ext#mainats_void_int"
 fun
 main_argc_argv_int
   {n:int | n >= 1}

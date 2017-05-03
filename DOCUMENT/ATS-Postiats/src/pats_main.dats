@@ -424,9 +424,11 @@ dynload "pats_ccomp_main.dats"
 extern void patsopt_PATSHOME_set () ;
 extern char *patsopt_PATSHOME_get () ;
 //
-extern void patsopt_PATSHOMERELOC_set () ;
+extern void patsopt_PATSCONTRIB_set () ;
 //
-extern void patsopt_ATSPKGRELOCROOT_set () ;
+extern void patsopt_PATSHOMELOCS_set () ;
+//
+extern void patsopt_PATSRELOCROOT_set () ;
 //
 %} // end of [%{^]
 
@@ -481,7 +483,7 @@ fprintln! (out, "  --gline (for generating line pragma information in target cod
 fprintln! (out, "  --debug (for enabling the generation of more informative error messages)");
 fprintln! (out, "  --debug2 (for enabling the generation of debugging information in target code)");
 //
-fprintln! (out, "  --pkgreloc (for generating a script to help relocate packages in need)");
+fprintln! (out, "  --atsreloc (for generating a script to help relocate packages in need)");
 //
 fprintln! (out, "  --codegen-2 (for outputing code generated from level-2 syntax)");
 fprintln! (out, "  --jsonize-2 (for outputing code in JSON based on level-2 syntax)");
@@ -539,7 +541,7 @@ HX: VERSION-0.2.8 released on Wednesday, June 29, 2016)
 //
 #define
 PATS_COPYRIGHT
-"Copyright (c) 2011-2016 Hongwei Xi"
+"Copyright (c) 2011-2017 Hongwei Xi"
 //
 (* ****** ****** *)
 //
@@ -627,7 +629,7 @@ cmdstate = @{
 , depgen= int // dep info generation
 , taggen= int // tagging info generation
 //
-, pkgreloc= int // relocating packages
+, atsreloc= int // relocating packages
 //
 , codegenflag= int // codegen based on level-2 syntax
 , jsonizeflag= int // jsonize based on level-2 syntax
@@ -1066,27 +1068,27 @@ end // end of [do_taggen]
 //
 extern
 fun
-do_pkgreloc
+do_atsreloc
 (
   state: &cmdstate
 , given: string, d1cs: d1eclist
-) : void // end of [do_pkgreloc]
+) : void // end of [do_atsreloc]
 //
 implement
-do_pkgreloc
+do_atsreloc
   (state, given, d1cs) = let
 //
 val itms =
-  $TRENV1.the_pkgrelocitmlst_get ()
+  $TRENV1.the_atsrelocitmlst_get ()
 //
 val filr =
   outchan_get_filr (state.outchan)
 //
 in
 //
-$TRENV1.fprint_pkgrelocitmlst(filr, itms)
+$TRENV1.fprint_atsrelocitmlst(filr, itms)
 //
-end // end of [do_pkgreloc]
+end // end of [do_atsreloc]
 //
 (* ****** ****** *)
 //
@@ -1378,12 +1380,12 @@ do_transfinal
 //
 case+ 0 of
 | _ when
-    state.pkgreloc > 0 => let
+    state.atsreloc > 0 => let
     val d1cs =
       do_trans1 (state, given, d0cs)
     // end of [val]
   in
-    do_pkgreloc (state, given, d1cs)
+    do_atsreloc (state, given, d1cs)
   end // end of [when ...]
 | _ when
     state.codegenflag = 2 => let
@@ -1862,10 +1864,10 @@ case+ key of
 | "--depgen" => (state.depgen := 1)
 | "--taggen" => (state.taggen := 1)
 //
-| "--pkgreloc" => {
-    val () = state.pkgreloc := 1
-    val () = $GLOB.the_PKGRELOC_set (1)
-  } (* end of [--pkgreloc] *)
+| "--atsreloc" => {
+    val () = state.atsreloc := 1
+    val () = $GLOB.the_ATSRELOC_set (1)
+  } (* end of [--atsreloc] *)
 //
 | "--codegen-2" => (state.codegenflag := 2)
 | "--jsonize-2" => (state.jsonizeflag := 2)
@@ -1915,7 +1917,7 @@ val () =
 set () where
 { 
   extern
-  fun set (): void
+  fun set(): void
     = "mac#patsopt_PATSHOME_set"
   // end of [fun]
 } // end of [where] // end of [val]
@@ -1923,8 +1925,8 @@ val () =
 set () where
 {
   extern
-  fun set (): void
-    = "mac#patsopt_PATSHOMERELOC_set"
+  fun set(): void
+    = "mac#patsopt_PATSCONTRIB_set"
   // end of [fun]
 } // end of [where] // end of [val]
 //
@@ -1932,8 +1934,17 @@ val () =
 set () where
 { 
   extern
-  fun set (): void
-    = "mac#patsopt_ATSPKGRELOCROOT_set"
+  fun set(): void
+    = "mac#patsopt_PATSRELOCROOT_set"
+  // end of [fun]
+} // end of [where] // end of [val]
+//
+val () =
+set () where
+{ 
+  extern
+  fun set(): void
+    = "mac#patsopt_PATSHOMELOCS_set"
   // end of [fun]
 } // end of [where] // end of [val]
 //
@@ -1999,7 +2010,7 @@ state = @{
 , depgen= 0 // file dependency generation
 , taggen= 0 // syntax tagging info generation
 //
-, pkgreloc= 0 // for package relocation
+, atsreloc= 0 // for package relocation
 //
 , codegenflag= 0 // syntax level for CODEgen
 , jsonizeflag= 0 // syntax level for JSONize 
@@ -2013,9 +2024,9 @@ state = @{
 , nerror= 0 // number of accumulated errors
 } : cmdstate // end of [var]
 //
-val () = process_ATSPKGRELOCROOT ()
+val () = process_PATSRELOCROOT()
 //
-val () = process_cmdline (state, arglst)
+val () = process_cmdline(state, arglst)
 //
 // HX-2015-01-09:
 // A tool like patscc should receive an error:
@@ -2030,7 +2041,7 @@ val () = if state.nerror > 0 then $ERR.abort{void}()
 PATSOPT_MAIN_NONE
 //
 implement
-main (argc, argv) =
+main(argc, argv) =
 (
 //
 if

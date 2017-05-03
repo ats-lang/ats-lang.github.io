@@ -43,11 +43,12 @@ staload "./pats_symbol.sats"
 (* ****** ****** *)
 
 local
-
+//
 %{^
 typedef ats_ptr_type string ;
 typedef ats_ptr_type symbol ;
-%} // end of [%{^]
+%} (* end of [%{^] *)
+//
 staload
 "libats/SATS/hashtable_linprb.sats"
 staload _(*anon*) =
@@ -58,14 +59,24 @@ staload _(*anon*) =
 symintr encode decode
 //
 abstype string_t = $extype"string"
-extern castfn string_encode (x: string):<> string_t
-extern castfn string_decode (x: string_t):<> string
+//
+extern
+castfn
+string_encode (x: string):<> string_t
+extern
+castfn
+string_decode (x: string_t):<> string
 overload encode with string_encode
 overload decode with string_decode
 //
 abstype symbol_t = $extype"symbol"
-extern castfn symbol_encode (x: symbol):<> symbol_t
-extern castfn symbol_decode (x: symbol_t):<> symbol
+//
+extern
+castfn
+symbol_encode (x: symbol):<> symbol_t
+extern
+castfn
+symbol_decode (x: symbol_t):<> symbol
 overload encode with symbol_encode
 overload decode with symbol_decode
 //
@@ -328,22 +339,24 @@ implement
 symbol__STRING__ = symbol_make_string "__STRING__"
 //
 (* ****** ****** *)
-
+//
 implement
 symbol_PATSHOME = symbol_make_string "PATSHOME"
+//
 implement
-symbol_PATSHOMERELOC = symbol_make_string "PATSHOMERELOC"
-
-(* ****** ****** *)
-
+symbol_PATSCONTRIB = symbol_make_string "PATSCONTRIB"
+//
 implement
-symbol_ATSPKGRELOCROOT = symbol_make_string "ATSPKGRELOCROOT"
-
+symbol_PATSHOMELOCS = symbol_make_string "PATSHOMELOCS"
+//
+implement
+symbol_PATSRELOCROOT = symbol_make_string "PATSRELOCROOT"
+//
 (* ****** ****** *)
-
+//
 implement
 symbol_ATS_PACKNAME = symbol_make_string "ATS_PACKNAME"
-
+//
 (*
 // HX-2014-06-06: this one is no longer in use:
 implement
@@ -351,7 +364,7 @@ symbol_ATS_STALOADFLAG = symbol_make_string "ATS_STALOADFLAG"
 *)
 implement
 symbol_ATS_DYNLOADFLAG = symbol_make_string "ATS_DYNLOADFLAG"
-
+//
 (* ****** ****** *)
 
 implement
