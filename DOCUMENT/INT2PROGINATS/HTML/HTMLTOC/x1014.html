@@ -98,7 +98,8 @@ NAME="AEN1018"
 ><PRE
 CLASS="programlisting"
 ><p class="patsyntax"><span class="keyword">datatype</span> <span class="staexp">charlst <span class="keyword">=</span>
-  <span class="keyword">|</span> <span class="dynexp">charlst_nil <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">charlst_cons <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">char</span><span class="keyword">,</span> <span class="staexp">charlst</span><span class="keyword">)</span></span></span>
+  <span class="keyword">|</span> <span class="dynexp">charlst_nil <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="dynexp">charlst_cons <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">char</span><span class="keyword">,</span> <span class="staexp">charlst</span><span class="keyword">)</span></span></span>
 <span class="comment">// end of [charlst]</span>
 </p></PRE
 ><P
@@ -155,9 +156,12 @@ NAME="AEN1026"
 CLASS="programlisting"
 ><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
 charlst_length
-  <span class="keyword">(</span>cs<span class="keyword">:</span> <span class="staexp">charlst</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">case</span> cs <span class="keyword">of</span>
-  <span class="keyword">|</span> charlst_cons <span class="keyword">(</span>_<span class="keyword">,</span> cs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">1</span> + charlst_length <span class="keyword">(</span>cs<span class="keyword">)</span>
-  <span class="keyword">|</span> charlst_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">0</span></span>
+<span class="keyword">(</span>
+  cs<span class="keyword">:</span> <span class="staexp">charlst</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+  <span class="keyword">case</span> cs <span class="keyword">of</span>
+  <span class="keyword">|</span> charlst_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">0</span>
+  <span class="keyword">|</span> charlst_cons<span class="keyword">(</span>_<span class="keyword">,</span> cs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">1</span> + charlst_length<span class="keyword">(</span>cs<span class="keyword">)</span></span>
 <span class="comment">// end of [charlst_length]</span>
 </p></PRE
 ><P
@@ -189,7 +193,7 @@ charlst_length
 <span class="comment">//</span>
 <span class="dynexp"><span class="keyword">fun</span> loop
   <span class="keyword">(</span>cs<span class="keyword">:</span> <span class="staexp">charlst</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">case</span> cs <span class="keyword">of</span>
-  <span class="keyword">|</span> charlst_cons <span class="keyword">(</span>_<span class="keyword">,</span> cs<span class="keyword">)</span> <span class="keyword">=&gt;</span> loop <span class="keyword">(</span>cs<span class="keyword">,</span> n+<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">|</span> charlst_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> n</span>
+  <span class="keyword">|</span> charlst_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> n <span class="keyword">|</span> charlst_cons <span class="keyword">(</span>_<span class="keyword">,</span> cs<span class="keyword">)</span> <span class="keyword">=&gt;</span> loop<span class="keyword">(</span>cs<span class="keyword">,</span> n+<span class="dynexp">1</span><span class="keyword">)</span></span>
 <span class="comment">// end of [loop]</span>
 <span class="comment">//</span>
 <span class="keyword">in</span>
