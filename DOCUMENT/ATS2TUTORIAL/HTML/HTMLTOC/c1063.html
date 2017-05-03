@@ -133,7 +133,9 @@ NAME="AEN1076"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""fun{a:t@ype} lazy_force (lazyval: lazy(a)):&#60;!laz&#62; a
+>############sats2xhtml_docbook("""fun
+{a:t@ype}
+lazy_force(lazyval: lazy(a)):&#60;!laz&#62; a
 """)</PRE
 ><P
 ></P
@@ -180,9 +182,9 @@ NAME="AEN1085"
 ><PRE
 CLASS="programlisting"
 >############sats2xhtml_docbook("""datatype
-stream_con (a:t@ype+) =
+stream_con(a:t@ype+) =
   | stream_nil of ((*void*)) | stream_cons of (a, stream(a))
-where stream (a:t@ype) = lazy (stream_con(a))
+where stream(a:t@ype) = lazy (stream_con(a))
 """)</PRE
 ><P
 ></P
@@ -218,20 +220,22 @@ NAME="AEN1090"
 CLASS="programlisting"
 >############dats2xhtml_docbook("""//
 fun
-from (n: int): stream (int) =
-  $delay (stream_cons (n, from (n+1)))
+from(n: int): stream(int) =
+  $delay(stream_cons(n, from(n+1)))
 //
-fun sieve
+fun
+sieve
 (
-  ns: stream(int)
-) :&#60;!laz&#62; stream(int) = $delay let
+ns: stream(int)
+) :&#60;!laz&#62; stream(int) = $delay
+let
 //
 // [val-] means no warning message from the compiler
 //
   val-stream_cons(n, ns) = !ns
 in
-  stream_cons (n, sieve (stream_filter_cloref&#60;int&#62; (ns, lam x =&#62; x mod n &#62; 0)))
-end // end of [$delay let] // end of [sieve]
+  stream_cons(n, sieve(stream_filter_cloref&#60;int&#62;(ns, lam x =&#62; x mod n &#62; 0)))
+end // end of [let] // end of [$delay]
 //
 val thePrimes = sieve(from(2))
 //
@@ -303,13 +307,13 @@ val _1_ = $UNSAFE.cast{int64}(1)
 //
 val // the following values are defined mutually recursively
 rec theFibs_0
-  : stream(int64) = $delay (stream_cons(_0_, theFibs_1)) // fib0, fib1, ...
+  : stream(int64) = $delay(stream_cons(_0_, theFibs_1)) // fib0, fib1, ...
 and theFibs_1
-  : stream(int64) = $delay (stream_cons(_1_, theFibs_2)) // fib1, fib2, ...
+  : stream(int64) = $delay(stream_cons(_1_, theFibs_2)) // fib1, fib2, ...
 and theFibs_2
   : stream(int64) = // fib2, fib3, fib4, ...
 (
-  stream_map2_fun&#60;int64,int64&#62;&#60;int64&#62; (theFibs_0, theFibs_1, lam (x, y) =&#62; x + y)
+  stream_map2_fun&#60;int64,int64&#62;&#60;int64&#62;(theFibs_0, theFibs_1, lam (x, y) =&#62; x + y)
 ) (* end of [val/and/and] *)
 //
 """)</PRE
@@ -336,10 +340,10 @@ NAME="AEN1101"
 CLASS="programlisting"
 >############sats2xhtml_docbook("""fun{
 a1,a2:t0p}{b:t0p
-} stream_map2_cloref
+} stream_map2_fun
 (
-  xs1: stream (a1), xs2: stream (a2), f: (a1, a2) -&#60;fun&#62; b
-) :&#60;!laz&#62; stream (b) // end of [stream_map2_cloref]
+  xs1: stream(a1), xs2: stream(a2), f: (a1, a2) -&#60;fun&#62; b
+) :&#60;!laz&#62; stream(b) // end of [stream_map2_fun]
 """)</PRE
 ><P
 ></P
@@ -377,8 +381,9 @@ compare_int_int =
   lam (x1: int, x2: int): int =&#60;fun&#62; compare(x1, x2)
 //
 macdef
-merge2 (xs1, xs2) =
-  stream_mergeq_fun&#60;int&#62; (,(xs1), ,(xs2), compare_int_int)
+merge2
+(xs1, xs2) =
+stream_mergeq_fun&#60;int&#62; (,(xs1), ,(xs2), compare_int_int)
 //
 val
 rec theHamming
@@ -419,8 +424,8 @@ CLASS="programlisting"
 >############sats2xhtml_docbook("""fun{a:t0p}
 stream_mergeq_fun
 (
-  xs1: stream (a), xs2: stream (a), (a, a) -&#60;fun&#62; int
-) :&#60;!laz&#62; stream (a) // end of [stream_mergeq_fun]
+  xs1: stream(a), xs2: stream(a), (a, a) -&#60;fun&#62; int
+) :&#60;!laz&#62; stream(a) // end of [stream_mergeq_fun]
 """)</PRE
 ><P
 ></P
