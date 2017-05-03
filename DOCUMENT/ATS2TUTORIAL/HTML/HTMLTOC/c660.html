@@ -105,9 +105,9 @@ NAME="AEN666"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""typedef
-ref(a:vt@ype) = [l:addr] (vbox(a @ l) | ptr l)
-""")</PRE
+><p class="patsyntax"><span class="keyword">typedef</span>
+<span class="staexp">ref<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">vt@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>l<span class="keyword">:</span>addr<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">vbox</span><span class="keyword">(</span><span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -137,8 +137,8 @@ NAME="AEN671"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""fun{a:vt@ype} ref_make_elt (x: a):&#60;!wrt&#62; ref(a)
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">}</span></span> ref_make_elt <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">wrt</span><span class="keyword">&gt;</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -186,9 +186,9 @@ NAME="AEN681"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""fun{a:t@ype} ref_get_elt (r: ref a):&#60;!ref&#62; a
-fun{a:t@ype} ref_set_elt (r: ref a, x: a):&#60;!refwrt&#62; void
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span> ref_get_elt <span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">ref</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span> ref_set_elt <span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span> <span class="staexp">a</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">refwrt</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -253,29 +253,29 @@ NAME="AEN696"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""local
-//
-#define BUFSZ 128
-//
-val count = ref&#60;int&#62; (0)
-//
-in (* in of [local] *)
+><p class="patsyntax"><span class="keyword">local</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span> BUFSZ 128</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> count <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span> <span class="comment">(* in of [local] *)</span>
 
-fun genNewName
-  (prfx: string): string = let
-  val n = !count
-  val () = !count := n + 1
-  var res = @[byte][BUFSZ]((*void*))
-  val err =
-  $extfcall (
-    int, "snprintf", addr@res, BUFSZ, "%s%i", prfx, n
-  ) (* end of [$extfcall] *)
-in
-  strptr2string(string0_copy($UNSAFE.cast{string}(addr@res)))
-end // end of [genNewName]
+<span class="dynexp"><span class="keyword">fun</span> genNewName
+  <span class="keyword">(</span>prfx<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">string</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> n <span class="keyword">=</span> <span class="keyword">!</span>count</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>count := n + <span class="dynexp">1</span></span>
+  <span class="keyword">var</span> res <span class="keyword">=</span> <span class="dynexp"><span class="keyword">@[</span>byte<span class="keyword">]</span><span class="keyword">[</span>BUFSZ<span class="keyword">]</span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> err <span class="keyword">=</span>
+  <span class="dynexp"><span class="keyword">$extfcall</span> <span class="keyword">(</span>
+    int<span class="keyword">,</span> "snprintf"<span class="keyword">,</span> <span class="keyword">addr@</span>res<span class="keyword">,</span> BUFSZ<span class="keyword">,</span> "%s%i"<span class="keyword">,</span> prfx<span class="keyword">,</span> n
+  <span class="keyword">)</span></span></span> <span class="comment">(* end of [$extfcall] *)</span>
+<span class="keyword">in</span>
+  strptr2string<span class="keyword">(</span>string0_copy<span class="keyword">(</span>$UNSAFE<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>string<span class="keyword">}</span></span><span class="keyword">(</span><span class="dynexp"><span class="keyword">addr@</span></span>res<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [genNewName]</span>
 
-end // end of [local]
-""")</PRE
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -329,16 +329,16 @@ NAME="AEN706"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""fun fact
-  (n: int): int = let
-  val res = ref&#60;int&#62; (1)
-  fun loop (n: int):&#60;cloref1&#62; void =
-    if n &#62; 0 then (!res := n * !res; loop(n-1)) else ()
-  val () = loop (n)
-in
-  !res
-end // end of [fact]
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> fact
+  <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">fun</span> loop <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">void</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">(</span><span class="keyword">!</span>res := n * <span class="keyword">!</span>res<span class="keyword">;</span> loop<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span>n<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">!</span>res
+<span class="keyword">end</span></span> <span class="comment">// end of [fact]</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -411,15 +411,15 @@ NAME="AEN717"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""fun fact
-  (n: int): int = let
-  fun loop (n: int, res: int): int =
-    if n &#62; 0 then loop (n-1, n * res) else res
-  // end of [loop]
-in
-  loop (n, 1)
-end // end of [fact]
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> fact
+  <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">fun</span> loop <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> loop <span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">,</span> n * res<span class="keyword">)</span> <span class="keyword">else</span> res</span>
+  <span class="comment">// end of [loop]</span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span>n<span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fact]</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -459,9 +459,9 @@ NAME="AEN723"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""var myvar: int = 0
-val myref = ref_make_viewptr (view@(myvar) | addr@(myvar))
-""")</PRE
+><p class="patsyntax"><span class="keyword">var</span> myvar<span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="dynexp">0</span>
+<span class="dynexp"><span class="keyword">val</span> myref <span class="keyword">=</span> ref_make_viewptr <span class="keyword">(</span><span class="prfexp"><span class="dynexp"><span class="keyword">view@</span></span><span class="keyword">(</span>myvar<span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp"><span class="keyword">addr@</span></span><span class="keyword">(</span>myvar<span class="keyword">)</span><span class="keyword">)</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV

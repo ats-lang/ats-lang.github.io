@@ -111,11 +111,11 @@ NAME="AEN312"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""fun
-fact(x: int): int =
-  if x &#62; 0 then x * fact(x-1) else 1
-(* end of [fact] *)
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+fact<span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> x * fact<span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span></span>
+<span class="comment">(* end of [fact] *)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -144,8 +144,8 @@ NAME="AEN316"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""fn square(x: int): int = x * x
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span> square<span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> x * x</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -164,8 +164,8 @@ NAME="AEN318"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""val square = lam (x: int): int =&#62; x * x
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> square <span class="keyword">=</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=&gt;</span> x * x</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -188,11 +188,11 @@ NAME="AEN321"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""fn
-fact(x: int): int =
-  if x &#62; 0 then x * fact(x-1) else 1
-(* end of [fact] *)
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span>
+fact<span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> x * fact<span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span></span>
+<span class="comment">(* end of [fact] *)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -224,13 +224,13 @@ NAME="AEN326"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""val
-rec
-fact : int -&#62; int =
-lam (x) =&#62;
-  if x &#62; 0 then x * fact(x-1) else 1
-(* end of [fact] *)
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span>
+<span class="keyword">rec</span>
+fact <span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> x * fact<span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span></span>
+<span class="comment">(* end of [fact] *)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -261,14 +261,14 @@ NAME="AEN331"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""val
-fact = ref&#60;int-&#62;int&#62;($UNSAFE.cast(0))
-val () =
-!fact :=
-(
-  lam (x:int):int =&#62; if x &#62; 0 then x * !fact(x-1) else 1
-) (* end of [val] *)
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span>
+fact <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="staexp"><span class="keyword">-&gt;</span></span><span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span>$UNSAFE<span class="keyword">.</span>cast<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">!</span>fact :=
+<span class="keyword">(</span>
+  <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">:</span><span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span><span class="staexp">int</span> <span class="keyword">=&gt;</span> <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> x * <span class="keyword">!</span>fact<span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [val] *)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -291,12 +291,12 @@ NAME="AEN334"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""val
-fact =
-fix f(x: int): int =&#62;
-  if x &#62; 0 then x * f(x-1) else 1
-(* end of [fact] *)
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span>
+fact <span class="keyword">=</span>
+<span class="keyword">fix</span> f<span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=&gt;</span>
+  <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> x * f<span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span></span>
+<span class="comment">(* end of [fact] *)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -338,13 +338,13 @@ NAME="AEN342"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""fun
-isevn(x: int): bool =
-  if x &#62; 0 then isodd(x-1) else true
-and
-isodd(x: int): bool =
-  if x &#62; 0 then isevn(x-1) else false
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+isevn<span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> isodd<span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> true
+<span class="keyword">and</span>
+isodd<span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> isevn<span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> false</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -363,14 +363,14 @@ NAME="AEN344"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""val
-rec
-isevn : int -&#62; bool =
-  lam (x) =&#62; if x &#62; 0 then isodd(x-1) else true
-and
-isodd : int -&#62; bool =
-  lam (x) =&#62; if x &#62; 0 then isevn(x-1) else false
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span>
+<span class="keyword">rec</span>
+isevn <span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">bool</span> <span class="keyword">=</span>
+  <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> isodd<span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> true
+<span class="keyword">and</span>
+isodd <span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">bool</span> <span class="keyword">=</span>
+  <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> isevn<span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> false</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -405,8 +405,8 @@ NAME="AEN349"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""extern fun fact (x: int): int
-""")</PRE
+><p class="patsyntax"><span class="keyword">extern</span> <span class="dynexp"><span class="keyword">fun</span> fact <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -427,11 +427,11 @@ NAME="AEN352"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""implement
-fact (x) =
-  if x &#62; 0 then x * fact(x-1) else 1
-// end of [fact]
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+fact <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> x * fact<span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span></span>
+<span class="comment">// end of [fact]</span>
+</p></PRE
 ><P
 ></P
 ></DIV

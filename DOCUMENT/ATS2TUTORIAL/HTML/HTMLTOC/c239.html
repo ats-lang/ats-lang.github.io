@@ -114,15 +114,15 @@ NAME="AEN247"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""//
-absvtype lock(a:vt@ype)
-//
-extern
-fun{a:vt0p} lock_acquire(!lock(a)): a
-extern
-fun{a:vt0p} lock_release(!lock(a), a): void
-//
-""")</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="staexp"><span class="keyword">absvtype</span> lock<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> lock_acquire<span class="keyword">(</span><span class="staexp"><span class="keyword">!</span></span><span class="staexp">lock</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> lock_release<span class="keyword">(</span><span class="staexp"><span class="keyword">!</span></span><span class="staexp">lock</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -151,11 +151,11 @@ NAME="AEN252"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""//
-overload [] with lock_acquire
-overload [] with lock_release
-//
-""")</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> lock_acquire</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">[</span><span class="keyword">]</span> <span class="keyword">with</span> lock_release</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -173,14 +173,14 @@ NAME="AEN254"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""//
-val
-mylock = $extval(lock(int), "mylock")
-//
-val x0 = mylock[] // = lock_acquire (mylock)
-val () = mylock[] := x0 // = lock_release (mylock, x0)
-//
-""")</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+mylock <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$extval</span><span class="keyword">(</span>lock<span class="keyword">(</span>int<span class="keyword">)</span><span class="keyword">,</span> "mylock"<span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x0 <span class="keyword">=</span> <span class="dynexp">mylock[<span class="keyword">]</span></span></span> <span class="comment">// = lock_acquire (mylock)</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">mylock[<span class="keyword">]</span></span> := x0</span> <span class="comment">// = lock_release (mylock, x0)</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV

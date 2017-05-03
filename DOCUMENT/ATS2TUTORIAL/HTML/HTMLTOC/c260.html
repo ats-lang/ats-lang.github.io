@@ -95,14 +95,14 @@ NAME="AEN263"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""//
-val tup_flat = @("a", "b")
-val tup_boxed = $tup("a", "b")
-//
-val-"a" = tup_flat.0 and "b" = tup_flat.1
-val-"a" = tup_boxed.0 and "b" = tup_boxed.1
-//
-""")</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> tup_flat <span class="keyword">=</span> <span class="keyword">@(</span><span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynstr">"b"</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> tup_boxed <span class="keyword">=</span> <span class="keyword">$tup</span><span class="keyword">(</span><span class="dynstr">"a"</span><span class="keyword">,</span> <span class="dynstr">"b"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span><span class="dynexp">"a"</span> <span class="keyword">=</span> tup_flat<span class="dynexp"><span class="keyword">.0</span></span> <span class="keyword">and</span> <span class="dynexp">"b"</span> <span class="keyword">=</span> tup_flat<span class="dynexp"><span class="keyword">.1</span></span></span>
+<span class="dynexp"><span class="keyword">val-</span><span class="dynexp">"a"</span> <span class="keyword">=</span> tup_boxed<span class="dynexp"><span class="keyword">.0</span></span> <span class="keyword">and</span> <span class="dynexp">"b"</span> <span class="keyword">=</span> tup_boxed<span class="dynexp"><span class="keyword">.1</span></span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -133,23 +133,23 @@ NAME="AEN267"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""//
-abstype point = ptr // boxed
-//
-extern
-fun
+><p class="patsyntax"><span class="comment">//</span>
+<span class="staexp"><span class="keyword">abstype</span> point <span class="keyword">=</span> ptr</span> <span class="comment">// boxed</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
 point_make
-  (x: double, y: double): point
-//
-extern
-fun point_get_x (p: point): double
-and point_get_y (p: point): double
-//
-extern
-fun point_set_x (p: point, x: double): void
-and point_set_y (p: point, x: double): void
-//
-""")</PRE
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">point</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span> point_get_x <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">point</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span>
+<span class="keyword">and</span> point_get_y <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">point</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span> point_set_x <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">point</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span>
+<span class="keyword">and</span> point_set_y <span class="keyword">(</span>p<span class="keyword">:</span> <span class="staexp">point</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">double</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -191,12 +191,12 @@ NAME="AEN275"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""symintr .x .y
-overload .x with point_get_x
-overload .x with point_set_x
-overload .y with point_get_y
-overload .y with point_set_y
-""")</PRE
+><p class="patsyntax"><span class="neuexp"><span class="keyword">symintr</span> <span class="keyword">.</span>x <span class="keyword">.</span>y</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>x <span class="keyword">with</span> point_get_x</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>x <span class="keyword">with</span> point_set_x</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>y <span class="keyword">with</span> point_get_y</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>y <span class="keyword">with</span> point_set_y</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -215,12 +215,12 @@ NAME="AEN277"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""val p0 = point_make (1.0, ~1.0)
-val x0 = p0.x() // point_get_x (p0)
-and y0 = p0.y() // point_get_y (p0)
-val () = p0.x := y0 // point_set_x (p0, y0)
-and () = p0.y := x0 // point_set_y (p0, x0)
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> p0 <span class="keyword">=</span> point_make <span class="keyword">(</span><span class="dynexp">1.0</span><span class="keyword">,</span> <span class="keyword">~</span><span class="dynexp">1.0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> x0 <span class="keyword">=</span> p0<span class="dynexp"><span class="keyword">.</span>x</span><span class="keyword">(</span><span class="keyword">)</span> <span class="comment">// point_get_x (p0)</span>
+<span class="keyword">and</span> y0 <span class="keyword">=</span> p0<span class="dynexp"><span class="keyword">.</span>y</span><span class="keyword">(</span><span class="keyword">)</span></span> <span class="comment">// point_get_y (p0)</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> p0<span class="dynexp"><span class="keyword">.</span>x</span> := y0 <span class="comment">// point_set_x (p0, y0)</span>
+<span class="keyword">and</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> p0<span class="dynexp"><span class="keyword">.</span>y</span> := x0</span> <span class="comment">// point_set_y (p0, x0)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -261,20 +261,20 @@ NAME="AEN285"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""//
-absvtype counter = ptr
-//
-extern
-fun counter_make (): counter
-extern
-fun counter_free (counter): void
-//
-extern
-fun counter_get (cntr: !counter): int
-extern
-fun counter_incby (cntr: !counter, n: int): void
-//
-""")</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="staexp"><span class="keyword">absvtype</span> counter <span class="keyword">=</span> ptr</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span> counter_make <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">counter</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span> counter_free <span class="keyword">(</span><span class="staexp">counter</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span> counter_get <span class="keyword">(</span>cntr<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">counter</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span> counter_incby <span class="keyword">(</span>cntr<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">counter</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -312,11 +312,11 @@ NAME="AEN292"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""//
-overload .get with counter_get
-overload .incby with counter_incby
-//
-""")</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>get <span class="keyword">with</span> counter_get</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>incby <span class="keyword">with</span> counter_incby</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -337,8 +337,8 @@ NAME="AEN295"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""val n0 = c0.get() // = counter_get(c0)
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> n0 <span class="keyword">=</span> c0<span class="dynexp"><span class="keyword">.</span>get</span><span class="keyword">(</span><span class="keyword">)</span></span> <span class="comment">// = counter_get(c0)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -363,8 +363,8 @@ NAME="AEN299"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""val () = c0.incby(1) // = counter_incby(c0, 1)
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> c0<span class="dynexp"><span class="keyword">.</span>incby</span><span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span> <span class="comment">// = counter_incby(c0, 1)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -383,12 +383,12 @@ NAME="AEN301"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""val p0 = point_make (1.0, ~1.0)
-val x0 = p0.x() // point_get_x (p0)
-and y0 = p0.y() // point_get_y (p0)
-val () = p0.x(y0) // point_set_x (p0, y0)
-and () = p0.y(x0) // point_set_y (p0, x0)
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> p0 <span class="keyword">=</span> point_make <span class="keyword">(</span><span class="dynexp">1.0</span><span class="keyword">,</span> <span class="keyword">~</span><span class="dynexp">1.0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> x0 <span class="keyword">=</span> p0<span class="dynexp"><span class="keyword">.</span>x</span><span class="keyword">(</span><span class="keyword">)</span> <span class="comment">// point_get_x (p0)</span>
+<span class="keyword">and</span> y0 <span class="keyword">=</span> p0<span class="dynexp"><span class="keyword">.</span>y</span><span class="keyword">(</span><span class="keyword">)</span></span> <span class="comment">// point_get_y (p0)</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> p0<span class="dynexp"><span class="keyword">.</span>x</span><span class="keyword">(</span>y0<span class="keyword">)</span> <span class="comment">// point_set_x (p0, y0)</span>
+<span class="keyword">and</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> p0<span class="dynexp"><span class="keyword">.</span>y</span><span class="keyword">(</span>x0<span class="keyword">)</span></span> <span class="comment">// point_set_y (p0, x0)</span>
+</p></PRE
 ><P
 ></P
 ></DIV

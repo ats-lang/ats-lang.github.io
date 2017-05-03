@@ -99,8 +99,8 @@ NAME="AEN1401"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""#codegen2("datcontag", expr)
-""")</PRE
+><p class="patsyntax"><span class="keyword">#codegen2</span><span class="keyword">(</span>"datcontag"<span class="keyword">,</span> expr<span class="keyword">)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -131,8 +131,8 @@ NAME="AEN1406"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""#codegen2("datcontag", expr, my_datcontag_expr)
-""")</PRE
+><p class="patsyntax"><span class="keyword">#codegen2</span><span class="keyword">(</span>"datcontag"<span class="keyword">,</span> expr<span class="keyword">,</span> my_datcontag_expr<span class="keyword">)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -154,26 +154,26 @@ NAME="AEN1409"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""(* ****** ****** *)
-//
-implement
-{}(*tmp*)
+><p class="patsyntax"><span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp"><span class="keyword">}</span></span><span class="comment">(*tmp*)</span>
 datcontag_expr_
-  (arg0) =
-(
-case+ arg0 of
-| Int _ =&#62; 0
-| Var _ =&#62; 1
-| Add _ =&#62; 2
-| Sub _ =&#62; 3
-| Mul _ =&#62; 4
-| Div _ =&#62; 5
-| Ifgtz _ =&#62; 6
-| Ifgtez _ =&#62; 7
-)
-//
-(* ****** ****** *)
-""")</PRE
+  <span class="keyword">(</span>arg0<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> arg0 <span class="keyword">of</span>
+<span class="keyword">|</span> Int _ <span class="keyword">=&gt;</span> <span class="dynexp">0</span>
+<span class="keyword">|</span> Var _ <span class="keyword">=&gt;</span> <span class="dynexp">1</span>
+<span class="keyword">|</span> Add _ <span class="keyword">=&gt;</span> <span class="dynexp">2</span>
+<span class="keyword">|</span> Sub _ <span class="keyword">=&gt;</span> <span class="dynexp">3</span>
+<span class="keyword">|</span> Mul _ <span class="keyword">=&gt;</span> <span class="dynexp">4</span>
+<span class="keyword">|</span> Div _ <span class="keyword">=&gt;</span> <span class="dynexp">5</span>
+<span class="keyword">|</span> Ifgtz _ <span class="keyword">=&gt;</span> <span class="dynexp">6</span>
+<span class="keyword">|</span> Ifgtez _ <span class="keyword">=&gt;</span> <span class="dynexp">7</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -195,9 +195,9 @@ NAME="AEN1412"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""fun{}
-datcontag_expr_ : (expr) -&#62; intGte(0) // a function template
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span><span class="keyword">}</span></span>
+datcontag_expr_ <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">intGte</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span></span> <span class="comment">// a function template</span>
+</p></PRE
 ><P
 ></P
 ></DIV

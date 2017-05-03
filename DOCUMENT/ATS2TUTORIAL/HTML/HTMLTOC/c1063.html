@@ -133,10 +133,10 @@ NAME="AEN1076"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""fun
-{a:t@ype}
-lazy_force(lazyval: lazy(a)):&#60;!laz&#62; a
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+lazy_force<span class="keyword">(</span>lazyval<span class="keyword">:</span> <span class="staexp">lazy</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">a</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -181,11 +181,11 @@ NAME="AEN1085"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""datatype
-stream_con(a:t@ype+) =
-  | stream_nil of ((*void*)) | stream_cons of (a, stream(a))
-where stream(a:t@ype) = lazy (stream_con(a))
-""")</PRE
+><p class="patsyntax"><span class="keyword">datatype</span>
+<span class="staexp">stream_con<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype+</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="dynexp">stream_nil <span class="keyword">of</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">stream_cons <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="keyword">where</span> <span class="staexp">stream<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">lazy</span> <span class="keyword">(</span><span class="staexp">stream_con</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -218,28 +218,28 @@ NAME="AEN1090"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""//
-fun
-from(n: int): stream(int) =
-  $delay(stream_cons(n, from(n+1)))
-//
-fun
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+from<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="dynexp"><span class="keyword">$delay</span><span class="keyword">(</span>stream_cons<span class="keyword">(</span>n<span class="keyword">,</span> from<span class="keyword">(</span>n+1<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
 sieve
-(
-ns: stream(int)
-) :&#60;!laz&#62; stream(int) = $delay
-let
-//
-// [val-] means no warning message from the compiler
-//
-  val-stream_cons(n, ns) = !ns
-in
-  stream_cons(n, sieve(stream_filter_cloref&#60;int&#62;(ns, lam x =&#62; x mod n &#62; 0)))
-end // end of [let] // end of [$delay]
-//
-val thePrimes = sieve(from(2))
-//
-""")</PRE
+<span class="keyword">(</span>
+ns<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$delay</span>
+<span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="comment">// [val-] means no warning message from the compiler</span>
+<span class="comment">//</span>
+  <span class="keyword">val-</span>stream_cons<span class="keyword">(</span>n<span class="keyword">,</span> ns<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>ns
+<span class="keyword">in</span>
+  stream_cons<span class="keyword">(</span>n<span class="keyword">,</span> sieve<span class="keyword">(</span>stream_filter_cloref&lt;int<span class="keyword">&gt;</span><span class="keyword">(</span>ns<span class="keyword">,</span> <span class="keyword">lam</span> x <span class="keyword">=&gt;</span> x mod n <span class="keyword">&gt;</span> 0<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [let] // end of [$delay]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> thePrimes <span class="keyword">=</span> sieve<span class="keyword">(</span>from<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -270,11 +270,11 @@ NAME="AEN1094"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""fun{a:t@ype}
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
 stream_filter_cloref
-  (xs: stream(a), pred: a -&#60;cloref&#62; bool):&#60;!laz&#62; stream(a)
-// end of [stream_filter_cloref]
-""")</PRE
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> pred<span class="keyword">:</span> <span class="staexp">a</span> <span class="keyword">-&lt;</span><span class="staexp">cloref</span><span class="keyword">&gt;</span> <span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [stream_filter_cloref]</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -301,22 +301,22 @@ NAME="AEN1098"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""//
-val _0_ = $UNSAFE.cast{int64}(0)
-val _1_ = $UNSAFE.cast{int64}(1)
-//
-val // the following values are defined mutually recursively
-rec theFibs_0
-  : stream(int64) = $delay(stream_cons(_0_, theFibs_1)) // fib0, fib1, ...
-and theFibs_1
-  : stream(int64) = $delay(stream_cons(_1_, theFibs_2)) // fib1, fib2, ...
-and theFibs_2
-  : stream(int64) = // fib2, fib3, fib4, ...
-(
-  stream_map2_fun&#60;int64,int64&#62;&#60;int64&#62;(theFibs_0, theFibs_1, lam (x, y) =&#62; x + y)
-) (* end of [val/and/and] *)
-//
-""")</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> _0_ <span class="keyword">=</span> $UNSAFE<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>int64<span class="keyword">}</span></span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> _1_ <span class="keyword">=</span> $UNSAFE<span class="keyword">.</span>cast<span class="staexp"><span class="keyword">{</span>int64<span class="keyword">}</span></span><span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="comment">// the following values are defined mutually recursively</span>
+<span class="keyword">rec</span> theFibs_0
+  <span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int64</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$delay</span><span class="keyword">(</span>stream_cons<span class="keyword">(</span>_0_<span class="keyword">,</span> theFibs_1<span class="keyword">)</span><span class="keyword">)</span></span> <span class="comment">// fib0, fib1, ...</span>
+<span class="keyword">and</span> theFibs_1
+  <span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int64</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$delay</span><span class="keyword">(</span>stream_cons<span class="keyword">(</span>_1_<span class="keyword">,</span> theFibs_2<span class="keyword">)</span><span class="keyword">)</span></span> <span class="comment">// fib1, fib2, ...</span>
+<span class="keyword">and</span> theFibs_2
+  <span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int64</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="comment">// fib2, fib3, fib4, ...</span>
+<span class="keyword">(</span>
+  stream_map2_fun&lt;<span class="staexp">int64</span><span class="keyword">,</span><span class="staexp">int64</span><span class="keyword">&gt;&lt;</span><span class="staexp">int64</span><span class="keyword">&gt;</span><span class="keyword">(</span>theFibs_0<span class="keyword">,</span> theFibs_1<span class="keyword">,</span> <span class="keyword">lam</span> <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span> <span class="keyword">=&gt;</span> x + y<span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [val/and/and] *)</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -338,13 +338,13 @@ NAME="AEN1101"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""fun{
-a1,a2:t0p}{b:t0p
-} stream_map2_fun
-(
-  xs1: stream(a1), xs2: stream(a2), f: (a1, a2) -&#60;fun&#62; b
-) :&#60;!laz&#62; stream(b) // end of [stream_map2_fun]
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a1<span class="keyword">,</span>a2<span class="keyword">:</span>t0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span>t0p
+<span class="keyword">}</span></span> stream_map2_fun
+<span class="keyword">(</span>
+  xs1<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a1</span><span class="keyword">)</span><span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a2</span><span class="keyword">)</span><span class="keyword">,</span> f<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a1</span><span class="keyword">,</span> <span class="staexp">a2</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp"><span class="keyword">fun</span></span><span class="keyword">&gt;</span> <span class="staexp">b</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span> <span class="comment">// end of [stream_map2_fun]</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -375,31 +375,31 @@ NAME="AEN1105"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""//
-val
-compare_int_int =
-  lam (x1: int, x2: int): int =&#60;fun&#62; compare(x1, x2)
-//
-macdef
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+compare_int_int <span class="keyword">=</span>
+  <span class="keyword">lam</span> <span class="keyword">(</span>x1<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x2<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=&lt;</span><span class="staexp"><span class="keyword">fun</span></span><span class="keyword">&gt;</span> compare<span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">macdef</span>
 merge2
-(xs1, xs2) =
-stream_mergeq_fun&#60;int&#62; (,(xs1), ,(xs2), compare_int_int)
-//
-val
-rec theHamming
-  : stream(int) = $delay
-(
-  stream_cons(1, merge2(merge2(theHamming2, theHamming3), theHamming5))
-) (* end of [theHamming] *)
+<span class="dynexp"><span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">)</span></span> <span class="keyword">=</span>
+stream_mergeq_fun&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="dynexp"><span class="keyword">,(</span>xs1<span class="keyword">)</span></span><span class="keyword">,</span> <span class="dynexp"><span class="keyword">,(</span>xs2<span class="keyword">)</span></span><span class="keyword">,</span> compare_int_int<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+<span class="keyword">rec</span> theHamming
+  <span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$delay</span>
+<span class="keyword">(</span>
+  stream_cons<span class="keyword">(</span>1<span class="keyword">,</span> merge2<span class="keyword">(</span>merge2<span class="keyword">(</span>theHamming2<span class="keyword">,</span> theHamming3<span class="keyword">)</span><span class="keyword">,</span> theHamming5<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [theHamming] *)</span>
 
-and theHamming2
-  : stream(int) = stream_map_fun&#60;int&#62;&#60;int&#62; (theHamming, lam x =&#62; 2 * x)
-and theHamming3
-  : stream(int) = stream_map_fun&#60;int&#62;&#60;int&#62; (theHamming, lam x =&#62; 3 * x)
-and theHamming5
-  : stream(int) = stream_map_fun&#60;int&#62;&#60;int&#62; (theHamming, lam x =&#62; 5 * x)
-//
-""")</PRE
+<span class="keyword">and</span> theHamming2
+  <span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span> stream_map_fun&lt;<span class="staexp">int</span><span class="keyword">&gt;&lt;</span><span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span>theHamming<span class="keyword">,</span> <span class="keyword">lam</span> x <span class="keyword">=&gt;</span> <span class="dynexp">2</span> * x<span class="keyword">)</span>
+<span class="keyword">and</span> theHamming3
+  <span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span> stream_map_fun&lt;<span class="staexp">int</span><span class="keyword">&gt;&lt;</span><span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span>theHamming<span class="keyword">,</span> <span class="keyword">lam</span> x <span class="keyword">=&gt;</span> <span class="dynexp">3</span> * x<span class="keyword">)</span>
+<span class="keyword">and</span> theHamming5
+  <span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span> stream_map_fun&lt;<span class="staexp">int</span><span class="keyword">&gt;&lt;</span><span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span>theHamming<span class="keyword">,</span> <span class="keyword">lam</span> x <span class="keyword">=&gt;</span> <span class="dynexp">5</span> * x<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -421,12 +421,12 @@ NAME="AEN1108"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""fun{a:t0p}
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
 stream_mergeq_fun
-(
-  xs1: stream(a), xs2: stream(a), (a, a) -&#60;fun&#62; int
-) :&#60;!laz&#62; stream(a) // end of [stream_mergeq_fun]
-""")</PRE
+<span class="keyword">(</span>
+  xs1<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp"><span class="keyword">fun</span></span><span class="keyword">&gt;</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">!</span><span class="staexp">laz</span><span class="keyword">&gt;</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span> <span class="comment">// end of [stream_mergeq_fun]</span>
+</p></PRE
 ><P
 ></P
 ></DIV

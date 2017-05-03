@@ -103,10 +103,10 @@ NAME="AEN1201"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""val x0 = $extval(int, "foo") // get the value of foo
-val p_foo = $extval(ptr, "&#38;foo") // get the address of foo
-val () = $UNSAFE.ptr_set&#60;int&#62; (p_foo, x0 + 1) // update foo
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> x0 <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$extval</span><span class="keyword">(</span>int<span class="keyword">,</span> "foo"<span class="keyword">)</span></span></span> <span class="comment">// get the value of foo</span>
+<span class="dynexp"><span class="keyword">val</span> p_foo <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$extval</span><span class="keyword">(</span>ptr<span class="keyword">,</span> "&amp;foo"<span class="keyword">)</span></span></span> <span class="comment">// get the address of foo</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> $UNSAFE<span class="keyword">.</span>ptr_set&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p_foo<span class="keyword">,</span> x0 + <span class="dynexp">1</span><span class="keyword">)</span></span> <span class="comment">// update foo</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -130,8 +130,8 @@ NAME="AEN1204"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""extvar "foo" = x0 + 1
-""")</PRE
+><p class="patsyntax"><span class="extcode"><span class="keyword">extvar</span> "foo" <span class="keyword">=</span> x0 + <span class="dynexp">1</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -157,8 +157,8 @@ NAME="AEN1207"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""extern var "foo" = x0 + 1
-""")</PRE
+><p class="patsyntax"><span class="keyword">extern</span> <span class="extcode"><span class="keyword">var</span> "foo" <span class="keyword">=</span> x0 + <span class="dynexp">1</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -201,9 +201,9 @@ NAME="AEN1216"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""extvar "foo2.first" = 1
-extvar "foo2.second" = 2
-""")</PRE
+><p class="patsyntax"><span class="extcode"><span class="keyword">extvar</span> "foo2.first" <span class="keyword">=</span> <span class="dynexp">1</span></span>
+<span class="extcode"><span class="keyword">extvar</span> "foo2.second" <span class="keyword">=</span> <span class="dynexp">2</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV

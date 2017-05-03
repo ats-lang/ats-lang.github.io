@@ -98,17 +98,17 @@ NAME="AEN196"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""//
-val x = 1000
-val y = x + x // = 2000
-val z = y * y // = 4000000
-//
-extern
-fun sum_x_y_z (): int
-//
-implement sum_x_y_z () = x + y + z
-//
-""")</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span> <span class="dynexp">1000</span></span>
+<span class="dynexp"><span class="keyword">val</span> y <span class="keyword">=</span> x + x</span> <span class="comment">// = 2000</span>
+<span class="dynexp"><span class="keyword">val</span> z <span class="keyword">=</span> y * y</span> <span class="comment">// = 4000000</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span> sum_x_y_z <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span> sum_x_y_z <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x + y + z</span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -136,16 +136,16 @@ NAME="AEN200"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""
-staload "./foo.dats"
-dynload "./foo.dats" // for initialization
+><p class="patsyntax">
+<span class="keyword">staload</span> "./foo.dats"
+<span class="keyword">dynload</span> "./foo.dats" <span class="comment">// for initialization</span>
 
-implement
-main0 () =
-{
-val () = assertloc (4003000 = sum_x_y_z())
-} (* end of [main0] *)
-""")</PRE
+<span class="dynexp"><span class="keyword">implement</span>
+main0 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">{</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc <span class="keyword">(</span><span class="dynexp">4003000</span> <span class="keyword">=</span> sum_x_y_z<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [main0] *)</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -271,8 +271,8 @@ NAME="AEN226"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""#define ATS_DYNLOADFLAG 0
-""")</PRE
+><p class="patsyntax"><span class="neuexp"><span class="keyword">#define</span> ATS_DYNLOADFLAG 0</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -311,8 +311,8 @@ NAME="AEN233"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""#define ATS_DYNLOADNAME "foo2_dynload"
-""")</PRE
+><p class="patsyntax"><span class="neuexp"><span class="keyword">#define</span> ATS_DYNLOADNAME "foo2_dynload"</span>
+</p></PRE
 ><P
 ></P
 ></DIV

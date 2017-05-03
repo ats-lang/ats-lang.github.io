@@ -124,10 +124,10 @@ NAME="AEN921"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""fun{a:t0p}
-mtrxszref_make_elt (m: size_t, n: size_t, x0: a): mtrxref(a)
-// end of [mtrxszref_make_elt]
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+mtrxszref_make_elt <span class="keyword">(</span>m<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">mtrxref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [mtrxszref_make_elt]</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -161,11 +161,11 @@ NAME="AEN927"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""fun{a:t0p}
-mtrxszref_get_at (M: mtrxszref(a), i: size_t, j: size_t): (a)
-fun{a:t0p}
-mtrxszref_set_at (M: mtrxszref(a), i: size_t, j: size_t, x: a): void
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+mtrxszref_get_at <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">mtrxszref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+mtrxszref_set_at <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">mtrxszref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -215,47 +215,47 @@ NAME="AEN937"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""//
-extern
-fun{a:t0p}
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
 mtrxszref_transpose
-  (M: mtrxszref(a)): void
-//
-implement
-{a}(*tmp*)
+  <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">mtrxszref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
 mtrxszref_transpose
-  (M) = let
-//
-val n = M.nrow()
-//
-val () = assertloc(M.nrow() = M.ncol())
-//
-fun loop
-(
- i: size_t, j: size_t
-) : void =
-(
-if
-(j &#60; n)
-then let
-  val x = M[i,j]
-  val () = M[i,j] := M[j,i]
-  val () = M[j,i] := x
-in
-  loop(i, succ(j))
-end // end of [then]
-else let
-  val i1 = succ(i)
-in
-  if i1 &#60; n then loop(i1, succ(i1)) else ()
-end // end of [else]
-//
-) (* end of [loop] *)
-//
-in
-  if (n &#62; 0) then loop(i2sz(0), i2sz(1)) else ()
-end // end of [mtrxszref_transpose]
-""")</PRE
+  <span class="keyword">(</span>M<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> n <span class="keyword">=</span> M<span class="dynexp"><span class="keyword">.</span>nrow</span><span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>M<span class="dynexp"><span class="keyword">.</span>nrow</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> M<span class="dynexp"><span class="keyword">.</span>ncol</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+<span class="keyword">(</span>
+ i<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">size_t</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">if</span>
+<span class="keyword">(</span>j <span class="keyword">&lt;</span> n<span class="keyword">)</span>
+<span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span> <span class="dynexp">M[i<span class="keyword">,</span>j<span class="keyword">]</span></span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">M[i<span class="keyword">,</span>j<span class="keyword">]</span></span> := <span class="dynexp">M[j<span class="keyword">,</span>i<span class="keyword">]</span></span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">M[j<span class="keyword">,</span>i<span class="keyword">]</span></span> := x</span>
+<span class="keyword">in</span>
+  loop<span class="keyword">(</span>i<span class="keyword">,</span> succ<span class="keyword">(</span>j<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [then]</span>
+<span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> i1 <span class="keyword">=</span> succ<span class="keyword">(</span>i<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> i1 <span class="keyword">&lt;</span> n <span class="keyword">then</span> loop<span class="keyword">(</span>i1<span class="keyword">,</span> succ<span class="keyword">(</span>i1<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [else]</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [loop] *)</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> <span class="keyword">(</span>n <span class="keyword">&gt;</span> <span class="dynexp">0</span><span class="keyword">)</span> <span class="keyword">then</span> loop<span class="keyword">(</span>i2sz<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span><span class="keyword">,</span> i2sz<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [mtrxszref_transpose]</span>
+</p></PRE
 ><P
 ></P
 ></DIV

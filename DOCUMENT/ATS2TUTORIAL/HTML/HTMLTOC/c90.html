@@ -181,8 +181,8 @@ NAME="AEN108"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""infixl 50 + -
-""")</PRE
+><p class="patsyntax"><span class="neuexp"><span class="keyword">infixl</span> 50 + -</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -245,8 +245,8 @@ NAME="AEN122"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""infixl (+) iadd fadd padd uadd
-""")</PRE
+><p class="patsyntax"><span class="neuexp"><span class="keyword">infixl</span> <span class="keyword">(</span>+<span class="keyword">)</span> iadd fadd padd uadd</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -275,8 +275,8 @@ NAME="AEN126"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""infixl (opr1 + 10) opr2
-""")</PRE
+><p class="patsyntax"><span class="neuexp"><span class="keyword">infixl</span> <span class="keyword">(</span>opr1 + 10<span class="keyword">)</span> opr2</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -300,11 +300,11 @@ COLOR="RED"
 operator (of precedence value 0) by putting the backslash symbol
 (<FONT
 COLOR="RED"
->\\</FONT
+></FONT
 >) in front of it. For instance, the expression
 <FONT
 COLOR="RED"
->exp1 \\opr exp2</FONT
+>exp1 opr exp2</FONT
 > stands for <FONT
 COLOR="RED"
 >opr(exp1, exp2)</FONT
@@ -339,9 +339,9 @@ NAME="AEN140"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""prefix 61 ~
-postfix 69 ?
-""")</PRE
+><p class="patsyntax"><span class="neuexp"><span class="keyword">prefix</span> 61 <span class="keyword">~</span></span>
+<span class="neuexp"><span class="keyword">postfix</span> 69 ?</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -360,10 +360,10 @@ NAME="AEN142"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""postfix (imul + 10) !!
-extern fun !! (x: int): int
-implement !! (x) = if x &#62;= 2 then x * (x - 2)!! else 1
-""")</PRE
+><p class="patsyntax"><span class="neuexp"><span class="keyword">postfix</span> <span class="keyword">(</span>imul + 10<span class="keyword">)</span> !!</span>
+<span class="keyword">extern</span> <span class="dynexp"><span class="keyword">fun</span> !! <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span></span>
+<span class="dynexp"><span class="keyword">implement</span> !! <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">if</span> x &gt;= <span class="dynexp">2</span> <span class="keyword">then</span> x * <span class="keyword">(</span>x - <span class="dynexp">2</span><span class="keyword">)</span>!! <span class="keyword">else</span> <span class="dynexp">1</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -410,7 +410,7 @@ NAME="AEN152"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""nonfix iadd fadd padd uadd""")</PRE
+><p class="patsyntax"><span class="neuexp"><span class="keyword">nonfix</span> iadd fadd padd uadd</span></p></PRE
 ><P
 ></P
 ></DIV

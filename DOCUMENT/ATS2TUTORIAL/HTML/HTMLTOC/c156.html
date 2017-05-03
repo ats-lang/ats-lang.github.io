@@ -98,15 +98,15 @@ NAME="AEN161"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""//
-datatype
-aDatatype =
-| A | B of (int, int)
-//
-val aValue: int
-fun aFunction: int -&#62; int
-//
-""")</PRE
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">datatype</span>
+<span class="staexp">aDatatype <span class="keyword">=</span>
+<span class="keyword">|</span> <span class="dynexp">A</span> <span class="keyword">|</span> <span class="dynexp">B <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> aValue<span class="keyword">:</span> <span class="staexp">int</span></span>
+<span class="dynexp"><span class="keyword">fun</span> aFunction<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">int</span></span>
+<span class="comment">//</span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -131,8 +131,8 @@ NAME="AEN165"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""staload FOO = "foo.sats"
-""")</PRE
+><p class="patsyntax"><span class="keyword">staload</span> FOO <span class="keyword">=</span> "foo.sats"
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -162,9 +162,9 @@ NAME="AEN170"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""val a: $FOO.aDatatype = $FOO.A()
-val b: $FOO.aDatatype = $FOO.B(0, $FOO.aFunction($FOO.aValue))
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> a<span class="keyword">:</span> <span class="staexp">$FOO<span class="keyword">.</span>aDatatype</span> <span class="keyword">=</span> $FOO<span class="keyword">.</span>A<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> b<span class="keyword">:</span> <span class="staexp">$FOO<span class="keyword">.</span>aDatatype</span> <span class="keyword">=</span> $FOO<span class="keyword">.</span>B<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> $FOO<span class="keyword">.</span>aFunction<span class="keyword">(</span>$FOO<span class="keyword">.</span>aValue<span class="keyword">)</span><span class="keyword">)</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -188,8 +188,8 @@ NAME="AEN174"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""staload FOO2 = "foo.sats"
-""")</PRE
+><p class="patsyntax"><span class="keyword">staload</span> FOO2 <span class="keyword">=</span> "foo.sats"
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -224,8 +224,8 @@ NAME="AEN181"
 ></A
 ><PRE
 CLASS="programlisting"
->############sats2xhtml_docbook("""staload "foo.sats"
-""")</PRE
+><p class="patsyntax"><span class="keyword">staload</span> "foo.sats"
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -248,9 +248,9 @@ NAME="AEN184"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""val a: aDatatype = A()
-val b: aDatatype = B(0, aFunction(aValue))
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> a<span class="keyword">:</span> <span class="staexp">aDatatype</span> <span class="keyword">=</span> A<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> b<span class="keyword">:</span> <span class="staexp">aDatatype</span> <span class="keyword">=</span> B<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> aFunction<span class="keyword">(</span>aValue<span class="keyword">)</span><span class="keyword">)</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
@@ -270,10 +270,10 @@ NAME="AEN187"
 ></A
 ><PRE
 CLASS="programlisting"
->############dats2xhtml_docbook("""val aValue = 0
-staload "foo.sats"
-val anotheValue = aValue + 1
-""")</PRE
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> aValue <span class="keyword">=</span> <span class="dynexp">0</span></span>
+<span class="keyword">staload</span> "foo.sats"
+<span class="dynexp"><span class="keyword">val</span> anotheValue <span class="keyword">=</span> aValue + <span class="dynexp">1</span></span>
+</p></PRE
 ><P
 ></P
 ></DIV
