@@ -149,15 +149,15 @@ mv ${PWD}/ATS2/prelude/CATS/CODEGEN/*.cats ${PWD}/ATS2/prelude/CATS/
 #
 # For parsing constraints
 #
-#(cd ATS2/contrib/ATS-extsolve && time make DATS_C)
+# (cd ATS2/contrib/ATS-extsolve && time make DATS_C)
 #
 # For building patsolve_z3
-#(cd ATS2/contrib/ATS-extsolve-z3 && time make build)
-#(cd ATS2/contrib/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
+# (cd ATS2/contrib/ATS-extsolve-z3 && time make build)
+# (cd ATS2/contrib/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
 #
 # For building patsolve_smt2
-#(cd ATS2/contrib/ATS-extsolve-smt2 && time make build)
-#(cd ATS2/contrib/ATS-extsolve-smt2 && mv -f patsolve_smt2 ${PATSHOME}/bin)
+# (cd ATS2/contrib/ATS-extsolve-smt2 && time make build)
+# (cd ATS2/contrib/ATS-extsolve-smt2 && mv -f patsolve_smt2 ${PATSHOME}/bin)
 #
 ######
 #
@@ -170,14 +170,15 @@ mv ${PWD}/ATS2/prelude/CATS/CODEGEN/*.cats ${PWD}/ATS2/prelude/CATS/
 #
 (cd ATS2/contrib/CATS-atscc2js && time make all)
 (cd ATS2/contrib/CATS-atscc2js && mv -f atscc2js ${PATSHOME}/bin)
-(cd ATS2-contrib/contrib/libatscc/libatscc2js && time make all && time make all_in_one)
+#
+# (cd ATS2-contrib/contrib/libatscc/libatscc2js && time make all && time make all_in_one)
 #
 # For building atscc2erl
 #
-#(cd ATS2/contrib/CATS-atscc2erl && time make all)
-#(cd ATS2/contrib/CATS-atscc2erl && mv -f atscc2erl ${PATSHOME}/bin)
-#(cd ATS2-contrib/contrib/libatscc/libatscc2erl && time make all && time make all_in_one)
-#(cd ATS2-contrib/contrib/libatscc/libatscc2erl/Session && time make all && time make all_in_one)
+# (cd ATS2/contrib/CATS-atscc2erl && time make all)
+# (cd ATS2/contrib/CATS-atscc2erl && mv -f atscc2erl ${PATSHOME}/bin)
+# (cd ATS2-contrib/contrib/libatscc/libatscc2erl && time make all && time make all_in_one)
+# (cd ATS2-contrib/contrib/libatscc/libatscc2erl/Session && time make all && time make all_in_one)
 #
 ######
 #
