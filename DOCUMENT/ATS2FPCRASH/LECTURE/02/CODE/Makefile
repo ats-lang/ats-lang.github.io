@@ -14,13 +14,13 @@ all::
 ######
 
 all:: \
-fact
-fact: ; \
-$(MYATSCC) fact.dats
+lecture02
+lecture02: ; \
+$(MYATSCC) lecture02.dats
 
 ######
 
-regress:: fact; ./fact_dats
+regress:: lecture02; ./lecture02_dats
 
 ######
 

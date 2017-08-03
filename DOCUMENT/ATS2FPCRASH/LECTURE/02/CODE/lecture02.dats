@@ -62,4 +62,4 @@ implement main0() = () // a dummy for [main]
 
 (* ****** ****** *)
 
-(* end of [fact.dats] *)
+(* end of [lecture02.dats] *)
