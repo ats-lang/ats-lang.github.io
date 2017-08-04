@@ -9,8 +9,6 @@
 (* ****** ****** *)
 //
 #include
-"share/atspre_define.hats"
-#include
 "share/atspre_staload.hats"
 //
 (* ****** ****** *)
@@ -123,31 +121,46 @@ println! ("gfact<double>(100) = ", gfact<double>(100))
 //
 (* ****** ****** *)
 //
+#define
+HX_INTINF_targetloc
+"$PATSHOME\
+/contrib/atscntrb-hx-intinf"
+//
+(* ****** ****** *)
+//
 staload _(*T*) =
-"{$LIBATSHWXI}/intinf/DATS/intinf_t.dats"
+"{$HX_INTINF}/DATS/intinf_t.dats"
 staload _(*VT*) =
-"{$LIBATSHWXI}/intinf/DATS/intinf_vt.dats"
+"{$HX_INTINF}/DATS/intinf_vt.dats"
 //
-staload GINTINF =
-"{$LIBATSHWXI}/intinf/DATS/gintinf_t.dats"
+staload
+GINTINF =
+"{$HX_INTINF}/DATS/gintinf_t.dats"
 //
 (* ****** ****** *)
-
-typedef intinf = $GINTINF.intinf
-overload print with $GINTINF.print_intinf
-
+//
+typedef
+intinf = $GINTINF.intinf
+//
+overload
+print with $GINTINF.print_intinf
+//
 (* ****** ****** *)
-
+//
 val () =
-println! ("gfact<intinf>(10) = ", gfact<intinf>(10))
+println!
+(
+"gfact<intinf>(10) = ", gfact<intinf>(10)
+) (* println! *)
+//
 val () =
 println! ("gfact<intinf>(34) = ", gfact<intinf>(34))
 val () =
 println! ("gfact<intinf>(100) = ", gfact<intinf>(100))
-
+//
 (* ****** ****** *)
 
-implement main0 () = ()
+implement main0((*void*)) = ()
 
 (* ****** ****** *)
 

@@ -19,7 +19,6 @@
 
 (* ****** ****** *)
 //
-#include "share/atspre_define.hats"
 #include "share/atspre_staload.hats"
 //
 (* ****** ****** *)
@@ -135,7 +134,7 @@ end // end of [mtrxszref_transpose]
 
 (* ****** ****** *)
 
-staload "libc/SATS/stdlib.sats"
+staload "libats/libc/SATS/stdlib.sats"
 
 (* ****** ****** *)
 

@@ -34,7 +34,6 @@
 
 (* ****** ****** *)
 //
-#include "share/atspre_define.hats"
 #include "share/atspre_staload.hats"
 //
 (* ****** ****** *)
@@ -74,9 +73,11 @@ end // end of [bsearch_arr]
 
 (* ****** ****** *)
 //
-staload UN = "prelude/SATS/unsafe.sats"
+staload
+UN = "prelude/SATS/unsafe.sats"
 //
-staload STDLIB = "libc/SATS/stdlib.sats"
+staload
+STDLIB = "libats/libc/SATS/stdlib.sats"
 //
 (* ****** ****** *)
 //
