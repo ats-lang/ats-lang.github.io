@@ -14,21 +14,13 @@ all::
 ######
 
 all:: \
-multable
-multable: ; \
-$(MYATSCC) multable.dats
+lecture03
+lecture03: ; \
+$(MYATSCC) lecture03.dats
 
 ######
 
-all:: \
-lecture02
-lecture02: ; \
-$(MYATSCC) lecture02.dats
-
-######
-
-regress:: multable; ./multable_dats
-regress:: lecture02; ./lecture02_dats
+regress:: lecture03; ./lecture03_dats
 
 ######
 
@@ -38,7 +30,6 @@ clean:: ; rm -f *~
 
 cleanall:: clean
 cleanall:: ; rm -f *_dats
-cleanall:: ; rm -f multable.html
 
 ######
 
