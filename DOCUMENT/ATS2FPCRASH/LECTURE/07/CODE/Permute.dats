@@ -130,9 +130,11 @@ Permute__evaluate
   ( res
   , lam(xs) =>
     (
+    print("(");
     list0_iforeach
     ( xs
-    , lam(i, x) => (if i > 0 then print ", "; print x)); println!()
+    , lam(i, x) => (if i > 0 then print ", "; print x));
+    println!(")")
     ) (* list0_iforeach *)
   )
 //
