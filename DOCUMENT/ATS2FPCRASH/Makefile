@@ -29,6 +29,12 @@ $(PATSHOME)/doc/BOOK/ATS2FPCRASH/PDF/main.pdf PDF/.
 
 update_code:: ; \
 $(CPRF) \
+$(PATSHOME)/doc/BOOK/ATS2FPCRASH/LECTURE/MYLIB/* LECTURE/MYLIB/.
+
+######
+
+update_code:: ; \
+$(CPRF) \
 $(PATSHOME)/doc/BOOK/ATS2FPCRASH/LECTURE/01/CODE/* LECTURE/01/CODE/.
 update_code:: ; \
 $(CPRF) \

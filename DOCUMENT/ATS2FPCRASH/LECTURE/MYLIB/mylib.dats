@@ -8,10 +8,22 @@
 *)
 //
 (* ****** ****** *)
-
+//
+(*
+symelim iseqz
+symelim isneqz
+*)
+//
+symelim .head
+symelim .tail
+//
+symelim .drop
+symelim .take
+//
 symelim .foreach
 symelim .foldleft
-
+symelim .foldright
+//
 (* ****** ****** *)
 //
 extern
@@ -104,6 +116,27 @@ int_cross_foreach
 (* ****** ****** *)
 //
 extern
+fun{}
+list0_is_nil{a:t@ype}(list0(a)): bool
+extern
+fun{}
+list0_is_cons{a:t@ype}(list0(a)): bool
+//
+implement
+{}(*tmp*)
+list0_is_nil(xs) =
+(case+ xs of list0_nil() => true | _ => false)
+implement
+{}(*tmp*)
+list0_is_cons(xs) =
+(case+ xs of list0_cons _ => true | _ => false)
+//
+overload iseqz with list0_is_nil of 100
+overload isneqz with list0_is_cons of 100
+//
+(* ****** ****** *)
+//
+extern
 fun
 {a:t@ype}
 list0_length(xs0: list0(INV(a))): int
@@ -140,6 +173,109 @@ list0_reverse(xs: list0(INV(a))): list0(a)
 and
 list0_revappend
 (xs: list0(INV(a)), ys: list0(a)): list0(a)
+//
+(* ****** ****** *)
+//
+extern
+fun
+{a:t@ype}
+list0_head_exn(xs: list0(INV(a))): (a)
+extern
+fun
+{a:t@ype}
+list0_tail_exn(xs: list0(INV(a))): list0(a)
+//
+implement
+{a}(*tmp*)
+list0_head_exn(xs) =
+let val-list0_cons(x0, _) = xs in x0 end
+implement
+{a}(*tmp*)
+list0_tail_exn(xs) =
+let val-list0_cons(_, xs) = xs in xs end
+//
+overload .head with list0_head_exn of 100
+overload .tail with list0_tail_exn of 100
+//
+(* ****** ****** *)
+//
+extern
+fun
+{a:t@ype}
+list0_get_at_exn
+(xs: list0(a), n: int): a
+//
+implement
+{a}(*tmp*)
+list0_get_at_exn
+  (xs, n) =
+(
+case- xs of
+(*
+| list0_nil() =>
+  $raise ListSubscriptExn()
+*)
+| list0_cons(x, xs) =>
+  if n <= 0
+    then x else list0_get_at_exn<a>(xs, n-1)
+  // end of [list0_cons]
+)
+//
+overload [] with list0_get_at_exn of 100
+//
+(* ****** ****** *)
+//
+extern
+fun
+{a:t@ype}
+list0_drop_exn(list0(INV(a)), int): list0(a)
+extern
+fun
+{a:t@ype}
+list0_take_exn(list0(INV(a)), int): list0(a)
+//
+implement
+{a}(*tmp*)
+list0_drop_exn
+  (xs, n) =
+(
+if
+n > 0
+then let
+//
+val-
+list0_cons(_, xs) = xs
+//
+in
+  list0_drop_exn<a>(xs, n-1)
+//
+end // end of [then]
+else (xs) // end of [else]
+//
+) (* list0_drop_exn *)
+//
+implement
+{a}(*tmp*)
+list0_take_exn
+  (xs, n) =
+(
+if
+n > 0
+then let
+//
+val-
+list0_cons(x, xs) = xs
+//
+in
+  list0_cons(x, list0_take_exn(xs, n-1))
+//
+end // end of [then]
+else list0_nil() // end of [else]
+//
+) (* list0_take_exn *)
+//
+overload .drop with list0_drop_exn of 100
+overload .take with list0_take_exn of 100
 //
 (* ****** ****** *)
 //
@@ -360,6 +496,22 @@ case+ xs of
 //
 } (* end of [list0_mapopt] *)
 
+(* ****** ****** *)
+//
+extern
+fun
+{a:t@ype}
+list0_mapcons
+  (x0: a, xss: list0(list0(a))): list0(list0(a))
+//
+implement
+{a}(*tmp*)
+list0_mapcons
+  (x0, xss) =
+(
+list0_map<list0(a)><list0(a)>(xss, lam(xs) => list0_cons(x0, xs))
+) (* list0_mapcons *)
+//
 (* ****** ****** *)
 
 implement
@@ -635,24 +787,225 @@ fun loop(i: int, xs: list0(a)): bool =
 }
 //
 (* ****** ****** *)
+
+extern
+fun {
+a,b:t@ype
+} list0_zip
+  (xs: list0(a), ys: list0(b)): list0($tup(a, b))
+//
+implement
+{a,b}
+list0_zip(xs, ys) =
+(
+case xs of
+| list0_nil() =>
+  list0_nil()
+| list0_cons(x, xs) =>
+  (
+    case+ ys of
+    | list0_nil() =>
+      list0_nil()
+    | list0_cons(y, ys) =>
+      list0_cons($tup(x, y), list0_zip<a,b>(xs, ys))
+  )
+)
+
+(* ****** ****** *)
+
+extern
+fun
+{a
+,b:t@ype}
+{c:t@ype}
+list0_map2
+(xs: list0(a), ys: list0(b), fopr: cfun(a, b, c)): list0(c)
+//
+implement
+{a,b}{c}
+list0_map2
+(xs, ys, fopr) =
+(
+case xs of
+| list0_nil() =>
+  list0_nil()
+| list0_cons(x, xs) =>
+  (
+    case+ ys of
+    | list0_nil() =>
+      list0_nil()
+    | list0_cons(y, ys) =>
+      list0_cons(fopr(x, y), list0_map2<a,b><c>(xs, ys, fopr))
+  ) (* end of [list0_cons] *)
+)
+
+(* ****** ****** *)
+//
+extern
+fun
+{a:t@ype}
+list0_merge
+( xs: list0(a)
+, ys: list0(a), cmp: cfun(a, a, int)): list0(a)
+//
+implement
+{a}(*tmp*)
+list0_merge
+(xs0, ys0, cmp) = let
+//
+fun
+auxlst
+( xs0: list0(a)
+, ys0: list0(a)
+) : list0(a) = (
+//
+case+ xs0 of
+| list0_nil() => ys0
+| list0_cons
+    (x1, xs1) => (
+    case+ ys0 of
+    | list0_nil() => xs0
+    | list0_cons
+        (y1, ys1) => let
+        val sgn = cmp(x1, y1)
+      in
+        if (sgn <= 0)
+          then list0_cons(x1, auxlst(xs1, ys0))
+          else list0_cons(y1, auxlst(xs0, ys1))
+        // end of [if]
+      end // end of [list0_cons]
+  ) (* end of [list0_cons] *)
+//
+) (* end of [auxlst] *)
+//
+in
+  auxlst(xs0, ys0)
+end // end of [list0_merge]
+
+(* ****** ****** *)
+//
+extern
+fun
+{a:t@ype}
+list0_mergesort
+(xs: list0(a), cmp: cfun(a, a, int)): list0(a)
+//
+implement
+{a}(*tmp*)
+list0_mergesort
+  (xs, cmp) = let
+//
+// It is assumed
+// that length(xs) = n
+//
+fun
+msort
+(xs: list0(a), n: int): list0(a) =
+if
+(n >= 2)
+then let
+  val n1 = n / 2
+  val xs1 = list0_take_exn(xs, n1)
+  val xs2 = list0_drop_exn(xs, n1)
+in
+  list0_merge<a>(msort(xs1, n1), msort(xs2, n-n1), cmp)
+end // end of [then]
+else (xs) // end of [else]
+//
+in
+  msort(xs, list0_length<a>(xs))
+end // end of [list0_mergesort]
+
+(* ****** ****** *)
 //
 macdef
 list0_sing(x) =
 list0_cons(,(x), list0_nil())
 //
 (* ****** ****** *)
+
+extern
+fun
+{a:t@ype}
+list0_choose2
+(xs: list0(a)): list0($tup(a, a))
 //
 extern
 fun
 {a:t@ype}
-list0_choose_rest
+list0_choose2
+(xs: list0(a)): list0($tup(a, a))
+//
+implement
+{a}(*tmp*)
+list0_choose2
+  (xs) = let
+//
+typedef aa = $tup(a, a)
+//
+in
+//
+case+ xs of
+| list0_nil() =>
+  list0_nil()
+| list0_cons(x0, xs) =>
+  list0_append<aa>
+  (list0_map<a><aa>(xs, lam(x) => $tup(x0, x)), list0_choose2(xs))
+//
+end // end of [list0_choose2]
+
+(* ****** ****** *)
+//
+extern
+fun
+{a:t@ype}
+list0_nchoose
+(xs: list0(a), n: int): list0(list0(a))
+//
+extern
+fun
+{a:t@ype}
+list0_nchoose_rest
 (xs: list0(INV(a)), n: int): list0($tup(list0(a), list0(a)))
 //
 (* ****** ****** *)
 
 implement
 {a}(*tmp*)
-list0_choose_rest
+list0_nchoose
+  (xs, n) =
+  auxlst(xs, n) where
+{
+//
+typedef xs = list0(a)
+//
+fun
+auxlst
+(
+xs: xs, n: int
+) : list0(xs) =
+(
+if
+(n <= 0)
+then
+list0_sing(list0_nil())
+else
+(
+case+ xs of
+| list0_nil() =>
+  list0_nil()
+| list0_cons(x0, xs) =>
+  list0_append<xs>(list0_mapcons(x0, auxlst(xs, n-1)), auxlst(xs, n))
+) (* end of [else] *)
+)
+//
+} (* end of [list0_nchoose] *)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+list0_nchoose_rest
   (xs, n) =
   auxlst(xs, n) where
 {
@@ -693,7 +1046,7 @@ case+ xs of
 ) (* end of [else] *)
 )
 //
-} (* end of [list0_choose_rest] *)
+} (* end of [list0_nchoose_rest] *)
 
 (* ****** ****** *)
 
