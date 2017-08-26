@@ -1,5 +1,10 @@
 (* ****** ****** *)
 //
+// For use in
+// Crash into ATS
+//
+(* ****** ****** *)
+//
 (*
 #include
 "share/atspre_staload.hats"
@@ -268,7 +273,6 @@ list0_cons(x, xs) = xs
 //
 in
   list0_cons(x, list0_take_exn(xs, n-1))
-//
 end // end of [then]
 else list0_nil() // end of [else]
 //
