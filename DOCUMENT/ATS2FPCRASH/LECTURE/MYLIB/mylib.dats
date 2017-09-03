@@ -208,7 +208,7 @@ extern
 fun
 {a:t@ype}
 list0_get_at_exn
-(xs: list0(a), n: int): a
+(xs: list0(INV(a)), n: int): a
 //
 implement
 {a}(*tmp*)
@@ -506,7 +506,8 @@ extern
 fun
 {a:t@ype}
 list0_mapcons
-  (x0: a, xss: list0(list0(a))): list0(list0(a))
+( x0: a
+, xss: list0(list0(a))): list0(list0(a))
 //
 implement
 {a}(*tmp*)
@@ -515,6 +516,24 @@ list0_mapcons
 (
 list0_map<list0(a)><list0(a)>(xss, lam(xs) => list0_cons(x0, xs))
 ) (* list0_mapcons *)
+//
+(* ****** ****** *)
+//
+extern
+fun
+{a:t@ype}
+{b:t@ype}
+list0_mapjoin
+( xs: list0(INV(a))
+, fopr: cfun(a, list0(b))): list0(b)
+//
+implement
+{a}{b}
+list0_mapjoin
+  (xs, fopr) =
+(
+  list0_concat<b>(list0_map<a><list0(b)>(xs, fopr))
+)
 //
 (* ****** ****** *)
 
@@ -1052,6 +1071,110 @@ case+ xs of
 //
 } (* end of [list0_nchoose_rest] *)
 
+(* ****** ****** *)
+//
+extern
+fun
+int_stream_from(n: int): stream(int)
+//
+implement
+int_stream_from(n) =
+  $delay(stream_cons(n, int_stream_from(n+1)))
+//
+(* ****** ****** *)
+//
+extern
+fun
+{a:t@ype}
+stream_get_at_exn
+  (xs: stream(a), n: int): a
+//
+overload [] with stream_get_at_exn
+//
+implement
+{a}(*tmp*)
+stream_get_at_exn
+  (xs, n) =
+(
+case- !xs of
+(*
+| stream_nil() =>
+  (
+    $raise StreamSubscriptExn()
+  )
+*)
+| stream_cons(x, xs) =>
+  (
+    if n <= 0 then x else stream_get_at_exn<a>(xs, n-1)
+  )
+)
+//
+(* ****** ****** *)
+//
+extern
+fun
+{a:t@ype}
+stream_append
+(xs: stream(a), ys: stream(a)): stream(a)
+//
+implement
+{a}(*tmp*)
+stream_append
+(xs, ys) = $delay
+(
+case+ !xs of
+| stream_nil() => !ys
+| stream_cons(x, xs) =>
+  stream_cons(x, stream_append<a>(xs, ys))
+)
+//
+(* ****** ****** *)
+//
+extern
+fun
+{a:t@ype}
+{b:t@ype}
+stream_map
+(xs: stream(a), fopr: cfun(a, b)): stream(b)
+//
+implement
+{a}{b}
+stream_map
+  (xs, fopr) = $delay
+(
+case+ !xs of
+| stream_nil() =>
+  stream_nil()
+| stream_cons(x, xs) =>
+  stream_cons(fopr(x), stream_map<a><b>(xs, fopr))
+)
+//
+(* ****** ****** *)
+//
+extern
+fun
+{a:t@ype}
+stream_filter
+(xs: stream(a), test: cfun(a, bool)): stream(a)
+//
+implement
+{a}(*tmp*)
+stream_filter
+  (xs, test) = $delay
+(
+case+ !xs of
+| stream_nil() =>
+  stream_nil()
+| stream_cons(x, xs) =>
+  if test(x)
+    then
+    stream_cons
+      (x, stream_filter<a>(xs, test))
+    // end of [then]
+    else !(stream_filter<a>(xs, test))
+  // end of [if]
+)
+//
 (* ****** ****** *)
 
 (* end of [mylib.dats] *)
