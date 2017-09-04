@@ -1,0 +1,966 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Persistent Arrays and References</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Crash into ATS"
+HREF="book1.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Game of Twenty-four"
+HREF="c736.html"><LINK
+REL="NEXT"
+TITLE="Raising and Catching Exceptions"
+HREF="c941.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Crash into ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c736.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c941.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="lecture08"
+></A
+>Chapter 10. Persistent Arrays and References</H1
+><P
+>&#13;Let us start with references. A reference is precisely an
+(initialized) singleton array, that is, an array of size 1, and its
+typical use is for implementing a global variable that can be updated.
+
+</P
+><P
+>&#13;The following function is for creating a reference:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN815"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+ref_make_elt<span class="keyword">(</span>x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>ref</FONT
+> is a type constructor in ATS that takes a type T
+to form a reference type <FONT
+COLOR="RED"
+>ref(T)</FONT
+> for any reference holding
+a value of the type T.  The functions <FONT
+COLOR="RED"
+>ref_get_elt</FONT
+> and
+<FONT
+COLOR="RED"
+>ref_set_elt</FONT
+> are for fetching and updating the value stored
+in a reference, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN821"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+ref_get_elt<span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+ref_set_elt<span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+A shorthand for <FONT
+COLOR="RED"
+>ref_make_elt</FONT
+> is <FONT
+COLOR="RED"
+>ref</FONT
+>.  Also,
+both <FONT
+COLOR="RED"
+>!</FONT
+> and <FONT
+COLOR="RED"
+>[]</FONT
+> are overloaded with
+<FONT
+COLOR="RED"
+>ref_get_elt</FONT
+> and <FONT
+COLOR="RED"
+>ref_set_elt</FONT
+>. For instance, the
+following code prints out 0, 1, and 3 twice:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN829"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> r0 <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="keyword">!</span>r0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">!</span>r0 := <span class="keyword">!</span>r0 + <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="keyword">!</span>r0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">!</span>r0 := <span class="keyword">!</span>r0 + <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="keyword">!</span>r0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> r1 <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span> := <span class="dynexp">r1[<span class="keyword">]</span></span> + <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span> := <span class="dynexp">r1[<span class="keyword">]</span></span> + <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Programmers often misuse references. This is especially true for those
+with a background in imperative programming. For instance, the
+following example shows a typical poor use of references that is often
+resulted from someone learning functional programming by "translating"
+code written in imperative style:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN832"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fact_ref
+<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> i <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> r <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> <span class="keyword">!</span>i <span class="keyword">&lt;</span> n <span class="keyword">then</span> <span class="keyword">(</span><span class="keyword">!</span>i := <span class="keyword">!</span>i+<span class="dynexp">1</span><span class="keyword">;</span> <span class="keyword">!</span>r := <span class="keyword">!</span>r * <span class="keyword">!</span>i<span class="keyword">;</span> loop<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop<span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">in</span> <span class="keyword">!</span>r <span class="keyword">end</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [fact_ref] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+There are some obvious drawbacks in this implementation of
+<FONT
+COLOR="RED"
+>fact_ref</FONT
+>. For evaluating each call to
+<FONT
+COLOR="RED"
+>fact_ref</FONT
+>, two references are created, which become garbage
+after the call returns. As a reference is allocated on heap, it is not
+mapped to a register when compiled. Accessing a reference involves
+memory traffic, which is much more expensive than accessing a
+register. Compared to a tail-recursive implementation of the factorial
+function in functional style, <FONT
+COLOR="RED"
+>fact_ref</FONT
+> is of great
+inefficiency both time-wise and memory-wise.
+
+</P
+><P
+>&#13;There is a type constructor <FONT
+COLOR="RED"
+>array0</FONT
+> in ATS that takes a
+type T to form the array type <FONT
+COLOR="RED"
+>array0(T)</FONT
+> for an array
+storing elements of the type T. We refer to such an array as an
+array0-value, which is essentially a pair containing a pointer (to the
+memory location where elements are stored) and an integer (indicating
+the capacity of the array). For instance, the following function can
+be called to create an array0-value:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN840"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_make_elt<span class="keyword">(</span>asz<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a non-negative integer <FONT
+COLOR="RED"
+>asz</FONT
+> and an element
+<FONT
+COLOR="RED"
+>x0</FONT
+>, <FONT
+COLOR="RED"
+>array0_make_elt</FONT
+> returns an array0-value in
+which the array is of size <FONT
+COLOR="RED"
+>asz</FONT
+> and each of its cells is
+initialized with <FONT
+COLOR="RED"
+>x0</FONT
+>.
+
+</P
+><P
+>&#13;Another commonly used function for creating an array0-value
+is <FONT
+COLOR="RED"
+>array0_tabulate</FONT
+> of the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN849"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_tabulate<span class="keyword">(</span>asz<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a non-negative integer <FONT
+COLOR="RED"
+>asz</FONT
+> and a closure-function
+<FONT
+COLOR="RED"
+>fopr</FONT
+>, <FONT
+COLOR="RED"
+>array0_tabulate</FONT
+> returns an array0-value
+in which the array is of size <FONT
+COLOR="RED"
+>asz</FONT
+> and the array cells are
+initialized with the values of <FONT
+COLOR="RED"
+>fopr</FONT
+> at the valid indices.
+
+</P
+><P
+>&#13;The functions <FONT
+COLOR="RED"
+>array0_get_at</FONT
+> and <FONT
+COLOR="RED"
+>array0_set_at</FONT
+>
+are for fetching and updating the value stored in an array0-value at a
+given index:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN859"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_get_at<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_set_at<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>array0_get_at</FONT
+> raises an exception
+(<FONT
+COLOR="RED"
+>ArraySubscriptExn()</FONT
+>) if the given index is invalid, that
+is, not between 0 and the array size minus 1, inclusive.  And the same
+happens with respect to <FONT
+COLOR="RED"
+>array0_set_at</FONT
+>.  Also please note
+that the brackets <FONT
+COLOR="RED"
+>[]</FONT
+> is overloaded with both
+<FONT
+COLOR="RED"
+>array0_get_at</FONT
+> and <FONT
+COLOR="RED"
+>array0_set_at</FONT
+>.  For
+instance, evaluating the following code prints out two lines: the
+first consisting of the text <FONT
+COLOR="RED"
+>000</FONT
+> and the second consisting
+of the text <FONT
+COLOR="RED"
+>123</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN869"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> A <span class="keyword">=</span>
+array0_make_elt&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">3</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">A[0<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">A[1<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">A[2<span class="keyword">]</span></span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">A[0<span class="keyword">]</span></span> := <span class="dynexp">1</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">A[1<span class="keyword">]</span></span> := <span class="dynexp">A[0<span class="keyword">]</span></span> + <span class="dynexp">1</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">A[2<span class="keyword">]</span></span> := <span class="dynexp">A[1<span class="keyword">]</span></span> + <span class="dynexp">1</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">A[0<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">A[1<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">A[2<span class="keyword">]</span></span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Like list0-values, there are many commonly used functions for
+processing array0-values. For instance, the following function
+<FONT
+COLOR="RED"
+>array0_foreach</FONT
+> corresponds to the previouly presented
+<FONT
+COLOR="RED"
+>list0_foreach</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN874"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_foreach
+<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">void</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+array0_foreach<span class="keyword">(</span>A<span class="keyword">,</span> fwork<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  int_foreach&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>sz2i<span class="keyword">(</span>A<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=&gt;</span> fwork<span class="keyword">(</span><span class="dynexp">A[i<span class="keyword">]</span></span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [array0_foreach] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given an array0-value <FONT
+COLOR="RED"
+>A</FONT
+>, the expression
+<FONT
+COLOR="RED"
+>A.size()</FONT
+> is written in dot-notation, which returns the
+size of the array contained in <FONT
+COLOR="RED"
+>A</FONT
+>. The name <FONT
+COLOR="RED"
+>sz2i</FONT
+>
+refers to a cast function from the type <FONT
+COLOR="RED"
+>size_t</FONT
+> to the type
+<FONT
+COLOR="RED"
+>int</FONT
+>.
+
+</P
+><P
+>&#13;The following function
+<FONT
+COLOR="RED"
+>array0_foldleft</FONT
+> corresponds to the previouly presented
+<FONT
+COLOR="RED"
+>list0_foldleft</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN885"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>r<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_foldleft
+<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> r0<span class="keyword">:</span> <span class="staexp">r</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">r</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">r</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">r</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+array0_foldleft
+  <span class="keyword">(</span>A<span class="keyword">,</span> r0<span class="keyword">,</span> fopr<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="comment">//</span>
+int_foldleft&lt;<span class="staexp">r</span><span class="keyword">&gt;</span>
+  <span class="keyword">(</span>sz2i<span class="keyword">(</span>A<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> r0<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>r<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=&gt;</span> fopr<span class="keyword">(</span>r<span class="keyword">,</span> <span class="dynexp">A[i<span class="keyword">]</span></span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [array0_foldleft] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The following function
+<FONT
+COLOR="RED"
+>array0_foldright</FONT
+> corresponds to the previouly presented
+<FONT
+COLOR="RED"
+>list0_foldright</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN889"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>r<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_foldright
+<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span><span class="keyword">,</span> r0<span class="keyword">:</span> <span class="staexp">r</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">r</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">r</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+array0_foldright
+  <span class="keyword">(</span>A<span class="keyword">,</span> fopr<span class="keyword">,</span> r0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> asz <span class="keyword">=</span> sz2i<span class="keyword">(</span>A<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  int_foldleft&lt;<span class="staexp">r</span><span class="keyword">&gt;</span><span class="keyword">(</span>asz<span class="keyword">,</span> r0<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>r<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=&gt;</span> fopr<span class="keyword">(</span><span class="dynexp">A[asz-i-1<span class="keyword">]</span></span><span class="keyword">,</span> r<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [array0_foldright] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Unlike <FONT
+COLOR="RED"
+>list0_foldright</FONT
+>, <FONT
+COLOR="RED"
+>array0_foldright</FONT
+>
+is tail-recursive.
+
+</P
+><P
+>&#13;In practice, matrices (that is, two dimensional arrays) are also a
+very common data structure. In ATS, there is a type constructor
+<FONT
+COLOR="RED"
+>matrix0</FONT
+>, which takes a type T to form the type
+<FONT
+COLOR="RED"
+>matrix0(T)</FONT
+> for a matrix storing elements of the type T. We
+refer to such a matrix as a matrix0-value, which is essentially a
+tuple containing a pointer (to the memory location where elements are
+stored) and two integers (indicating the number of rows and the number
+of columns of the matrix). For instance, the following function can be
+called to create a matrix0-value:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN896"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+matrix0_make_elt<span class="keyword">(</span>nrow<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> ncol<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given two non-negative integers <FONT
+COLOR="RED"
+>m</FONT
+> and <FONT
+COLOR="RED"
+>n</FONT
+> and an
+element <FONT
+COLOR="RED"
+>x0</FONT
+>, <FONT
+COLOR="RED"
+>matrix0_make_elt</FONT
+> returns a
+matrix0-value in which the matrix is of dimension <FONT
+COLOR="RED"
+>m</FONT
+> by
+<FONT
+COLOR="RED"
+>n</FONT
+> and each of its cells is initialized with
+<FONT
+COLOR="RED"
+>x0</FONT
+>.
+
+</P
+><P
+>&#13;Please note that the so-called row-major representation is chosen for
+the matrix contained in each created matrix0-value. As the elements in
+each row are stored adjacently in row-major representation, it can be
+(much) more efficient to process the elements in the row-by-row fashion
+(compared to the column-by-column fashion) due to the memory-cache effect.
+
+</P
+><P
+>&#13;Like <FONT
+COLOR="RED"
+>array0_tabulate</FONT
+>, the following function
+<FONT
+COLOR="RED"
+>matrix0_tabulate</FONT
+> is often called to create a
+matrix0-value:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN909"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+matrix0_tabulate
+  <span class="keyword">(</span>nrow<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> ncol<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given two non-negative integers <FONT
+COLOR="RED"
+>m</FONT
+> and <FONT
+COLOR="RED"
+>n</FONT
+> and a
+closure-function <FONT
+COLOR="RED"
+>fopr</FONT
+>, <FONT
+COLOR="RED"
+>matrix0_tabulate</FONT
+>
+returns a matrix0-value in which the matrix is of dimension
+<FONT
+COLOR="RED"
+>m</FONT
+> by <FONT
+COLOR="RED"
+>n</FONT
+> and the matrix cells are initialized
+with the values of <FONT
+COLOR="RED"
+>fopr</FONT
+> at the valid indices.
+
+</P
+><P
+>&#13;The functions <FONT
+COLOR="RED"
+>matrix0_get_at</FONT
+> and
+<FONT
+COLOR="RED"
+>matrix0_set_at</FONT
+> are for fetching and updating the value
+stored in a matrix0-value at a given position (represented by a row
+index and a column index):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN921"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+matrix0_get_at
+  <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+matrix0_set_at
+  <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>matrix0_get_at</FONT
+> raises an exception
+(<FONT
+COLOR="RED"
+>MatrixSubscriptExn()</FONT
+>) if one of the given indices is
+invalid.  And the same happens with respect to
+<FONT
+COLOR="RED"
+>matrix0_set_at</FONT
+>. Also please note that the brackets
+<FONT
+COLOR="RED"
+>[]</FONT
+> is overloaded with both <FONT
+COLOR="RED"
+>matrix0_get_at</FONT
+> and
+<FONT
+COLOR="RED"
+>matrix0_set_at</FONT
+>.
+
+</P
+><P
+>&#13;Like <FONT
+COLOR="RED"
+>array0_foreach</FONT
+>, the following function
+<FONT
+COLOR="RED"
+>matrix0_foreach</FONT
+> applies to each element in a given matrix
+<FONT
+COLOR="RED"
+>M</FONT
+> a given closure-function <FONT
+COLOR="RED"
+>fwork</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN934"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+matrix0_foreach
+<span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">void</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+matrix0_foreach
+  <span class="keyword">(</span>M<span class="keyword">,</span> fwork<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> nrow <span class="keyword">=</span> sz2i<span class="keyword">(</span>M<span class="dynexp"><span class="keyword">.</span>nrow</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> ncol <span class="keyword">=</span> sz2i<span class="keyword">(</span>M<span class="dynexp"><span class="keyword">.</span>ncol</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  int_cross_foreach&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>nrow<span class="keyword">,</span> ncol<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>i<span class="keyword">,</span> j<span class="keyword">)</span> <span class="keyword">=&gt;</span> fwork<span class="keyword">(</span><span class="dynexp">M[i<span class="keyword">,</span>j<span class="keyword">]</span></span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [matrix0_foreach] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The expression <FONT
+COLOR="RED"
+>M.nrow()</FONT
+> is written in dot-notation, which
+returns the number of rows in the matrix contained in
+<FONT
+COLOR="RED"
+>M</FONT
+>. And <FONT
+COLOR="RED"
+>M.ncol()</FONT
+> is for the number of columns
+in the matrix.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FPCRASH/LECTURE/08/CODE"
+TARGET="_top"
+>on-line</A
+> the entirety of
+the code used in this chapter. 
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c736.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c941.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Game of Twenty-four</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Raising and Catching Exceptions</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2FPCRASH-BOOK.js"></SCRIPT></BODY
+></HTML
+>

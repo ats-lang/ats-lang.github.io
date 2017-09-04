@@ -1,0 +1,492 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Raising and Catching Exceptions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Crash into ATS"
+HREF="book1.html"><LINK
+REL="PREVIOUS"
+TITLE="Persistent Arrays and References"
+HREF="c807.html"><LINK
+REL="NEXT"
+TITLE="Lazy Stream-Processing"
+HREF="c988.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Crash into ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c807.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c988.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="lecture09"
+></A
+>Chapter 11. Raising and Catching Exceptions</H1
+><P
+>&#13;Exceptions provide a mechanism for altering the (normal) control-flow
+during program execution. Raising an exception is somewhat like
+executing a goto-statement.  A handler for handling a raised exception
+is essentially a pattern matching clause guarded by a pattern (for
+matching exceptions).  Intuitively speaking, a raised exception passes
+through a stack of handlers; the raised exception is handled by a
+handler if the exception matches the guard of the handler, or it
+simply tries the next handler to see if it can be handled; the raised
+exception terminates program execution abnormally if it is not handled
+by any of the handlers.
+
+</P
+><P
+>&#13;In ATS, a try-expression (or try-with-expression) is of the form
+(<FONT
+COLOR="RED"
+>try</FONT
+> exp <FONT
+COLOR="RED"
+>with</FONT
+> clseq), where <FONT
+COLOR="RED"
+>try</FONT
+> is
+a keyword, exp is an expression, <FONT
+COLOR="RED"
+>with</FONT
+> is also a keyword,
+and clseq is a sequence of pattern matching clauses (used as
+exception-handlers). When evaluating such a try-expression, we first
+evaluate exp. If the evaluation of exp leads to a value, then the
+value is also the value of the try-expression. If the evaluation of
+exp leads to a raised exception, then we match the exception against
+the guards of the matching clauses in clseq. If there is a match, the
+raised exception is caught and we continue to evaluate the body of the
+first clause whose guard is matched. If there is no match, the raised
+exception is uncaught. In the following example,
+<FONT
+COLOR="RED"
+>list0_exists</FONT
+> is implemented based on
+<FONT
+COLOR="RED"
+>list0_foreach</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN947"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+list0_exists
+  <span class="keyword">(</span>xs<span class="keyword">,</span> test<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">exception</span> <span class="dynexp">True <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">try</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+list0_foreach&lt;a<span class="keyword">&gt;</span>
+<span class="keyword">(</span> xs
+<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">if</span> test<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">then</span> <span class="keyword">$raise</span> True<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  false
+<span class="keyword">end</span> <span class="keyword">with</span> <span class="keyword">~</span>True<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> true</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [list0_exists]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a list and a predicate, <FONT
+COLOR="RED"
+>list0_exists</FONT
+> returns a
+boolean value to indicate whether there exists an element in the list
+that satisfies the predicate.  There is a built-in type
+<FONT
+COLOR="RED"
+>exn</FONT
+> in ATS, which is somewhat like an extensible datatype
+in the sense that a new constructor associated with <FONT
+COLOR="RED"
+>exn</FONT
+>
+can be introduced through an exception-declaration. For instance,
+<FONT
+COLOR="RED"
+>True</FONT
+> is introduced as a nullary exception-constructor in
+the body of <FONT
+COLOR="RED"
+>list0_exists</FONT
+>. Given a list and a function,
+<FONT
+COLOR="RED"
+>list0_foreach</FONT
+> normally traverses until the end of the list
+while appying the function to each encountered element.  When the call
+to <FONT
+COLOR="RED"
+>list0_foreach</FONT
+> in the body of <FONT
+COLOR="RED"
+>list0_exists</FONT
+>
+is evaluated, an exception (<FONT
+COLOR="RED"
+>True()</FONT
+>) is raised to stop
+further traversing if an element satisfying the predicate
+<FONT
+COLOR="RED"
+>test</FONT
+> is encountered.  If the call to to
+<FONT
+COLOR="RED"
+>list0_foreach</FONT
+> returns, then the value <FONT
+COLOR="RED"
+>false</FONT
+> is
+the return value of <FONT
+COLOR="RED"
+>list0_exists</FONT
+>.  If <FONT
+COLOR="RED"
+>True()</FONT
+>
+is raised during the evaluation of the call, then this raised
+exception is to be caught by the handler following the keyword
+<FONT
+COLOR="RED"
+>with</FONT
+>, resulting in the value <FONT
+COLOR="RED"
+>true</FONT
+> becoming the
+return value of <FONT
+COLOR="RED"
+>list0_exists</FONT
+>.  Note that a raised
+exception is considered a resource in ATS and it needs to be properly
+freed or re-raised after being caught. The symbol <FONT
+COLOR="RED"
+>~</FONT
+> in the
+pattern <FONT
+COLOR="RED"
+>~True()</FONT
+> indicates that the caught execption is
+freed.
+
+</P
+><P
+>&#13;By raising an exception, a function can efficiently pass some
+information gathered during its evaluation. Let us see a typical
+example of this kind as follows. A datatype <FONT
+COLOR="RED"
+>tree</FONT
+> is
+decared for representing binary trees:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN970"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">datatype</span> <span class="staexp">tree<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">|</span> <span class="dynexp">tree_nil <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="keyword">|</span> <span class="dynexp">tree_cons <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For instance, the function for computing the height of a given
+binary tree can be implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN972"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+tree_height<span class="keyword">(</span>t0<span class="keyword">:</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> t0 <span class="keyword">of</span>
+<span class="keyword">|</span> tree_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">0</span>
+<span class="keyword">|</span> tree_cons<span class="keyword">(</span>tl<span class="keyword">,</span> _<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="dynexp">1</span> + max<span class="keyword">(</span>tree_height&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>tl<span class="keyword">)</span><span class="keyword">,</span> tree_height&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>tr<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>tree_height</FONT
+> is O(n)-time, where n is the size of
+its argument.  A binary is perfect if it is empty or both of its
+children are perfect and of the same height. For instance, the
+following function <FONT
+COLOR="RED"
+>tree_is_perfect</FONT
+> checks whether a given
+binary tree is perfect:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN976"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+tree_is_perfect
+  <span class="keyword">(</span>t0<span class="keyword">:</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> t0 <span class="keyword">of</span>
+<span class="keyword">|</span> tree_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> true
+<span class="keyword">|</span> tree_cons<span class="keyword">(</span>tl<span class="keyword">,</span> _<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  tree_is_perfect&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>tl<span class="keyword">)</span> &amp;&amp;
+  tree_is_perfect&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>tr<span class="keyword">)</span> &amp;&amp;
+  <span class="keyword">(</span>tree_height&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>tl<span class="keyword">)</span> <span class="keyword">=</span> tree_height&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>tr<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, the time complexity of <FONT
+COLOR="RED"
+>tree_is_perfect</FONT
+> is
+O(n(log(n))) where n is the size of its argument. By making use of
+exception, we can readily implement the following function of
+O(n)-time that also checks whether a given tree is perfect:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN979"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+tree_is_perfect2
+  <span class="keyword">(</span>t0<span class="keyword">:</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">exception</span> <span class="dynexp">NotPerfect <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+aux<span class="keyword">(</span>t0<span class="keyword">:</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">case+</span> t0 <span class="keyword">of</span>
+<span class="keyword">|</span> tree_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">0</span>
+<span class="keyword">|</span> tree_cons<span class="keyword">(</span>tl<span class="keyword">,</span> _<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> hl <span class="keyword">=</span> aux<span class="keyword">(</span>tl<span class="keyword">)</span> <span class="keyword">and</span> hr <span class="keyword">=</span> aux<span class="keyword">(</span>tr<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">if</span> hl <span class="keyword">=</span> hr <span class="keyword">then</span> <span class="dynexp">1</span>+max<span class="keyword">(</span>hl<span class="keyword">,</span> hr<span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp"><span class="keyword">$raise</span> NotPerfect</span>
+  <span class="keyword">end</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="dynexp"><span class="keyword">try</span> <span class="keyword">let</span> <span class="keyword">val</span> _ <span class="keyword">=</span> aux<span class="keyword">(</span>t0<span class="keyword">)</span> <span class="keyword">in</span> true <span class="keyword">end</span> <span class="keyword">with</span> <span class="keyword">~</span>NotPerfect<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> false</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [tree_is_perfect2]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The inner function <FONT
+COLOR="RED"
+>aux</FONT
+> inside <FONT
+COLOR="RED"
+>tree_is_perfect2</FONT
+>
+returns the height of a given tree only if the tree is
+perfect. Otherwise, an exception (<FONT
+COLOR="RED"
+>NotPerfect()</FONT
+>) is
+raised. In other words, if a call to <FONT
+COLOR="RED"
+>aux</FONT
+> on a tree
+returns, we know that the tree is pefect while obtaining its height.
+This is often dubbed a <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>hitting-two-birds-with-one-stone</I
+></SPAN
+>
+scenario.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FPCRASH/LECTURE/09/CODE"
+TARGET="_top"
+>on-line</A
+> the entirety of
+the code used in this chapter. 
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c807.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c988.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Persistent Arrays and References</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Lazy Stream-Processing</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2FPCRASH-BOOK.js"></SCRIPT></BODY
+></HTML
+>

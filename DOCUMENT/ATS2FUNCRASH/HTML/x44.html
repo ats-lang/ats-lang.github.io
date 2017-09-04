@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Installing ATS</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Functional Crash into ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Introducing ATS"
+HREF="c32.html"><LINK
+REL="PREVIOUS"
+TITLE="What can ATS bring?"
+HREF="x39.html"><LINK
+REL="NEXT"
+TITLE="Compiling ATS code"
+HREF="x73.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Functional Crash into ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x39.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Introducing ATS</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x73.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="AEN44"
+>Installing ATS</A
+></H1
+><P
+>&#13;There are many approaches to installing ATS.
+Please visit this
+<A
+HREF="http://www.ats-lang.org/Downloads.html"
+TARGET="_top"
+>link</A
+>
+for details.
+</P
+><P
+>&#13;I have a free account with <A
+HREF="http://c9.io/"
+TARGET="_top"
+>Cloud-9</A
+>,
+which allows me to gain on-line access to Ubuntu boxes. With such a
+box, one can simply execute the following command-lines to install ATS
+in a couple minutes:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN50"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;<B
+CLASS="command"
+>wget</B
+> https://ats-lang.github.io/SCRIPT/C9-ATS2-install-cs320.sh
+<B
+CLASS="command"
+>bash</B
+> -v C9-ATS2-install-cs320.sh
+<B
+CLASS="command"
+>source</B
+> ~/.bashrc ## this one only needs to be executed once for all
+</PRE
+><P
+></P
+></DIV
+>
+
+After installation is done, one can execute:
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN55"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;<B
+CLASS="command"
+>which</B
+> patscc
+</PRE
+><P
+></P
+></DIV
+>
+
+and expect to see the following line of output:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN58"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;/home/ubuntu/workspace/ATS2/bin/patscc
+</PRE
+><P
+></P
+></DIV
+>
+
+Note that the home directory for ATS is
+<TT
+CLASS="filename"
+>/home/ubuntu/workspace/ATS2</TT
+>, which is stored in an
+environment variable of the name <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>PATSHOME</I
+></SPAN
+>.
+Please use <B
+CLASS="command"
+>which</B
+> to check that the commands
+<B
+CLASS="command"
+>patsopt</B
+> and <B
+CLASS="command"
+>myatscc</B
+> are also available.
+</P
+><P
+>&#13;By visiting <A
+HREF="https://ide.c9.io/c9hwxi/ats-bucs320"
+TARGET="_top"
+>ats-bucs320</A
+>, one
+can browse the two installed directories of the names
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>ATS2</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>ATS2-contrib</I
+></SPAN
+> and the files
+contained in them.  If re-installing ATS is ever needed, please
+remember that the installed directories <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>ATS2</I
+></SPAN
+> and
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>ATS2-contrib</I
+></SPAN
+> should be removed before the steps outlined
+above for installation are repeated.
+
+</P
+><P
+>&#13;Please note that more scripts for installing ATS can be found on-line at
+<A
+HREF="http://www.ats-lang.org/Downloads.html#Scripts_for_installing_ATS_Postiats"
+TARGET="_top"
+>Scripts_for_installing_ATS</A
+>.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x39.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x73.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>What can ATS bring?</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c32.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Compiling ATS code</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
