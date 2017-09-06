@@ -74,6 +74,9 @@ $(CPRF) \
 $(PATSHOME)/doc/BOOK/ATS2FUNCRASH/LECTURE/10/CODE/* LECTURE/10/CODE/.
 update_code:: ; \
 $(CPRF) \
+$(PATSHOME)/doc/BOOK/ATS2FUNCRASH/LECTURE/10-10/CODE/* LECTURE/10-10/CODE/.
+update_code:: ; \
+$(CPRF) \
 $(PATSHOME)/doc/BOOK/ATS2FUNCRASH/LECTURE/11/CODE/* LECTURE/11/CODE/.
 
 ######
@@ -92,7 +95,7 @@ $(CPF) \
 $(PATSHOME)/doc/BOOK/ATS2FUNCRASH/HTML/HTMLTOC/book1.html HTML/HTMLTOC/.
 update_htmltoc:: ; \
 $(CPF) \
-$(PATSHOME)/doc/BOOK/ATS2FUNCRASH/HTML/HTMLTOC/[c,f,p,x]*.html HTML/HTMLTOC/.
+$(PATSHOME)/doc/BOOK/ATS2FUNCRASH/HTML/HTMLTOC/[c,f,x]*.html HTML/HTMLTOC/.
 #
 ######
 #
@@ -102,7 +105,7 @@ $(PATSHOME)/doc/BOOK/ATS2FUNCRASH/HTML/ATS2FUNCRASH-BOOK-onechunk.html HTML/.
 #
 ######
 
-clean_html:: ; $(RMF) HTML/{c,f,p,x}*.html
-clean_htmltoc:: ; $(RMF) HTML/HTMLTOC/{c,f,p,x}*.html
+clean_html:: ; $(RMF) HTML/{c,f,x}*.html
+clean_htmltoc:: ; $(RMF) HTML/HTMLTOC/{c,f,x}*.html
 
 ###### end of [Makefile] ######
