@@ -21,14 +21,6 @@ DigitClock_dats.c: DigitClock.dats; $(PATSCC) -ccats $<
 DigitClock_dats.js: DigitClock_dats.c; $(ATSCC2JS) -o $@ -i $<
 #
 ######
-#
-all:: \
-HanoiTower_dats.js
-#
-HanoiTower_dats.c: HanoiTower.dats; $(PATSCC) -ccats $<
-HanoiTower_dats.js: HanoiTower_dats.c; $(ATSCC2JS) -o $@ -i $<
-#
-######
 
 clean:: ; rm -f *~
 clean:: ; rm -f *_dats.c

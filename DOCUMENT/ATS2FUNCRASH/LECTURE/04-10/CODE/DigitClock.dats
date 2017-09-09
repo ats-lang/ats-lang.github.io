@@ -1,6 +1,6 @@
 (* ****** ****** *)
 (*
-** Animating Hanoi Tower
+** Digital Clock
 *)
 (* ****** ****** *)
 
@@ -41,10 +41,6 @@ sleep(ms: int): void
 extern
 fun
 animate(fwork: cfun(void)): void
-extern
-fun
-sleep_animate
-  (ms: int, fwork: cfun(void)): void
 //
 (* ****** ****** *)
 //
@@ -57,6 +53,13 @@ animate(fwork) =
   val () = animate(fwork)
 }
 *)
+//
+(* ****** ****** *)
+//
+extern
+fun
+sleep_animate
+  (ms: int, fwork: cfun(void)): void
 //
 (*
 implement
