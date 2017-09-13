@@ -69,7 +69,7 @@ in
 end // end of [then]
 else () // end of [else]
 //
-) (* end of [Sierpinski] *)
+) (* end of [SierpinskiDraw] *)
 
 (* ****** ****** *)
 
@@ -81,7 +81,7 @@ document.getElementById("theCanvas");
 var
 theCtx = theCanvas.getContext( '2d' );
 //
-var N = 5;
+var N = 6;
 //
 var W =
 theCanvas.width;

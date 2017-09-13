@@ -75,7 +75,7 @@ animate(fwork) =
 extern
 fun
 execute_after
-  : (cfun(void), int(*ms*)) -> void = "mac#"
+(fwork: cfun(void), ms: int): void
 //
 (* ****** ****** *)
 
@@ -100,7 +100,8 @@ execute_after
   (fwork, ms) = (
 //
 $extfcall
-(void, "setTimeout", cloref2fun0(fwork), ms)
+( void
+, "setTimeout", cloref2fun0(fwork), ms)
 //
 ) (* end of [execute_after] *)
 //
@@ -109,7 +110,7 @@ $extfcall
 //
 implement
 sleep_animate(ms, fwork) =
-  execute_after(lam() => animate(fwork), ms)
+execute_after(lam() => animate(fwork), ms)
 //
 *)
 (* ****** ****** *)
