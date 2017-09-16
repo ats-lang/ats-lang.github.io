@@ -8,11 +8,13 @@ PATSOPT=$(PATSHOME)/bin/patsopt
 #
 ATSCC2JS=$(PATSHOME)/bin/atscc2js
 ATSCC2PY3=$(PATSHOME)/bin/atscc2py3
+ATSCC2PHP=$(PATSHOME)/bin/atscc2php
 #
 ######
 #
 all:: words_dats.js
 all:: words_dats.py
+all:: words_dats.php
 #
 ######
 #
@@ -25,6 +27,9 @@ words_dats.js: words.dats; \
 #
 words_dats.py: words.dats; \
   $(PATSOPT) -DATS LIBATSCC2PY3 -d $< | $(ATSCC2PY3) -o $@ -i
+#
+words_dats.php: words.dats; \
+  $(PATSOPT) -DATS LIBATSCC2PHP -d $< | $(ATSCC2PHP) -o $@ -i
 #
 ######
 #
@@ -43,5 +48,6 @@ cleanall:: clean
 cleanall:: ; rm -f initgen
 cleanall:: ; rm -f words_dats.js
 cleanall:: ; rm -f words_dats.py
+cleanall:: ; rm -f words_dats.php
 
 ###### end of [Makefile] ######

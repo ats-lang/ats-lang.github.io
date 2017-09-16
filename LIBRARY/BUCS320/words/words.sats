@@ -1,7 +1,7 @@
+(* ****** ****** *)
 (*
 ** For processing English words
 *)
-
 (* ****** ****** *)
 //
 #define
@@ -14,14 +14,16 @@ LIBATSCC2JS
 #then
 #define
 ATS_EXTERN_PREFIX "ats2jspre_BUCS320_"
-#endif
+#endif // #ifdef
+//
+(* ****** ****** *)
 //
 #ifdef
 LIBATSCC2PY3
 #then
 #define
 ATS_EXTERN_PREFIX "ats2pypre_BUCS320_"
-#endif
+#endif // #ifdef
 //
 (* ****** ****** *)
 //

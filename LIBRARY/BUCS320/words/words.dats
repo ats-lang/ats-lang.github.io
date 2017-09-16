@@ -4,8 +4,18 @@
 
 (* ****** ****** *)
 //
-#include
-"share/atspre_define.hats"
+#define
+LIBATSCC2JS_targetloc
+"$PATSHOME\
+/contrib/libatscc2js/ATS2-0.3.2"
+#define
+LIBATSCC2PY3_targetloc
+"$PATSHOME\
+/contrib/libatscc2py3/ATS2-0.3.2"
+#define
+LIBATSCC2PHP_targetloc
+"$PATSHOME\
+/contrib/libatscc2php/ATS2-0.3.2"
 //
 #ifdef
 LIBATSCC2JS
@@ -19,6 +29,13 @@ LIBATSCC2PY3
 #then
 #include
 "{$LIBATSCC2PY3}/staloadall.hats"
+#endif // end of [ifdef]
+//
+#ifdef
+LIBATSCC2PHP
+#then
+#include
+"{$LIBATSCC2PHP}/staloadall.hats"
 #endif // end of [ifdef]
 //
 (* ****** ****** *)
