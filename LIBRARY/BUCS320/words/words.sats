@@ -27,6 +27,15 @@ ATS_EXTERN_PREFIX "ats2pypre_BUCS320_"
 //
 (* ****** ****** *)
 //
+#ifdef
+LIBATSCC2PHP
+#then
+#define
+ATS_EXTERN_PREFIX "ats2phppre_BUCS320_"
+#endif // #ifdef
+//
+(* ****** ****** *)
+//
 fun
 theWords_size(): intGte(0) = "mac#%"
 //
