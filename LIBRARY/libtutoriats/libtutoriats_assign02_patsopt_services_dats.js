@@ -973,7 +973,7 @@ atslangweb_patsopt_tcats_rpc__cname__26__1()
   var tmplab, tmplab_js
 //
   // __patsflab_patsopt_tcats_rpc__cname
-  tmpret89__1 = "https://www.ats-lang.org/SERVER/MYCODE/atslangweb_patsopt_tcats_0_.php";
+  tmpret89__1 = "http://www.ats-lang.org/SERVER/MYCODE/atslangweb_patsopt_tcats_0_.php";
   return tmpret89__1;
 } // end-of-function
 
@@ -1116,7 +1116,7 @@ atslangweb_patsopt_ccats_rpc__cname__41__1()
   var tmplab, tmplab_js
 //
   // __patsflab_patsopt_ccats_rpc__cname
-  tmpret128__1 = "https://www.ats-lang.org/SERVER/MYCODE/atslangweb_patsopt_ccats_0_.php";
+  tmpret128__1 = "http://www.ats-lang.org/SERVER/MYCODE/atslangweb_patsopt_ccats_0_.php";
   return tmpret128__1;
 } // end-of-function
 
@@ -1259,7 +1259,7 @@ atslangweb_patsopt_atscc2js_rpc__cname__56__1()
   var tmplab, tmplab_js
 //
   // __patsflab_patsopt_atscc2js_rpc__cname
-  tmpret167__1 = "https://www.ats-lang.org/SERVER/MYCODE/atslangweb_patsopt_atscc2js_0_.php";
+  tmpret167__1 = "http://www.ats-lang.org/SERVER/MYCODE/atslangweb_patsopt_atscc2js_0_.php";
   return tmpret167__1;
 } // end-of-function
 
@@ -1409,7 +1409,7 @@ atslangweb_pats2xhtml_eval_rpc__cname__71__1()
   var tmplab, tmplab_js
 //
   // __patsflab_pats2xhtml_eval_rpc__cname
-  tmpret206__1 = "https://www.ats-lang.org/SERVER/MYCODE/atslangweb_pats2xhtml_eval_0_.php";
+  tmpret206__1 = "http://www.ats-lang.org/SERVER/MYCODE/atslangweb_pats2xhtml_eval_0_.php";
   return tmpret206__1;
 } // end-of-function
 
