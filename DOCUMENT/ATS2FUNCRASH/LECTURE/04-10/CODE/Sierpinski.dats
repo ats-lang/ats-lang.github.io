@@ -198,7 +198,7 @@ theCtx.fillStyle="#ffff00";
 SierpinskiDraw(i, A0, B0, C0);
 }
 ,
-1000/*ms*/
+1000/*delay in ms*/
 );
 //
 }
