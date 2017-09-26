@@ -1,0 +1,480 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Estimating Pi</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Crash into FP through ATS"
+HREF="book1.html"><LINK
+REL="PREVIOUS"
+TITLE="Persistent Arrays and References"
+HREF="c1006.html"><LINK
+REL="NEXT"
+TITLE="Raising and Catching Exceptions"
+HREF="c1166.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Crash into FP through ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c1006.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c1166.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="lecture08-10"
+></A
+>Chapter 14. Example: Estimating Pi</H1
+><P
+>&#13;Generally speaking, the Monte Carlo method refers to a technique that
+attempts to find an approximate solution to a numerical problem by
+making use of randomly generated inputs. I would like to present as
+follows an implementation based on such a technique that approximates
+the value of the constant pi (the ratio of the circumference of circle
+over its diameter).
+
+</P
+><P
+>&#13;The meaning of the following declarations should be clear:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1140"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span> N 1024</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span>
+<span class="staexp">point <span class="keyword">=</span> <span class="keyword">$tup</span><span class="keyword">(</span><span class="staexp">double</span><span class="keyword">,</span> <span class="staexp">double</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">points <span class="keyword">=</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">point</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">pointss <span class="keyword">=</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">points</span><span class="keyword">)</span></span>
+<span class="keyword">typedef</span> <span class="staexp">pointsss <span class="keyword">=</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">pointss</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a grid of the dimension N by N, there are N<SUP
+>2</SUP
+> unit
+squares in it. For each point on the grid, the area of the unit disk
+centered at the point equals pi (as the radius of the unit disk is 1).
+Given a unit contained in the grid, the probability of a randomly
+chosen point on the grid residing within the disk is clearly
+pi/N<SUP
+>2</SUP
+>.
+
+</P
+><P
+>&#13;Assume that there are K points on the grid. A randomly chosen point
+generates one hit if it resides within the unit disk centered at one
+point among the K points. Accumulatively, a randomly chosen point can
+generate n hits if it resides within the unit disks centered at n
+points among the K points.
+
+</P
+><P
+>&#13;Let create a matrix of the dimension N by N for storing lists of points:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1146"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+theGrid <span class="keyword">=</span>
+matrix0_make_elt&lt;<span class="staexp">points</span><span class="keyword">&gt;</span><span class="keyword">(</span>N<span class="keyword">,</span> N<span class="keyword">,</span> list0_nil<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+We are to play N<SUP
+>2</SUP
+> rounds of experiment.  At round K for each K
+between 1 and N<SUP
+>2</SUP
+>, there are already K-1 points on the grid
+chosen randomly in the previous rounds.  We choose a new point on the
+grid randomly for round K and records the number of hits it generates
+(with respect to the K-1 points on the grid). We then add this new
+point to the list stored at the matrix cell (i, j), where i and j are
+the integer parts of the x-coordinate and y-coordinate, respectively.
+
+</P
+><P
+>&#13;The following functions are for computing the number of hits generated
+by a point with respect to a collection of points:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1151"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+hit_point_point
+<span class="keyword">(</span>
+p1<span class="keyword">:</span> <span class="staexp">point</span><span class="keyword">,</span> p2<span class="keyword">:</span> <span class="staexp">point</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">if</span> dist<span class="keyword">(</span>p1<span class="keyword">,</span> p2<span class="keyword">)</span> &lt;= <span class="dynexp">1.0</span> <span class="keyword">then</span> <span class="dynexp">1</span> <span class="keyword">else</span> <span class="dynexp">0</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+hit_point_points
+<span class="keyword">(</span>
+p0<span class="keyword">:</span> <span class="staexp">point</span><span class="keyword">,</span> ps<span class="keyword">:</span> <span class="staexp">points</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+list0_foldleft&lt;<span class="staexp">int</span><span class="keyword">&gt;&lt;</span><span class="staexp">point</span><span class="keyword">&gt;</span>
+<span class="keyword">(</span> ps<span class="keyword">,</span> <span class="dynexp">0</span>
+<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>res<span class="keyword">,</span> p1<span class="keyword">)</span> <span class="keyword">=&gt;</span> res + hit_point_point<span class="keyword">(</span>p0<span class="keyword">,</span> p1<span class="keyword">)</span>
+<span class="keyword">)</span> <span class="comment">(* list0_foldleft *)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+hit_point_pointss
+<span class="keyword">(</span>
+p0<span class="keyword">:</span> <span class="staexp">point</span><span class="keyword">,</span> pss<span class="keyword">:</span> <span class="staexp">pointss</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+list0_foldleft&lt;<span class="staexp">int</span><span class="keyword">&gt;&lt;</span><span class="staexp">points</span><span class="keyword">&gt;</span>
+<span class="keyword">(</span> pss<span class="keyword">,</span> <span class="dynexp">0</span>
+<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>res<span class="keyword">,</span> ps<span class="keyword">)</span> <span class="keyword">=&gt;</span> res + hit_point_points<span class="keyword">(</span>p0<span class="keyword">,</span> ps<span class="keyword">)</span>
+<span class="keyword">)</span> <span class="comment">(* list0_foldleft *)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+hit_point_pointsss
+<span class="keyword">(</span>
+p0<span class="keyword">:</span> <span class="staexp">point</span><span class="keyword">,</span> psss<span class="keyword">:</span> <span class="staexp">pointsss</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+list0_foldleft&lt;<span class="staexp">int</span><span class="keyword">&gt;&lt;</span><span class="staexp">pointss</span><span class="keyword">&gt;</span>
+<span class="keyword">(</span> psss<span class="keyword">,</span> <span class="dynexp">0</span>
+<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>res<span class="keyword">,</span> ps<span class="keyword">)</span> <span class="keyword">=&gt;</span> res + hit_point_pointss<span class="keyword">(</span>p0<span class="keyword">,</span> ps<span class="keyword">)</span>
+<span class="keyword">)</span> <span class="comment">(* list0_foldleft *)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;A unit square in the grid is located at (i, j) if the lower-left
+corner of the unit square is at the point (i, j).  Two unit squares
+are neighbors if they locate at (i1, j1) and (i2, j2) such that
+abs(i1-i2) and abs(j1-j2) are at most 1, where abs refers to the
+absolute value function (on integers). Given a point inside the unit
+square located at (i, j), the point can only generate hits with
+respect to those residing inside the neighbors of the unit square.
+Given a unit square at (i, j), the following function generate a
+collection of the entire neighbors of the unit square:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1154"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+theGrid_get_neighbors
+<span class="keyword">(</span>
+ i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">pointsss</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+isvalid_row
+<span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="dynexp">0</span> &lt;= i &amp;&amp; i <span class="keyword">&lt;</span> N<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span>
+isvalid_col
+<span class="keyword">(</span>j<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="dynexp">0</span> &lt;= j &amp;&amp; j <span class="keyword">&lt;</span> N<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fopr
+<span class="keyword">(</span>
+  i<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">points</span> <span class="keyword">=</span>
+<span class="keyword">if</span>
+<span class="keyword">(</span>
+isvalid_row<span class="keyword">(</span>i<span class="keyword">)</span>
+&amp;&amp;
+isvalid_col<span class="keyword">(</span>j<span class="keyword">)</span>
+<span class="keyword">)</span>
+<span class="keyword">then</span> <span class="dynexp">theGrid[i<span class="keyword">,</span> j<span class="keyword">]</span></span> <span class="keyword">else</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+int_list0_map&lt;<span class="staexp">pointss</span><span class="keyword">&gt;</span>
+<span class="keyword">(</span> <span class="dynexp">3</span>
+<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>i'<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  int_list0_map&lt;<span class="staexp">points</span><span class="keyword">&gt;</span>
+  <span class="keyword">(</span> <span class="dynexp">3</span>
+  <span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>j'<span class="keyword">)</span> <span class="keyword">=&gt;</span> fopr<span class="keyword">(</span>i + i' - <span class="dynexp">1</span><span class="keyword">,</span> j + j' - <span class="dynexp">1</span><span class="keyword">)</span>
+  <span class="keyword">)</span>
+<span class="keyword">)</span> <span class="comment">(* end of [int_list0_map] *)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [theGrid_get_neighbors]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+It should be clear that the following function
+performs one round of the aforementioned experiment:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1156"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+do_one<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span>
+N * randfloat<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> y <span class="keyword">=</span>
+N * randfloat<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> p <span class="keyword">=</span> <span class="keyword">$tup</span><span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> i <span class="keyword">=</span>
+g0float2int_double_int<span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> j <span class="keyword">=</span>
+g0float2int_double_int<span class="keyword">(</span>y<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> nhit <span class="keyword">=</span>
+hit_point_pointsss
+  <span class="keyword">(</span>p<span class="keyword">,</span> theGrid_get_neighbors<span class="keyword">(</span>i<span class="keyword">,</span> j<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+  <span class="dynexp">theGrid[i<span class="keyword">,</span> j<span class="keyword">]</span></span> :=
+  list0_cons<span class="keyword">(</span>p<span class="keyword">,</span> <span class="dynexp">theGrid[i<span class="keyword">,</span> j<span class="keyword">]</span></span><span class="keyword">)</span><span class="keyword">;</span> nhit
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [do_one]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the function <FONT
+COLOR="RED"
+>randfloat</FONT
+> returns a randomly
+chosen floating point number between 0 and 1 (based on the uniform
+distribution). The integer returned by a call to
+<FONT
+COLOR="RED"
+>do_one</FONT
+> records the number of hits generated
+by the point chosen at one specific round. In order to
+perform K rounds of experiment, the following function can be called:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1160"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+do_all
+<span class="keyword">(</span>
+ K<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">fix</span>
+loop
+<span class="keyword">(</span>
+ i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span>
+  <span class="keyword">if</span> i <span class="keyword">&lt;</span> K <span class="keyword">then</span> loop<span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">,</span> do_one<span class="keyword">(</span><span class="keyword">)</span>+res<span class="keyword">)</span> <span class="keyword">else</span> res
+<span class="keyword">)</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span> <span class="comment">// end of [do_all]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The integer returned by a call to <FONT
+COLOR="RED"
+>do_all(K)</FONT
+> is the tally
+of the numbers of hits recorded during rounds n for n ranging from 1
+to K.
+
+</P
+><P
+>&#13;It can be proven that <FONT
+COLOR="RED"
+>do_all(N*N)/(N*N)</FONT
+> converges
+to pi/2 (with probability 1) as N approaches the positive infinity.
+Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/08-10/CODE"
+TARGET="_top"
+>on-line</A
+> the entirety of
+the code used in this chapter. 
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c1006.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c1166.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Persistent Arrays and References</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Raising and Catching Exceptions</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2FPCRASH-BOOK.js"></SCRIPT></BODY
+></HTML
+>

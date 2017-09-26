@@ -1,0 +1,527 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: A Bit of Animation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Crash into FP through ATS"
+HREF="book1.html"><LINK
+REL="PREVIOUS"
+TITLE="Higher-Order Functions"
+HREF="c248.html"><LINK
+REL="NEXT"
+TITLE="Functional List-Processing (1)"
+HREF="c418.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Crash into FP through ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c248.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c418.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="lecture04-10"
+></A
+>Chapter 6. Example: A Bit of Animation</H1
+><P
+>&#13;I would like to present a very simple example of animation in this
+chapter that makes use of higher-order functions. Please click <A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/04-10/CODE/DigitClock.html"
+TARGET="_top"
+>here</A
+>
+for a quick demo of this example.
+</P
+><P
+>&#13;Intuitively, animation can be performed by calling the following
+function <FONT
+COLOR="RED"
+>animate</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN353"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+sleep<span class="keyword">(</span>ms<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+animate<span class="keyword">(</span>fwork<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">void</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+animate<span class="keyword">(</span>fwork<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">{</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fwork<span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> sleep<span class="keyword">(</span>N<span class="comment">(*ms*)</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> animate<span class="keyword">(</span>fwork<span class="keyword">)</span></span>
+<span class="keyword">}</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The argument <FONT
+COLOR="RED"
+>fwork</FONT
+> is supposed to be called to generate
+some effect (for instance, outputing text on a webpage), and the
+function call <FONT
+COLOR="RED"
+>sleep(N)</FONT
+> pauses program execution for
+<FONT
+COLOR="RED"
+>N</FONT
+> milliseconds, where <FONT
+COLOR="RED"
+>N</FONT
+> is fixed constant.
+
+</P
+><P
+>&#13;Clearly, calling <FONT
+COLOR="RED"
+>sleep</FONT
+> prevents programs from being
+executed concurrently. Instead, let us combine <FONT
+COLOR="RED"
+>sleep</FONT
+> and
+<FONT
+COLOR="RED"
+>animate</FONT
+> into one function of the name <FONT
+COLOR="RED"
+>sleep_animate</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN364"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+sleep_animate
+<span class="keyword">(</span>ms<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">void</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+animate<span class="keyword">(</span>fwork<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">{</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> fwork<span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> sleep_animate<span class="keyword">(</span>N<span class="comment">(*ms*)</span><span class="keyword">,</span> fwork<span class="keyword">)</span></span>
+<span class="keyword">}</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+What <FONT
+COLOR="RED"
+>sleep_animate(N, fwork)</FONT
+> does is to schedule a call to
+<FONT
+COLOR="RED"
+>animate</FONT
+> on <FONT
+COLOR="RED"
+>fwork</FONT
+> after <FONT
+COLOR="RED"
+>N</FONT
+>
+milliseconds. Note that a call to <FONT
+COLOR="RED"
+>sleep_animate</FONT
+> should return
+immediately, causing no pause of program execution.
+</P
+><P
+>&#13;Let us generalize <FONT
+COLOR="RED"
+>sleep_animate</FONT
+> to the following function
+<FONT
+COLOR="RED"
+>execute_after</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN374"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+execute_after
+<span class="keyword">(</span>fwork<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">void</span><span class="keyword">)</span><span class="keyword">,</span> ms<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+sleep_animate<span class="keyword">(</span>ms<span class="keyword">,</span> fwork<span class="keyword">)</span> <span class="keyword">=</span>
+execute_after<span class="keyword">(</span><span class="keyword">lam</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> animate<span class="keyword">(</span>fwork<span class="keyword">)</span><span class="keyword">,</span> ms<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a thunk <FONT
+COLOR="RED"
+>fwork</FONT
+> (that is, a closure-function
+returning void) and an integer <FONT
+COLOR="RED"
+>ms</FONT
+>, <FONT
+COLOR="RED"
+>execute_after</FONT
+>
+schedules a call to <FONT
+COLOR="RED"
+>fwork</FONT
+> after <FONT
+COLOR="RED"
+>ms</FONT
+> milliseconds.
+
+</P
+><P
+>&#13;If we target JS, then the function <FONT
+COLOR="RED"
+>execute_after</FONT
+> can be
+implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN383"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+execute_after
+  <span class="keyword">(</span>fwork<span class="keyword">,</span> ms<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">$extfcall</span>
+<span class="keyword">(</span>void<span class="keyword">,</span> "setTimeout"<span class="keyword">,</span> cloref2fun0<span class="keyword">(</span>fwork<span class="keyword">)</span><span class="keyword">,</span> ms<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [execute_after] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the keyword <FONT
+COLOR="RED"
+>$extfcall</FONT
+> initiates a call to the native
+function <FONT
+COLOR="RED"
+>setTimeout</FONT
+> in JS, and the function <FONT
+COLOR="RED"
+>cloref2fun0</FONT
+>
+converts a (nullary) closure-function into an envless function (that
+is, one with no environment).
+
+</P
+><P
+>&#13;As an example, please find the ATS source in <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/04-10/CODE/DigitClock.dats"
+TARGET="_top"
+>DigitClock.dats</A
+>
+for a digital clock directly based on <FONT
+COLOR="RED"
+>animate</FONT
+>. And please
+click <A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/04-10/CODE/DigitClock.html"
+TARGET="_top"
+>here</A
+>
+for a demo of the digital clock.
+
+</P
+><P
+>&#13;Given N, fwork, and ms, the following function
+<FONT
+COLOR="RED"
+>repeat_execute_after</FONT
+> executes the calls
+<FONT
+COLOR="RED"
+>fwork(i)</FONT
+> for i ranging from 0 to N-1 and then repeats:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN395"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+repeat_execute_after
+<span class="keyword">(</span> N<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span>
+  fwork<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span><span class="keyword">,</span> ms<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#"</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+repeat_execute_after
+<span class="keyword">(</span>
+N<span class="keyword">,</span> fwork<span class="keyword">,</span> ms
+<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+auxmain<span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">if</span> i &gt;= N
+  <span class="keyword">then</span> auxmain<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span>
+  <span class="keyword">else</span> <span class="keyword">(</span>fwork<span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">;</span> execute_after<span class="keyword">(</span><span class="keyword">lam</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> auxmain<span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">,</span> ms<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  auxmain<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [repeat_execute_after]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For any two consecutive calls to <FONT
+COLOR="RED"
+>fwork</FONT
+>, there is a delay
+of <FONT
+COLOR="RED"
+>ms</FONT
+> milliseconds between them. In a case where a call to
+<FONT
+COLOR="RED"
+>fwork</FONT
+> draws an image, calling
+<FONT
+COLOR="RED"
+>repeat_execute_after</FONT
+> may create an animation effect of
+some sort. For example, please click <A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/04-10/CODE/Sierpinski.html"
+TARGET="_top"
+>here</A
+>
+to see an animated version of the example of Sierpinkski triangle
+presented previously.
+
+</P
+><P
+>&#13;</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/04-10/CODE"
+TARGET="_top"
+>on-line</A
+> the entirety
+of the code used in this chapter. The mentioned URL link(s) can be found as follows:
+
+<P
+></P
+><UL
+><LI
+><P
+><A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/04-10/CODE/DigitClock.html"
+TARGET="_top"
+>https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/04-10/CODE/DigitClock.html</A
+>
+</P
+></LI
+><LI
+><P
+><A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/04-10/CODE/DigitClock.dats"
+TARGET="_top"
+>https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/04-10/CODE/DigitClock.dats</A
+>
+</P
+></LI
+><LI
+><P
+><A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/04-10/CODE/Sierpinski.html"
+TARGET="_top"
+>https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/04-10/CODE/Sierpinski.html</A
+>
+</P
+></LI
+><LI
+><P
+><A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/04-10/CODE/Sierpinski.dats"
+TARGET="_top"
+>https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/04-10/CODE/Sierpinski.dats</A
+>
+</P
+></LI
+></UL
+>
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c248.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c418.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Higher-Order Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Functional List-Processing (1)</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2FPCRASH-BOOK.js"></SCRIPT></BODY
+></HTML
+>

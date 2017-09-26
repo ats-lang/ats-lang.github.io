@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Lazy Stream-Processing</TITLE
+>Persistent Arrays and References</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -10,11 +10,11 @@ REL="HOME"
 TITLE="A Functional Crash into ATS"
 HREF="book1.html"><LINK
 REL="PREVIOUS"
-TITLE="Raising and Catching Exceptions"
-HREF="c948.html"><LINK
+TITLE="Example: Game of Twenty-four"
+HREF="c911.html"><LINK
 REL="NEXT"
-TITLE="Linear Lazy Stream-Processing"
-HREF="c1100.html"><LINK
+TITLE="Example: Estimating Pi"
+HREF="c1129.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
@@ -45,7 +45,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c948.html"
+HREF="c911.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -59,7 +59,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c1100.html"
+HREF="c1129.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -72,68 +72,32 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="lecture10"
+NAME="lecture08"
 ></A
->Chapter 12. Lazy Stream-Processing</H1
+>Chapter 13. Persistent Arrays and References</H1
 ><P
->&#13;A stream is like a list but it is lazy in the sense that the elements
-in a stream are not required to be made available at the moment when
-the stream is formed. Instead, each element only needs to be produced
-at the point where the element is actually needed for evaluation.
-Given a type T, the type <FONT
-COLOR="RED"
->stream(T)</FONT
-> is for a value
-representing a stream of elements of the type T. Let us use the name
-stream-value to refer to such a value, which is completely opaque for
-it does not even reveal whether the stream it represents is empty or
-not. Internally, a stream-value is represented as a thunk, that is, a
-nullary closure-function. Evaluating a stream-value (that is, calling
-the thunk representing it) yields a stream-con value of type
-<FONT
-COLOR="RED"
->stream_con(T)</FONT
-> for some T, where <FONT
-COLOR="RED"
->stream_con</FONT
->
-is the following declared datatype:
+>&#13;Let us start with references. A reference is precisely an
+(initialized) singleton array, that is, an array of size 1, and its
+typical use is for implementing a global variable that can be updated.
+
+</P
+><P
+>&#13;The following function is for creating a reference:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1005"
+NAME="AEN1003"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="keyword">datatype</span>
-<span class="staexp">stream_con<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">)</span> <span class="keyword">=</span>
-  <span class="keyword">|</span> <span class="dynexp">steam_nil <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
-  <span class="keyword">|</span> <span class="dynexp">stream_cons <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
-</p></PRE
-><P
-></P
-></DIV
->
-
-
-With pattern matching, we can inspect whether a stream-con value
-represents an empty stream or not. If the stream is non-empty, then
-its first element can be extracted. Formally speaking, we have the
-following type definition in ATS:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1007"
-></A
-><PRE
-CLASS="programlisting"
-><p class="patsyntax"><span class="keyword">typedef</span> <span class="staexp">stream<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">lazy</span><span class="keyword">(</span><span class="staexp">stream_con</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span>
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+ref_make_elt<span class="keyword">(</span>x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
 </p></PRE
 ><P
 ></P
@@ -143,245 +107,38 @@ CLASS="programlisting"
 
 where <FONT
 COLOR="RED"
->lazy</FONT
-> is a special type constructor. Given a type
-T, the type <FONT
+>ref</FONT
+> is a type constructor in ATS that takes a type T
+to form a reference type <FONT
 COLOR="RED"
->lazy(T)</FONT
-> is essentially for a thunk that returns
-a value of the type T. Often such a thunk is referred to as a suspended
-computation of the type T, which can be resumed by simply calling the thunk.
-
-</P
-><P
->&#13;As an example, the following function <FONT
+>ref(T)</FONT
+> for any reference holding
+a value of the type T.  The functions <FONT
 COLOR="RED"
->int_stream_from</FONT
->
-takes an integer <FONT
-COLOR="RED"
->n</FONT
-> and returns a stream that enumerates
-ascendingly all of the integers greater than or equal to
+>ref_get_elt</FONT
+> and
 <FONT
 COLOR="RED"
->n</FONT
->:
+>ref_set_elt</FONT
+> are for fetching and updating the value stored
+in a reference, respectively:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1015"
-></A
-><PRE
-CLASS="programlisting"
-><p class="patsyntax"><span class="comment">//</span>
-<span class="dynexp"><span class="keyword">fun</span>
-int_stream_from
-  <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span>
-  <span class="dynexp"><span class="keyword">$delay</span><span class="keyword">(</span>stream_cons<span class="keyword">(</span>n<span class="keyword">,</span> int_stream_from<span class="keyword">(</span>n+1<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
-<span class="comment">//</span>
-</p></PRE
-><P
-></P
-></DIV
->
-
-
-The keyword <FONT
-COLOR="RED"
->$delay</FONT
-> indicates the construction
-of a thunk based on the expression appearing as its argument.
-
-</P
-><P
->&#13;Accessing elements in a given stream is shown in the following
-example:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1019"
+NAME="AEN1009"
 ></A
 ><PRE
 CLASS="programlisting"
 ><p class="patsyntax"><span class="comment">//</span>
 <span class="dynexp"><span class="keyword">fun</span>
 <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
-stream_get_at
-  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span> <span class="keyword">=</span>
-<span class="keyword">(</span>
-<span class="keyword">case+</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
-<span class="keyword">|</span> stream_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
-  <span class="keyword">(</span>
-    <span class="dynexp"><span class="keyword">$raise</span> StreamSubscriptExn<span class="keyword">(</span><span class="keyword">)</span></span>
-  <span class="keyword">)</span>
-<span class="keyword">|</span> stream_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
-  <span class="keyword">(</span>
-    <span class="keyword">if</span> n &lt;= <span class="dynexp">0</span> <span class="keyword">then</span> x <span class="keyword">else</span> stream_get_at&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> n-<span class="dynexp">1</span><span class="keyword">)</span>
-  <span class="keyword">)</span>
-<span class="keyword">)</span></span>
-<span class="comment">//</span>
-</p></PRE
-><P
-></P
-></DIV
->
-
-
-The function <FONT
-COLOR="RED"
->stream_get_at</FONT
-> is the stream-version of
-<FONT
-COLOR="RED"
->list_get_at</FONT
->: Given a stream and a position (denoted by an
-integer), <FONT
-COLOR="RED"
->stream_get_at</FONT
-> returns the element in the stream
-at the given position. Note that the symbol <FONT
-COLOR="RED"
->!</FONT
-> refers to
-the function <FONT
-COLOR="RED"
->lazy_force</FONT
->, which evaluates a given stream
-value into a stream-con value in this case. Like
-<FONT
-COLOR="RED"
->list_get_at</FONT
->, it is almost always a poor style of
-programming to make use of <FONT
-COLOR="RED"
->stream_get_at</FONT
-> excessively (for
-instance, inside the body of a loop).
-
-</P
-><P
->&#13;Let us see what is involved in the evaluation of the following two
-lines of code:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1029"
-></A
-><PRE
-CLASS="programlisting"
-><p class="patsyntax"><span class="comment">//</span>
-<span class="dynexp"><span class="keyword">val</span> xs <span class="keyword">=</span> int_stream_from<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span>
-<span class="dynexp"><span class="keyword">val</span> x0 <span class="keyword">=</span> stream_get_at&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> <span class="dynexp">1000000</span><span class="keyword">)</span></span>
-<span class="comment">//</span>
-</p></PRE
-><P
-></P
-></DIV
->
-
-
-The call to <FONT
-COLOR="RED"
->int_stream_from</FONT
-> returns immediately as all
-that is essentially done is creating a thunk (that is, a nullary
-closure-function). The call to <FONT
-COLOR="RED"
->stream_get_at</FONT
-> returns
-1000000 after creating 1000001 nodes to store the first 1000001
-elements in the stream bound to the name <FONT
-COLOR="RED"
->xs</FONT
->. While it
-takes only a tiny amount of memory to store the initial stream bound
-to the name <FONT
-COLOR="RED"
->xs</FONT
->, it requires a large amount of memory to
-store the expanded stream created during the evaluation of the call to
-<FONT
-COLOR="RED"
->stream_get_at</FONT
->. In general, a call to
-<FONT
-COLOR="RED"
->lazy_force</FONT
-> evaluates its argument (of type
-<FONT
-COLOR="RED"
->lazy(T)</FONT
->) to a value (of type T) and then caches the value
-internally so that the value can be returned immediately when another
-call to <FONT
-COLOR="RED"
->lazy_force</FONT
-> on the same argument evaluates later.
-In other words, some form of memoization happens when the evaluation
-of a suspended computation is performed.  Memoization can be expensive
-memory-wise and unpredicatable time-wise. There is another kind of
-stream (to be presented later) that is referred to as
-<SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->linear stream</I
-></SPAN
->, which involves no memoization when
-evaluated. As a matter of fact, the internal representation of a
-linear stream only needs memory for storing one node (that contains
-the head element of the stream), resulting in great memory-efficiency.
-
-</P
-><P
->&#13;Basically, for each a list-processing function, there is a
-corresponding version of stream-processing function. Let us see some
-concrete examples.  For instance, the following function
-<FONT
-COLOR="RED"
->stream_append</FONT
-> (corresponding to <FONT
-COLOR="RED"
->list0_append</FONT
->)
-concatenates two given streams:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1043"
-></A
-><PRE
-CLASS="programlisting"
-><p class="patsyntax"><span class="comment">//</span>
-<span class="keyword">extern</span>
+ref_get_elt<span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span></span>
 <span class="dynexp"><span class="keyword">fun</span>
 <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
-stream_append
-<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
-<span class="comment">//</span>
-<span class="dynexp"><span class="keyword">implement</span>
-<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
-stream_append
-<span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$delay</span>
-<span class="keyword">(</span>
-<span class="keyword">case+</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
-<span class="keyword">|</span> stream_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">!</span>ys
-<span class="keyword">|</span> stream_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
-  stream_cons<span class="keyword">(</span>x<span class="keyword">,</span> stream_append&lt;a<span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span>
-<span class="keyword">)</span></span></span>
+ref_set_elt<span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
 <span class="comment">//</span>
 </p></PRE
 ><P
@@ -390,61 +147,292 @@ stream_append
 >
 
 
-Please note the symbol <FONT
+A shorthand for <FONT
+COLOR="RED"
+>ref_make_elt</FONT
+> is <FONT
+COLOR="RED"
+>ref</FONT
+>.  Also,
+both <FONT
 COLOR="RED"
 >!</FONT
-> in front of <FONT
+> and <FONT
 COLOR="RED"
->!ys</FONT
->:
-The expression following <FONT
+>[]</FONT
+> are overloaded with
+<FONT
 COLOR="RED"
->$delay</FONT
-> should evaluate to
-a stream-con value (instead of a stream value).
+>ref_get_elt</FONT
+> and <FONT
+COLOR="RED"
+>ref_set_elt</FONT
+>. For instance, the
+following code prints out 0, 1, and 3 twice:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1017"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> r0 <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="keyword">!</span>r0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">!</span>r0 := <span class="keyword">!</span>r0 + <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="keyword">!</span>r0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">!</span>r0 := <span class="keyword">!</span>r0 + <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="keyword">!</span>r0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> r1 <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span> := <span class="dynexp">r1[<span class="keyword">]</span></span> + <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span> := <span class="dynexp">r1[<span class="keyword">]</span></span> + <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
 
 </P
 ><P
->&#13;With streams, we can facilitate the use of (general) recursion in
-problem-solving by eliminating the risk of stack overflow caused by
-deeply nested recursive calls. In the case of
+>&#13;Programmers often misuse references. This is especially true for those
+with a background in imperative programming. For instance, the
+following example shows a typical poor use of references that is often
+resulted from someone learning functional programming by "translating"
+code written in imperative style:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1020"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fact_ref
+<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> i <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> r <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> <span class="keyword">!</span>i <span class="keyword">&lt;</span> n <span class="keyword">then</span> <span class="keyword">(</span><span class="keyword">!</span>i := <span class="keyword">!</span>i+<span class="dynexp">1</span><span class="keyword">;</span> <span class="keyword">!</span>r := <span class="keyword">!</span>r * <span class="keyword">!</span>i<span class="keyword">;</span> loop<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop<span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">in</span> <span class="keyword">!</span>r <span class="keyword">end</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [fact_ref] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+There are some obvious drawbacks in this implementation of
 <FONT
 COLOR="RED"
->stream_append</FONT
->, the evaluation of a call to
+>fact_ref</FONT
+>. For evaluating each call to
 <FONT
 COLOR="RED"
->stream_append</FONT
-> returns immediately as all it does
-essentially is to form a thunk (for representing the resulting
-stream). On the other hand, the implementation of
-<FONT
+>fact_ref</FONT
+>, two references are created, which become garbage
+after the call returns. As a reference is allocated on heap, it is not
+mapped to a register when compiled. Accessing a reference involves
+memory traffic, which is much more expensive than accessing a
+register. Compared to a tail-recursive implementation of the factorial
+function in functional style, <FONT
 COLOR="RED"
->list0_append</FONT
-> presented previously can potentially cause
-stack overflow if its argument is a long list (e.g., one consisting of
-1000000 elements). By the way, the actual implementation of
-<FONT
-COLOR="RED"
->list0_append</FONT
-> in <TT
-CLASS="filename"
->ATSLIB/prelude</TT
-> (the prelude
-library of ATS) cannot cause stack overflow due to its being
-tail-recursive. However, there is no free lunch here as this library
-implementation is written in an advanced style that is somewhat
-difficult to adopt in practice.
+>fact_ref</FONT
+> is of great
+inefficiency both time-wise and memory-wise.
 
 </P
 ><P
->&#13;The following function <FONT
+>&#13;There is a type constructor <FONT
 COLOR="RED"
->stream_map</FONT
-> is the stream-version of
+>array0</FONT
+> in ATS that takes a
+type T to form the array type <FONT
+COLOR="RED"
+>array0(T)</FONT
+> for an array
+storing elements of the type T. We refer to such an array as an
+array0-value, which is essentially a pair containing a pointer (to the
+memory location where elements are stored) and an integer (indicating
+the capacity of the array). For instance, the following function can
+be called to create an array0-value:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1028"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_make_elt<span class="keyword">(</span>asz<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a non-negative integer <FONT
+COLOR="RED"
+>asz</FONT
+> and an element
 <FONT
 COLOR="RED"
->list0_map</FONT
+>x0</FONT
+>, <FONT
+COLOR="RED"
+>array0_make_elt</FONT
+> returns an array0-value in
+which the array is of size <FONT
+COLOR="RED"
+>asz</FONT
+> and each of its cells is
+initialized with <FONT
+COLOR="RED"
+>x0</FONT
+>.
+
+</P
+><P
+>&#13;Another commonly used function for creating an array0-value
+is <FONT
+COLOR="RED"
+>array0_tabulate</FONT
+> of the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1037"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_tabulate<span class="keyword">(</span>asz<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a non-negative integer <FONT
+COLOR="RED"
+>asz</FONT
+> and a closure-function
+<FONT
+COLOR="RED"
+>fopr</FONT
+>, <FONT
+COLOR="RED"
+>array0_tabulate</FONT
+> returns an array0-value
+in which the array is of size <FONT
+COLOR="RED"
+>asz</FONT
+> and the array cells are
+initialized with the values of <FONT
+COLOR="RED"
+>fopr</FONT
+> at the valid indices.
+
+</P
+><P
+>&#13;The functions <FONT
+COLOR="RED"
+>array0_get_at</FONT
+> and <FONT
+COLOR="RED"
+>array0_set_at</FONT
+>
+are for fetching and updating the value stored in an array0-value at a
+given index:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1047"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_get_at<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_set_at<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>array0_get_at</FONT
+> raises an exception
+(<FONT
+COLOR="RED"
+>ArraySubscriptExn()</FONT
+>) if the given index is invalid, that
+is, not between 0 and the array size minus 1, inclusive.  And the same
+happens with respect to <FONT
+COLOR="RED"
+>array0_set_at</FONT
+>.  Also please note
+that the brackets <FONT
+COLOR="RED"
+>[]</FONT
+> is overloaded with both
+<FONT
+COLOR="RED"
+>array0_get_at</FONT
+> and <FONT
+COLOR="RED"
+>array0_set_at</FONT
+>.  For
+instance, evaluating the following code prints out two lines: the
+first consisting of the text <FONT
+COLOR="RED"
+>000</FONT
+> and the second consisting
+of the text <FONT
+COLOR="RED"
+>123</FONT
 >:
 
 <DIV
@@ -457,24 +445,18 @@ NAME="AEN1057"
 ><PRE
 CLASS="programlisting"
 ><p class="patsyntax"><span class="comment">//</span>
-<span class="keyword">extern</span>
-<span class="dynexp"><span class="keyword">fun</span>
-<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
-<span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
-stream_map
-<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> A <span class="keyword">=</span>
+array0_make_elt&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">3</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
-<span class="dynexp"><span class="keyword">implement</span>
-<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
-stream_map
-  <span class="keyword">(</span>xs<span class="keyword">,</span> fopr<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$delay</span>
-<span class="keyword">(</span>
-<span class="keyword">case+</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
-<span class="keyword">|</span> stream_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
-  stream_nil<span class="keyword">(</span><span class="keyword">)</span>
-<span class="keyword">|</span> stream_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
-  stream_cons<span class="keyword">(</span>fopr<span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">,</span> stream_map&lt;a<span class="keyword">&gt;&lt;</span>b<span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> fopr<span class="keyword">)</span><span class="keyword">)</span>
-<span class="keyword">)</span></span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">A[0<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">A[1<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">A[2<span class="keyword">]</span></span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">A[0<span class="keyword">]</span></span> := <span class="dynexp">1</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">A[1<span class="keyword">]</span></span> := <span class="dynexp">A[0<span class="keyword">]</span></span> + <span class="dynexp">1</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">A[2<span class="keyword">]</span></span> := <span class="dynexp">A[1<span class="keyword">]</span></span> + <span class="dynexp">1</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">A[0<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">A[1<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">A[2<span class="keyword">]</span></span><span class="keyword">)</span></span>
 <span class="comment">//</span>
 </p></PRE
 ><P
@@ -485,13 +467,15 @@ stream_map
 
 </P
 ><P
->&#13;The following function <FONT
-COLOR="RED"
->stream_filter</FONT
-> is the stream-version of
+>&#13;Like list0-values, there are many commonly used functions for
+processing array0-values. For instance, the following function
 <FONT
 COLOR="RED"
->list0_filter</FONT
+>array0_foreach</FONT
+> corresponds to the previouly presented
+<FONT
+COLOR="RED"
+>list0_foreach</FONT
 >:
 
 <DIV
@@ -507,26 +491,15 @@ CLASS="programlisting"
 <span class="keyword">extern</span>
 <span class="dynexp"><span class="keyword">fun</span>
 <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
-stream_filter
-<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> test<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+array0_foreach
+<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">void</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
 <span class="comment">//</span>
 <span class="dynexp"><span class="keyword">implement</span>
 <span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
-stream_filter
-  <span class="keyword">(</span>xs<span class="keyword">,</span> test<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$delay</span>
+array0_foreach<span class="keyword">(</span>A<span class="keyword">,</span> fwork<span class="keyword">)</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
-<span class="keyword">case+</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
-<span class="keyword">|</span> stream_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
-  stream_nil<span class="keyword">(</span><span class="keyword">)</span>
-<span class="keyword">|</span> stream_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
-  <span class="keyword">if</span> test<span class="keyword">(</span>x<span class="keyword">)</span>
-    <span class="keyword">then</span>
-    stream_cons
-      <span class="keyword">(</span>x<span class="keyword">,</span> stream_filter&lt;a<span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> test<span class="keyword">)</span><span class="keyword">)</span>
-    <span class="comment">// end of [then]</span>
-    <span class="keyword">else</span> <span class="keyword">!</span><span class="keyword">(</span>stream_filter&lt;a<span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> test<span class="keyword">)</span><span class="keyword">)</span>
-  <span class="comment">// end of [if]</span>
-<span class="keyword">)</span></span></span>
+  int_foreach&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>sz2i<span class="keyword">(</span>A<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=&gt;</span> fwork<span class="keyword">(</span><span class="dynexp">A[i<span class="keyword">]</span></span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [array0_foreach] *)</span>
 <span class="comment">//</span>
 </p></PRE
 ><P
@@ -535,165 +508,69 @@ stream_filter
 >
 
 
-</P
-><P
->&#13;A function like <FONT
+Given an array0-value <FONT
 COLOR="RED"
->stream_map</FONT
-> and <FONT
-COLOR="RED"
->stream_filter</FONT
->
-is often referred to as being fully lazy as its evaluation does nothing
-except for creating a thunk (to represent a suspended computation).
-
-</P
-><P
->&#13;The following function <FONT
-COLOR="RED"
->sieve</FONT
-> implements the sieve of
-Eratosthenes for enumerating prime numbers:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1069"
-></A
-><PRE
-CLASS="programlisting"
-><p class="patsyntax"><span class="comment">//</span>
-<span class="dynexp"><span class="keyword">fun</span>
-sieve<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
-<span class="comment">//</span>
-<span class="dynexp"><span class="keyword">fun</span>
-auxmain
-<span class="keyword">(</span>
-xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span>
-<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$delay</span>
-<span class="keyword">(</span>
-<span class="keyword">case-</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
-<span class="keyword">|</span> stream_cons<span class="keyword">(</span>x0<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
-  stream_cons<span class="keyword">(</span>x0<span class="keyword">,</span> auxmain<span class="keyword">(</span>stream_filter<span class="keyword">(</span>xs<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> x % x0 <span class="keyword">&gt;</span> 0<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
-<span class="keyword">)</span></span></span>
-<span class="comment">//</span>
-<span class="keyword">in</span>
-  auxmain<span class="keyword">(</span>int_stream_from<span class="keyword">(</span><span class="dynexp">2</span><span class="keyword">)</span><span class="keyword">)</span>
-<span class="keyword">end</span></span> <span class="comment">// end of [sieve]</span>
-<span class="comment">//</span>
-</p></PRE
-><P
-></P
-></DIV
->
-
-
-A call to <FONT
-COLOR="RED"
->sieve</FONT
-> returns a stream consisting of all the
-primes enumerated in the ascending order: 2, 3, 5, 7, 11, etc. Note
-that <FONT
-COLOR="RED"
->case-</FONT
-> is used in place of <FONT
-COLOR="RED"
->case</FONT
-> for the
-purpose of suppressing a warning message that would otherwise be
-issued due to pattern matching being non-exhaustive (as the case
+>A</FONT
+>, the expression
 <FONT
 COLOR="RED"
->stream_nil()</FONT
-> is not covered).
-
-</P
-><P
->&#13;As a simple experiment, please try to evaluate the following code:
-
-<DIV
-CLASS="informalexample"
-><P
-></P
-><A
-NAME="AEN1076"
-></A
-><PRE
-CLASS="programlisting"
-><p class="patsyntax"><span class="comment">//</span>
-<span class="dynexp"><span class="keyword">val</span>
-thePrimes <span class="keyword">=</span> sieve<span class="keyword">(</span><span class="keyword">)</span></span>
-<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynstr">"stream_get_at(thePrimes, 5000):"</span><span class="keyword">)</span></span>
-<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span>stream_get_at&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span>thePrimes<span class="keyword">,</span> <span class="dynexp">5000</span><span class="keyword">)</span><span class="keyword">)</span></span>
-<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynstr">"stream_get_at(thePrimes, 5000):"</span><span class="keyword">)</span></span>
-<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span>stream_get_at&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span>thePrimes<span class="keyword">,</span> <span class="dynexp">5000</span><span class="keyword">)</span><span class="keyword">)</span></span>
-<span class="comment">//</span>
-</p></PRE
-><P
-></P
-></DIV
+>A.size()</FONT
+> is written in dot-notation, which returns the
+size of the array contained in <FONT
+COLOR="RED"
+>A</FONT
+>. The name <FONT
+COLOR="RED"
+>sz2i</FONT
 >
-
-
-Note that the number <SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->48619</I
-></SPAN
-> is to be printed out
-twice. There is a clear pause before it is done for the first time,
-but there is virtually no delay between the first time and the second
-time, showing clearly the effect of memoization performed during the
-first call to <FONT
+refers to a cast function from the type <FONT
 COLOR="RED"
->stream_get_at</FONT
-> on <FONT
+>size_t</FONT
+> to the type
+<FONT
 COLOR="RED"
->thePrimes</FONT
+>int</FONT
 >.
 
 </P
 ><P
->&#13;Lastly, let us see a simple but telling example that demonstrates a
-stream-based approach to addressing the potential risk of stack
-overflow due to deeply nested non-tail-recursive calls. The following
-implementation of <FONT
+>&#13;The following function
+<FONT
 COLOR="RED"
->list0_map</FONT
-> is standard:
+>array0_foldleft</FONT
+> corresponds to the previouly presented
+<FONT
+COLOR="RED"
+>list0_foldleft</FONT
+>:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1083"
+NAME="AEN1073"
 ></A
 ><PRE
 CLASS="programlisting"
 ><p class="patsyntax"><span class="comment">//</span>
-<span class="dynexp"><span class="keyword">implement</span>
-<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
-list0_map
-<span class="keyword">(</span>xs<span class="keyword">,</span> fopr<span class="keyword">)</span> <span class="keyword">=</span>
-auxmain<span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">where</span>
-<span class="keyword">{</span>
-<span class="comment">//</span>
+<span class="keyword">extern</span>
 <span class="dynexp"><span class="keyword">fun</span>
-auxmain
-<span class="keyword">(</span>
-xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
-<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">=</span>
-<span class="keyword">(</span>
-<span class="keyword">case+</span> xs <span class="keyword">of</span>
-<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span>
-<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_cons<span class="keyword">(</span>fopr<span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">,</span> auxmain<span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span>
-<span class="keyword">)</span></span>
+<span class="staexp"><span class="keyword">{</span>r<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_foldleft
+<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> r0<span class="keyword">:</span> <span class="staexp">r</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">r</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">r</span></span>
 <span class="comment">//</span>
-<span class="keyword">}</span></span> <span class="comment">(* end of [list0_map] *)</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">r</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+array0_foldleft
+  <span class="keyword">(</span>A<span class="keyword">,</span> r0<span class="keyword">,</span> fopr<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="comment">//</span>
+int_foldleft&lt;<span class="staexp">r</span><span class="keyword">&gt;</span>
+  <span class="keyword">(</span>sz2i<span class="keyword">(</span>A<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> r0<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>r<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=&gt;</span> fopr<span class="keyword">(</span>r<span class="keyword">,</span> <span class="dynexp">A[i<span class="keyword">]</span></span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [array0_foldleft] *)</span>
 <span class="comment">//</span>
 </p></PRE
 ><P
@@ -702,62 +579,89 @@ xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="k
 >
 
 
-Clearly, this implementation is not tail-recursive. When applied to a
-long list (e.g., one consisting of 1000000 elements),
+The following function
 <FONT
 COLOR="RED"
->list0_map</FONT
-> runs a high risk of causing stack overflow. This
-can become a very serious issue in practice if we ever want to apply
-functional programming to a domain like machine learning where
-processing large data is a norm rather than an exception. One
-possibility is to insist on using only tail-recursion in the
-implementation of a function like <FONT
+>array0_foldright</FONT
+> corresponds to the previouly presented
+<FONT
 COLOR="RED"
->list0_map</FONT
-> that may need
-to be applied to large data, but such a requirement or restriction can
-clearly exert negative impact on the use of recursion in
-problem-solving. After all, there are numerous algorithms that are
-natrually expressed in terms of (general) recursion. And non-trivial
-effort is often needed in order to implement such an algorithm based
-on tail-recursion only, likely diminishing programming productivity.
+>list0_foldright</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1077"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>r<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_foldright
+<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span><span class="keyword">,</span> r0<span class="keyword">:</span> <span class="staexp">r</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">r</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">r</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+array0_foldright
+  <span class="keyword">(</span>A<span class="keyword">,</span> fopr<span class="keyword">,</span> r0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> asz <span class="keyword">=</span> sz2i<span class="keyword">(</span>A<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  int_foldleft&lt;<span class="staexp">r</span><span class="keyword">&gt;</span><span class="keyword">(</span>asz<span class="keyword">,</span> r0<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>r<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=&gt;</span> fopr<span class="keyword">(</span><span class="dynexp">A[asz-i-1<span class="keyword">]</span></span><span class="keyword">,</span> r<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [array0_foldright] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Unlike <FONT
+COLOR="RED"
+>list0_foldright</FONT
+>, <FONT
+COLOR="RED"
+>array0_foldright</FONT
+>
+is tail-recursive.
 
 </P
 ><P
->&#13;Another implementation of <FONT
+>&#13;In practice, matrices (that is, two dimensional arrays) are also a
+very common data structure. In ATS, there is a type constructor
+<FONT
 COLOR="RED"
->list0_map</FONT
-> is given as follows:
+>matrix0</FONT
+>, which takes a type T to form the type
+<FONT
+COLOR="RED"
+>matrix0(T)</FONT
+> for a matrix storing elements of the type T. We
+refer to such a matrix as a matrix0-value, which is essentially a
+tuple containing a pointer (to the memory location where elements are
+stored) and two integers (indicating the number of rows and the number
+of columns of the matrix). For instance, the following function can be
+called to create a matrix0-value:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1089"
+NAME="AEN1084"
 ></A
 ><PRE
 CLASS="programlisting"
 ><p class="patsyntax"><span class="comment">//</span>
-<span class="dynexp"><span class="keyword">implement</span>
-<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
-list0_map<span class="keyword">(</span>xs<span class="keyword">,</span> fopr<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
-<span class="comment">//</span>
 <span class="dynexp"><span class="keyword">fun</span>
-auxmain
-<span class="keyword">(</span>
-xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
-<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$delay</span>
-<span class="keyword">(</span>
-<span class="keyword">case+</span> xs <span class="keyword">of</span>
-<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> stream_nil<span class="keyword">(</span><span class="keyword">)</span>
-<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> stream_cons<span class="keyword">(</span>fopr<span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">,</span> auxmain<span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span>
-<span class="keyword">)</span></span></span>
-<span class="comment">//</span>
-<span class="keyword">in</span>
-  g0ofg1<span class="keyword">(</span>stream2list<span class="keyword">(</span>auxmain<span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
-<span class="keyword">end</span></span> <span class="comment">// end of [list0_map]</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+matrix0_make_elt<span class="keyword">(</span>nrow<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> ncol<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
 <span class="comment">//</span>
 </p></PRE
 ><P
@@ -766,47 +670,234 @@ xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="k
 >
 
 
-What is special about this implementation of <FONT
+Given two non-negative integers <FONT
 COLOR="RED"
->list0_map</FONT
+>m</FONT
+> and <FONT
+COLOR="RED"
+>n</FONT
+> and an
+element <FONT
+COLOR="RED"
+>x0</FONT
+>, <FONT
+COLOR="RED"
+>matrix0_make_elt</FONT
+> returns a
+matrix0-value in which the matrix is of dimension <FONT
+COLOR="RED"
+>m</FONT
+> by
+<FONT
+COLOR="RED"
+>n</FONT
+> and each of its cells is initialized with
+<FONT
+COLOR="RED"
+>x0</FONT
+>.
+
+</P
+><P
+>&#13;Please note that the so-called row-major representation is chosen for
+the matrix contained in each created matrix0-value. As the elements in
+each row are stored adjacently in row-major representation, it can be
+(much) more efficient to process the elements in the row-by-row fashion
+(compared to the column-by-column fashion) due to the memory-cache effect.
+
+</P
+><P
+>&#13;Like <FONT
+COLOR="RED"
+>array0_tabulate</FONT
+>, the following function
+<FONT
+COLOR="RED"
+>matrix0_tabulate</FONT
+> is often called to create a
+matrix0-value:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1097"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+matrix0_tabulate
+  <span class="keyword">(</span>nrow<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> ncol<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
 >
-lies in the implementation of of the inner function
+
+
+Given two non-negative integers <FONT
+COLOR="RED"
+>m</FONT
+> and <FONT
+COLOR="RED"
+>n</FONT
+> and a
+closure-function <FONT
+COLOR="RED"
+>fopr</FONT
+>, <FONT
+COLOR="RED"
+>matrix0_tabulate</FONT
+>
+returns a matrix0-value in which the matrix is of dimension
 <FONT
 COLOR="RED"
->auxmain</FONT
->, which turns a list into a stream. Calling
+>m</FONT
+> by <FONT
+COLOR="RED"
+>n</FONT
+> and the matrix cells are initialized
+with the values of <FONT
+COLOR="RED"
+>fopr</FONT
+> at the valid indices.
+
+</P
+><P
+>&#13;The functions <FONT
+COLOR="RED"
+>matrix0_get_at</FONT
+> and
 <FONT
 COLOR="RED"
->auxmain</FONT
-> runs no risk of stack overflow as it simply
-creates a thunk (without issuing any recursive calls).  The library
-function <FONT
+>matrix0_set_at</FONT
+> are for fetching and updating the value
+stored in a matrix0-value at a given position (represented by a row
+index and a column index):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1109"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+matrix0_get_at
+  <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+matrix0_set_at
+  <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
 COLOR="RED"
->stream2list</FONT
-> turns a stream into a (linear) list,
-which can be cast into a list0-value in O(1)-time by a call to
+>matrix0_get_at</FONT
+> raises an exception
+(<FONT
+COLOR="RED"
+>MatrixSubscriptExn()</FONT
+>) if one of the given indices is
+invalid.  And the same happens with respect to
 <FONT
 COLOR="RED"
->g0ofg1</FONT
->. As <FONT
-COLOR="RED"
->stream2list</FONT
-> is implemented
-tail-recursively, it can be safely called to generate a long list.
-Consequently, this stream-based implementation of
+>matrix0_set_at</FONT
+>. Also please note that the brackets
 <FONT
 COLOR="RED"
->list0_map</FONT
-> can be applied to a long list with no concern of
-causing stack overflow. After linear lazy streams are introduced, we
-are to see a significantly improved version of this stream-based
-approach to resolving a common type of risk of stack overflow caused
-by calling recursively defined functions for generating long lists.
+>[]</FONT
+> is overloaded with both <FONT
+COLOR="RED"
+>matrix0_get_at</FONT
+> and
+<FONT
+COLOR="RED"
+>matrix0_set_at</FONT
+>.
+
+</P
+><P
+>&#13;Like <FONT
+COLOR="RED"
+>array0_foreach</FONT
+>, the following function
+<FONT
+COLOR="RED"
+>matrix0_foreach</FONT
+> applies to each element stored in the
+matrix contained in <FONT
+COLOR="RED"
+>M</FONT
+> a given closure-function
+<FONT
+COLOR="RED"
+>fwork</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1122"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+matrix0_foreach
+<span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">void</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+matrix0_foreach
+  <span class="keyword">(</span>M<span class="keyword">,</span> fwork<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> nrow <span class="keyword">=</span> sz2i<span class="keyword">(</span>M<span class="dynexp"><span class="keyword">.</span>nrow</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> ncol <span class="keyword">=</span> sz2i<span class="keyword">(</span>M<span class="dynexp"><span class="keyword">.</span>ncol</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  int_cross_foreach&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>nrow<span class="keyword">,</span> ncol<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>i<span class="keyword">,</span> j<span class="keyword">)</span> <span class="keyword">=&gt;</span> fwork<span class="keyword">(</span><span class="dynexp">M[i<span class="keyword">,</span>j<span class="keyword">]</span></span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [matrix0_foreach] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The expression <FONT
+COLOR="RED"
+>M.nrow()</FONT
+> is written in dot-notation, which
+returns the number of rows in the matrix contained in
+<FONT
+COLOR="RED"
+>M</FONT
+>. And <FONT
+COLOR="RED"
+>M.ncol()</FONT
+> is for the number of columns
+in the matrix.
 
 </P
 ><P
 >&#13;Please find <A
-HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/10/CODE"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/08/CODE"
 TARGET="_top"
 >on-line</A
 > the entirety of
@@ -829,7 +920,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c948.html"
+HREF="c911.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -847,7 +938,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c1100.html"
+HREF="c1129.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -857,7 +948,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Raising and Catching Exceptions</TD
+>Example: Game of Twenty-four</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -867,7 +958,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Linear Lazy Stream-Processing</TD
+>Example: Estimating Pi</TD
 ></TR
 ></TABLE
 ></DIV

@@ -1,0 +1,834 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Game of Twenty-four</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Crash into FP through ATS"
+HREF="book1.html"><LINK
+REL="PREVIOUS"
+TITLE="Functional List-Processing (3)"
+HREF="c835.html"><LINK
+REL="NEXT"
+TITLE="Persistent Arrays and References"
+HREF="c1006.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Crash into FP through ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c835.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c1006.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="lecture07-10"
+></A
+>Chapter 12. Example: Game of Twenty-four</H1
+><P
+>&#13;Given four integers n1, n2, n3 and n4, one chooses two and uses them
+to produce a rational number r1 by applying either addition,
+subtraction, multiplication or division; one mixes r1 with the
+remaining two numbers and chooses two of them to produce a rational
+number r2 by applying either addition, subtraction, multiplication or
+division; one then takes r2 and the last remaining number to produce a
+rational number r3 by applying addition, subtraction, multiplication,
+or division; if there exists a way to make r3 equal 24, then (n1, n2,
+n3, n4) is said to be a good quad. For instance, (10,10,4,4) is a good
+quad since we have: (10*10-4)/4 = 24; (5,7,7,11) is a good quad since
+we have: (5-11/7)*7 = 24. Game-of-24 is a game that determines whether
+four given integers form a good quad or not. For a demo of
+Game-of-24, please visit <A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/07-10/CODE/Game-of-24.html"
+TARGET="_top"
+>this link</A
+>.
+
+</P
+><P
+>&#13;In the following presentation of this chapter, I intend to present an
+implementation of Game-of-24 in pure functional style, solidifying
+various functional programming concepts covered so far. Please pay
+attention to the support for overloading in ATS, which helps make
+the presented code significantly easier to access.
+</P
+><P
+>&#13;Instead of making direct use of rational numbers in the
+implementation, I choose to use doubles (that is, floating point
+numbers of double precision) to approaximate them.  The following
+declarations introduce <FONT
+COLOR="RED"
+>int2dbl</FONT
+> and <FONT
+COLOR="RED"
+>dbl2int</FONT
+> for
+casting integers to doubles and vice versa, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN926"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span>
+int2dbl g0int2float_int_double</span>
+<span class="neuexp"><span class="keyword">#define</span>
+dbl2int g0float2int_double_int</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;In the case where four given integers are claimed to form a good quad,
+we may want to see a proof to justify the claim. The following
+datatype <FONT
+COLOR="RED"
+>expr</FONT
+> is meant for providing such a proof:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN930"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">datatype</span> <span class="staexp">expr <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="dynexp">EXPRnum <span class="keyword">of</span> <span class="staexp">double</span></span>
+  <span class="keyword">|</span> <span class="dynexp">EXPRbop <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">string</span><span class="comment">(*opr*)</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">exprlst <span class="keyword">=</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For instance, the expression <FONT
+COLOR="RED"
+>(10*10-4)/4</FONT
+> can be represented
+as a value of the type <FONT
+COLOR="RED"
+>expr</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN934"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> myproof <span class="keyword">=</span>
+EXPRbop<span class="keyword">(</span><span class="dynstr">"/"</span><span class="keyword">,</span> EXPRbop<span class="keyword">(</span><span class="dynstr">"-"</span><span class="keyword">,</span> EXPRbop<span class="keyword">(</span><span class="dynstr">"*"</span><span class="keyword">,</span> EXPRnum<span class="keyword">(</span><span class="dynexp">10</span><span class="keyword">)</span><span class="keyword">,</span> EXPRnum<span class="keyword">(</span><span class="dynexp">10</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> EXPRnum<span class="keyword">(</span><span class="dynexp">4</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> EXPRnum<span class="keyword">(</span><span class="dynexp">4</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that values of the type <FONT
+COLOR="RED"
+>expr</FONT
+> is often referred as
+abstract syntax trees.
+
+</P
+><P
+>&#13;Given an expression (that is, an expr-value), the following function
+<FONT
+COLOR="RED"
+>eval_expr</FONT
+> returns the value of the expression:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN939"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+eval_expr<span class="keyword">(</span>x0<span class="keyword">:</span> <span class="staexp">expr</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> eval <span class="keyword">with</span> eval_expr</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+eval_expr<span class="keyword">(</span>x0<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> x0 <span class="keyword">of</span>
+<span class="keyword">|</span> EXPRnum<span class="keyword">(</span>v0<span class="keyword">)</span> <span class="keyword">=&gt;</span> v0
+<span class="keyword">|</span> EXPRbop<span class="keyword">(</span>opr<span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> v1 <span class="keyword">=</span> eval_expr<span class="keyword">(</span>x1<span class="keyword">)</span></span>
+    <span class="dynexp"><span class="keyword">val</span> v2 <span class="keyword">=</span> eval_expr<span class="keyword">(</span>x2<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">case+</span> opr <span class="keyword">of</span>
+    <span class="keyword">|</span> <span class="dynexp">"+"</span> <span class="keyword">=&gt;</span> v1 + v2
+    <span class="keyword">|</span> <span class="dynexp">"-"</span> <span class="keyword">=&gt;</span> v1 - v2
+    <span class="keyword">|</span> <span class="dynexp">"*"</span> <span class="keyword">=&gt;</span> v1 * v2
+    <span class="keyword">|</span> <span class="dynexp">"/"</span> <span class="keyword">=&gt;</span> v1 / v2
+    <span class="keyword">|</span> _<span class="comment">(*unrecognized*)</span> <span class="keyword">=&gt;</span>
+      <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> assertloc<span class="keyword">(</span>false<span class="keyword">)</span></span> <span class="keyword">in</span> <span class="dynexp">0.0</span> <span class="keyword">end</span>
+  <span class="keyword">end</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [eval_expr] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The following functions <FONT
+COLOR="RED"
+>print_expr</FONT
+> and
+<FONT
+COLOR="RED"
+>fprint_expr</FONT
+> are needed for displaying an expression (that
+is, an expr-value):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN944"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+print_expr <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fprint_expr <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">FILEref</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> print <span class="keyword">with</span> print_expr</span>
+<span class="dynexp"><span class="keyword">overload</span> fprint <span class="keyword">with</span> fprint_expr</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+print_expr<span class="keyword">(</span>x0<span class="keyword">)</span> <span class="keyword">=</span>
+fprint_expr<span class="keyword">(</span>stdout_ref<span class="keyword">,</span> x0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+fprint_expr<span class="keyword">(</span>out<span class="keyword">,</span> x0<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case</span> x0 <span class="keyword">of</span>
+<span class="keyword">|</span> EXPRnum<span class="keyword">(</span>v0<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  fprint<span class="keyword">(</span>out<span class="keyword">,</span> dbl2int<span class="keyword">(</span>v0<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">|</span> EXPRbop<span class="keyword">(</span>opr<span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="dynexp">fprint!</span><span class="keyword">(</span>out<span class="keyword">,</span> <span class="dynstr">"("</span><span class="keyword">,</span> x1<span class="keyword">,</span> opr<span class="keyword">,</span> x2<span class="keyword">,</span> <span class="dynstr">")"</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The following functions are introduced for constructing abstract
+syntax trees to represent the 4 arithmetic operations: addition,
+subtraction, multiplication, and division:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN947"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+add_expr_expr
+  <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">expr</span>
+<span class="keyword">and</span>
+sub_expr_expr
+  <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">expr</span>
+<span class="keyword">and</span>
+mul_expr_expr
+  <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">expr</span>
+<span class="keyword">and</span>
+div_expr_expr
+  <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">expr</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> + <span class="keyword">with</span> add_expr_expr</span>
+<span class="dynexp"><span class="keyword">overload</span> - <span class="keyword">with</span> sub_expr_expr</span>
+<span class="dynexp"><span class="keyword">overload</span> * <span class="keyword">with</span> mul_expr_expr</span>
+<span class="dynexp"><span class="keyword">overload</span> / <span class="keyword">with</span> div_expr_expr</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+add_expr_expr<span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span> EXPRbop<span class="keyword">(</span><span class="dynstr">"+"</span><span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span>
+sub_expr_expr<span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span> EXPRbop<span class="keyword">(</span><span class="dynstr">"-"</span><span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span>
+mul_expr_expr<span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span> EXPRbop<span class="keyword">(</span><span class="dynstr">"*"</span><span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span>
+div_expr_expr<span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span> EXPRbop<span class="keyword">(</span><span class="dynstr">"/"</span><span class="keyword">,</span> x1<span class="keyword">,</span> x2<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+By overloading familiar symbols like <FONT
+COLOR="RED"
+>+</FONT
+>, <FONT
+COLOR="RED"
+>-</FONT
+>,
+<FONT
+COLOR="RED"
+>*</FONT
+>, and <FONT
+COLOR="RED"
+>/</FONT
+>, I expect that the presented code
+should be easier to access (even for someone who knows very little
+about the programming language in which the code is written).
+
+</P
+><P
+>&#13;When using floating point numbers, one often needs to
+pay special attention equality test. For testing whether
+the value of an expression equals a given integer, the following
+function <FONT
+COLOR="RED"
+>eq_expr_int</FONT
+> checks whether the absolute
+difference between the value and the integer is less than
+a tiny fraction <FONT
+COLOR="RED"
+>EPSILON</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN956"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span> EPSILON 1E-8</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+eq_expr_int<span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">=</span> <span class="keyword">with</span> eq_expr_int</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+eq_expr_int<span class="keyword">(</span>x0<span class="keyword">,</span> i0<span class="keyword">)</span> <span class="keyword">=</span> abs<span class="keyword">(</span>eval_expr<span class="keyword">(</span>x0<span class="keyword">)</span> - i0<span class="keyword">)</span> <span class="keyword">&lt;</span> EPSILON</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+I must say that choosing <FONT
+COLOR="RED"
+>EPSILON</FONT
+> to be 10<SUP
+>-8</SUP
+>
+is an empirical decision (aimed at handling inputs that are small
+integers (e.g., between 0 and 100)).
+
+</P
+><P
+>&#13;What is done so far can be thought of as providing basic setup
+for the task of implementing Game-of-24. It is time for us to switch
+to the algorithmic part of the task next.
+
+</P
+><P
+>&#13;Given two expressions, the function <FONT
+COLOR="RED"
+>combine_expr_expr</FONT
+>
+returns a list consisting of every expression that can be constructed
+by applying addition, subtraction, multiplication, or division to the
+two given ones:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN963"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+combine_expr_expr<span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">,</span> <span class="staexp">expr</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">exprlst</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> combine <span class="keyword">with</span> combine_expr_expr</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+combine_expr_expr
+  <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span> <span class="keyword">=</span> res <span class="keyword">where</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> list0_cons<span class="keyword">(</span>x1+x2<span class="keyword">,</span> res<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> list0_cons<span class="keyword">(</span>x1-x2<span class="keyword">,</span> res<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> list0_cons<span class="keyword">(</span>x2-x1<span class="keyword">,</span> res<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> list0_cons<span class="keyword">(</span>x1*x2<span class="keyword">,</span> res<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> <span class="keyword">if</span> x2 <span class="keyword">=</span> <span class="dynexp">0</span> <span class="keyword">then</span> res <span class="keyword">else</span> list0_cons<span class="keyword">(</span>x1/x2<span class="keyword">,</span> res<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> <span class="keyword">if</span> x1 <span class="keyword">=</span> <span class="dynexp">0</span> <span class="keyword">then</span> res <span class="keyword">else</span> list0_cons<span class="keyword">(</span>x2/x1<span class="keyword">,</span> res<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> list0_reverse<span class="keyword">(</span>res<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [combine_expr_expr] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Please note that the divisor must be non-zero if the division
+operation is applied.
+
+</P
+><P
+>&#13;In practice, the following higher-order function <FONT
+COLOR="RED"
+>list0_mapjoin</FONT
+>
+is of common use:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN967"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+<span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_mapjoin
+<span class="keyword">(</span> xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
+list0_mapjoin
+  <span class="keyword">(</span>xs<span class="keyword">,</span> fopr<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  list0_concat&lt;<span class="staexp">b</span><span class="keyword">&gt;</span><span class="keyword">(</span>list0_map&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> fopr<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a list <FONT
+COLOR="RED"
+>xs</FONT
+> and a closure-function <FONT
+COLOR="RED"
+>fopr</FONT
+>,
+<FONT
+COLOR="RED"
+>list0_mapjoin</FONT
+> calls <FONT
+COLOR="RED"
+>list0_map</FONT
+> to obtain a list
+of lists and then calls <FONT
+COLOR="RED"
+>list0_concat</FONT
+> to flatten this
+obtained list of lists.
+
+</P
+><P
+>&#13;Let <FONT
+COLOR="RED"
+>task</FONT
+> be an alias for <FONT
+COLOR="RED"
+>list0(expr)</FONT
+>. Given a
+task-value <FONT
+COLOR="RED"
+>xs</FONT
+> of the type <FONT
+COLOR="RED"
+>task</FONT
+>, we can choose
+two expressions out of <FONT
+COLOR="RED"
+>xs</FONT
+> to form a new expression (by
+applying addition, subtraction, multiplication or division) and then
+combine it with the rest to construct a new task-value. By calling
+<FONT
+COLOR="RED"
+>do_one</FONT
+> on <FONT
+COLOR="RED"
+>xs</FONT
+>, we obtain all of the possible new task-values:
+
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN982"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">task <span class="keyword">=</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">expr</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+do_one<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">task</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">task</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+do_one<span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x1x2xss <span class="keyword">=</span>
+list0_nchoose_rest&lt;<span class="staexp">expr</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+list0_mapjoin&lt;<span class="keyword">$tup</span><span class="keyword">(</span><span class="staexp">exprlst</span><span class="keyword">,</span> <span class="staexp">exprlst</span><span class="keyword">)</span><span class="keyword">&gt;&lt;</span><span class="staexp">task</span><span class="keyword">&gt;</span>
+<span class="keyword">(</span>
+x1x2xss
+<span class="keyword">,</span>
+<span class="keyword">lam</span>
+<span class="keyword">(</span><span class="keyword">$tup</span><span class="keyword">(</span>x1x2<span class="keyword">,</span> xs<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+list0_map&lt;<span class="staexp">expr</span><span class="keyword">&gt;&lt;</span><span class="staexp">task</span><span class="keyword">&gt;</span>
+ <span class="keyword">(</span>combine<span class="keyword">(</span><span class="dynexp">x1x2[0<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">x1x2[1<span class="keyword">]</span></span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [do_one]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given four integers, the following function <FONT
+COLOR="RED"
+>play_game</FONT
+>
+returns a list of expressions that are proofs showing the four
+integers being a good quad:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN985"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+do_ones<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> xss<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">task</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">task</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+do_ones<span class="keyword">(</span>n<span class="keyword">,</span> xss<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">if</span> n &gt;= <span class="dynexp">2</span>
+  <span class="keyword">then</span>
+  do_ones
+  <span class="keyword">(</span> n-<span class="dynexp">1</span>
+  <span class="keyword">,</span> list0_mapjoin&lt;<span class="staexp">task</span><span class="keyword">&gt;&lt;</span><span class="staexp">task</span><span class="keyword">&gt;</span><span class="keyword">(</span>xss<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> do_one<span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="comment">(* do_ones *)</span>
+  <span class="keyword">else</span> xss</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+play_game
+<span class="keyword">(</span> n1<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">,</span> n2<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">,</span> n3<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">,</span> n4<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">exprlst</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+play_game
+  <span class="keyword">(</span>n1<span class="keyword">,</span> n2<span class="keyword">,</span> n3<span class="keyword">,</span> n4<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+  <span class="dynexp"><span class="keyword">val</span> x1 <span class="keyword">=</span> EXPRnum<span class="keyword">(</span>int2dbl<span class="keyword">(</span>n1<span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> x2 <span class="keyword">=</span> EXPRnum<span class="keyword">(</span>int2dbl<span class="keyword">(</span>n2<span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> x3 <span class="keyword">=</span> EXPRnum<span class="keyword">(</span>int2dbl<span class="keyword">(</span>n3<span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> x4 <span class="keyword">=</span> EXPRnum<span class="keyword">(</span>int2dbl<span class="keyword">(</span>n4<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+list0_mapopt&lt;<span class="staexp">task</span><span class="keyword">&gt;&lt;</span><span class="staexp">expr</span><span class="keyword">&gt;</span>
+<span class="keyword">(</span>
+do_ones<span class="keyword">(</span><span class="dynexp">4</span><span class="keyword">,</span> list0_sing<span class="keyword">(</span>g0ofg1<span class="keyword">(</span><span class="keyword">$list</span><span class="keyword">{</span><span class="staexp">expr</span><span class="keyword">}</span><span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">,</span> x3<span class="keyword">,</span> x4<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">,</span>
+<span class="keyword">lam</span><span class="keyword">(</span>xss<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">if</span> <span class="keyword">(</span><span class="dynexp">xss[0<span class="keyword">]</span></span> <span class="keyword">=</span> <span class="dynexp">24</span><span class="keyword">)</span> <span class="keyword">then</span> Some0<span class="keyword">(</span><span class="dynexp">xss[0<span class="keyword">]</span></span><span class="keyword">)</span> <span class="keyword">else</span> None0<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [play_game]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+If we think of an option0-value as a list of length at most 1 (that
+is, <FONT
+COLOR="RED"
+>None0</FONT
+> for <FONT
+COLOR="RED"
+>list0_nil</FONT
+> and <FONT
+COLOR="RED"
+>Some0</FONT
+>
+for <FONT
+COLOR="RED"
+>list0_sing</FONT
+>), then <FONT
+COLOR="RED"
+>list0_mapopt</FONT
+> behaves
+just like <FONT
+COLOR="RED"
+>list0_mapjoin</FONT
+>.  Note that four given integers
+are considered a good quad if and only if the list returned by a call to
+<FONT
+COLOR="RED"
+>play_game</FONT
+> on them is non-empty.
+
+</P
+><P
+>&#13;The code presented in this chapter targets C.  After a bit of <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/07-10/CODE/Game-of-24-js.dats"
+TARGET="_top"
+>adaption</A
+>,
+the code can also be compiled into JS for interpretation inside a
+browser.  Please see a demo of Game-of-24 <A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/07-10/CODE/Game-of-24.html"
+TARGET="_top"
+>on-line</A
+>,
+which is directly based on the presented code.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/07-10/CODE"
+TARGET="_top"
+>on-line</A
+> the entirety of
+the code used in this chapter. The mentioned URL link(s) can be found as follows:
+
+<P
+></P
+><UL
+><LI
+><P
+><A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/07-10/CODE/Game-of-24.html"
+TARGET="_top"
+>https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/07-10/CODE/Game-of-24.html</A
+>
+</P
+></LI
+><LI
+><P
+><A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/07-10/CODE/Game-of-24-js.dats"
+TARGET="_top"
+>https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/07-10/CODE/Game-of-24-js.dats</A
+>
+</P
+></LI
+></UL
+>
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c835.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c1006.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Functional List-Processing (3)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Persistent Arrays and References</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

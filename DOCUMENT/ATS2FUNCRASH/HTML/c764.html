@@ -1,0 +1,563 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Through ATS to Javascript</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Crash into FP through ATS"
+HREF="book1.html"><LINK
+REL="PREVIOUS"
+TITLE="Through ATS to PHP"
+HREF="c702.html"><LINK
+REL="NEXT"
+TITLE="Functional List-Processing (3)"
+HREF="c835.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Crash into FP through ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c702.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c835.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="lecture06-20"
+></A
+>Chapter 10. Through ATS to Javascript</H1
+><P
+>&#13;Javascript (JS) is arguably the most popular programming language
+on the plant Earth. In this chapter, I plan to demonstrate a style of
+co-programming with ATS and JS.  In practice (of this style of
+co-programming), ATS is mainly intended for high-level programming
+(that, for instance, makes extensive use of combinators) and JS for
+relatively low-level programming (that, for instance, handles direct
+interactions with the browser running JS code).
+
+</P
+><P
+>&#13;Let us take a look at a simple webpage for computing factorials
+<A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/06-20/CODE/Factorial.html"
+TARGET="_top"
+>on-line</A
+>.
+After inputing a natural number, one can click the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Evaluate</I
+></SPAN
+> button to see some output mentioning the
+factorial of the number.
+Please find the HTML source for the webpage
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/tree/master/DOCUMENT/ATS2FUNCRASH/LECTURE/06-20/CODE/Factorial.html"
+TARGET="_top"
+>here</A
+>.
+
+Note that the following JS scripts are needed for evaluating
+JS code generated from ATS source:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN771"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;&#60;script type="text/javascript"
+ src="https://ats-lang.github.io/LIBRARY/libatscc2js/ATS2-0.3.2/libatscc2js_all.js"&#62;
+&#60;/script&#62;
+&#60;script type="text/javascript"
+  src="https://ats-lang.github.io/LIBRARY/libatscc2js/ATS2-0.3.2/libatscc2js_print_store_cats.js"&#62;
+&#60;/script&#62;
+</PRE
+><P
+></P
+></DIV
+>
+
+The JS code in the file <TT
+CLASS="filename"
+>Factorial_dats.js</TT
+> is generated
+from compiling the ATS source stored in
+<TT
+CLASS="filename"
+>Factorial.dats</TT
+>. The command <B
+CLASS="command"
+>patsopt</B
+> is called
+on the ATS source to compile it onto C code, and the command
+<B
+CLASS="command"
+>atscc2js</B
+> is subsequently called on the generated C code to
+transpile it into JS code:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN777"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;patsopt -o Factorial_dats.c -d Factorial.dats
+atscc2js -o Factorial_dats.js -i Factorial_dats.c
+</PRE
+><P
+></P
+></DIV
+>
+
+</P
+><P
+>&#13;As a concrete example, please see the code in
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/06-20/CODE/Factorial.dats"
+TARGET="_top"
+>Factorial.dats</A
+>.
+At the beginning of the file, the following code is present:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN781"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span> ATS_MAINATSFLAG 1</span>
+<span class="neuexp"><span class="keyword">#define</span> ATS_DYNLOADNAME "Factorial__dynload"</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+which indicates to <B
+CLASS="command"
+>patsopt</B
+> that a dynload-function of the
+name <FONT
+COLOR="RED"
+>Factorial__dynload</FONT
+> is to be generated when the ATS
+source contained in <TT
+CLASS="filename"
+>Factorial.dats</TT
+> is compiled into C.
+Then this dynload-function is transpiled into JS by
+<B
+CLASS="command"
+>atscc2js</B
+>, and it is supposed to be called first (to
+perform initialization) before any function in the generated JS code
+is put into use.
+
+</P
+><P
+>&#13;The following lines in <TT
+CLASS="filename"
+>Factorial.dats</TT
+>
+are added for accessing the LIBATSCC2JS library, which is
+needed for compiling ATS to JS:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN789"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span>
+LIBATSCC2JS_targetloc
+"$PATSHOME/contrib\
+/libatscc2js/ATS2-0.3.2"</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#include</span> "{$LIBATSCC2JS}/staloadall.hats"</span> <span class="comment">// for prelude stuff</span>
+<span class="neuexp"><span class="keyword">#staload</span> "{$LIBATSCC2JS}/SATS/print.sats"</span> <span class="comment">// for printing into a store</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The version we use here is ATS2-0.3.2, which is the latest
+stable release of LIBATSCC2JS.
+
+</P
+><P
+>&#13;In the following code,
+a function of the name <FONT
+COLOR="RED"
+>funarg1_get</FONT
+> is declared
+in ATS and implemented in JS:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN793"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+funarg1_get<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#"</span>
+<span class="comment">//</span>
+<span class="extcode"><span class="extcode">%{^
+function funarg1_get()
+{
+  return parseInt(document.getElementById("funarg1").value);
+}
+%}</span></span> <span class="comment">(* end of external code *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The function <FONT
+COLOR="RED"
+>funarg1_get</FONT
+> essentially locates a
+DOM-element identified by <FONT
+COLOR="RED"
+>funarg1</FONT
+> and then converts
+into an integer the string stored in the value-field of the
+DOM-element.
+
+Note that the use of the string <FONT
+COLOR="RED"
+>"mac#"</FONT
+> simply
+indicates to <B
+CLASS="command"
+>patsopt</B
+> that the function
+<FONT
+COLOR="RED"
+>funarg1_get</FONT
+> is to be given the same name when compiled
+into C. In contrast, the name automatically chosen (by
+<B
+CLASS="command"
+>patsopt</B
+>) for <FONT
+COLOR="RED"
+>funarg1_get</FONT
+> contains a long
+prefix (for carrying some namespace information) if the string
+<FONT
+COLOR="RED"
+>"mac#"</FONT
+> is not present. In case a different name is
+needed for <FONT
+COLOR="RED"
+>funarg1_get</FONT
+> in C, the name should be explicitly
+mentioned after the symbol <FONT
+COLOR="RED"
+>#</FONT
+>. For instance, if the
+string <FONT
+COLOR="RED"
+>"mac#JS_funarg1_get"</FONT
+> is used, then the name
+<FONT
+COLOR="RED"
+>JS_funarg1_get</FONT
+> is chosen (by <B
+CLASS="command"
+>patsopt</B
+>) for
+<FONT
+COLOR="RED"
+>funarg1_get</FONT
+>.  In ATS source, the code written between
+<FONT
+COLOR="RED"
+>%{^</FONT
+> and <FONT
+COLOR="RED"
+>%}</FONT
+> is considered external and is
+directly pasted by <B
+CLASS="command"
+>patsopt</B
+> into the generated C code.  The
+symbol <FONT
+COLOR="RED"
+>^</FONT
+> means that the pasted code is to appear near the
+beginning of the generated code. If the symbol <FONT
+COLOR="RED"
+>^</FONT
+> is
+omitted or replaced with <FONT
+COLOR="RED"
+>$</FONT
+>, the code is to be pasted
+near the bottom of the generated code.
+
+</P
+><P
+>&#13;The following function is called when the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>Evaluate</I
+></SPAN
+> button is clicked:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN817"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+Factorial__evaluate
+  <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> "mac#"</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+Factorial__evaluate
+  <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  the_print_store_clear<span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> arg <span class="keyword">=</span> funarg1_get<span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="dynexp">println!</span>
+  <span class="keyword">(</span><span class="dynstr">"The factorial of "</span><span class="keyword">,</span> arg<span class="keyword">,</span> <span class="dynstr">" is "</span><span class="keyword">,</span> fact<span class="keyword">(</span>arg<span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="comment">// end of [val]</span>
+  <span class="dynexp"><span class="keyword">val</span> theOutput <span class="keyword">=</span>
+    document_getElementById<span class="keyword">(</span><span class="dynstr">"theOutput"</span><span class="keyword">)</span></span>
+  <span class="comment">// end of [val]</span>
+<span class="keyword">in</span>
+  xmldoc_set_innerHTML<span class="keyword">(</span>theOutput<span class="keyword">,</span> the_print_store_join<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [Factorial__evaluate]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+There is a global store, an array of strings, for receiving the
+output generated from calling various print-functions. The function
+<FONT
+COLOR="RED"
+>the_print_store_clear</FONT
+> is for clearing this store and the
+function <FONT
+COLOR="RED"
+>the_print_store_join</FONT
+> for joining the strings
+contained in the store into a single one.  Given a name,
+<FONT
+COLOR="RED"
+>document_getElementById</FONT
+> locates the DOM-element identified
+by the name.  Given a DOM-element and a string,
+<FONT
+COLOR="RED"
+>xmldoc_set_innerHTML</FONT
+> updates the innerHTML-field of the
+DOM-element with the string.
+
+</P
+><P
+>&#13;For a more involved example, please visit <A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/06-20/CODE/QueenPuzzle.html"
+TARGET="_top"
+>on-line</A
+>
+a webpage for animating the process that searches (in the depth-first
+fashion) for solutions to the 8-queen puzzle. The HTML source for the
+webpage can be viewed <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/tree/master/DOCUMENT/ATS2FUNCRASH/LECTURE/06-20/CODE/QueenPuzzle.html"
+TARGET="_top"
+>here</A
+>,
+and the code implementing depth-first search is simply adapted from some
+sample ATS code presented in a previous chapter.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/06-20/CODE"
+TARGET="_top"
+>on-line</A
+> the entirety of
+the code used in this chapter. The mentioned URL link(s) can be found as follows:
+
+<P
+></P
+><UL
+><LI
+><P
+><A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/06-20/CODE/Factorial.html"
+TARGET="_top"
+>https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/06-20/CODE/Factorial.html</A
+>
+</P
+></LI
+><LI
+><P
+><A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/06-20/CODE/QueenPuzzle.html"
+TARGET="_top"
+>https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/06-20/CODE/QueenPuzzle.html</A
+>
+</P
+></LI
+></UL
+>
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c702.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c835.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Through ATS to PHP</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Functional List-Processing (3)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -2,7 +2,7 @@
 <HTML
 ><HEAD
 ><TITLE
->Raising and Catching Exceptions</TITLE
+>Persistent Arrays and References</TITLE
 ><META
 NAME="GENERATOR"
 CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
@@ -10,11 +10,11 @@ REL="HOME"
 TITLE="A Functional Crash into ATS"
 HREF="book1.html"><LINK
 REL="PREVIOUS"
-TITLE="Persistent Arrays and References"
-HREF="c818.html"><LINK
+TITLE="Example: Game of Twenty-four"
+HREF="c860.html"><LINK
 REL="NEXT"
-TITLE="Lazy Stream-Processing"
-HREF="c999.html"><LINK
+TITLE="Example: Estimating Pi"
+HREF="c1078.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
@@ -45,7 +45,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="c818.html"
+HREF="c860.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -59,7 +59,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c999.html"
+HREF="c1078.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -72,55 +72,56 @@ WIDTH="100%"></DIV
 CLASS="chapter"
 ><H1
 ><A
-NAME="lecture09"
+NAME="lecture08"
 ></A
->Chapter 11. Raising and Catching Exceptions</H1
+>Chapter 13. Persistent Arrays and References</H1
 ><P
->&#13;Exceptions provide a mechanism for altering the (normal) control-flow
-during program execution. Raising an exception is somewhat like
-executing a goto-statement.  A handler for handling a raised exception
-is essentially a pattern matching clause guarded by a pattern (for
-matching exceptions).  Intuitively speaking, a raised exception passes
-through a stack of handlers; the raised exception is handled by a
-handler if the exception matches the guard of the handler, or it
-simply tries the next handler to see if it can be handled; the raised
-exception terminates program execution abnormally if it is not handled
-by any of the handlers.
+>&#13;Let us start with references. A reference is precisely an
+(initialized) singleton array, that is, an array of size 1, and its
+typical use is for implementing a global variable that can be updated.
 
 </P
 ><P
->&#13;In ATS, a try-expression (or try-with-expression) is of the form
-(<FONT
+>&#13;The following function is for creating a reference:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN952"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+ref_make_elt<span class="keyword">(</span>x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
 COLOR="RED"
->try</FONT
-> exp <FONT
+>ref</FONT
+> is a type constructor in ATS that takes a type T
+to form a reference type <FONT
 COLOR="RED"
->with</FONT
-> clseq), where <FONT
+>ref(T)</FONT
+> for any reference holding
+a value of the type T.  The functions <FONT
 COLOR="RED"
->try</FONT
-> is
-a keyword, exp is an expression, <FONT
-COLOR="RED"
->with</FONT
-> is also a keyword,
-and clseq is a sequence of pattern matching clauses (used as
-exception-handlers). When evaluating such a try-expression, we first
-evaluate exp. If the evaluation of exp leads to a value, then the
-value is also the value of the try-expression. If the evaluation of
-exp leads to a raised exception, then we match the exception against
-the guards of the matching clauses in clseq. If there is a match, the
-raised exception is caught and we continue to evaluate the body of the
-first clause whose guard is matched. If there is no match, the raised
-exception is uncaught. In the following example,
+>ref_get_elt</FONT
+> and
 <FONT
 COLOR="RED"
->list0_exists</FONT
-> is implemented based on
-<FONT
-COLOR="RED"
->list0_foreach</FONT
->:
+>ref_set_elt</FONT
+> are for fetching and updating the value stored
+in a reference, respectively:
 
 <DIV
 CLASS="informalexample"
@@ -132,28 +133,12 @@ NAME="AEN958"
 ><PRE
 CLASS="programlisting"
 ><p class="patsyntax"><span class="comment">//</span>
-<span class="dynexp"><span class="keyword">implement</span>
-<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
-list0_exists
-  <span class="keyword">(</span>xs<span class="keyword">,</span> test<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
-<span class="comment">//</span>
-<span class="keyword">exception</span> <span class="dynexp">True <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
-<span class="comment">//</span>
-<span class="keyword">in</span>
-<span class="comment">//</span>
-<span class="dynexp"><span class="keyword">try</span> <span class="keyword">let</span>
-<span class="comment">//</span>
-<span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
-list0_foreach&lt;a<span class="keyword">&gt;</span>
-<span class="keyword">(</span> xs
-<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">if</span> test<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">then</span> <span class="keyword">$raise</span> True<span class="keyword">(</span><span class="keyword">)</span>
-<span class="keyword">)</span>
-<span class="comment">//</span>
-<span class="keyword">in</span>
-  false
-<span class="keyword">end</span> <span class="keyword">with</span> <span class="keyword">~</span>True<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> true</span>
-<span class="comment">//</span>
-<span class="keyword">end</span></span> <span class="comment">// end of [list0_exists]</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+ref_get_elt<span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+ref_set_elt<span class="keyword">(</span>r<span class="keyword">:</span> <span class="staexp">ref</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
 <span class="comment">//</span>
 </p></PRE
 ><P
@@ -162,111 +147,52 @@ list0_foreach&lt;a<span class="keyword">&gt;</span>
 >
 
 
-Given a list and a predicate, <FONT
+A shorthand for <FONT
 COLOR="RED"
->list0_exists</FONT
-> returns a
-boolean value to indicate whether there exists an element in the list
-that satisfies the predicate.  There is a built-in type
+>ref_make_elt</FONT
+> is <FONT
+COLOR="RED"
+>ref</FONT
+>.  Also,
+both <FONT
+COLOR="RED"
+>!</FONT
+> and <FONT
+COLOR="RED"
+>[]</FONT
+> are overloaded with
 <FONT
 COLOR="RED"
->exn</FONT
-> in ATS, which is somewhat like an extensible datatype
-in the sense that a new constructor associated with <FONT
+>ref_get_elt</FONT
+> and <FONT
 COLOR="RED"
->exn</FONT
->
-can be introduced through an exception-declaration. For instance,
-<FONT
-COLOR="RED"
->True</FONT
-> is introduced as a nullary exception-constructor in
-the body of <FONT
-COLOR="RED"
->list0_exists</FONT
->. Given a list and a function,
-<FONT
-COLOR="RED"
->list0_foreach</FONT
-> normally traverses until the end of the list
-while appying the function to each encountered element.  When the call
-to <FONT
-COLOR="RED"
->list0_foreach</FONT
-> in the body of <FONT
-COLOR="RED"
->list0_exists</FONT
->
-is evaluated, an exception (<FONT
-COLOR="RED"
->True()</FONT
->) is raised to stop
-further traversing if an element satisfying the predicate
-<FONT
-COLOR="RED"
->test</FONT
-> is encountered.  If the call to to
-<FONT
-COLOR="RED"
->list0_foreach</FONT
-> returns, then the value <FONT
-COLOR="RED"
->false</FONT
-> is
-the return value of <FONT
-COLOR="RED"
->list0_exists</FONT
->.  If <FONT
-COLOR="RED"
->True()</FONT
->
-is raised during the evaluation of the call, then this raised
-exception is to be caught by the handler following the keyword
-<FONT
-COLOR="RED"
->with</FONT
->, resulting in the value <FONT
-COLOR="RED"
->true</FONT
-> becoming the
-return value of <FONT
-COLOR="RED"
->list0_exists</FONT
->.  Note that a raised
-exception is considered a resource in ATS and it needs to be properly
-freed or re-raised after being caught. The symbol <FONT
-COLOR="RED"
->~</FONT
-> in the
-pattern <FONT
-COLOR="RED"
->~True()</FONT
-> indicates that the caught execption is
-freed.
-
-</P
-><P
->&#13;By raising an exception, a function can efficiently pass some
-information gathered during its evaluation. Let us see a typical
-example of this kind as follows. A datatype <FONT
-COLOR="RED"
->tree</FONT
-> is
-decared for representing binary trees:
+>ref_set_elt</FONT
+>. For instance, the
+following code prints out 0, 1, and 3 twice:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN981"
+NAME="AEN966"
 ></A
 ><PRE
 CLASS="programlisting"
 ><p class="patsyntax"><span class="comment">//</span>
-<span class="keyword">datatype</span> <span class="staexp">tree<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">)</span> <span class="keyword">=</span>
-<span class="keyword">|</span> <span class="dynexp">tree_nil <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
-<span class="keyword">|</span> <span class="dynexp">tree_cons <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="dynexp"><span class="keyword">val</span> r0 <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="keyword">!</span>r0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">!</span>r0 := <span class="keyword">!</span>r0 + <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="keyword">!</span>r0<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">!</span>r0 := <span class="keyword">!</span>r0 + <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="keyword">!</span>r0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> r1 <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span> := <span class="dynexp">r1[<span class="keyword">]</span></span> + <span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span> := <span class="dynexp">r1[<span class="keyword">]</span></span> + <span class="dynexp">2</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">r1[<span class="keyword">]</span></span><span class="keyword">)</span></span>
 <span class="comment">//</span>
 </p></PRE
 ><P
@@ -275,28 +201,198 @@ CLASS="programlisting"
 >
 
 
-For instance, the function for computing the height of a given
-binary tree can be implemented as follows:
+</P
+><P
+>&#13;Programmers often misuse references. This is especially true for those
+with a background in imperative programming. For instance, the
+following example shows a typical poor use of references that is often
+resulted from someone learning functional programming by "translating"
+code written in imperative style:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN983"
+NAME="AEN969"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fact_ref
+<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> i <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> r <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> <span class="keyword">!</span>i <span class="keyword">&lt;</span> n <span class="keyword">then</span> <span class="keyword">(</span><span class="keyword">!</span>i := <span class="keyword">!</span>i+<span class="dynexp">1</span><span class="keyword">;</span> <span class="keyword">!</span>r := <span class="keyword">!</span>r * <span class="keyword">!</span>i<span class="keyword">;</span> loop<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">let</span> <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop<span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">in</span> <span class="keyword">!</span>r <span class="keyword">end</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [fact_ref] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+There are some obvious drawbacks in this implementation of
+<FONT
+COLOR="RED"
+>fact_ref</FONT
+>. For evaluating each call to
+<FONT
+COLOR="RED"
+>fact_ref</FONT
+>, two references are created, which become garbage
+after the call returns. As a reference is allocated on heap, it is not
+mapped to a register when compiled. Accessing a reference involves
+memory traffic, which is much more expensive than accessing a
+register. Compared to a tail-recursive implementation of the factorial
+function in functional style, <FONT
+COLOR="RED"
+>fact_ref</FONT
+> is of great
+inefficiency both time-wise and memory-wise.
+
+</P
+><P
+>&#13;There is a type constructor <FONT
+COLOR="RED"
+>array0</FONT
+> in ATS that takes a
+type T to form the array type <FONT
+COLOR="RED"
+>array0(T)</FONT
+> for an array
+storing elements of the type T. We refer to such an array as an
+array0-value, which is essentially a pair containing a pointer (to the
+memory location where elements are stored) and an integer (indicating
+the capacity of the array). For instance, the following function can
+be called to create an array0-value:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN977"
 ></A
 ><PRE
 CLASS="programlisting"
 ><p class="patsyntax"><span class="comment">//</span>
 <span class="dynexp"><span class="keyword">fun</span>
 <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
-tree_height<span class="keyword">(</span>t0<span class="keyword">:</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
-<span class="keyword">(</span>
-<span class="keyword">case+</span> t0 <span class="keyword">of</span>
-<span class="keyword">|</span> tree_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">0</span>
-<span class="keyword">|</span> tree_cons<span class="keyword">(</span>tl<span class="keyword">,</span> _<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span>
-  <span class="dynexp">1</span> + max<span class="keyword">(</span>tree_height&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>tl<span class="keyword">)</span><span class="keyword">,</span> tree_height&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>tr<span class="keyword">)</span><span class="keyword">)</span>
-<span class="keyword">)</span></span>
+array0_make_elt<span class="keyword">(</span>asz<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a non-negative integer <FONT
+COLOR="RED"
+>asz</FONT
+> and an element
+<FONT
+COLOR="RED"
+>x0</FONT
+>, <FONT
+COLOR="RED"
+>array0_make_elt</FONT
+> returns an array0-value in
+which the array is of size <FONT
+COLOR="RED"
+>asz</FONT
+> and each of its cells is
+initialized with <FONT
+COLOR="RED"
+>x0</FONT
+>.
+
+</P
+><P
+>&#13;Another commonly used function for creating an array0-value
+is <FONT
+COLOR="RED"
+>array0_tabulate</FONT
+> of the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN986"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_tabulate<span class="keyword">(</span>asz<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a non-negative integer <FONT
+COLOR="RED"
+>asz</FONT
+> and a closure-function
+<FONT
+COLOR="RED"
+>fopr</FONT
+>, <FONT
+COLOR="RED"
+>array0_tabulate</FONT
+> returns an array0-value
+in which the array is of size <FONT
+COLOR="RED"
+>asz</FONT
+> and the array cells are
+initialized with the values of <FONT
+COLOR="RED"
+>fopr</FONT
+> at the valid indices.
+
+</P
+><P
+>&#13;The functions <FONT
+COLOR="RED"
+>array0_get_at</FONT
+> and <FONT
+COLOR="RED"
+>array0_set_at</FONT
+>
+are for fetching and updating the value stored in an array0-value at a
+given index:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN996"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_get_at<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_set_at<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
 <span class="comment">//</span>
 </p></PRE
 ><P
@@ -307,38 +403,103 @@ tree_height<span class="keyword">(</span>t0<span class="keyword">:</span> <span 
 
 Note that <FONT
 COLOR="RED"
->tree_height</FONT
-> is O(n)-time, where n is the size of
-its argument.  A binary is perfect if it is empty or both of its
-children are perfect and of the same height. For instance, the
-following function <FONT
+>array0_get_at</FONT
+> raises an exception
+(<FONT
 COLOR="RED"
->tree_is_perfect</FONT
-> checks whether a given
-binary tree is perfect:
+>ArraySubscriptExn()</FONT
+>) if the given index is invalid, that
+is, not between 0 and the array size minus 1, inclusive.  And the same
+happens with respect to <FONT
+COLOR="RED"
+>array0_set_at</FONT
+>.  Also please note
+that the brackets <FONT
+COLOR="RED"
+>[]</FONT
+> is overloaded with both
+<FONT
+COLOR="RED"
+>array0_get_at</FONT
+> and <FONT
+COLOR="RED"
+>array0_set_at</FONT
+>.  For
+instance, evaluating the following code prints out two lines: the
+first consisting of the text <FONT
+COLOR="RED"
+>000</FONT
+> and the second consisting
+of the text <FONT
+COLOR="RED"
+>123</FONT
+>:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN987"
+NAME="AEN1006"
 ></A
 ><PRE
 CLASS="programlisting"
 ><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> A <span class="keyword">=</span>
+array0_make_elt&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">3</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">A[0<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">A[1<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">A[2<span class="keyword">]</span></span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">A[0<span class="keyword">]</span></span> := <span class="dynexp">1</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">A[1<span class="keyword">]</span></span> := <span class="dynexp">A[0<span class="keyword">]</span></span> + <span class="dynexp">1</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">A[2<span class="keyword">]</span></span> := <span class="dynexp">A[1<span class="keyword">]</span></span> + <span class="dynexp">1</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynexp">A[0<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">A[1<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">A[2<span class="keyword">]</span></span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Like list0-values, there are many commonly used functions for
+processing array0-values. For instance, the following function
+<FONT
+COLOR="RED"
+>array0_foreach</FONT
+> corresponds to the previouly presented
+<FONT
+COLOR="RED"
+>list0_foreach</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1011"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
 <span class="dynexp"><span class="keyword">fun</span>
 <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
-tree_is_perfect
-  <span class="keyword">(</span>t0<span class="keyword">:</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
+array0_foreach
+<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">void</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+array0_foreach<span class="keyword">(</span>A<span class="keyword">,</span> fwork<span class="keyword">)</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
-<span class="keyword">case+</span> t0 <span class="keyword">of</span>
-<span class="keyword">|</span> tree_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> true
-<span class="keyword">|</span> tree_cons<span class="keyword">(</span>tl<span class="keyword">,</span> _<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span>
-  tree_is_perfect&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>tl<span class="keyword">)</span> &amp;&amp;
-  tree_is_perfect&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>tr<span class="keyword">)</span> &amp;&amp;
-  <span class="keyword">(</span>tree_height&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>tl<span class="keyword">)</span> <span class="keyword">=</span> tree_height&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>tr<span class="keyword">)</span><span class="keyword">)</span>
-<span class="keyword">)</span></span>
+  int_foreach&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>sz2i<span class="keyword">(</span>A<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=&gt;</span> fwork<span class="keyword">(</span><span class="dynexp">A[i<span class="keyword">]</span></span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [array0_foreach] *)</span>
 <span class="comment">//</span>
 </p></PRE
 ><P
@@ -347,44 +508,69 @@ tree_is_perfect
 >
 
 
-Clearly, the time complexity of <FONT
+Given an array0-value <FONT
 COLOR="RED"
->tree_is_perfect</FONT
-> is
-O(n(log(n))) where n is the size of its argument. By making use of
-exception, we can readily implement the following function of
-O(n)-time that also checks whether a given tree is perfect:
+>A</FONT
+>, the expression
+<FONT
+COLOR="RED"
+>A.size()</FONT
+> is written in dot-notation, which returns the
+size of the array contained in <FONT
+COLOR="RED"
+>A</FONT
+>. The name <FONT
+COLOR="RED"
+>sz2i</FONT
+>
+refers to a cast function from the type <FONT
+COLOR="RED"
+>size_t</FONT
+> to the type
+<FONT
+COLOR="RED"
+>int</FONT
+>.
+
+</P
+><P
+>&#13;The following function
+<FONT
+COLOR="RED"
+>array0_foldleft</FONT
+> corresponds to the previouly presented
+<FONT
+COLOR="RED"
+>list0_foldleft</FONT
+>:
 
 <DIV
 CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN990"
+NAME="AEN1022"
 ></A
 ><PRE
 CLASS="programlisting"
 ><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
 <span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>r<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
 <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
-tree_is_perfect2
-  <span class="keyword">(</span>t0<span class="keyword">:</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span> <span class="keyword">let</span>
+array0_foldleft
+<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> r0<span class="keyword">:</span> <span class="staexp">r</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">r</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">r</span></span>
 <span class="comment">//</span>
-<span class="keyword">exception</span> <span class="dynexp">NotPerfect <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">r</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+array0_foldleft
+  <span class="keyword">(</span>A<span class="keyword">,</span> r0<span class="keyword">,</span> fopr<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
 <span class="comment">//</span>
-<span class="dynexp"><span class="keyword">fun</span>
-aux<span class="keyword">(</span>t0<span class="keyword">:</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
-<span class="keyword">case+</span> t0 <span class="keyword">of</span>
-<span class="keyword">|</span> tree_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">0</span>
-<span class="keyword">|</span> tree_cons<span class="keyword">(</span>tl<span class="keyword">,</span> _<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
-    <span class="dynexp"><span class="keyword">val</span> hl <span class="keyword">=</span> aux<span class="keyword">(</span>tl<span class="keyword">)</span> <span class="keyword">and</span> hr <span class="keyword">=</span> aux<span class="keyword">(</span>tr<span class="keyword">)</span></span>
-  <span class="keyword">in</span>
-    <span class="keyword">if</span> hl <span class="keyword">=</span> hr <span class="keyword">then</span> <span class="dynexp">1</span>+max<span class="keyword">(</span>hl<span class="keyword">,</span> hr<span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp"><span class="keyword">$raise</span> NotPerfect</span>
-  <span class="keyword">end</span></span>
+int_foldleft&lt;<span class="staexp">r</span><span class="keyword">&gt;</span>
+  <span class="keyword">(</span>sz2i<span class="keyword">(</span>A<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> r0<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>r<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=&gt;</span> fopr<span class="keyword">(</span>r<span class="keyword">,</span> <span class="dynexp">A[i<span class="keyword">]</span></span><span class="keyword">)</span><span class="keyword">)</span>
 <span class="comment">//</span>
-<span class="keyword">in</span>
-  <span class="dynexp"><span class="keyword">try</span> <span class="keyword">let</span> <span class="keyword">val</span> _ <span class="keyword">=</span> aux<span class="keyword">(</span>t0<span class="keyword">)</span> <span class="keyword">in</span> true <span class="keyword">end</span> <span class="keyword">with</span> <span class="keyword">~</span>NotPerfect<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> false</span>
-<span class="keyword">end</span></span> <span class="comment">// end of [tree_is_perfect2]</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [array0_foldleft] *)</span>
 <span class="comment">//</span>
 </p></PRE
 ><P
@@ -393,36 +579,325 @@ aux<span class="keyword">(</span>t0<span class="keyword">:</span> <span class="s
 >
 
 
-The inner function <FONT
+The following function
+<FONT
 COLOR="RED"
->aux</FONT
-> inside <FONT
+>array0_foldright</FONT
+> corresponds to the previouly presented
+<FONT
 COLOR="RED"
->tree_is_perfect2</FONT
+>list0_foldright</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1026"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>r<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+array0_foldright
+<span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">array0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span><span class="keyword">,</span> r0<span class="keyword">:</span> <span class="staexp">r</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">r</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">r</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+array0_foldright
+  <span class="keyword">(</span>A<span class="keyword">,</span> fopr<span class="keyword">,</span> r0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> asz <span class="keyword">=</span> sz2i<span class="keyword">(</span>A<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  int_foldleft&lt;<span class="staexp">r</span><span class="keyword">&gt;</span><span class="keyword">(</span>asz<span class="keyword">,</span> r0<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>r<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=&gt;</span> fopr<span class="keyword">(</span><span class="dynexp">A[asz-i-1<span class="keyword">]</span></span><span class="keyword">,</span> r<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [array0_foldright] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
 >
-returns the height of a given tree only if the tree is
-perfect. Otherwise, an exception (<FONT
+
+
+Unlike <FONT
 COLOR="RED"
->NotPerfect()</FONT
->) is
-raised. In other words, if a call to <FONT
+>list0_foldright</FONT
+>, <FONT
 COLOR="RED"
->aux</FONT
-> on a tree
-returns, we know that the tree is pefect while obtaining its height.
-This is often dubbed a <SPAN
-CLASS="emphasis"
-><I
-CLASS="emphasis"
->hitting-two-birds-with-one-stone</I
-></SPAN
+>array0_foldright</FONT
 >
-scenario.
+is tail-recursive.
+
+</P
+><P
+>&#13;In practice, matrices (that is, two dimensional arrays) are also a
+very common data structure. In ATS, there is a type constructor
+<FONT
+COLOR="RED"
+>matrix0</FONT
+>, which takes a type T to form the type
+<FONT
+COLOR="RED"
+>matrix0(T)</FONT
+> for a matrix storing elements of the type T. We
+refer to such a matrix as a matrix0-value, which is essentially a
+tuple containing a pointer (to the memory location where elements are
+stored) and two integers (indicating the number of rows and the number
+of columns of the matrix). For instance, the following function can be
+called to create a matrix0-value:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1033"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+matrix0_make_elt<span class="keyword">(</span>nrow<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> ncol<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given two non-negative integers <FONT
+COLOR="RED"
+>m</FONT
+> and <FONT
+COLOR="RED"
+>n</FONT
+> and an
+element <FONT
+COLOR="RED"
+>x0</FONT
+>, <FONT
+COLOR="RED"
+>matrix0_make_elt</FONT
+> returns a
+matrix0-value in which the matrix is of dimension <FONT
+COLOR="RED"
+>m</FONT
+> by
+<FONT
+COLOR="RED"
+>n</FONT
+> and each of its cells is initialized with
+<FONT
+COLOR="RED"
+>x0</FONT
+>.
+
+</P
+><P
+>&#13;Please note that the so-called row-major representation is chosen for
+the matrix contained in each created matrix0-value. As the elements in
+each row are stored adjacently in row-major representation, it can be
+(much) more efficient to process the elements in the row-by-row fashion
+(compared to the column-by-column fashion) due to the memory-cache effect.
+
+</P
+><P
+>&#13;Like <FONT
+COLOR="RED"
+>array0_tabulate</FONT
+>, the following function
+<FONT
+COLOR="RED"
+>matrix0_tabulate</FONT
+> is often called to create a
+matrix0-value:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1046"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+matrix0_tabulate
+  <span class="keyword">(</span>nrow<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> ncol<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given two non-negative integers <FONT
+COLOR="RED"
+>m</FONT
+> and <FONT
+COLOR="RED"
+>n</FONT
+> and a
+closure-function <FONT
+COLOR="RED"
+>fopr</FONT
+>, <FONT
+COLOR="RED"
+>matrix0_tabulate</FONT
+>
+returns a matrix0-value in which the matrix is of dimension
+<FONT
+COLOR="RED"
+>m</FONT
+> by <FONT
+COLOR="RED"
+>n</FONT
+> and the matrix cells are initialized
+with the values of <FONT
+COLOR="RED"
+>fopr</FONT
+> at the valid indices.
+
+</P
+><P
+>&#13;The functions <FONT
+COLOR="RED"
+>matrix0_get_at</FONT
+> and
+<FONT
+COLOR="RED"
+>matrix0_set_at</FONT
+> are for fetching and updating the value
+stored in a matrix0-value at a given position (represented by a row
+index and a column index):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1058"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+matrix0_get_at
+  <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span></span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>t0p<span class="keyword">}</span></span>
+matrix0_set_at
+  <span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>matrix0_get_at</FONT
+> raises an exception
+(<FONT
+COLOR="RED"
+>MatrixSubscriptExn()</FONT
+>) if one of the given indices is
+invalid.  And the same happens with respect to
+<FONT
+COLOR="RED"
+>matrix0_set_at</FONT
+>. Also please note that the brackets
+<FONT
+COLOR="RED"
+>[]</FONT
+> is overloaded with both <FONT
+COLOR="RED"
+>matrix0_get_at</FONT
+> and
+<FONT
+COLOR="RED"
+>matrix0_set_at</FONT
+>.
+
+</P
+><P
+>&#13;Like <FONT
+COLOR="RED"
+>array0_foreach</FONT
+>, the following function
+<FONT
+COLOR="RED"
+>matrix0_foreach</FONT
+> applies to each element stored in the
+matrix contained in <FONT
+COLOR="RED"
+>M</FONT
+> a given closure-function
+<FONT
+COLOR="RED"
+>fwork</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1071"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+matrix0_foreach
+<span class="keyword">(</span>M<span class="keyword">:</span> <span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">void</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+matrix0_foreach
+  <span class="keyword">(</span>M<span class="keyword">,</span> fwork<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> nrow <span class="keyword">=</span> sz2i<span class="keyword">(</span>M<span class="dynexp"><span class="keyword">.</span>nrow</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> ncol <span class="keyword">=</span> sz2i<span class="keyword">(</span>M<span class="dynexp"><span class="keyword">.</span>ncol</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  int_cross_foreach&lt;<span class="keyword">&gt;</span><span class="keyword">(</span>nrow<span class="keyword">,</span> ncol<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>i<span class="keyword">,</span> j<span class="keyword">)</span> <span class="keyword">=&gt;</span> fwork<span class="keyword">(</span><span class="dynexp">M[i<span class="keyword">,</span>j<span class="keyword">]</span></span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [matrix0_foreach] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The expression <FONT
+COLOR="RED"
+>M.nrow()</FONT
+> is written in dot-notation, which
+returns the number of rows in the matrix contained in
+<FONT
+COLOR="RED"
+>M</FONT
+>. And <FONT
+COLOR="RED"
+>M.ncol()</FONT
+> is for the number of columns
+in the matrix.
 
 </P
 ><P
 >&#13;Please find <A
-HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/09/CODE"
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/08/CODE"
 TARGET="_top"
 >on-line</A
 > the entirety of
@@ -445,7 +920,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="c818.html"
+HREF="c860.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -463,7 +938,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c999.html"
+HREF="c1078.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -473,7 +948,7 @@ ACCESSKEY="N"
 WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
->Persistent Arrays and References</TD
+>Example: Game of Twenty-four</TD
 ><TD
 WIDTH="34%"
 ALIGN="center"
@@ -483,7 +958,7 @@ VALIGN="top"
 WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
->Lazy Stream-Processing</TD
+>Example: Estimating Pi</TD
 ></TR
 ></TABLE
 ></DIV

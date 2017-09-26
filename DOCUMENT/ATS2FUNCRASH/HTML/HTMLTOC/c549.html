@@ -1,0 +1,1303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Functional List-Processing (2)</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Crash into FP through ATS"
+HREF="book1.html"><LINK
+REL="PREVIOUS"
+TITLE="Functional List-Processing (1)"
+HREF="c418.html"><LINK
+REL="NEXT"
+TITLE="Through ATS to PHP"
+HREF="c702.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Crash into FP through ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c418.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c702.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="lecture06"
+></A
+>Chapter 8. Functional List-Processing (2)</H1
+><P
+>&#13;Sometimes, a list-processing function is partial in the sense that it
+is not well-defined for all of the lists. For instance, the function
+<FONT
+COLOR="RED"
+>list0_head</FONT
+> for returning the head element of a given list
+is defined only if the given list is non-empty:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN553"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_head<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=&gt;</span> x
+<span class="keyword">|</span> _<span class="comment">(* list0_nil() *)</span> <span class="keyword">=&gt;</span> <span class="dynexp"><span class="keyword">$raise</span> ListSubscriptExn<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the code <FONT
+COLOR="RED"
+>$raise ListSubscriptExn()</FONT
+> is for
+raising an exception (in the case where <FONT
+COLOR="RED"
+>xs</FONT
+> is empty),
+which is to be explained in details later. Another approach to
+handling a partial function is to turn it into a total one that
+returns options. For instance, <FONT
+COLOR="RED"
+>list0_head_opt</FONT
+> is such a
+total function corresponding to <FONT
+COLOR="RED"
+>list0_head</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN559"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">datatype</span>
+<span class="staexp">option0<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">Some0 <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">None0 <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_head_opt
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">option0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=&gt;</span> Some0<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">|</span> _ <span class="keyword">=&gt;</span> None0<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The function returning the last element
+of a given list is also partial as it is only defined
+for a non-empty list. The following function
+<FONT
+COLOR="RED"
+>list0_last_opt</FONT
+> returns an option to indicate
+whether the last element of a given list is found:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN562"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_last_opt
+<span class="keyword">(</span>
+xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">option0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+loop
+<span class="keyword">(</span>x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> x0
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x1<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> loop<span class="keyword">(</span>x1<span class="keyword">,</span> xs<span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> None0<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> Some0<span class="keyword">(</span>loop<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [list0_last_opt]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the inner function <FONT
+COLOR="RED"
+>loop</FONT
+> in the
+body of <FONT
+COLOR="RED"
+>list0_last_opt</FONT
+> is tail-recursive.
+
+</P
+><P
+>&#13;Before moving on, I would like to point out a very common mistake in
+(functional) list-processing. First and foremost, a list is not meant
+to be used like an array. The following (partial) function
+<FONT
+COLOR="RED"
+>list0_get_at</FONT
+> does the so-called list-subscripting:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN568"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_get_at
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+list0_get_at
+  <span class="keyword">(</span>xs<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="dynexp"><span class="keyword">$raise</span> ListSubscriptExn<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="keyword">if</span> n &lt;= <span class="dynexp">0</span> <span class="keyword">then</span> x <span class="keyword">else</span> list0_get_at&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> n-<span class="dynexp">1</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For instance, given the list <FONT
+COLOR="RED"
+>(1,10,100)</FONT
+> and the index
+<FONT
+COLOR="RED"
+>1</FONT
+>, <FONT
+COLOR="RED"
+>list0_get_at</FONT
+> return the element
+<FONT
+COLOR="RED"
+>10</FONT
+>.  Another common name for <FONT
+COLOR="RED"
+>list0_get_at</FONT
+> is
+<FONT
+COLOR="RED"
+>list0_nth</FONT
+>. Clearly, the time-complexity of
+<FONT
+COLOR="RED"
+>list0_get_at</FONT
+> is O(n) (while array-subscripting is
+O(1)-time). It is almost always a poor programming style to process
+the elements in a list by calling <FONT
+COLOR="RED"
+>list0_get_at</FONT
+> (as the
+resulting code is likely to be prohibitively inefficient
+time-wise). For the purpose of illustration, let us take a look at the
+following two functions for tallying the integers contained in a given
+list:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN578"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+list0_tally1
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+  list0_foldleft&lt;<span class="staexp">int</span><span class="keyword">&gt;&lt;</span><span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>res<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=&gt;</span> res + x<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+list0_tally2
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+  int_foldleft&lt;<span class="staexp">int</span><span class="keyword">&gt;</span>
+  <span class="keyword">(</span>list0_length<span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>res<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=&gt;</span> res + list0_get_at&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a list <FONT
+COLOR="RED"
+>xs</FONT
+> of length n, the function
+<FONT
+COLOR="RED"
+>list0_tally1</FONT
+> is O(n)-time while the function
+<FONT
+COLOR="RED"
+>list0_tally2</FONT
+> is O(n<SUP
+>2</SUP
+>)-time. List-processing should
+be done in the efficient style of <FONT
+COLOR="RED"
+>list0_tally1</FONT
+> rather than
+in the terribly inefficient style of <FONT
+COLOR="RED"
+>list0_tally2</FONT
+>. In
+general, please try to avoid doing list-subscripting repeatedly if the
+involved index cannot be bounded by a small constant!
+
+</P
+><P
+>&#13;Let us see more functions for performing functional
+list-processing in the following presentation and an
+example of functional programming at the end that illustrates some
+typical use of list-processing functions.
+
+</P
+><P
+>&#13;A commonly used (higher-order) function is often referred to as
+list-map, which takes a list and a function and returns a newly
+constructed list consisting of all of the elements obtained from
+applying the function to each element in the given list:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN588"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+<span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_map
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
+list0_map
+<span class="keyword">(</span>
+  xs<span class="keyword">,</span> fopr
+<span class="keyword">)</span> <span class="keyword">=</span> auxlst<span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+auxlst
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_cons<span class="keyword">(</span>fopr<span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">,</span> auxlst<span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [list0_map] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For instance, given the list <FONT
+COLOR="RED"
+>(1, 2, 3, 4, 5)</FONT
+> and the
+integer square function, <FONT
+COLOR="RED"
+>list0_map</FONT
+> returns the list
+consisting of <FONT
+COLOR="RED"
+>1</FONT
+>, <FONT
+COLOR="RED"
+>4</FONT
+>, <FONT
+COLOR="RED"
+>9</FONT
+>,
+<FONT
+COLOR="RED"
+>16</FONT
+>, and <FONT
+COLOR="RED"
+>25</FONT
+>.
+</P
+><P
+>&#13;With <FONT
+COLOR="RED"
+>list0_map</FONT
+>, we can readily build <FONT
+COLOR="RED"
+>list0_cross</FONT
+>
+as follows for computing the cross product of two given lists:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN600"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">,</span>b<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_cross
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="keyword">$tup</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a<span class="keyword">,</span>b</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+list0_cross
+  <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">ab <span class="keyword">=</span> <span class="keyword">$tup</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+list0_concat <span class="comment">// for concatenating a list of lists</span>
+<span class="keyword">(</span>
+list0_map&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">ab</span><span class="keyword">)</span><span class="keyword">&gt;</span>
+  <span class="keyword">(</span>xs<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_map&lt;<span class="staexp">b</span><span class="keyword">&gt;&lt;</span><span class="staexp">ab</span><span class="keyword">&gt;</span><span class="keyword">(</span>ys<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>y<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">$tup</span><span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="comment">(* end of [list0_concat] *)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [list0_cross]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For instance, given two lists <FONT
+COLOR="RED"
+>(0, 1)</FONT
+>
+and <FONT
+COLOR="RED"
+>(2, 3, 4)</FONT
+>, <FONT
+COLOR="RED"
+>list0_cross</FONT
+> returns a newly
+constructed list consisting of the following six pairs: <FONT
+COLOR="RED"
+>(0,
+2)</FONT
+>, <FONT
+COLOR="RED"
+>(0, 3)</FONT
+>, <FONT
+COLOR="RED"
+>(0, 4)</FONT
+>, <FONT
+COLOR="RED"
+>(1, 2)</FONT
+>,
+<FONT
+COLOR="RED"
+>(2, 3)</FONT
+>, and <FONT
+COLOR="RED"
+>(3, 4)</FONT
+>.
+
+</P
+><P
+>&#13;A function rather similar to <FONT
+COLOR="RED"
+>list0_map</FONT
+> is
+<FONT
+COLOR="RED"
+>list0_foreach</FONT
+>, which takes a list and a procedure (i.e., a
+function returning void) and applies the procedure to each element in
+the list:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN614"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_foreach
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">void</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+list0_foreach
+<span class="keyword">(</span>
+  xs<span class="keyword">,</span> fwork
+<span class="keyword">)</span> <span class="keyword">=</span> loop<span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+loop
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span>fwork<span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">;</span> loop<span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [list0_foreach] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Another commonly used (higher-order) function is often referred to as
+list-filter, which takes a list and a predicate (i.e., a function
+returning a boolean value) and returns a newly constructed list
+consisting of all of the elements in the given list that satisfy the
+given predicate:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN617"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_filter
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> test<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+list0_filter
+<span class="keyword">(</span>
+  xs<span class="keyword">,</span> test
+<span class="keyword">)</span> <span class="keyword">=</span> auxlst<span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+auxlst
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  list0_nil<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="keyword">if</span> test<span class="keyword">(</span>x<span class="keyword">)</span>
+    <span class="keyword">then</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> auxlst<span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> auxlst<span class="keyword">(</span>xs<span class="keyword">)</span>
+  <span class="comment">// end of [if]</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [list0_filter] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For instance, given the list <FONT
+COLOR="RED"
+>(1, 2, 3, 4, 5)</FONT
+>
+and the predicate for testing whether an integer is even,
+<FONT
+COLOR="RED"
+>list0_filter</FONT
+> returns the list consisting of <FONT
+COLOR="RED"
+>2</FONT
+>
+and <FONT
+COLOR="RED"
+>4</FONT
+>.
+
+</P
+><P
+>&#13;Given a list <FONT
+COLOR="RED"
+>xs</FONT
+>, the following function
+<FONT
+COLOR="RED"
+>list0_remdup</FONT
+> removes all of the elements in <FONT
+COLOR="RED"
+>xs</FONT
+>
+that have already appeared previously:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN627"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_remdup
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> eqfn<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+list0_remdup<span class="keyword">(</span>xs<span class="keyword">,</span> eqfn<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  list0_nil<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x0<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  list0_cons<span class="keyword">(</span>x0<span class="keyword">,</span> list0_remdup&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>list0_filter&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> eqfn<span class="keyword">(</span>x0<span class="keyword">,</span> x<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> eqfn<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The implementation of <FONT
+COLOR="RED"
+>list0_remdup</FONT
+> should clearly remind
+one of the sieve of Eratosthenes, which is to be given a stream-based
+implementation later.
+
+</P
+><P
+>&#13;The list-processing function <FONT
+COLOR="RED"
+>list0_map</FONT
+> processes every
+element in its list argument and so does <FONT
+COLOR="RED"
+>list0_filter</FONT
+>.
+Sometimes, we need a list-processing function that stops immediately
+after certain condition is met. For instance, we may want to locate
+the index of the first element in a given list that satisfies some test,
+which can done by calling the following function <FONT
+COLOR="RED"
+>list0_find_index</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN634"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_find_index
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> test<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+list0_find_index
+  <span class="keyword">(</span>xs<span class="keyword">,</span> test<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+loop
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">~</span><span class="dynexp">1</span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="keyword">if</span> test<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">then</span> i <span class="keyword">else</span> loop<span class="keyword">(</span>xs<span class="keyword">,</span> i+<span class="dynexp">1</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  loop<span class="keyword">(</span>xs<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [list0_find_index]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For instance, given the list <FONT
+COLOR="RED"
+>(1, 2, 3)</FONT
+> and the predicate
+for testing whether an integer is even, <FONT
+COLOR="RED"
+>list0_find_index</FONT
+>
+returns <FONT
+COLOR="RED"
+>1</FONT
+> (which is the index for the element <FONT
+COLOR="RED"
+>2</FONT
+>
+in the given list). Note that <FONT
+COLOR="RED"
+>~1</FONT
+> (negative 1) is returned
+if no element satisfying the given predicate is found.
+
+</P
+><P
+>&#13;Given a list0-value <FONT
+COLOR="RED"
+>xs</FONT
+> and a predicate <FONT
+COLOR="RED"
+>test</FONT
+>,
+<FONT
+COLOR="RED"
+>list0_exist</FONT
+> returns true if and only if there exists one
+element in <FONT
+COLOR="RED"
+>xs</FONT
+> satisfing <FONT
+COLOR="RED"
+>test</FONT
+>, and
+<FONT
+COLOR="RED"
+>list0_forall</FONT
+> returns true if and only if every element in
+<FONT
+COLOR="RED"
+>xs</FONT
+> satisfies <FONT
+COLOR="RED"
+>test</FONT
+>. Both of these two functions
+can be readily implemented based on a direct call to
+<FONT
+COLOR="RED"
+>list0_find_index</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN651"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_exists
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> test<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_forall
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> test<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+list0_exists<span class="keyword">(</span>xs<span class="keyword">,</span> test<span class="keyword">)</span> <span class="keyword">=</span>
+list0_find_index&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> test<span class="keyword">)</span> &gt;= <span class="dynexp">0</span></span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+list0_forall<span class="keyword">(</span>xs<span class="keyword">,</span> test<span class="keyword">)</span> <span class="keyword">=</span>
+list0_find_index&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> not<span class="keyword">(</span>test<span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">&lt;</span> <span class="dynexp">0</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Given a list (x<SUB
+>0</SUB
+>, ..., x<SUB
+>n-1</SUB
+>) of length n, its indexed
+version refers to the list of pairs in which the elements are of the form
+(i, x<SUB
+>i</SUB
+>) for i ranging from 0 to n-1.  For a function that
+processes a given list, there is often a meaningful variant of the
+function that processes the indexed version of the list. For instance,
+the following function <FONT
+COLOR="RED"
+>list0_imap</FONT
+> is such a variant of
+<FONT
+COLOR="RED"
+>list0_map</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN659"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+<span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_imap
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
+list0_imap
+<span class="keyword">(</span>
+  xs<span class="keyword">,</span> fopr
+<span class="keyword">)</span> <span class="keyword">=</span> auxlst<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+auxlst
+<span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_cons<span class="keyword">(</span>fopr<span class="keyword">(</span>i<span class="keyword">,</span> x<span class="keyword">)</span><span class="keyword">,</span> auxlst<span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">,</span> xs<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [list0_imap] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Let us use <FONT
+COLOR="RED"
+>list0_iexists</FONT
+> and <FONT
+COLOR="RED"
+>list0_iforall</FONT
+> to
+refer to the variants of <FONT
+COLOR="RED"
+>list0_exists</FONT
+> and
+<FONT
+COLOR="RED"
+>list0_forall</FONT
+>, respectively, for processing indexed lists.
+The code implementing <FONT
+COLOR="RED"
+>list0_iexists</FONT
+> and <FONT
+COLOR="RED"
+>list0_iforall</FONT
+>
+is omitted for brevity.
+
+</P
+><P
+>&#13;I have so far presented a variety of functions for processing lists in a
+functional style. I would like to conclude the chapter with an example
+of functional programming that can concretely demonstrate some typical use of
+list-processing functions in practice.
+
+</P
+><P
+>&#13;The famous 8-queen puzzle asks the player to find ways to put eight
+queen pieces on a chess board such that no queen piece can attack any
+other ones. In other words, no two queen pieces can be put on the same
+row, the same column, or the same diagnal. This puzzle can be readily
+solved with a tree-based search. Let us introduce an abstract type as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN669"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="staexp"><span class="keyword">abstype</span> node <span class="keyword">=</span> ptr</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>ptr</FONT
+> indicates that <FONT
+COLOR="RED"
+>node</FONT
+> is
+boxed. Intuitively, a node represents a partial solution where there
+are <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n</I
+></SPAN
+> queen pieces (for some <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n</I
+></SPAN
+> less than or
+equal to 8) on the first <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n</I
+></SPAN
+> rows of the chess board such
+that no one piece can attack any other pieces. Given a node, another
+node extending it with one more queen piece is considered its
+child. The following declared function <FONT
+COLOR="RED"
+>node_get_children</FONT
+>
+is supposed to be called to obtain all of the child nodes of a given
+node:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN677"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+node_get_children<span class="keyword">(</span><span class="staexp">node</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">node</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>children <span class="keyword">with</span> node_get_children</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+With
+<FONT
+COLOR="RED"
+>node_get_children</FONT
+>,
+we can readily implement <FONT
+COLOR="RED"
+>node_dfsenum</FONT
+> as follows
+for enumerating in the depth-first manner all of the nodes contained
+in the tree rooted at a given node:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN681"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+node_dfsenum<span class="keyword">(</span><span class="staexp">node</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">node</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+node_dfsenum
+<span class="keyword">(</span>nx0<span class="keyword">)</span> <span class="keyword">=</span>
+list0_cons
+<span class="keyword">(</span>
+nx0
+<span class="keyword">,</span>
+list0_concat&lt;<span class="staexp">node</span><span class="keyword">&gt;</span>
+<span class="keyword">(</span>
+list0_map&lt;<span class="staexp">node</span><span class="keyword">&gt;&lt;</span><span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">node</span><span class="keyword">)</span><span class="keyword">&gt;</span><span class="keyword">(</span>nx0<span class="dynexp"><span class="keyword">.</span>children</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>nx<span class="keyword">)</span> <span class="keyword">=&gt;</span> node_dfsenum<span class="keyword">(</span>nx<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="comment">(* list0_concat *)</span>
+<span class="keyword">)</span></span> <span class="comment">(* node_dfsenum *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+In order to find all of the solutions to the 8-queen puzzle,
+we just need to keep all of the nodes of length 8 that are contained
+in the tree rooted at the initial node (representing the empty partial
+soloution):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN683"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+QueenSolve<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">node</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span> N 8</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+QueenSolve<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+list0_filter&lt;<span class="staexp">node</span><span class="keyword">&gt;</span><span class="keyword">(</span>node_dfsenum<span class="keyword">(</span>node_init<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>nx<span class="keyword">)</span> <span class="keyword">=&gt;</span> node_length<span class="keyword">(</span>nx<span class="keyword">)</span> <span class="keyword">=</span> N<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>node_init</FONT
+> returns the initial node and
+<FONT
+COLOR="RED"
+>node_length</FONT
+> returns the length of a node (that is, the
+number queen pieces in the partial solution represented by the node).
+By treating <FONT
+COLOR="RED"
+>node</FONT
+> as <FONT
+COLOR="RED"
+>list0(int)</FONT
+>, we
+can implement <FONT
+COLOR="RED"
+>node_init</FONT
+> and <FONT
+COLOR="RED"
+>node_length</FONT
+>
+as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN691"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="staexp"><span class="keyword">assume</span> node <span class="keyword">=</span> list0<span class="keyword">(</span>int<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+node_init<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+node_length<span class="keyword">(</span>nx<span class="keyword">)</span> <span class="keyword">=</span> list0_length<span class="keyword">(</span>nx<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+A node is represented as a list of integers; the length of the list
+refers to the number of queen pieces on the chess board; the integers
+(between 0 and N-1) in the list refer to the reversely listed column
+positions of the queen pieces. The function <FONT
+COLOR="RED"
+>node_get_children</FONT
+>
+is implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN694"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+test_safety
+<span class="keyword">(</span>
+xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val-</span>
+list0_cons<span class="keyword">(</span>x0<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=</span> xs</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+list0_iforall&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="comment">// abs: absolute value</span>
+  <span class="keyword">(</span>xs<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>i<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span>x0 != x &amp;&amp; abs<span class="keyword">(</span>x0-x<span class="keyword">)</span> != <span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [test_safety]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+node_get_children
+  <span class="keyword">(</span>nx<span class="keyword">)</span> <span class="keyword">=</span>
+  list0_filter&lt;<span class="staexp">node</span><span class="keyword">&gt;</span>
+  <span class="keyword">(</span>int_list0_map&lt;<span class="staexp">node</span><span class="keyword">&gt;</span>
+    <span class="keyword">(</span>N<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> nx<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>nx<span class="keyword">)</span> <span class="keyword">=&gt;</span> test_safety<span class="keyword">(</span>nx<span class="keyword">)</span>
+  <span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The function <FONT
+COLOR="RED"
+>test_safety</FONT
+> checks whether a column position
+is safe for the next queen piece. Note that applying
+<FONT
+COLOR="RED"
+>int_list0_map</FONT
+> to an integer n is like applying
+<FONT
+COLOR="RED"
+>list0_map</FONT
+> to the list consisting of all of the integers
+between 0 and n-1, inclusive.
+
+</P
+><P
+>&#13;The presented code for solving 8-queen puzzle is of the kind of
+high-level functional programming style I intend to advocate
+throughout the book. It should soon be clear that we can reap even
+more benefits from programming in this way when linear lazy streams
+are used in place of functional lists.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/06/CODE"
+TARGET="_top"
+>on-line</A
+> the entirety of
+the code used in this chapter. 
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c418.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c702.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Functional List-Processing (1)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Through ATS to PHP</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2FPCRASH-BOOK.js"></SCRIPT></BODY
+></HTML
+>
