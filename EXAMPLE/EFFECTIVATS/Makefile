@@ -84,10 +84,10 @@ Readers-and-Writers
 Readers-and-Writers:: ; \
 make -C $@ $(TARGET)
 
-all :: \
-IPC-hiredis
-IPC-hiredis:: ; \
-make -C $@ $(TARGET)
+# all :: \
+# IPC-hiredis
+# IPC-hiredis:: ; \
+# make -C $@ $(TARGET)
 
 # all :: \
 # http-server
