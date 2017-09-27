@@ -12,7 +12,7 @@ PATSOPT=$(PATSHOME)/bin/patsopt
 PATSOLVE=$(PATSHOME)/bin/patsolve_z3
 #
 ATSCC2JS=$(PATSHOME)/bin/atscc2js
-LIBATCC2JS=$(PATSHOMERELOC)/contrib/libatscc/libatscc2js
+LIBATCC2JS=$(PATSCONTRIB)/contrib/libatscc/libatscc2js
 #
 ######
 
@@ -26,7 +26,7 @@ INPATH += -I$(PATSHOME)/src
 INPATH += -IATS $(PATSHOME) -IATS $(ATSHOME)
 
 LDPATH :=
-LDPATH += -L$(PATSHOME)/utils/libatsopt
+LDPATH += -L$(PATSHOME)/ccomp/atslib/lib
 LDPATH += -L$(PATSHOME)/utils/libatsynmark
 
 LIBRARY :=
@@ -86,6 +86,7 @@ RMF=rm -f
 
 clean:: ; $(RMF) *~
 clean:: ; $(RMF) *_?ats.c
+clean:: ; $(RMF) main.exe
 clean:: ; $(RMF) main_atxt.txt
 clean:: ; $(RMF) main_atxt.dats
 
@@ -93,7 +94,6 @@ clean:: ; $(RMF) main_atxt.dats
 #
 cleanall:: clean
 #
-cleanall:: ; $(RMF) main.exe
 cleanall:: ; $(RMF) main.html
 cleanall:: ; $(RMF) *_?ats.html
 #
