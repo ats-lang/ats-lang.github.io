@@ -1,7 +1,7 @@
+######
 #
-# For updating INT2PROGINATS
+# For updating ATS2FUNCRASH
 #
-
 ######
 
 CPF=cp -f

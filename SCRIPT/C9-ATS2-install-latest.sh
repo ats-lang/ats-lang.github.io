@@ -173,6 +173,11 @@ sudo apt-get install -y libjson-c-dev
 (cd ATS2/contrib/CATS-atscc2php && time make all)
 (cd ATS2/contrib/CATS-atscc2php && mv -f atscc2php ${PATSHOME}/bin)
 #
+# For building atscc2r34
+#
+(cd ATS2/contrib/CATS-atscc2r34 && time make all)
+(cd ATS2/contrib/CATS-atscc2r34 && mv -f atscc2r34 ${PATSHOME}/bin)
+#
 # For building atscc2scm
 #
 (cd ATS2/contrib/CATS-atscc2scm && time make all)
