@@ -1,0 +1,260 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Compiling ATS code</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Crash into FP through ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Introducing ATS"
+HREF="c32.html"><LINK
+REL="PREVIOUS"
+TITLE="Installing ATS"
+HREF="x44.html"><LINK
+REL="NEXT"
+TITLE="Accessing ATS libraries"
+HREF="x94.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Crash into FP through ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x44.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Introducing ATS</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x94.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="lecture01:compiling"
+>Compiling ATS code</A
+></H1
+><P
+>&#13;ATS code is first compiled into code written in a very restricted
+subset of C. The generated C code from ATS source can then be compiled
+into object code or transpiled into code written in a variety of
+programming languages including Javascript, PHP, Perl, Python, Erlang,
+Scheme, Clojure, etc.
+
+</P
+><P
+>&#13;The command <B
+CLASS="command"
+>patsopt</B
+> is for compiling ATS code into C code,
+which can then be compiled into object code by a standard C compiler
+such as <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>gcc</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>clang</I
+></SPAN
+>.  The command
+<B
+CLASS="command"
+>patscc</B
+> is a convenience wrapper around
+<B
+CLASS="command"
+>patsopt</B
+>, and it can be called, for instance, to compile
+ATS code into object code directly. For compiling a single-file ATS
+program into a standalone executable, the command <B
+CLASS="command"
+>myatscc</B
+>
+can be used instead.
+
+</P
+><P
+>&#13;As an example, let us assume that
+the following code (for printing out the string "Hello, world!" plus a newline)
+is stored in a file of the name <TT
+CLASS="filename"
+>hello.dats</TT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN85"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> _ <span class="keyword">=</span> print <span class="keyword">(</span><span class="dynstr">"Hello, world!\n"</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span> main0 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="comment">// a dummy for [main]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+One can produce an executable of the
+name <TT
+CLASS="filename"
+>hello_dats</TT
+> by simply executing the command-line below:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN88"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;<B
+CLASS="command"
+>myatscc</B
+> hello.dats
+</PRE
+><P
+></P
+></DIV
+>
+
+When the command <B
+CLASS="command"
+>./hello_dats</B
+> is executed, the expected message
+is printed onto the console. Please give it a try!
+
+</P
+><P
+>&#13;When a project consisting of multiple files written in ATS needs to be compiled,
+I often construct a Makefile and then rely on the <B
+CLASS="command"
+>make</B
+> utility to
+streamline the compilation process.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x44.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x94.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Installing ATS</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c32.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Accessing ATS libraries</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2FPCRASH-BOOK.js"></SCRIPT></BODY
+></HTML
+>

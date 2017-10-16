@@ -1,0 +1,414 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Recursive Functions (1)</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Crash into FP through ATS"
+HREF="book1.html"><LINK
+REL="PREVIOUS"
+TITLE="Accessing ATS libraries"
+HREF="x94.html"><LINK
+REL="NEXT"
+TITLE="Recursive Functions (2)"
+HREF="c157.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Crash into FP through ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x94.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c157.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="lecture02"
+></A
+>Chapter 2. Recursive Functions (1)</H1
+><P
+>&#13;Recursion, which literally means <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>running back</I
+></SPAN
+>, plays a
+pivotal role in problem-solving.  For instance, a problem-solving
+strategy based on divide-and-conquer divides a given problem (that
+cannot be solved immediately) into subproblems of a similar nature so
+that the same strategy can be applied to these subproblems
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>recursively</I
+></SPAN
+>; the obtained solutions to these subproblems
+are then combined in some manner to form a solution to the original
+problem.
+
+</P
+><P
+>&#13;As the first example, let us implement the factorial function
+that takes a natural number <FONT
+COLOR="RED"
+>n</FONT
+> and returns the product of
+the first <FONT
+COLOR="RED"
+>n</FONT
+> positive integers. In the following
+code, a function of the name <FONT
+COLOR="RED"
+>fact</FONT
+> is defined recursively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN118"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fact<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> n * fact<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The keyword <FONT
+COLOR="RED"
+>fun</FONT
+> initiates the definition of a function,
+and the function header following <FONT
+COLOR="RED"
+>fun</FONT
+> specifies that
+<FONT
+COLOR="RED"
+>fact</FONT
+> is a function taking an integer as its argument
+and returning another integer as its result. For testing <FONT
+COLOR="RED"
+>fact</FONT
+>,
+let us include the following line:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN124"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynstr">"fact(10) = "</span><span class="keyword">,</span> fact<span class="keyword">(</span><span class="dynexp">10</span><span class="keyword">)</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>println!</FONT
+> is a function-like in ATS, which resembles
+a function but is not actually a function. In this case,
+<FONT
+COLOR="RED"
+>println!</FONT
+> can be thought of as a macro that calls a print
+function on each of its arguments and then prints out a newline at the
+end. Please do not forget the symbol <FONT
+COLOR="RED"
+>!</FONT
+> in the name
+<FONT
+COLOR="RED"
+>println!</FONT
+>.
+
+</P
+><P
+>&#13;Suppose we need to call <FONT
+COLOR="RED"
+>fact</FONT
+> on all of the
+natural numbers less than a given one (e.g., 100). We can first
+define a function <FONT
+COLOR="RED"
+>testfact</FONT
+> as follows and then call
+<FONT
+COLOR="RED"
+>testfact</FONT
+> on the given natural number:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN134"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+testfact
+<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span>
+<span class="keyword">(</span>
+  testfact<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">;</span>
+  <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynstr">"fact("</span><span class="keyword">,</span> n-<span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">") = "</span><span class="keyword">,</span> n-<span class="dynexp">1</span><span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [if] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The function header for <FONT
+COLOR="RED"
+>testfact</FONT
+> indicates that
+<FONT
+COLOR="RED"
+>testfact</FONT
+> takes an integer as its arguments and returns a
+void-value (of the type <FONT
+COLOR="RED"
+>void</FONT
+>). Often a function is said to
+return no value if its return is a void-value. Note that the semicolon
+symbol is for sequencing; a sequence of expressions separated by
+semicolons are evaluated from left to right and the value returned
+from evaluating the last expression is taken as the value from
+evaluating the sequence.  
+</P
+><P
+>&#13;In imperative programming, a function like <FONT
+COLOR="RED"
+>testfact</FONT
+> is
+normally implemented in terms of a for-loop (instead of being defined
+recursively). While there is indeed direct support for for-loops and
+while-loops in ATS, I will not attempt to make use of the support in
+this book. I hope to make a convincing argument that making extensive
+use of recursion is a key to increasing one's programming
+producivity.  In fact, I think that a functional programmer should
+develop a reflex for solving problems recursively.
+
+</P
+><P
+>&#13;As another example, the following function <FONT
+COLOR="RED"
+>fibo</FONT
+>
+is defined to compute Fibonacci numbers:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN143"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fibo<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">2</span> <span class="keyword">then</span> fibo<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span>+fibo<span class="keyword">(</span>n-<span class="dynexp">2</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The first and the second Fibonacci numbers are 1.  Given a positive
+integer <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n</I
+></SPAN
+> greater than 2, the <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>n</I
+></SPAN
+>th Fibonacci
+number equals the sum of the previous two Fibonacci numbers. This
+implementation of <FONT
+COLOR="RED"
+>fibo</FONT
+> is of expontial time complexity,
+and it is probably impractical to call it on any integer that is 50 or
+greater.
+
+</P
+><P
+>&#13;For a slightly more interesting example, please study the code in
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/02/CODE/multable.dats"
+TARGET="_top"
+>&#13;multable.dats</A
+>, which can be executed to generate the html file <A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/02/CODE/multable.html"
+TARGET="_top"
+>&#13;multable.html</A
+> for displaying a multiplication table.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/02/CODE"
+TARGET="_top"
+>on-line</A
+> the entirety
+the code used in this chapter. The mentioned URL link(s) can be found as follows:
+
+<P
+></P
+><UL
+><LI
+><P
+><A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/02/CODE/multable.html"
+TARGET="_top"
+>https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/02/CODE/multable.html</A
+>
+</P
+></LI
+></UL
+>
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x94.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c157.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Accessing ATS libraries</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Recursive Functions (2)</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2FPCRASH-BOOK.js"></SCRIPT></BODY
+></HTML
+>
