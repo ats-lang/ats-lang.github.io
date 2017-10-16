@@ -237,11 +237,15 @@ param_initize(): void = "mac#"
 implement
 param_initize() =
 {
+//
+(*
+val () =
+alert("param_initize")
+*)
+//
 val () = N_set(height_get())
 val () = theDelayTime_set(delay_time_get())
 }
-//
-val () = param_initize()
 //
 (* ****** ****** *)
 
@@ -269,6 +273,22 @@ theHanoiTowersCont0 = ref{contopt}(None0())
 val
 theHanoiTowersCont1 = ref{contopt}(None0())
 //
+(* ****** ****** *)
+
+(*
+//
+implement
+k_move
+(src, dst, k0) =
+let val () = move(src, dst) in k0() end
+//
+implement
+k_move
+(src, dst, k0) =
+let val () = move(src, dst) in save_cont(k0) end
+//
+*)
+
 (* ****** ****** *)
 
 implement
@@ -505,6 +525,9 @@ val () =
 button_disable(theButton_start)
 val () =
 button_disable(theButton_resume)
+//
+val () =
+param_initize()
 //
 val () =
 thePoles_init()
