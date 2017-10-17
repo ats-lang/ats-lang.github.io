@@ -1655,12 +1655,26 @@ lazy_vt(a:vt@ype) = lazy_vt0ype_vtype(a)
 // HX-2016-02-21:
 // these are renamed/relocated elsewhere
 //
+// HX-2017-10-03:
+// Is this even needed? Parsing works but
+// $literal(...) does not seem to be in use
+// Please see $PATSHOME/utils/atexting/TEST
+//
+(*
 abst0ype
 literal_int(intlit) = $extype"atsliteral_int"
+*)
+//
+(*
 abst0ype
 literal_float(float) = $extype"atsliteral_float"
-abst1ype
+*)
+//
+(*
+abst0ype
 literal_string(string) = $extype"atsliteral_string"
+*)
+//
 *)
 //
 (* ****** ****** *)
@@ -2570,6 +2584,12 @@ fprint_vtype(a: vt0p) = (FILEref, !a) -> void
 //
 (* ****** ****** *)
 
+(*
+fun print_void(x: void): void = "mac#%"
+*)
+
+(* ****** ****** *)
+
 fun print_newline((*void*)): void = "mac#%"
 fun prerr_newline((*void*)): void = "mac#%"
 fun fprint_newline(out: FILEref): void = "mac#%"
@@ -3013,7 +3033,7 @@ cmpfn(x0) = lam(x) =<cloref1> compare(,(x0), x)
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/integer.atxt
-** Time of generation: Wed May  3 17:36:07 2017
+** Time of generation: Fri Oct 13 04:36:28 2017
 *)
 
 (* ****** ****** *)
@@ -3036,9 +3056,10 @@ stadef uintknd = uint_kind
 //
 (* ****** ****** *)
 //
-fun{
-k1,k2:tk
-} g0int2int(x: g0int(k1)):<> g0int(k2)
+fun
+{k1
+,k2:tk}
+g0int2int(x: g0int(k1)):<> g0int(k2)
 //
 fun
 g0int2int_int_int(i0: int):<> int = "mac#%"
@@ -3048,7 +3069,8 @@ g0int2int_int_int(i0: int):<> int = "mac#%"
 // HX-2015-09-20:
 // These are implemented in prelude/string.cats:
 //
-fun{tk:tk}
+fun
+{tk:tk}
 g0int2string(g0int(tk)):<!wrt> Strptr1
 //
 fun
@@ -3142,6 +3164,18 @@ fun
 g0int_mod : g0int_aop_type(tk)
 overload % with g0int_mod of 0
 overload mod with g0int_mod of 0
+
+(* ****** ****** *)
+
+fun{}
+add_int1_size0{i:nat}(int(i), size_t):<> size_t
+fun{}
+add_size0_int1{j:nat}(size_t, int(j)):<> size_t
+
+(* ****** ****** *)
+
+overload + with add_int1_size0 of 11
+overload + with add_size0_int1 of 11
 
 (* ****** ****** *)
 
@@ -4734,7 +4768,7 @@ listize_g0uint_rep
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/pointer.atxt
-** Time of generation: Wed May  3 17:36:07 2017
+** Time of generation: Fri Aug 18 03:29:48 2017
 *)
 
 (* ****** ****** *)
@@ -5366,7 +5400,7 @@ overload isneqz with cptr_isnot_null of 10
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/memory.atxt
-** Time of generation: Wed May  3 17:36:10 2017
+** Time of generation: Fri Aug 18 03:29:51 2017
 *)
 
 (* ****** ****** *)
@@ -5502,7 +5536,7 @@ fun{
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/bool.atxt
-** Time of generation: Wed May  3 17:36:08 2017
+** Time of generation: Fri Aug 18 03:29:49 2017
 *)
 
 (* ****** ****** *)
@@ -5802,7 +5836,7 @@ overload compare with compare_bool1_bool1 of 20
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/char.atxt
-** Time of generation: Wed May  3 18:42:21 2017
+** Time of generation: Fri Aug 18 03:29:49 2017
 *)
 
 (* ****** ****** *)
@@ -6373,7 +6407,7 @@ overload i2byte with uint2byte0 of 0
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/float.atxt
-** Time of generation: Wed May  3 17:36:09 2017
+** Time of generation: Thu Sep 14 11:48:57 2017
 *)
 
 (* ****** ****** *)
@@ -6761,9 +6795,6 @@ fun
 add_float_int
   (float, int):<> float = "mac#%"
 //
-overload + with add_int_float of 0
-overload + with add_float_int of 0
-//
 fun
 add_int_double
   (int, double):<> double = "mac#%"
@@ -6771,6 +6802,8 @@ fun
 add_double_int
   (double, int):<> double = "mac#%"
 //
+overload + with add_int_float of 0
+overload + with add_float_int of 0
 overload + with add_int_double of 0
 overload + with add_double_int of 0
 //
@@ -6783,9 +6816,6 @@ fun
 sub_float_int
   (float, int):<> float = "mac#%"
 //
-overload - with sub_int_float of 0
-overload - with sub_float_int of 0
-//
 fun
 sub_int_double
   (int, double):<> double = "mac#%"
@@ -6793,6 +6823,8 @@ fun
 sub_double_int
   (double, int):<> double = "mac#%"
 //
+overload - with sub_int_float of 0
+overload - with sub_float_int of 0
 overload - with sub_int_double of 0
 overload - with sub_double_int of 0
 //
@@ -6805,9 +6837,6 @@ fun
 mul_float_int
   (float, int):<> float = "mac#%"
 //
-overload * with mul_int_float of 0
-overload * with mul_float_int of 0
-//
 fun
 mul_int_double
   (int, double):<> double = "mac#%"
@@ -6815,6 +6844,8 @@ fun
 mul_double_int
   (double, int):<> double = "mac#%"
 //
+overload * with mul_int_float of 0
+overload * with mul_float_int of 0
 overload * with mul_int_double of 0
 overload * with mul_double_int of 0
 //
@@ -6826,8 +6857,6 @@ div_int_float
 fun
 div_float_int
   (float, int):<> float = "mac#%"
-overload / with div_int_float of 0
-overload / with div_float_int of 0
 //
 fun
 div_int_double
@@ -6835,8 +6864,130 @@ div_int_double
 fun
 div_double_int
   (double, int):<> double = "mac#%"
+//
+overload / with div_int_float of 0
+overload / with div_float_int of 0
 overload / with div_int_double of 0
 overload / with div_double_int of 0
+//
+(* ****** ****** *)
+//
+fun
+lt_int_float
+  (int, float):<> bool = "mac#%"
+fun
+lt_float_int
+  (float, int):<> bool = "mac#%"
+fun
+lt_int_double
+  (int, double):<> bool = "mac#%"
+fun
+lt_double_int
+  (double, int):<> bool = "mac#%"
+//
+overload < with lt_int_float of 0
+overload < with lt_float_int of 0
+overload < with lt_int_double of 0
+overload < with lt_double_int of 0
+//
+fun
+lte_int_float
+  (int, float):<> bool = "mac#%"
+fun
+lte_float_int
+  (float, int):<> bool = "mac#%"
+fun
+lte_int_double
+  (int, double):<> bool = "mac#%"
+fun
+lte_double_int
+  (double, int):<> bool = "mac#%"
+//
+overload <= with lte_int_float of 0
+overload <= with lte_float_int of 0
+overload <= with lte_int_double of 0
+overload <= with lte_double_int of 0
+//
+(* ****** ****** *)
+//
+fun
+gt_int_float
+  (int, float):<> bool = "mac#%"
+fun
+gt_float_int
+  (float, int):<> bool = "mac#%"
+fun
+gt_int_double
+  (int, double):<> bool = "mac#%"
+fun
+gt_double_int
+  (double, int):<> bool = "mac#%"
+//
+overload > with gt_int_float of 0
+overload > with gt_float_int of 0
+overload > with gt_int_double of 0
+overload > with gt_double_int of 0
+//
+fun
+gte_int_float
+  (int, float):<> bool = "mac#%"
+fun
+gte_float_int
+  (float, int):<> bool = "mac#%"
+fun
+gte_int_double
+  (int, double):<> bool = "mac#%"
+fun
+gte_double_int
+  (double, int):<> bool = "mac#%"
+//
+overload >= with gte_int_float of 0
+overload >= with gte_float_int of 0
+overload >= with gte_int_double of 0
+overload >= with gte_double_int of 0
+//
+(* ****** ****** *)
+//
+fun
+eq_int_float
+  (int, float):<> bool = "mac#%"
+fun
+eq_float_int
+  (float, int):<> bool = "mac#%"
+fun
+eq_int_double
+  (int, double):<> bool = "mac#%"
+fun
+eq_double_int
+  (double, int):<> bool = "mac#%"
+//
+overload = with eq_int_float of 0
+overload = with eq_float_int of 0
+overload = with eq_int_double of 0
+overload = with eq_double_int of 0
+//
+fun
+neq_int_float
+  (int, float):<> bool = "mac#%"
+fun
+neq_float_int
+  (float, int):<> bool = "mac#%"
+fun
+neq_int_double
+  (int, double):<> bool = "mac#%"
+fun
+neq_double_int
+  (double, int):<> bool = "mac#%"
+//
+overload != with neq_int_float of 0
+overload <> with neq_int_float of 0
+overload != with neq_float_int of 0
+overload <> with neq_float_int of 0
+//
+overload != with neq_int_double of 0
+overload <> with neq_int_double of 0
+overload != with neq_double_int of 0
+overload <> with neq_double_int of 0
 //
 (* ****** ****** *)
 //
@@ -6888,7 +7039,7 @@ macdef g0f2f (x) = g0float2float (,(x))
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/string.atxt
-** Time of generation: Wed May  3 17:36:09 2017
+** Time of generation: Fri Aug 18 03:29:50 2017
 *)
 
 (* ****** ****** *)
@@ -7236,13 +7387,13 @@ strcspn{n:int} // complement spanning
 
 (* ****** ****** *)
 
-fun{
-} string_index{n:int}
+fun{}
+string_index{n:int}
   (str: string(n), c0: charNZ):<> ssizeBtw(~1, n)
 // end of [string_index]
 
-fun{
-} string_rindex{n:int}
+fun{}
+string_rindex{n:int}
   (str: string(n), c0: charNZ):<> ssizeBtw(~1, n)
 // end of [string_rindex]
 
@@ -7574,7 +7725,7 @@ overload fprint with fprint_stropt of 0
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/strptr.atxt
-** Time of generation: Wed May  3 17:36:09 2017
+** Time of generation: Fri Aug 18 03:29:50 2017
 *)
 
 (* ****** ****** *)
@@ -7650,22 +7801,22 @@ lemma_strbuf_v_param
 
 castfn
 strptr2ptr
-  {l:addr} (x: !strptr l):<> ptr (l)
+  {l:addr}(x: !strptr l):<> ptr (l)
 castfn
 strnptr2ptr
-  {l:addr}{n:int} (x: !strnptr(l, n)):<> ptr(l)
+  {l:addr}{n:int}(x: !strnptr(l, n)):<> ptr(l)
 // end of [strnptr2ptr]
 
 (* ****** ****** *)
 //
 castfn
 strnptr2strptr
-  {l:addr}{n:int} (x: strnptr(l, n)):<> strptr(l)
+  {l:addr}{n:int}(x: strnptr(l, n)):<> strptr(l)
 // end of [strnptr2strptr]
 
 castfn
 strptr2strnptr
-  {l:addr} (x: strptr(l)):<> [n:int] strnptr(l, n)
+  {l:addr}(x: strptr(l)):<> [n:int] strnptr(l, n)
 // end of [strptr2strnptr]
 //
 (* ****** ****** *)
@@ -8017,7 +8168,7 @@ overload ptrcast with strnptr2ptr
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/integer_ptr.atxt
-** Time of generation: Wed May  3 17:36:10 2017
+** Time of generation: Fri Aug 18 03:29:50 2017
 *)
 
 (* ****** ****** *)
@@ -8232,7 +8383,7 @@ macdef u2ptr (x) = g1uint2uint_uint_uintptr (,(x))
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/integer_fixed.atxt
-** Time of generation: Wed May  3 17:36:10 2017
+** Time of generation: Fri Aug 18 03:29:51 2017
 *)
 
 (* ****** ****** *)
@@ -8792,7 +8943,7 @@ fun g1uint_isneqz_uint64 : g1uint_isneqz_type (uint64knd) = "mac#%"
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/unsafe.atxt
-** Time of generation: Wed May  3 17:36:11 2017
+** Time of generation: Fri Aug 18 03:29:51 2017
 *)
 
 (* ****** ****** *)
@@ -9106,7 +9257,7 @@ overload .exch with cptr_exch
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/checkast.atxt
-** Time of generation: Wed May  3 17:36:11 2017
+** Time of generation: Fri Aug 18 03:29:52 2017
 *)
 
 (* ****** ****** *)
@@ -9226,7 +9377,7 @@ ckastloc_Strptr1(x) = checkast_Strptr1(,(x), $mylocation)
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/tuple.atxt
-** Time of generation: Wed May  3 17:36:10 2017
+** Time of generation: Fri Aug 18 03:29:51 2017
 *)
 
 (* ****** ****** *)
@@ -9439,7 +9590,7 @@ a0,a1,a2,a3:vt0p
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/reference.atxt
-** Time of generation: Wed May  3 17:36:10 2017
+** Time of generation: Fri Aug 18 03:29:51 2017
 *)
 
 (* ****** ****** *)
@@ -9569,7 +9720,7 @@ overload [] with ref_set_elt // ref[] := (val)
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/filebas.atxt
-** Time of generation: Wed May  3 17:36:11 2017
+** Time of generation: Fri Aug 18 03:29:52 2017
 *)
 
 (* ****** ****** *)
@@ -9872,6 +10023,18 @@ fun{}
 streamize_fileref_line(inp: FILEref): stream_vt(Strptr1)
 //
 (* ****** ****** *)
+//
+absvtype FILEptr1_vtype = ptr
+vtypedef FILEptr1 = FILEptr1_vtype
+//
+(*
+fun{}
+streamize_fileptr_char(inp: FILEptr1): stream_vt(char)
+*)
+fun{}
+streamize_fileptr_line(inp: FILEptr1): stream_vt(Strptr1)
+//
+(* ****** ****** *)
 
 (* end of [filebas.sats] *)
 (***********************************************************************)
@@ -9911,7 +10074,7 @@ streamize_fileref_line(inp: FILEref): stream_vt(Strptr1)
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/intrange.atxt
-** Time of generation: Wed May  3 17:36:11 2017
+** Time of generation: Fri Aug 18 03:29:52 2017
 *)
 
 (* ****** ****** *)
@@ -10022,15 +10185,15 @@ streamize_intrange_lr(m: int, n: int): stream_vt(int)
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: gmhwxiATgmailDOTcom *)
 (* Start time: February, 2012 *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
 
 (* ****** ****** *)
 
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/list.atxt
-** Time of generation: Wed May  3 18:41:03 2017
+** Time of generation: Fri Aug 18 03:29:53 2017
 *)
 
 (* ****** ****** *)
@@ -10052,9 +10215,9 @@ list_t0ype_int_type
 //
 // t@ype+: covariant
 //
-  | list_nil (a, 0) of ((*void*))
+  | list_nil(a, 0) of ((*void*))
   | {n:int | n >= 0}
-    list_cons (a, n+1) of (a, list_t0ype_int_type(a, n))
+    list_cons(a, n+1) of (a, list_t0ype_int_type(a, n))
 // end of [list_t0ype_int_type]
 //
 stadef
@@ -10091,8 +10254,12 @@ typedef listBtwe
 exception
 ListSubscriptExn of ()
 (*
-fun ListSubscriptExn ():<> exn = "mac#%ListSubscriptExn_make"
-fun isListSubscriptExn (x: !exn):<> bool = "mac#%isListSubscriptExn"
+//
+fun
+ListSubscriptExn():<> exn = "mac#%ListSubscriptExn_make"
+fun
+isListSubscriptExn(x: !exn):<> bool = "mac#%isListSubscriptExn"
+//
 macdef
 ifListSubscriptExn
   {tres}(exn, body) =
@@ -10140,7 +10307,7 @@ list_of_list_vt
 #define list_sing(x)
   list_cons(x, list_nil())
 #define list_pair(x1, x2)
-  list_cons(x1, list_cons (x2, list_nil()))
+  list_cons(x1, list_cons(x2, list_nil()))
 
 (* ****** ****** *)
 
@@ -10342,6 +10509,20 @@ list_length
   {n:int} (xs: list(INV(x), n)):<> int(n)
 // end of [list_length]
 
+(* ****** ****** *)
+//
+fun{x:t0p}
+list_length_gte
+  {n1,n2:int}
+  (xs: list(INV(x), n1), n2: int(n2)): bool(n1 >= n2)
+fun{x:t0p}
+list_length_compare
+  {n1,n2:int}
+  (xs: list(INV(x), n1), n2: int(n2)): int(sgn(n1-n2))
+//
+overload >= with list_length_gte
+overload compare with list_length_compare
+//
 (* ****** ****** *)
 
 fun
@@ -10612,7 +10793,7 @@ x:t0p}{y:vt0p
   (xs: list(INV(x), n)): list_vt(y, n)
 // end of [list_map]
 //
-fun{x:t0p}{y:vt0p} list_map$fopr (x: x): (y)
+fun{x:t0p}{y:vt0p} list_map$fopr(x: x): (y)
 //
 (* ****** ****** *)
 
@@ -10646,31 +10827,36 @@ x:t0p}{y:vt0p
 
 (* ****** ****** *)
 //
-fun{
-x:t0p}{y:vt0p
-} list_imap{n:int}
+fun
+{x:t0p}
+{y:vt0p}
+list_imap{n:int}
   (xs: list(INV(x), n)): list_vt(y, n)
 //
-fun{
-x:t0p}{y:vt0p
-} list_imap$fopr (i: intGte(0), x: x): (y)
+fun
+{x:t0p}
+{y:vt0p}
+list_imap$fopr(i: intGte(0), x: x): (y)
 //
 (* ****** ****** *)
-
-fun{
-x:t0p}{y:vt0p
-} list_mapopt{n:int}
+//
+fun
+{x:t0p}
+{y:vt0p}
+list_mapopt{n:int}
   (xs: list(INV(x), n)): listLte_vt(y, n)
 //
-fun{
-x:t0p}{y:vt0p
-} list_mapopt$fopr (x: x): Option_vt(y)
+fun
+{x:t0p}
+{y:vt0p}
+list_mapopt$fopr(x: x): Option_vt(y)
 //
 (*
 fun{
 x:t0p}{y:t0p
 } list_mapopt_funenv
-  {v:view}{vt:viewtype}{n:int}{fe:eff} (
+  {v:view}{vt:viewtype}{n:int}{fe:eff}
+(
   pfv: !v |
   xs: list(INV(x), n)
 , f: (!v | x, !vt) -<fun,fe> Option_vt(y), env: !vt
@@ -11109,17 +11295,17 @@ overload fprint with fprint_list_sep
 
 (* ****** ****** *)
 
-(*
-** Source:
-** $PATSHOME/prelude/SATS/CODEGEN/list_vt.atxt
-** Time of generation: Wed May  3 17:36:12 2017
-*)
+(* Author: Hongwei Xi *)
+(* Start time: February, 2012 *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
 
 (* ****** ****** *)
 
-(* Author: Hongwei Xi *)
-(* Authoremail: hwxi AT cs DOT bu DOT edu *)
-(* Start time: February, 2012 *)
+(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/list_vt.atxt
+** Time of generation: Fri Aug 18 03:29:53 2017
+*)
 
 (* ****** ****** *)
 
@@ -11321,7 +11507,7 @@ list_vt_copylin_fun{n:int}{fe:eff}
 (* ****** ****** *)
 
 fun{x:t0p}
-list_vt_free (xs: List_vt(INV(x))):<!wrt> void
+list_vt_free(xs: List_vt(INV(x))):<!wrt> void
 
 (* ****** ****** *)
 //
@@ -11410,17 +11596,6 @@ list_vt_concat
 // end of [list_vt_concat]
 
 (* ****** ****** *)
-
-fun{x:vt0p}
-list_vt_separate{n:int}
-(
-  xs: &list_vt(INV(x), n) >> list_vt(x, n1)
-) : #[n1:nat|n1 <= n] list_vt(x, n-n1)
-
-fun{x:vt0p}
-list_vt_separate$pred (x: &RD(x)): bool
-
-(* ****** ****** *)
 //
 fun{x:t0p}
 list_vt_filter{n:int}
@@ -11444,10 +11619,35 @@ list_vt_filterlin$clear (x: &x >> x?):<!wrt> void
 (* ****** ****** *)
 
 fun{x:vt0p}
-list_vt_app (xs: !List_vt(INV(x))): void
-fun{x:vt0p}
-list_vt_app$fwork (x: &x >> _): void
+list_vt_separate{n:int}
+(
+xs: &list_vt(INV(x), n) >> list_vt(x, n1), n1: &int? >> int(n1)
+) : #[n1:nat|n1 <= n] list_vt(x, n-n1)
 
+fun{x:vt0p}
+list_vt_separate$pred(x: &RD(x)): bool
+
+(* ****** ****** *)
+
+fun{x:vt0p}
+list_vt_take_until{n:int}
+(
+xs: &list_vt(INV(x), n) >> list_vt(x, n-n1), n1: &int? >> int(n1)
+) : #[n1:nat|n1 <= n] list_vt(x, n1)
+
+fun{x:vt0p}
+list_vt_take_until$pred(x: &RD(x)): bool
+
+(* ****** ****** *)
+//
+fun
+{x:vt0p}
+list_vt_app
+  (xs: !List_vt(INV(x))): void
+fun
+{x:vt0p}
+list_vt_app$fwork (x: &x >> _): void
+//
 (* ****** ****** *)
 //
 fun{x:vt0p}
@@ -11680,7 +11880,7 @@ overload fprint with fprint_list_vt_sep
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/option.atxt
-** Time of generation: Wed May  3 17:36:13 2017
+** Time of generation: Fri Aug 18 03:29:53 2017
 *)
 
 (* ****** ****** *)
@@ -11869,7 +12069,7 @@ overload fprint with fprint_option of 0
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/option_vt.atxt
-** Time of generation: Wed May  3 17:36:13 2017
+** Time of generation: Fri Aug 18 03:29:53 2017
 *)
 
 (* ****** ****** *)
@@ -11992,10 +12192,16 @@ overload isneqz with option_vt_is_some
 
 (* ****** ****** *)
 
+(* Author: Hongwei Xi *)
+(* Start time: February, 2012 *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+
+(* ****** ****** *)
+
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/stream.atxt
-** Time of generation: Wed May  3 17:36:14 2017
+** Time of generation: Fri Aug 25 22:54:48 2017
 *)
 
 (* ****** ****** *)
@@ -12158,17 +12364,17 @@ a:t0p}{b:t0p
 fun{
 a:t0p}{b:t0p
 } stream_map_fun
-  (xs: stream(INV(a)), f: (a) -<fun> b):<!laz> stream(b)
+  (xs: stream(INV(a)), fopr: (a) -<fun> b):<!laz> stream(b)
 fun{
 a:t0p}{b:t0p
 } stream_map_cloref
-  (xs: stream(INV(a)), f: (a) -<cloref> b):<!laz> stream(b)
+  (xs: stream(INV(a)), fopr: (a) -<cloref> b):<!laz> stream(b)
 //
 (* ****** ****** *)
 //
 fun{
 a:t0p}{b:t0p
-} stream_imap{n:int}
+} stream_imap
   (xs: stream(INV(a))):<!laz> stream(b)
 //
 fun{
@@ -12179,13 +12385,13 @@ fun{
 a:t0p}{b:t0p
 } stream_imap_fun
 (
-  xs: stream(INV(a)), f: (intGte(0), a) -<fun> b
+  xs: stream(INV(a)), fopr: (intGte(0), a) -<fun> b
 ) :<!laz> stream(b) // end-of-fun
 fun{
 a:t0p}{b:t0p
 } stream_imap_cloref
 (
-  xs: stream(INV(a)), f: (intGte(0), a) -<cloref> b
+  xs: stream(INV(a)), fopr: (intGte(0), a) -<cloref> b
 ) :<!laz> stream(b) // end-of-fun
 //
 (* ****** ****** *)
@@ -12206,14 +12412,14 @@ a1,a2:t0p}{b:t0p
 } stream_map2_fun
 (
   xs1: stream(INV(a1))
-, xs2: stream(INV(a2)), f: (a1, a2) -<fun> b
+, xs2: stream(INV(a2)), fopr: (a1, a2) -<fun> b
 ) :<!laz> stream(b) // end-of-fun
 fun{
 a1,a2:t0p}{b:t0p
 } stream_map2_cloref
 (
   xs1: stream(INV(a1))
-, xs2: stream(INV(a2)), f: (a1, a2) -<cloref> b
+, xs2: stream(INV(a2)), fopr: (a1, a2) -<cloref> b
 ) :<!laz> stream(b) // end-of-fun
 //
 (* ****** ****** *)
@@ -12243,44 +12449,85 @@ res:t0p}{x:t0p
 //
 (* ****** ****** *)
 //
+// HX: duplicates are kept
+//
 fun
 {a:t0p}
 stream_merge
-  (stream(INV(a)), stream(a)) :<!laz> stream(a)
+(
+  xs1: stream(INV(a)), xs2: stream(a)
+) :<!laz> stream(a) // end-of-function
 //
-fun{a:t0p} stream_merge$cmp (x1: a, x2: a):<> int
+fun{a:t0p}
+stream_merge$cmp (x1: a, x2: a):<> int
 //
 fun
 {a:t0p}
 stream_merge_fun
 (
-  xs1: stream(INV(a)), xs2: stream(a), (a, a) -<fun> int
+  xs1: stream(INV(a))
+, xs2: stream(a), cmp: (a, a) -<fun> int
 ) :<!laz> stream(a) // end of [stream_merge_fun]
 fun
 {a:t0p}
 stream_merge_cloref
 (
-  xs1: stream(INV(a)), xs2: stream(a), (a, a) -<cloref> int
+  xs1: stream(INV(a))
+, xs2: stream(a), cmp: (a, a) -<cloref> int
 ) :<!laz> stream(a) // end of [stream_merge_cloref]
 
 (* ****** ****** *)
 //
+// HX: duplicates are dropped
+//
 fun{a:t0p}
 stream_mergeq
-  (stream(INV(a)), stream(a)):<!laz> stream(a)
+(
+  xs1: stream(INV(a)), xs2: stream(a)
+) :<!laz> stream(a)
 //
-fun{a:t0p} stream_mergeq$cmp (x1: a, x2: a):<> int
+fun{a:t0p}
+stream_mergeq$cmp(x1: a, x2: a):<> int
 //
 fun{a:t0p}
 stream_mergeq_fun
 (
-  xs1: stream(INV(a)), xs2: stream(a), (a, a) -<fun> int
-) :<!laz> stream(a) // end of [stream_mergeq_fun]
+  xs1: stream(INV(a))
+, xs2: stream(a), cmp: (a, a) -<fun> int
+) :<!laz> stream(a) // end-of-function
 fun{a:t0p}
 stream_mergeq_cloref
 (
-  xs1: stream(INV(a)), xs2: stream(a), (a, a) -<cloref> int
-) :<!laz> stream(a) // end of [stream_mergeq_cloref]
+  xs1: stream(INV(a))
+, xs2: stream(a), cmp: (a, a) -<cloref> int
+) :<!laz> stream(a) // end-of-function
+//
+(* ****** ****** *)
+//
+// HX-2017-06-13:
+// The streams are assumed to be ordered!!!
+//
+fun{a:t0p}
+stream_union$cmp(x1: a, x2: a):<> int
+fun{a:t0p}
+stream_inter$cmp(x1: a, x2: a):<> int
+fun{a:t0p}
+stream_differ$cmp(x1: a, x2: a):<> int
+fun{a:t0p}
+stream_symdiff$cmp(x1: a, x2: a):<> int
+//
+fun{a:t0p}
+stream_union
+  (stream(INV(a)), stream(a)):<!laz> stream(a)
+fun{a:t0p}
+stream_inter
+  (stream(INV(a)), stream(a)):<!laz> stream(a)
+fun{a:t0p}
+stream_differ
+  (stream(INV(a)), stream(a)):<!laz> stream(a)
+fun{a:t0p}
+stream_symdiff
+  (stream(INV(a)), stream(a)):<!laz> stream(a)
 //
 (* ****** ****** *)
 //
@@ -12332,6 +12579,17 @@ stream_foreach_fun
 fun{a:t0p}
 stream_foreach_cloref
   (xs: stream(a), fwork: (a) -<cloref1> void): void
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+stream_iforeach_fun
+( xs: stream(a)
+, fwork: (intGte(0), a) -<fun1> void): void
+fun{a:t0p}
+stream_iforeach_cloref
+( xs: stream(a)
+, fwork: (intGte(0), a) -<cloref1> void): void
 //
 (* ****** ****** *)
 //
@@ -12419,10 +12677,16 @@ overload .tail with stream_tail_exn
 
 (* ****** ****** *)
 
+(* Author: Hongwei Xi *)
+(* Start time: February, 2012 *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+
+(* ****** ****** *)
+
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/stream_vt.atxt
-** Time of generation: Wed May  3 17:36:15 2017
+** Time of generation: Fri Aug 18 03:29:55 2017
 *)
 
 (* ****** ****** *)
@@ -12560,6 +12824,15 @@ stream_vt_uncons_opt
 (* ****** ****** *)
 //
 fun{a:t0p}
+stream_vt_last_exn
+  (stream_vt(INV(a))):<!exnwrt> (a)
+fun{a:t0p}
+stream_vt_last_opt
+  (stream_vt(INV(a))):<!exnwrt> Option_vt(a)
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
 stream_vt_nth_exn
   (xs: stream_vt(INV(a)), n: intGte(0)):<!exnwrt> (a)
 fun{a:t0p}
@@ -12618,51 +12891,102 @@ a:vt0p}{b:vt0p
   (xs: stream_vt(INV(a))): stream_vt(b)
 fun{
 a:vt0p}{b:vt0p
-} stream_vt_map$fopr (x: &a >> a?!): b // lin-cleared
+} stream_vt_map$fopr(x: &a >> a?!):<1> (b)
 //
 fun{
 a:vt0p}{b:vt0p
 } stream_vt_map_fun
 (
-  xs: stream_vt(INV(a)), fopr: (&a >> a?!) -<fun1> b
+xs: stream_vt(INV(a)), fopr: (&a >> a?!) -<fun1> b
 ) : stream_vt(b) // end-of-function
 fun{
 a:vt0p}{b:vt0p
 } stream_vt_map_cloptr
 (
-  xs: stream_vt(INV(a)), fopr: (&a >> a?!) -<cloptr1> b
+xs: stream_vt(INV(a)), fopr: (&a >> a?!) -<cloptr1> b
 ) : stream_vt(b) // end-of-function
 //
 (* ****** ****** *)
 //
 fun{
-a1,a2:t0p}{b:vt0p
-} stream_vt_map2$fopr
-  (x1: &a1 >> _, x2: &a2 >> _): b
+a:vt0p}{b:vt0p
+} stream_vt_imap
+  (xs: stream_vt(INV(a))): stream_vt(b)
+//
 fun{
-a1,a2:t0p}{b:vt0p
-} stream_vt_map2
+a:vt0p}{b:vt0p
+} stream_vt_imap$fopr(i: intGte(0), x: &a >> a?!):<1> (b)
+//
+fun{
+a:vt0p}{b:vt0p
+} stream_vt_imap_fun
+(
+xs: stream_vt(INV(a)), fopr: (intGte(0), &a >> a?!) -<fun1> b
+) : stream_vt(b) // end-of-function
+fun{
+a:vt0p}{b:vt0p
+} stream_vt_imap_cloptr
+(
+xs: stream_vt(INV(a)), fopr: (intGte(0), &a >> a?!) -<cloptr1> b
+) : stream_vt(b) // end-of-function
+//
+(* ****** ****** *)
+//
+fun
+{a:vt0p}
+{b:vt0p}
+stream_vt_mapopt
+(xs: stream_vt(INV(a))): stream_vt(b)
+fun
+{a:vt0p}
+{b:vt0p}
+stream_vt_mapopt$fopr(x: &a >> a?!): Option_vt(b)
+//
+fun{
+a:vt0p}{b:vt0p
+} stream_vt_mapopt_fun
+(
+xs: stream_vt(INV(a)), fopr: (&a >> a?!) -<fun1> Option_vt(b)
+) : stream_vt(b) // end-of-function
+fun{
+a:vt0p}{b:vt0p
+} stream_vt_mapopt_cloptr
+(
+xs: stream_vt(INV(a)), fopr: (&a >> a?!) -<cloptr1> Option_vt(b)
+) : stream_vt(b) // end-of-function
+//
+(* ****** ****** *)
+//
+fun
+{a1
+,a2:t0p}
+{b0:vt0p}
+stream_vt_map2
 (
   xs1: stream_vt(INV(a1))
 , xs2: stream_vt(INV(a2))
-) : stream_vt(b) // end of [stream_vt_map2]
+) : stream_vt(b0) // end of [stream_vt_map2]
+//
+fun
+{a1
+,a2:t0p}
+{b0:vt0p}
+stream_vt_map2$fopr(x1: &a1 >> _, x2: &a2 >> _):<1> b0
 //
 fun{
-a1,a2:t0p}{b:vt0p
+a1,a2:t0p}{b0:vt0p
 } stream_vt_map2_fun
 (
   xs1: stream_vt(INV(a1))
-, xs2: stream_vt(INV(a2))
-, fopr: (&a1 >> _, &a2 >> _) -<fun> b
-) : stream_vt(b) // end of [stream_vt_map2_fun]
+, xs2: stream_vt(INV(a2)), fopr: (&a1 >> _, &a2 >> _) -<fun1> b0
+) : stream_vt(b0) // end of [stream_vt_map2_fun]
 fun{
-a1,a2:t0p}{b:vt0p
+a1,a2:t0p}{b0:vt0p
 } stream_vt_map2_cloptr
 (
   xs1: stream_vt(INV(a1))
-, xs2: stream_vt(INV(a2))
-, fopr: (&a1 >> _, &a2 >> _) -<cloptr1> b
-) : stream_vt(b) // end of [stream_vt_map2_cloptr]
+, xs2: stream_vt(INV(a2)), fopr: (&a1 >> _, &a2 >> _) -<cloptr1> b0
+) : stream_vt(b0) // end of [stream_vt_map2_cloptr]
 //
 (* ****** ****** *)
 //
@@ -12874,7 +13198,7 @@ overload .tail with stream_vt_tail_exn
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/array.atxt
-** Time of generation: Wed May  3 17:36:13 2017
+** Time of generation: Fri Aug 18 03:29:54 2017
 *)
 
 (* ****** ****** *)
@@ -13618,7 +13942,7 @@ array_permute$randint{n:int | n > 0}(size_t(n)): sizeLt(n)
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/arrayptr.atxt
-** Time of generation: Wed May  3 17:36:13 2017
+** Time of generation: Fri Aug 18 03:29:54 2017
 *)
 
 (* ****** ****** *)
@@ -14148,7 +14472,7 @@ overload ptrcast with arrayptrout2ptr
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/arrayref.atxt
-** Time of generation: Wed May  3 17:36:14 2017
+** Time of generation: Tue Aug 29 08:31:46 2017
 *)
 
 (* ****** ****** *)
@@ -14609,17 +14933,17 @@ arrszref_get_refsize{a:vt0p}
 (* ****** ****** *)
 
 fun{a:t0p}
-arrszref_make_elt (asz: size_t, x: a):<!wrt> arrszref(a)
+arrszref_make_elt(asz: size_t, x: a):<!wrt> arrszref(a)
 // end of [arrszref_make_elt]
 
 (* ****** ****** *)
 
 fun{a:t0p}
-arrszref_make_list (xs: List (INV(a))):<!wrt> arrszref(a)
+arrszref_make_list(xs: List(INV(a))):<!wrt> arrszref(a)
 // end of [arrszref_make_list]
 
 fun{a:t0p}
-arrszref_make_rlist (xs: List (INV(a))):<!wrt> arrszref(a)
+arrszref_make_rlist(xs: List(INV(a))):<!wrt> arrszref(a)
 // end of [arrszref_make_rlist]
 
 (* ****** ****** *)
@@ -14836,7 +15160,7 @@ overload ptrcast with arrayref2ptr
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/matrix.atxt
-** Time of generation: Wed May  3 17:36:14 2017
+** Time of generation: Fri Aug 18 03:29:54 2017
 *)
 
 (* ****** ****** *)
@@ -15306,7 +15630,7 @@ matrix_map2to
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/matrixptr.atxt
-** Time of generation: Wed May  3 17:36:14 2017
+** Time of generation: Fri Aug 18 03:29:55 2017
 *)
 
 (* ****** ****** *)
@@ -15649,7 +15973,7 @@ overload ptrcast with matrixptrout2ptr
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/matrixref.atxt
-** Time of generation: Wed May  3 17:36:14 2017
+** Time of generation: Thu Aug 31 20:28:28 2017
 *)
 
 (* ****** ****** *)
@@ -15827,11 +16151,12 @@ matrixref_copy
 
 (*
 fun{a:vt0p}
-matrix_tabulate$fopr (i: size_t, j: size_t): (a)
+matrix_tabulate$fopr(i: size_t, j: size_t): (a)
 *)
 fun{a:vt0p}
 matrixref_tabulate
-  {m,n:int} (nrow: size_t m, ncol: size_t n): matrixref(a, m, n)
+  {m,n:int}
+  (nrow: size_t m, ncol: size_t n): matrixref(a, m, n)
 //
 fun{a:vt0p}
 matrixref_tabulate_cloref
@@ -16094,7 +16419,7 @@ overload ptrcast with matrixref2ptr
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/gprint.atxt
-** Time of generation: Wed May  3 17:36:15 2017
+** Time of generation: Fri Aug 18 03:29:55 2017
 *)
 
 (* ****** ****** *)
@@ -16250,7 +16575,7 @@ overload gprint with gprint_arrayref
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/tostring.atxt
-** Time of generation: Wed May  3 17:36:15 2017
+** Time of generation: Fri Aug 18 03:29:56 2017
 *)
 
 (* ****** ****** *)
@@ -16384,7 +16709,7 @@ tostrptr_arrszref(arrszref(a)): Strptr1
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/basics.atxt
-** Time of generation: Wed May  3 17:36:21 2017
+** Time of generation: Fri Aug 18 03:30:01 2017
 *)
 
 (* ****** ****** *)
@@ -16707,7 +17032,7 @@ prerr_ref (x) = fprint_ref<a> (stderr_ref, x)
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/integer.atxt
-** Time of generation: Wed May  3 17:36:16 2017
+** Time of generation: Fri Aug 18 03:29:57 2017
 *)
 
 (* ****** ****** *)
@@ -16784,6 +17109,21 @@ g0int_min<intknd> = g0int_min_int
 //
 implement
 fprint_val<int> (out, x) = fprint_int (out, x)
+//
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+add_int1_size0(i, j) =
+let val i =
+  g1int2uint_int_size(i) in i + j
+end // end of [add_int1_size0]
+implement
+{}(*tmp*)
+add_size0_int1(i, j) =
+let val j =
+  g1int2uint_int_size(j) in i + j
+end // end of [add_size0_int1]
 //
 (* ****** ****** *)
 //
@@ -17425,7 +17765,7 @@ neq_g1uint_int
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/pointer.atxt
-** Time of generation: Wed May  3 17:36:16 2017
+** Time of generation: Fri Aug 18 03:29:57 2017
 *)
 
 (* ****** ****** *)
@@ -17712,7 +18052,7 @@ fprint_val<ptr>(out, p) = fprint_ptr(out, p)
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/memory.atxt
-** Time of generation: Wed May  3 17:36:19 2017
+** Time of generation: Fri Aug 18 03:30:00 2017
 *)
 
 (* ****** ****** *)
@@ -17783,7 +18123,7 @@ end // end of [memory$alloc]
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/bool.atxt
-** Time of generation: Wed May  3 17:36:17 2017
+** Time of generation: Fri Aug 18 03:29:58 2017
 *)
 
 (* ****** ****** *)
@@ -17857,7 +18197,7 @@ implement fprint_val<bool> = fprint_bool
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/char.atxt
-** Time of generation: Wed May  3 17:36:18 2017
+** Time of generation: Fri Aug 18 03:29:58 2017
 *)
 
 (* ****** ****** *)
@@ -17991,7 +18331,7 @@ implement fprint_val<schar> = fprint_schar
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/float.atxt
-** Time of generation: Wed May  3 17:36:18 2017
+** Time of generation: Fri Aug 18 03:29:58 2017
 *)
 
 (* ****** ****** *)
@@ -18201,7 +18541,7 @@ end // end of [g0float_npow]
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/string.atxt
-** Time of generation: Wed May  3 17:36:18 2017
+** Time of generation: Fri Aug 18 03:29:59 2017
 *)
 
 (* ****** ****** *)
@@ -18515,7 +18855,7 @@ val n1 = n + 1
 val (pf, pfgc | p0) =
   $effmask_wrt (malloc_gc(i2sz(n1)))
 //
-val p1 = $effmask_wrt (loop (cs, n, p0))
+val p1 = $effmask_wrt(loop(cs, n, p0))
 //
 val () =
   $effmask_wrt ($UN.ptr0_set<char>(p1, CNUL))
@@ -18635,12 +18975,12 @@ string_make_substring
   (str, st, ln) = $effmask_wrt let
 //
 val ln1 = succ(ln)
-val (pf, pfgc | p_dst) = malloc_gc (ln1)
+val (pf, pfgc | p_dst) = malloc_gc(ln1)
 //
 val
 p_src = string2ptr(str)
 val
-p_dst = memcpy (p_dst, p_src + st, ln)
+p_dst = memcpy(p_dst, p_src + st, ln)
 //
 val () = $UN.ptr0_set<char>(p_dst + ln, CNUL)
 //
@@ -18848,11 +19188,12 @@ string0_copy
   (str) = let
 //
 val str = g1ofg0(str)
-val str2 = string1_copy (str)
-prval () = lemma_strnptr_param (str2)
+val str2 = string1_copy(str)
+//
+prval () = lemma_strnptr_param(str2)
 //
 in
-  strnptr2strptr (str2)
+  strnptr2strptr(str2)
 end // end of [string0_copy]
 
 implement
@@ -18860,10 +19201,13 @@ implement
 string1_copy
   {n}(str) = let
 //
-val n = string1_length (str)
-val n1 = succ(n)
-val (pf, pfgc | p) = malloc_gc (n1)
-val _(*p*) = $effmask_wrt (memcpy (p, string2ptr(str), n1))
+val n =
+string1_length(str)
+val n1 = g1uint_succ(n)
+val (pf, pfgc | p) = malloc_gc(n1)
+//
+val _(*p*) =
+$effmask_wrt(memcpy(p, string2ptr(str), n1))
 //
 in
   castvwtp_trans{strnptr(n)}((pf, pfgc | p))
@@ -18888,14 +19232,17 @@ implement
 {}(*tmp*)
 strchr{n}(str, c0) = let
 //
-prval () = lemma_string_param (str)
-extern fun __strchr (string, int):<> ptr = "mac#atspre_strchr"
-extern fun __sub (ptr, ptr):<> ssizeBtw (0, n) = "mac#atspre_sub_ptr_ptr"
+prval () = lemma_string_param(str)
+extern
+fun __strchr__(string, int):<> ptr = "mac#atspre_strchr"
+extern
+fun sub_ptr_ptr(ptr, ptr):<> ssizeBtw(0, n) = "mac#atspre_sub_ptr_ptr"
+//
 val p0 = string2ptr(str)
-val p1 = __strchr (str, (char2int0)c0)
+val p1 = __strchr__(str, (char2int0)c0)
 //
 in
-  if p1 > the_null_ptr then __sub (p1, p0) else i2ssz(~1)
+  if p1 > the_null_ptr then sub_ptr_ptr(p1, p0) else i2ssz(~1)
 end // end of [strchr]
 
 implement
@@ -18903,13 +19250,16 @@ implement
 strrchr{n}(str, c0) = let
 //
 prval () = lemma_string_param (str)
-extern fun __strrchr (string, int):<> ptr = "mac#atspre_strrchr"
-extern fun __sub (ptr, ptr):<> ssizeBtw (0, n) = "mac#atspre_sub_ptr_ptr"
+extern
+fun __strrchr__(string, int):<> ptr = "mac#atspre_strrchr"
+extern
+fun sub_ptr_ptr(ptr, ptr):<> ssizeBtw(0, n) = "mac#atspre_sub_ptr_ptr"
+//
 val p0 = string2ptr(str)
-val p1 = __strrchr (str, (char2int0)c0)
+val p1 = __strrchr__(str, (char2int0)c0)
 //
 in
-  if p1 > the_null_ptr then __sub (p1, p0) else i2ssz(~1)
+  if p1 > the_null_ptr then sub_ptr_ptr(p1, p0) else i2ssz(~1)
 end // end of [strrchr]
 
 (* ****** ****** *)
@@ -18920,13 +19270,17 @@ strstr{n}
   (haystack, needle) = let
 //
 prval () = lemma_string_param (haystack)
-extern fun __strstr (string, string):<> ptr = "mac#atspre_strstr"
-extern fun __sub (ptr, ptr):<> ssizeBtw (0, n) = "mac#atspre_sub_ptr_ptr"
+//
+extern
+fun __strstr__(string, string):<> ptr = "mac#atspre_strstr"
+extern
+fun sub_ptr_ptr(ptr, ptr):<> ssizeBtw(0, n) = "mac#atspre_sub_ptr_ptr"
+//
 val p0 = string2ptr(haystack)
-val p1 = __strstr (haystack, needle)
+val p1 = __strstr__(haystack, needle)
 //
 in
-  if p1 > the_null_ptr then __sub (p1, p0) else i2ssz(~1)
+  if p1 > the_null_ptr then sub_ptr_ptr(p1, p0) else i2ssz(~1)
 end // end of [strstr]
 
 (* ****** ****** *)
@@ -18934,31 +19288,31 @@ end // end of [strstr]
 implement
 {}(*tmp*)
 strspn{n}
-  (str, accept) = let
+(subject, accept) = let
 //
-prval() = lemma_string_param (str)
+prval () = lemma_string_param(subject)
 //
 extern
 fun
-__strspn (string, string):<> sizeLte (n) = "mac#atspre_strspn"
+__strspn__(string, string):<> sizeLte(n) = "mac#atspre_strspn"
 //
 in
-  __strspn (str, accept)
+  __strspn__(subject, accept)
 end // end of [strspn]
 
 implement
 {}(*tmp*)
 strcspn{n}
-  (str, reject) = let
+(subject, reject) = let
 //
-prval() = lemma_string_param (str)
+prval() = lemma_string_param(subject)
 //
 extern
 fun
-__strcspn (string, string):<> sizeLte (n) = "mac#atspre_strcspn"
+__strcspn__(string, string):<> sizeLte(n) = "mac#atspre_strcspn"
 //
 in
-  __strcspn (str, reject)
+  __strcspn__(subject, reject)
 end // end of [strcspn]
 
 (* ****** ****** *)
@@ -18966,13 +19320,13 @@ end // end of [strcspn]
 implement
 {}(*tmp*)
 string_index
-  {n}(str, c) = $UN.cast{ssizeBtw(~1,n)}(strchr (str, c))
+  {n}(str, c) = $UN.cast{ssizeBtw(~1,n)}(strchr(str, c))
 // end of [string_index]
 
 implement
 {}(*tmp*)
 string_rindex
-  {n}(str, c) = $UN.cast{ssizeBtw(~1,n)}(strrchr (str, c))
+  {n}(str, c) = $UN.cast{ssizeBtw(~1,n)}(strrchr(str, c))
 // end of [string_rindex]
 
 (* ****** ****** *)
@@ -18984,8 +19338,8 @@ string0_append
 //
 val x1 = g1ofg0(x1)
 val x2 = g1ofg0(x2)
-val x12 = string1_append (x1, x2)
-prval () = lemma_strnptr_param (x12)
+val x12 = string1_append(x1, x2)
+prval () = lemma_strnptr_param(x12)
 //
 in
   strnptr2strptr (x12)
@@ -19245,18 +19599,25 @@ implement
 {}(*tmp*)
 string_tabulate{n}(n) = let
 //
-prval () = lemma_g1uint_param (n)
+prval () =
+lemma_g1uint_param(n)
 //
-fun loop (
-  p: ptr, n: size_t, i: size_t
+fun
+loop
+(
+ p: ptr, n: size_t, i: size_t
 ) : void = let
 in
 //
-if i < n then let
-  val c = string_tabulate$fopr (i)
-  val () = $UN.ptr0_set<char> (p, c)
+if
+(i < n)
+then let
+  val c =
+  string_tabulate$fopr(i)
+  val () =
+  $UN.ptr0_set<char>(p, c)
 in
-  loop (ptr_succ<char> (p), n, succ (i))
+  loop(ptr_succ<char>(p), n, succ(i))
 end else
   $UN.ptr0_set<char> (p, CNUL)
 // end of [if]
@@ -19264,8 +19625,8 @@ end else
 end // end of [loop]
 //
 val n1 = succ(n)
-val (pf, fpf | p0) = malloc_gc (n1)
-val () = loop (p0, n, g1int2uint (0))
+val (pf, fpf | p0) = malloc_gc(n1)
+val () = loop (p0, n, g1int2uint(0))
 //
 in
   castvwtp_trans{strnptr(n)}((pf, fpf | p0))
@@ -19615,7 +19976,7 @@ atspre_string_make_vsnprintf
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/strptr.atxt
-** Time of generation: Wed May  3 17:36:18 2017
+** Time of generation: Fri Aug 18 03:29:59 2017
 *)
 
 (* ****** ****** *)
@@ -20112,7 +20473,7 @@ end // end of [strnptr_rforeach_env]
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/unsafe.atxt
-** Time of generation: Wed May  3 17:36:20 2017
+** Time of generation: Fri Aug 18 03:30:00 2017
 *)
 
 (* ****** ****** *)
@@ -20349,7 +20710,7 @@ ptr1_list_next
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/checkast.atxt
-** Time of generation: Wed May  3 17:36:20 2017
+** Time of generation: Fri Aug 18 03:30:00 2017
 *)
 
 (* ****** ****** *)
@@ -20592,7 +20953,7 @@ end // end of [checkast_Strptr1]
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/tuple.atxt
-** Time of generation: Wed May  3 17:36:19 2017
+** Time of generation: Fri Aug 18 03:30:00 2017
 *)
 
 (* ****** ****** *)
@@ -21014,7 +21375,7 @@ gcompare_val_val<tup(a0,a1,a2,a3)> (x, y) = tupval4_compare<a0,a1,a2,a3> (x, y)
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/reference.atxt
-** Time of generation: Wed May  3 17:36:19 2017
+** Time of generation: Fri Aug 18 03:30:00 2017
 *)
 
 (* ****** ****** *)
@@ -21146,7 +21507,7 @@ end // end of [ref_vtakeout]
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/filebas.atxt
-** Time of generation: Wed May  3 17:36:20 2017
+** Time of generation: Fri Aug 18 03:30:00 2017
 *)
 
 (* ****** ****** *)
@@ -22160,6 +22521,54 @@ fileref_close(inp) // HX-2016-09-12: FILEref is not freed!
 
 (* ****** ****** *)
 
+implement
+{}(*tmp*)
+streamize_fileptr_line
+  (inp) = auxmain(inp) where
+{
+//
+vtypedef elt = Strptr1
+//
+fun
+auxmain
+(
+  inp
+: FILEref
+) : stream_vt(elt)= $ldelay
+(
+//
+let
+  val iseof = fileref_is_eof(inp)
+in
+  if iseof
+    then let
+      val () =
+        fileref_close(inp) // HX: FILEref is not freed!
+      // end of [val]
+    in
+      stream_vt_nil((*void*))
+    end // end of [then]
+    else let
+      val line =
+        fileref_get_line_string(inp)
+      // end of [val]
+    in
+      stream_vt_cons(line, auxmain(inp))
+    end // end of [else]
+end : stream_vt_con(elt)
+//
+,
+//
+fileref_close(inp) // HX-2016-09-12: FILEref is not freed!
+//
+) (* end of [auxmain] *)
+//
+val inp = $UN.castvwtp0{FILEref}(inp)
+//
+} (* end of [streamize_fileref_line] *)
+
+(* ****** ****** *)
+
 (* end of [filebas.dats] *)
 (***********************************************************************)
 (*                                                                     *)
@@ -22193,7 +22602,7 @@ fileref_close(inp) // HX-2016-09-12: FILEref is not freed!
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/intrange.atxt
-** Time of generation: Wed May  3 17:36:20 2017
+** Time of generation: Fri Aug 18 03:30:01 2017
 *)
 
 (* ****** ****** *)
@@ -22478,15 +22887,15 @@ fun aux0
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: gmhwxiATgmailDOTcom *)
 (* Start time: Feburary, 2012 *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
 
 (* ****** ****** *)
 
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/list.atxt
-** Time of generation: Wed May  3 17:36:21 2017
+** Time of generation: Wed Oct  4 21:37:16 2017
 *)
 
 (* ****** ****** *)
@@ -23036,7 +23445,7 @@ end // end of [list_takeout_at]
 
 implement
 {x}(*tmp*)
-list_length (xs) = let
+list_length(xs) = let
 //
 prval() = lemma_list_param (xs)
 //
@@ -23045,16 +23454,53 @@ loop
 {i,j:nat} .<i>.
 (
 xs: list(x, i), j: int j
-) :<> int(i+j) =
-(
+) :<> int(i+j) = (
+//
 case+ xs of
 | list_cons(_, xs) => loop(xs, j+1) | _ =>> j
+//
 ) (* end of [loop] *)
 //
 in
   loop(xs, 0)
 end // end of [list_length]
 
+(* ****** ****** *)
+//
+implement
+{x}(*tmp*)
+list_length_gte
+  (xs, n2) =
+  (list_length_compare<x>(xs, n2) >= 0)
+//
+implement
+{x}(*tmp*)
+list_length_compare
+  (xs, n2) =
+  loop(xs, n2) where
+{
+//
+fun
+loop
+{i:nat;j:int} .<i>.
+(xs: list(x, i), j: int j) :<> int(sgn(i-j)) =
+(
+if
+(j < 0)
+then 1 else
+(
+case+ xs of
+| list_cons
+    (_, xs) => loop(xs, j-1)
+  // list_cons
+| _ (*list_nil*) =>> (if j = 0 then 0 else ~1)
+)
+) (* end of [loop] *)
+//
+prval() = lemma_list_param(xs)
+//
+} (* end of [list_length_compare] *)
+//
 (* ****** ****** *)
 
 implement
@@ -23326,19 +23772,24 @@ end // end of [list_reverse_append2_vt]
 
 (* ****** ****** *)
 
+(*
 implement
 {a}(*tmp*)
 list_concat(xss) = let
 //
+typedef T = List(a)
+//
 prval() = lemma_list_param(xss)
 //
-typedef T = List(a)
-fun aux {n:nat} .<n>.
+fun
+aux{n:nat} .<n>.
 (
   xs0: T
 , xss: list(T, n)
 ) :<!wrt> List0_vt(a) = let
-  prval() = lemma_list_param(xs0)
+//
+prval() = lemma_list_param(xs0)
+//
 in
   case+ xss of
   | list_nil
@@ -23362,6 +23813,65 @@ case+ xss of
 | list_cons
     (xs, xss) => aux (xs, xss)
   // list_cons
+//
+end // end of [list_concat]
+*)
+
+(* ****** ****** *)
+
+implement
+{x}(*tmp*)
+list_concat(xss) = let
+//
+typedef xs = List(x)
+//
+prval() = lemma_list_param(xss)
+//
+fnx
+aux1
+{n1:nat} .<n1,0>.
+(
+  xss: list(xs, n1)
+, res: &ptr? >> List0_vt(x)
+) :<!wrt> void =
+(
+case+ xss of
+| list_nil() =>
+  (res := list_vt_nil())
+| list_cons(xs0, xss) => let
+    prval() =
+      lemma_list_param(xs0) in aux2(xs0, xss, res)
+    // end of [val]
+  end // end of [list_cons]
+)
+and
+aux2
+{n1,n2:nat} .<n1,n2+1>.
+(
+  xs0: list(x, n2)
+, xss: list(xs, n1)
+, res: &ptr? >> List0_vt(x)
+) :<!wrt> void = let
+in
+  case+ xs0 of
+  | list_nil() =>
+    aux1(xss, res)
+  | list_cons(x0, xs1) =>
+    {
+      val () =
+      (
+        res :=
+        list_vt_cons{x}{0}(x0, _)
+      ) (* end of [val] *)
+      val+list_vt_cons(_, res1) = res
+      val ((*void*)) = aux2(xs1, xss, res1)
+      prval ((*folded*)) = fold@(res)
+    }
+end // end of [aux2]
+//
+in
+//
+  let var res: ptr in aux1(xss, res); res end
 //
 end // end of [list_concat]
 
@@ -25418,14 +25928,14 @@ end // end of [streamize_list_cross]
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/list_vt.atxt
-** Time of generation: Wed May  3 17:36:21 2017
+** Time of generation: Fri Aug 18 03:30:02 2017
 *)
 
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: hwxi AT cs DOT bu DOT edu *)
 (* Start time: Feburary, 2012 *)
+(* Authoremail: hwxi AT cs DOT bu DOT edu *)
 
 (* ****** ****** *)
 //
@@ -26185,55 +26695,6 @@ end // end of [list_vt_concat]
 
 implement
 {a}(*tmp*)
-list_vt_separate(xs) = let
-//
-prval() = lemma_list_vt_param(xs)
-//
-fun loop
-  {n:nat} .<n>. (
-  xs: list_vt(a, n)
-, res1: &ptr? >> list_vt(a, n1)
-, res2: &ptr? >> list_vt(a, n2)
-) : #[n1,n2:nat | n1+n2==n] void = let
-in
-//
-case+ xs of
-| @list_vt_cons
-    (x, xs_tl) => let
-    val xs_tl_v = xs_tl
-    val test = list_vt_separate$pred (x)
-  in
-    if test then let
-      val () = res1 := xs
-      val () = loop(xs_tl_v, xs_tl, res2)
-    in
-      fold@ (res1)
-    end else let
-      val () = res2 := xs
-      val () = loop(xs_tl_v, res1, xs_tl)
-    in
-      fold@ (res2)
-    end // end of [if]
-  end // end of [list_vt_cons]
-| ~list_vt_nil () => (
-    res1 := list_vt_nil; res2 := list_vt_nil
-  ) (* end of [list_vt_nil] *)
-//
-end // end of [loop]
-//
-var res1: ptr
-var res2: ptr
-val () = loop(xs, res1, res2)
-val () = xs := res1
-//
-in
-  res2
-end // end of [list_vt_separate]
-
-(* ****** ****** *)
-
-implement
-{a}(*tmp*)
 list_vt_filter(xs) = let
 //
 implement
@@ -26300,6 +26761,127 @@ end // end of [list_vt_filterlin]
 implement
 {a}(*tmp*)
 list_vt_filterlin$clear(x) = gclear_ref<a>(x)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+list_vt_separate
+  (xs, n1) = res2 where
+{
+//
+prval() = lemma_list_vt_param(xs)
+//
+fun
+loop
+{k,n:nat} .<n>.
+(
+  xs: list_vt(a, n)
+, n1: &int(k) >> int(n1+k)
+, res1: &ptr? >> list_vt(a, n1)
+, res2: &ptr? >> list_vt(a, n2)
+) : #[n1,n2:nat | n1+n2==n] void =
+(
+//
+case+ xs of
+| ~list_vt_nil() =>
+  (
+    res1 := list_vt_nil();
+    res2 := list_vt_nil();
+  ) (* end of [list_vt_nil] *)
+| @list_vt_cons
+    (x, xs_tl) => let
+    val xs_tl_ = xs_tl
+    val test =
+      list_vt_separate$pred<a>(x)
+    // end of [val]
+  in
+    if test
+      then let
+      val () = n1 := n1+1
+      val () = res1 := xs
+      val () = loop(xs_tl_, n1, xs_tl, res2)
+    in
+      fold@(res1)
+    end else let
+      val () = res2 := xs
+      val () = loop(xs_tl_, n1, res1, xs_tl)
+    in
+      fold@(res2)
+    end // end of [if]
+  end // end of [list_vt_cons]
+//
+) (* end of [loop] *)
+//
+var res1: ptr
+var res2: ptr
+//
+val () = n1 := 0
+val () = loop(xs, n1, res1, res2)
+val () = xs := res1
+//
+} (* end of [list_vt_separate] *)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+list_vt_take_until
+  (xs, n1) = res1 where
+{
+//
+prval() = lemma_list_vt_param(xs)
+//
+fun
+loop
+{k,n:nat} .<n>.
+(
+  xs: list_vt(a, n)
+, n1: &int(k) >> int(n1+k)
+, res1: &ptr? >> list_vt(a, n1)
+, res2: &ptr? >> list_vt(a, n2)
+) : #[n1,n2:nat | n1+n2==n] void =
+(
+//
+case+ xs of
+| ~list_vt_nil() =>
+  (
+    res1 := list_vt_nil();
+    res2 := list_vt_nil();
+  ) (* end of [list_vt_nil] *)
+| @list_vt_cons
+    (x, xs_tl) => let
+    val test =
+      list_vt_take_until$pred<a>(x)
+    // end of [val]
+  in
+    if test
+      then let
+      val () =
+      res1 := list_vt_nil
+      val () = res2 := xs
+    in
+      fold@(res2) // folded
+    end else let
+      val xs_tl_ = xs_tl
+      val () = n1 := n1+1
+      val () = res1 := xs
+      val () = loop(xs_tl_, n1, xs_tl, res2)
+    in
+      fold@(res1) // folded
+    end // end of [if]
+  end // end of [list_vt_cons]
+//
+) (* end of [loop] *)
+//
+var res1: ptr
+var res2: ptr
+//
+val () = n1 := 0
+val () = loop(xs, n1, res1, res2)
+val () = xs := res2
+//
+} (* end of [list_vt_take_until] *)
 
 (* ****** ****** *)
 
@@ -26960,7 +27542,7 @@ val ((*freed*)) = arrayptr_free{ptr}(A0)
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/option.atxt
-** Time of generation: Wed May  3 17:36:22 2017
+** Time of generation: Fri Aug 18 03:30:02 2017
 *)
 
 (* ****** ****** *)
@@ -27097,7 +27679,7 @@ end // end of [fprint_option]
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/option_vt.atxt
-** Time of generation: Wed May  3 17:36:22 2017
+** Time of generation: Fri Aug 18 03:30:02 2017
 *)
 
 (* ****** ****** *)
@@ -27224,15 +27806,15 @@ end // end of [fprint_option_vt]
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: gmhwxiATgmailDOTcom *)
 (* Start time: July, 2012 *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
 
 (* ****** ****** *)
 
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/list.atxt
-** Time of generation: Wed May  3 17:36:22 2017
+** Time of generation: Fri Aug 25 22:54:43 2017
 *)
 
 (* ****** ****** *)
@@ -27922,6 +28504,13 @@ end // end of [stream_merge]
 end // end of [local]
 
 (* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+stream_merge$cmp
+  (x1, x2) = gcompare_val_val<a>(x1, x2)
+//
+(* ****** ****** *)
 
 implement
 {a}(*tmp*)
@@ -27930,7 +28519,7 @@ stream_merge_fun
 //
 implement{a2}
 stream_merge$cmp(x1, x2) =
-  cmp ($UN.cast{a}(x1), $UN.cast{a}(x2))
+  cmp($UN.cast{a}(x1), $UN.cast{a}(x2))
 //
 in
   stream_merge<a>(xs1, xs2)
@@ -27943,19 +28532,12 @@ stream_merge_cloref
 //
 implement{a2}
 stream_merge$cmp(x1, x2) =
-  cmp ($UN.cast{a}(x1), $UN.cast{a}(x2))
+  cmp($UN.cast{a}(x1), $UN.cast{a}(x2))
 //
 in
   stream_merge<a>(xs1, xs2)
 end // end of [stream_merge_cloref]
 
-(* ****** ****** *)
-//
-implement
-{a}(*tmp*)
-stream_merge$cmp
-  (x1, x2) = gcompare_val_val<a>(x1, x2)
-//
 (* ****** ****** *)
 
 local
@@ -28010,6 +28592,13 @@ end // end of [stream_mergeq]
 end // end of [local]
 
 (* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+stream_mergeq$cmp
+  (x1, x2) = gcompare_val_val<a>(x1, x2)
+//
+(* ****** ****** *)
 
 implement
 {a}(*tmp*)
@@ -28041,9 +28630,191 @@ end // end of [stream_mergeq_cloref]
 //
 implement
 {a}(*tmp*)
-stream_mergeq$cmp
+stream_union$cmp
+  (x1, x2) = gcompare_val_val<a>(x1, x2)
+implement
+{a}(*tmp*)
+stream_inter$cmp
+  (x1, x2) = gcompare_val_val<a>(x1, x2)
+implement
+{a}(*tmp*)
+stream_differ$cmp
+  (x1, x2) = gcompare_val_val<a>(x1, x2)
+implement
+{a}(*tmp*)
+stream_symdiff$cmp
   (x1, x2) = gcompare_val_val<a>(x1, x2)
 //
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+stream_union
+(
+  xs, ys
+) = auxmain(xs, ys) where
+{
+//
+fun
+auxmain
+( xs0: stream(a)
+, ys0: stream(a)
+) :<!laz> stream(a) = $delay
+(
+case+ !xs0 of
+| stream_nil
+    () => !(ys0)
+  // stream_nil
+| stream_cons
+    (x0, xs1) =>
+  (
+    case+ !ys0 of
+    | stream_nil() =>
+      stream_cons(x0, xs1)
+    | stream_cons(y0, ys1) => let
+        val sgn =
+        stream_union$cmp<a>(x0, y0)
+      in
+        ifcase
+        | sgn < 0 =>
+          stream_cons(x0, auxmain(xs1, ys0))
+        | sgn > 0 =>
+          stream_cons(y0, auxmain(xs0, ys1))
+        | _(*sgn=0*) =>
+          stream_cons(x0, auxmain(xs1, ys1))
+      end // end of [stream_cons]
+  )
+) (* end of [auxmain] *)
+//
+} (* end of [stream_union] *)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+stream_inter
+(
+  xs, ys
+) = auxmain(xs, ys) where
+{
+//
+fun
+auxmain
+( xs0: stream(a)
+, ys0: stream(a)
+) :<!laz> stream(a) = $delay
+(
+case+ !xs0 of
+| stream_nil() =>
+  stream_nil()
+| stream_cons(x0, xs1) =>
+  (
+    case+ !ys0 of
+    | stream_nil() =>
+      stream_nil()
+    | stream_cons(y0, ys1) => let
+        val sgn =
+        stream_inter$cmp<a>(x0, y0)
+      in
+        ifcase
+        | sgn < 0 => !(auxmain(xs1, ys0))
+        | sgn > 0 => !(auxmain(xs0, ys1))
+        | _(*sgn=0*) =>
+            stream_cons(x0, auxmain(xs1, ys1))
+          // end of [else]
+      end // end of [stream_cons]
+  )
+) (* end of [auxmain] *)
+//
+} (* end of [stream_inter] *)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+stream_differ
+(
+  xs, ys
+) = auxmain(xs, ys) where
+{
+//
+fun
+auxmain
+( xs0: stream(a)
+, ys0: stream(a)
+) :<!laz> stream(a) = $delay
+(
+case+ !xs0 of
+| stream_nil() =>
+  stream_nil()
+| stream_cons(x0, xs1) =>
+  (
+    case+ !ys0 of
+    | stream_nil() =>
+      stream_cons(x0, xs1)
+    | stream_cons(y0, ys1) => let
+        val sgn =
+        stream_differ$cmp<a>(x0, y0)
+      in
+        ifcase
+        | sgn < 0 =>
+          stream_cons
+            (x0, auxmain(xs1, ys0))
+          // stream_cons
+        | sgn > 0 => !(auxmain(xs0, ys1))
+        | _(*sgn=0*) => !(auxmain(xs1, ys1))
+      end // end of [stream_cons]
+  )
+) (* end of [auxmain] *)
+//
+} (* end of [stream_differ] *)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+stream_symdiff
+(
+  xs, ys
+) = auxmain(xs, ys) where
+{
+//
+fun
+auxmain
+( xs0: stream(a)
+, ys0: stream(a)
+) :<!laz> stream(a) = $delay
+(
+case+ !xs0 of
+| stream_nil
+    () => !(ys0)
+  // stream_nil
+| stream_cons
+    (x0, xs1) =>
+  (
+    case+ !ys0 of
+    | stream_nil() =>
+      stream_cons(x0, xs1)
+    | stream_cons(y0, ys1) => let
+        val sgn =
+        stream_symdiff$cmp<a>(x0, y0)
+      in
+        ifcase
+        | sgn < 0 =>
+          stream_cons
+            (x0, auxmain(xs1, ys0))
+          // stream_cons
+        | sgn > 0 =>
+            stream_cons
+            (y0, auxmain(xs0, ys1))
+          // stream_cons
+        | _(*sgn=0*) => !(auxmain(xs1, ys1))
+      end // end of [stream_cons]
+  )
+) (* end of [auxmain] *)
+//
+} (* end of [stream_symdiff] *)
+
 (* ****** ****** *)
 
 implement
@@ -28214,6 +28985,49 @@ loop(xs: stream(a)): void =
 } (* end of [stream_foreach_cloref] *)
 
 (* ****** ****** *)
+//
+//
+implement
+{a}(*tmp*)
+stream_iforeach_fun
+  (xs, fwork) =
+  loop(0, xs) where
+{
+//
+fun
+loop
+( i: intGte(0)
+, xs: stream(a)): void =
+(
+case+ !xs of
+| stream_nil() => ()
+| stream_cons(x, xs) =>
+  let val () = fwork(i, x) in loop(i+1, xs) end
+)
+//
+} (* end of [stream_iforeach_fun] *)
+//
+implement
+{a}(*tmp*)
+stream_iforeach_cloref
+  (xs, fwork) =
+  loop(0, xs) where
+{
+//
+fun
+loop
+( i: intGte(0)
+, xs: stream(a)): void =
+(
+case+ !xs of
+| stream_nil() => ()
+| stream_cons(x, xs) =>
+  let val () = fwork(i, x) in loop(i+1, xs) end
+)
+//
+} (* end of [stream_iforeach_cloref] *)
+//
+(* ****** ****** *)
 
 implement
 {res}{a}
@@ -28356,15 +29170,15 @@ end // end of [stream_skip_until_cloref]
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: gmhwxiATgmailDOTcom *)
 (* Start time: July, 2012 *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
 
 (* ****** ****** *)
 
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/list.atxt
-** Time of generation: Wed May  3 17:36:22 2017
+** Time of generation: Fri Aug 18 03:30:03 2017
 *)
 
 (* ****** ****** *)
@@ -28720,6 +29534,52 @@ case+ !xs0 of
   end // end of [stream_vt_nil]
 ) (* end of [stream_vt_uncons_opt] *)
 
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+stream_vt_last_exn(xs) = let
+//
+fun
+loop(x0: a, xs: stream_vt(a)) =
+(
+case+ !xs of
+| ~stream_vt_nil((*void*)) => x0
+| ~stream_vt_cons(x1, xs) => loop(x1, xs)
+) (* end of [loop] *)
+//
+in
+//
+case+ !xs of
+| ~stream_vt_nil
+    () => $raise StreamSubscriptExn()
+| ~stream_vt_cons
+    (x0, xs) => $effmask_all(loop(x0, xs))
+//
+end // end of [stream_vt_last_exn]
+//
+implement
+{a}(*tmp*)
+stream_vt_last_opt(xs) = let
+//
+fun
+loop(x0: a, xs: stream_vt(a)) =
+(
+case+ !xs of
+| ~stream_vt_nil((*void*)) => x0
+| ~stream_vt_cons(x1, xs) => loop(x1, xs)
+) (* end of [loop] *)
+//
+in
+//
+case+ !xs of
+| ~stream_vt_nil
+    () => None_vt((*void*))
+| ~stream_vt_cons
+    (x0, xs) => $effmask_all(Some_vt(loop(x0, xs)))
+//
+end // end of [stream_vt_last_opt]
+//
 (* ****** ****** *)
 
 implement
@@ -29150,7 +30010,8 @@ implement
 stream_vt_map(xs) = let
 //
 fun
-auxmain (
+auxmain
+(
 //
 xs: stream_vt(a)
 //
@@ -29217,7 +30078,7 @@ prval() = $UN.castview0{void}(@(fpf, pf))
 } (* end of [stream_vt_map$fopr] *)
 //
 in
-  stream_vt_map<a><b> (xs)
+  stream_vt_map<a><b>(xs)
 end // end of [stream_vt_map_fun]
 
 (* ****** ****** *)
@@ -29229,9 +30090,12 @@ stream_vt_map_cloptr
 //
 fun
 auxmain:
-$d2ctype(stream_vt_map_cloptr<a><b>) =
-lam(xs, fopr) => $ldelay
+$d2ctype
 (
+stream_vt_map_cloptr<a><b>
+) =
+lam(xs, fopr) => $ldelay (
+//
 let
   val xs_con = !xs
 in
@@ -29259,11 +30123,282 @@ in
 end // end of [let]
 ,
 (~xs; cloptr_free($UN.castvwtp0{cloptr0}(fopr)))
+//
 ) (* end of [auxmain] *)
 //
 in
   auxmain(xs, fopr)
 end // end of [stream_vt_map_cloptr]
+
+(* ****** ****** *)
+
+implement
+{a}{b}(*tmp*)
+stream_vt_imap(xs) = let
+//
+fun
+auxmain
+(
+//
+i0: intGte(0)
+,
+xs: stream_vt(a)
+//
+) : stream_vt(b) = $ldelay
+(
+//
+let
+  val xs_con = !xs
+in
+//
+case+
+xs_con
+of // case+
+//
+| ~stream_vt_nil
+    ((*void*)) => stream_vt_nil()
+  // end of [stream_vt_nil]
+| @stream_vt_cons(x, xs) => let
+    val y =
+    stream_vt_imap$fopr<a><b>(i0, x)
+    val xs = xs
+    val ((*void*)) = free@ (xs_con)
+  in
+    stream_vt_cons{b}(y, auxmain(i0+1, xs))
+  end (* end of [stream_vt_con] *)
+//
+end // end of [let]
+//
+,
+//
+(
+  ~xs
+) (* HX: for freeing the stream! *)
+//
+) (* end of [auxmain] *)
+//
+in
+  auxmain(0(*i*), xs)
+end // end of [stream_vt_imap]
+
+(* ****** ****** *)
+
+implement
+{a}{b}(*tmp*)
+stream_vt_imap_fun
+  (xs, fopr) = let
+//
+implement
+{a2}{b2}
+stream_vt_imap$fopr
+  (i, x) = res where
+{
+//
+prval() = __assert(x) where
+{
+  extern
+  praxi __assert(x: &a2 >> a2?!): void
+}
+val (
+  pf, fpf | p_x
+) = $UN.ptr0_vtake{a}(addr@x)
+val res =
+  $UN.castvwtp0{b2}(fopr(i, !p_x))
+//
+prval() = $UN.castview0{void}(@(fpf, pf))
+//
+} (* end of [stream_vt_map$fopr] *)
+//
+in
+  stream_vt_imap<a><b>(xs)
+end // end of [stream_vt_imap_fun]
+
+(* ****** ****** *)
+
+implement
+{a}{b}(*tmp*)
+stream_vt_imap_cloptr
+  (xs, fopr) = let
+//
+fun
+auxmain
+(
+i0: intGte(0),
+xs: stream_vt(a),
+fopr: (intGte(0), &a >> a?!) -<cloptr1> b
+) : stream_vt(b) = $ldelay
+(
+let
+  val xs_con = !xs
+in
+  case+ xs_con of
+  | ~stream_vt_nil
+      () => let
+    //
+      val () =
+      cloptr_free
+      (
+        $UN.castvwtp0{cloptr0}(fopr)
+      )
+    //
+    in
+      stream_vt_nil()
+    end // end of [stream_vt_nil]
+  | @stream_vt_cons
+      (x, xs) => let
+      val y = fopr(i0, x)
+      val xs = xs
+      val () = free@{a?}(xs_con)
+    in
+      stream_vt_cons(y, auxmain(i0+1, xs, fopr))
+    end // end of [stream_vt_cons]
+end // end of [let]
+,
+(~xs; cloptr_free($UN.castvwtp0{cloptr0}(fopr)))
+) (* end of [auxmain] *)
+//
+in
+  auxmain(0, xs, fopr)
+end // end of [stream_vt_imap_cloptr]
+
+(* ****** ****** *)
+
+implement
+{a}{b}(*tmp*)
+stream_vt_mapopt(xs) = let
+//
+fun
+auxmain
+(
+//
+xs: stream_vt(a)
+//
+) : stream_vt(b) = $ldelay
+(
+//
+let
+  val xs_con = !xs
+in
+//
+case+
+xs_con
+of // case+
+//
+| ~stream_vt_nil
+    ((*void*)) => stream_vt_nil()
+  // end of [stream_vt_nil]
+| @stream_vt_cons(x, xs) => let
+    val oy =
+    stream_vt_mapopt$fopr<a><b> (x)
+    val xs = xs
+    val ((*void*)) = free@ (xs_con)
+  in
+    case+ oy of
+    | ~None_vt() => !(auxmain(xs))
+    | ~Some_vt(y) => stream_vt_cons{b}(y, auxmain(xs))
+  end (* end of [stream_vt_con] *)
+//
+end // end of [let]
+//
+,
+//
+(
+  ~xs
+) (* HX: for freeing the stream! *)
+//
+) (* end of [auxmain] *)
+//
+in
+  auxmain(xs)
+end // end of [stream_vt_mapopt]
+
+(* ****** ****** *)
+
+implement
+{a}{b}(*tmp*)
+stream_vt_mapopt_fun
+  (xs, fopr) = let
+//
+implement
+{a2}{b2}
+stream_vt_mapopt$fopr
+  (x) = res where
+{
+//
+vtypedef
+ob2 = Option_vt(b2)
+//
+prval() = __assert(x) where
+{
+  extern praxi __assert(x: &a2 >> a2?!): void
+}
+val (
+  pf, fpf | p_x
+) = $UN.ptr0_vtake{a}(addr@x)
+val res = $UN.castvwtp0{ob2}(fopr(!p_x))
+prval() = $UN.castview0{void}(@(fpf, pf))
+//
+} (* end of [stream_vt_map$fopr] *)
+//
+in
+  stream_vt_mapopt<a><b>(xs)
+end // end of [stream_vt_mapopt_fun]
+
+(* ****** ****** *)
+
+implement
+{a}{b}(*tmp*)
+stream_vt_mapopt_cloptr
+  (xs, fopr) = let
+//
+fun
+auxmain:
+$d2ctype
+(
+stream_vt_mapopt_cloptr<a><b>
+) =
+lam
+(
+xs, fopr
+) => $ldelay (
+//
+let
+  val xs_con = !xs
+in
+  case+ xs_con of
+  | ~stream_vt_nil
+      () => let
+    //
+      val () =
+      cloptr_free
+      (
+        $UN.castvwtp0{cloptr0}(fopr)
+      )
+    //
+    in
+      stream_vt_nil()
+    end // end of [stream_vt_nil]
+  | @stream_vt_cons
+      (x, xs) => let
+      val oy = fopr(x)
+      val xs = xs
+      val () = free@{a?}(xs_con)
+    in
+      case+ oy of
+      | ~None_vt() =>
+        !(auxmain(xs, fopr))
+      | ~Some_vt(y) =>
+        stream_vt_cons(y, auxmain(xs, fopr))
+    end // end of [stream_vt_cons]
+end // end of [let]
+,
+(~xs; cloptr_free($UN.castvwtp0{cloptr0}(fopr)))
+//
+) (* end of [auxmain] *)
+//
+in
+  auxmain(xs, fopr)
+end // end of [stream_vt_mapopt_cloptr]
 
 (* ****** ****** *)
 
@@ -30005,7 +31140,7 @@ end // end of [local]
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/array.atxt
-** Time of generation: Wed May  3 17:36:22 2017
+** Time of generation: Fri Aug 18 03:30:03 2017
 *)
 
 (* ****** ****** *)
@@ -31407,7 +32542,7 @@ end // end of [array_permute]
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/array_prf.atxt
-** Time of generation: Wed May  3 17:36:23 2017
+** Time of generation: Fri Aug 18 03:30:03 2017
 *)
 
 (* ****** ****** *)
@@ -31632,7 +32767,7 @@ end // end of takeout]
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/arrayptr.atxt
-** Time of generation: Wed May  3 17:36:23 2017
+** Time of generation: Fri Aug 18 03:30:03 2017
 *)
 
 (* ****** ****** *)
@@ -32133,7 +33268,7 @@ prval () = arrayptr_addback{a}(pfarr | A)
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/arrayref.atxt
-** Time of generation: Wed May  3 17:36:23 2017
+** Time of generation: Fri Aug 18 03:30:03 2017
 *)
 
 (* ****** ****** *)
@@ -32909,7 +34044,7 @@ else stream_vt_nil(*void*)
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/matrix.atxt
-** Time of generation: Wed May  3 17:36:23 2017
+** Time of generation: Fri Aug 18 03:30:04 2017
 *)
 
 (* ****** ****** *)
@@ -33382,7 +34517,7 @@ end (* end of [matrix_map2to] *)
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/matrixptr.atxt
-** Time of generation: Wed May  3 17:36:23 2017
+** Time of generation: Fri Aug 18 03:30:04 2017
 *)
 
 (* ****** ****** *)
@@ -33631,7 +34766,7 @@ end // end of [matrixptr_tabulate_cloref]
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/matrixref.atxt
-** Time of generation: Wed May  3 17:36:24 2017
+** Time of generation: Fri Aug 18 03:30:04 2017
 *)
 
 (* ****** ****** *)
@@ -34215,7 +35350,7 @@ else !(auxmain(j+1))
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/gprint.atxt
-** Time of generation: Wed May  3 17:36:24 2017
+** Time of generation: Fri Aug 18 03:30:04 2017
 *)
 
 (* ****** ****** *)
@@ -34541,7 +35676,7 @@ val () = gprint_arrayref<a>(A, n)
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/tostring.atxt
-** Time of generation: Wed May  3 17:36:24 2017
+** Time of generation: Fri Aug 18 03:30:04 2017
 *)
 
 (* ****** ****** *)

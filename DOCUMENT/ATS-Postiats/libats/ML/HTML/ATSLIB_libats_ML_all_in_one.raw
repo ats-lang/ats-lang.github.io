@@ -271,16 +271,18 @@ typedef NSH(a:type) = a // for commenting purpose
 (* ****** ****** *)
 //
 #define
-list0_sing(x) list0_cons(x, list0_nil())
+list0_sing(x)
+list0_cons(x, list0_nil())
 //
 #define
 list0_pair(x1, x2)
-list0_cons(x1, list0_cons (x2, list0_nil()))
+list0_cons(x1, list0_cons(x2, list0_nil()))
 //
 (* ****** ****** *)
 //
 castfn
-list0_cast{x:t0p} (xs: list0(INV(x))):<> list0(x)
+list0_cast{x:t0p}
+  (xs: list0(INV(x))):<> list0(x)
 //
 (* ****** ****** *)
 //
@@ -294,9 +296,11 @@ list0_of_list_vt
 (* ****** ****** *)
 //
 castfn
-g0ofg1_list{a:t@ype}(List(INV(a))):<> list0(a)
+g0ofg1_list
+  {a:t@ype}(List(INV(a))):<> list0(a)
 castfn
-g0ofg1_list_vt{a:t@ype}(List_vt(INV(a))):<> list0(a)
+g0ofg1_list_vt
+  {a:t@ype}(List_vt(INV(a))):<> list0(a)
 //
 overload g0ofg1 with g0ofg1_list
 overload g0ofg1 with g0ofg1_list_vt
@@ -304,21 +308,63 @@ overload g0ofg1 with g0ofg1_list_vt
 (* ****** ****** *)
 //
 castfn
-g1ofg0_list{a:t@ype}(list0(INV(a))):<> List0(a)
+g1ofg0_list
+  {a:t@ype}(xs: list0(INV(a))):<> List0(a)
 //
 overload g1ofg0 with g1ofg0_list
 //
 (* ****** ****** *)
+//
+fun{a:t0p}
+list0_tuple_0(): list0(a)
+//
+fun{a:t0p}
+list0_tuple_1(x0: a): list0(a)
+fun{a:t0p}
+list0_tuple_2(x0: a, x1: a): list0(a)
+fun{a:t0p}
+list0_tuple_3(x0: a, x1: a, x2: a): list0(a)
+//
+fun{a:t0p}
+list0_tuple_4
+  (x0: a, x1: a, x2: a, x3: a): list0(a)
+fun{a:t0p}
+list0_tuple_5
+  (x0: a, x1: a, x2: a, x3: a, x4: a): list0(a)
+fun{a:t0p}
+list0_tuple_6
+  (x0: a, x1: a, x2: a, x3: a, x4: a, x5: a): list0(a)
+//
+(* ****** ****** *)
+//
+symintr list0_tuple
+//
+overload
+list0_tuple with list0_tuple_0
+overload
+list0_tuple with list0_tuple_1
+overload
+list0_tuple with list0_tuple_2
+overload
+list0_tuple with list0_tuple_3
+overload
+list0_tuple with list0_tuple_4
+overload
+list0_tuple with list0_tuple_5
+overload
+list0_tuple with list0_tuple_6
+//
+(* ****** ****** *)
 
 fun{a:t0p}
-list0_make_sing (x: a):<> list0(a)
+list0_make_sing(x: a):<> list0(a)
 fun{a:t0p}
-list0_make_pair (x1: a, x2: a):<> list0(a)
+list0_make_pair(x1: a, x2: a):<> list0(a)
 
 (* ****** ****** *)
 
 fun{a:t0p}
-list0_make_elt (n: int, x: a):<!exn> list0(a)
+list0_make_elt(n: int, x: a):<!exn> list0(a)
 
 (* ****** ****** *)
 //
@@ -341,8 +387,10 @@ list0_make_intrange_lrd
 //
 symintr list0_make_intrange
 //
-overload list0_make_intrange with list0_make_intrange_lr
-overload list0_make_intrange with list0_make_intrange_lrd
+overload
+list0_make_intrange with list0_make_intrange_lr
+overload
+list0_make_intrange with list0_make_intrange_lrd
 //
 (* ****** ****** *)
 //
@@ -408,19 +456,23 @@ overload .tail_opt with list0_tail_opt of 0
 //
 fun
 {a:t0p}
-list0_last_exn(xs: list0(INV(a))):<!exn> (a)
+list0_last_exn
+  (xs: list0(INV(a))):<!exn> (a)
 fun
 {a:t0p}
-list0_last_opt(xs: list0(INV(a))):<> Option_vt(a)
+list0_last_opt
+  (xs: list0(INV(a))):<> Option_vt(a)
 //
 (* ****** ****** *)
 //
 fun
 {a:t0p}
-list0_init_exn(xs: list0(INV(a))):<!exn> list0(a)
+list0_init_exn
+  (xs: list0(INV(a))):<!exn> list0(a)
 fun
 {a:t0p}
-list0_init_opt(xs: list0(INV(a))):<!exn> Option_vt(list0(a))
+list0_init_opt
+  (xs: list0(INV(a))):<!exn> Option_vt(list0(a))
 //
 (* ****** ****** *)
 //
@@ -446,7 +498,16 @@ list0_fset_at_exn
   (list0(INV(a)), i0: int, x0: a):<!exn> list0(a)
 fun{a:t0p}
 list0_fset_at_opt
-  (list0(INV(a)), i0: int, x0: a):<!exn> Option_vt(list0(a))
+  (list0(INV(a)), i0: int, x0: a):<> Option_vt(list0(a))
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+list0_fexch_at_exn
+  (list0(INV(a)), i0: int, x0: &a >> a):<!exnwrt> list0(a)
+fun{a:t0p}
+list0_fexch_at_opt
+  (list0(INV(a)), i0: int, x0: &a >> a):<!wrt> Option_vt(list0(a))
 //
 (* ****** ****** *)
 //
@@ -487,7 +548,7 @@ overload fprint with fprint_listlist0_sep
 fun{a:t0p}
 list0_insert_at_exn
 (
-  SHR(list0(INV(a))), i: int, x: a
+  SHR(list0(INV(a))), i: int, x: (a)
 ) :<!exn> list0(a) // endfun
 
 (* ****** ****** *)
@@ -508,7 +569,8 @@ overload takeout_at with list0_takeout_at_exn
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 list0_append
 (
   xs: NSH(list0(INV(a))), ys: SHR(list0(a))
@@ -527,7 +589,8 @@ macdef list0_snoc = list0_extend
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 mul_int_list0
 (
   m0: intGte(0), xs: NSH(list0(INV(a)))
@@ -572,26 +635,36 @@ list0_drop_exn
 // end of [list0_drop_exn]
 
 (* ****** ****** *)
-
+//
+fun
+{a:t0p}
+{res:t0p}
+list0_cata
+( xs: list0(INV(a))
+, f_nil: cfun0(res), f_cons: cfun2(a, list0(a), res)
+) : (res) // end of [list0_cata]
+//
+(* ****** ****** *)
+//
 fun
 {a:t0p}
 list0_app
 (
-  xs: list0(INV(a)), fwork: cfun(a, void)
+xs: list0(INV(a)), fwork: cfun(a, void)
 ) : void // end of [list0_app]
-
+//
 (* ****** ****** *)
 //
 fun{a:t0p}
 list0_foreach
 (
-  xs: list0(INV(a)), fwork: cfun(a, void)
+xs: list0(INV(a)), fwork: cfun(a, void)
 ) : void // end of [list0_foreach]
 //
 fun{a:t0p}
 list0_foreach_method
 (
-  xs: list0(INV(a))) (fwork: cfun(a, void)
+xs: list0(INV(a))) (fwork: cfun(a, void)
 ) : void // end of [list0_foreach_method]
 //
 overload .foreach with list0_foreach_method
@@ -601,13 +674,13 @@ overload .foreach with list0_foreach_method
 fun{a:t0p}
 list0_rforeach
 (
-  xs: list0(INV(a)), fwork: cfun(a, void)
+xs: list0(INV(a)), fwork: cfun(a, void)
 ) : void // end of [list0_rforeach]
 //
 fun{a:t0p}
 list0_rforeach_method
 (
-  xs: list0(INV(a))) (fwork: cfun(a, void)
+xs: list0(INV(a))) (fwork: cfun(a, void)
 ) : void // end of [list0_rforeach_method]
 //
 overload .rforeach with list0_rforeach_method
@@ -754,6 +827,15 @@ list0_exists2
 , pred: cfun2(a1, a2, bool)
 ) : bool // end of [list0_exists2]
 //
+fun
+{a1,a2:t0p}
+list0_exists2_eq
+(
+  xs1: list0(INV(a1))
+, xs2: list0(INV(a2))
+, pred: cfun2(a1, a2, bool), sgn: &int? >> int
+) : bool // end of [list0_exists2_eq]
+//
 (* ****** ****** *)
 //
 fun
@@ -801,7 +883,7 @@ list0_forall2_eq
 (
   xs1: list0(INV(a1))
 , xs2: list0(INV(a2))
-, p: cfun2(a1, a2, bool), sgn: &int? >> int
+, pred: cfun2(a1, a2, bool), sgn: &int? >> int
 ) : bool // end of [list0_forall2_eq]
 //
 (* ****** ****** *)
@@ -843,8 +925,47 @@ fun
 {a:t0p}
 list0_find_index
 (
-  xs: list0(INV(a)), pred: cfun(a, bool)
+xs: list0(INV(a)), pred: cfun(a, bool)
 ) : intGte(~1) // end of [list0_find_index]
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+list0_find_suffix
+(
+xs: list0(INV(a)), pred: cfun(list0(a), bool)
+) : list0(a) // end of [list0_find_suffix]
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+list0_skip_while
+(
+xs: list0(INV(a)), pred: cfun(a, bool)
+) : list0(a) // end of [list0_skip_while]
+fun
+{a:t0p}
+list0_skip_until
+(
+xs: list0(INV(a)), pred: cfun(a, bool)
+) : list0(a) // end of [list0_skip_until]
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+list0_take_while
+(
+xs: list0(INV(a)), pred: cfun(a, bool)
+) : list0(a) // end of [list0_take_while]
+fun
+{a:t0p}
+list0_take_until
+(
+xs: list0(INV(a)), pred: cfun(a, bool)
+) : list0(a) // end of [list0_take_until]
 //
 (* ****** ****** *)
 //
@@ -852,23 +973,26 @@ fun{
 a,b:t0p
 } list0_assoc_exn
 (
-  list0 @(INV(a), b), x0: a, eq: cfun(a, a, bool)
+  list0@(INV(a), b), x0: a, eq: cfun(a, a, bool)
 ) : (b) // end-of-function
 fun{
 a,b:t0p
 } list0_assoc_opt
 (
-  list0 @(INV(a), b), x0: a, eq: cfun(a, a, bool)
+  list0@(INV(a), b), x0: a, eq: cfun(a, a, bool)
 ) : Option_vt (b) // end-of-function
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 list0_filter
-  (list0(INV(a)), pred: cfun(a, bool)): list0(a)
-fun{a:t0p}
+(xs: list0(INV(a)), pred: cfun(a, bool)): list0(a)
+//
+fun
+{a:t0p}
 list0_filter_method
-  (list0(INV(a)))(pred: cfun(a, bool)): list0(a)
+(xs: list0(INV(a)))(pred: cfun(a, bool)): list0(a)
 //
 overload .filter with list0_filter_method
 //
@@ -879,7 +1003,7 @@ fun
 {b:t0p}
 list0_map
 (
-  xs: list0(INV(a)), fopr: cfun(a, b)
+xs: list0(INV(a)), fopr: cfun(a, b)
 ) : list0(b) // end-of-function
 //
 fun
@@ -887,7 +1011,7 @@ fun
 {b:t0p}
 list0_mapopt
 (
-  xs: list0(INV(a)), fopr: cfun(a, Option_vt(b))
+xs: list0(INV(a)), fopr: cfun(a, Option_vt(b))
 ) : list0(b) // end-of-function
 //
 (* ****** ****** *)
@@ -897,7 +1021,7 @@ fun
 {b:t0p}
 list0_map_method
 (
-  list0(INV(a)), TYPE(b))(fopr: cfun(a, b)
+xs: list0(INV(a)), TYPE(b))(fopr: cfun(a, b)
 ) : list0(b) // end-of-function
 //
 fun
@@ -905,7 +1029,7 @@ fun
 {b:t0p}
 list0_mapopt_method
 (
-  list0(INV(a)), TYPE(b))(fopr: cfun(a, Option_vt(b))
+xs: list0(INV(a)), TYPE(b))(fopr: cfun(a, Option_vt(b))
 ) : list0(b) // end-of-function
 //
 overload .map with list0_map_method
@@ -915,32 +1039,75 @@ overload .mapopt with list0_mapopt_method
 //
 fun{a:t0p}
 list0_mapcons
-  (x0: a, xss: list0(list0(INV(a)))): list0(list0(a))
+(x0: a, xss: list0(list0(INV(a)))): list0(list0(a))
 //
 overload * with list0_mapcons
 //
 (* ****** ****** *)
 //
-fun{
-a:t0p}{b:t0p
-} list0_imap
-  (list0(INV(a)), fopr: cfun2(int, a, b)): list0(b)
-fun{
-a:t0p}{b:t0p
-} list0_imap_method
-  (list0(INV(a)), TYPE(b))(fopr: cfun2(int, a, b)): list0(b)
+fun
+{a:t0p}
+{b:t0p}
+list0_mapjoin
+(
+  xs: list0(INV(a)), fopr: cfun(a, list0(b))
+) : list0(b) // end-of-function
 //
-overload .imap with list0_imap_method
+fun
+{a:t0p}
+{b:t0p}
+list0_mapjoin_method
+(
+  xs: list0(INV(a)))(fopr: cfun(a, list0(b))
+) : list0(b) // end-of-function
 //
 (* ****** ****** *)
-
+//
+fun
+{a:t0p}
+{b:t0p}
+list0_imap
+(list0(INV(a)), fopr: cfun2(int, a, b)): list0(b)
+fun
+{a:t0p}
+{b:t0p}
+list0_imapopt
+(list0(INV(a)), fopr: cfun2(int, a, Option_vt(b))): list0(b)
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+{b:t0p}
+list0_imap_method
+(list0(INV(a)), TYPE(b))(fopr: cfun2(int, a, b)): list0(b)
+fun
+{a:t0p}
+{b:t0p}
+list0_imapopt_method
+(list0(INV(a)), TYPE(b))(fopr: cfun2(int, a, Option_vt(b))): list0(b)
+//
+overload .imap with list0_imap_method
+overload .imapopt with list0_imapopt_method
+//
+(* ****** ****** *)
+//
 fun{
-a1,a2:t0p}{b:t0p
+a1,
+a2:t0p}{b:t0p
 } list0_map2
 (
   list0(INV(a1)), list0(INV(a2)), fopr: cfun2(a1, a2, b)
 ) : list0(b) // end of [list0_map2]
-
+//
+fun{
+a1,
+a2:t0p}{b:t0p
+} list0_imap2
+(
+  list0(INV(a1)), list0(INV(a2)), fopr: cfun3(int, a1, a2, b)
+) : list0(b) // end of [list0_imap2]
+//
 (* ****** ****** *)
 //
 fun{a:t0p}
@@ -992,55 +1159,65 @@ x,y:t0p}{z:t0p
 //
 fun
 {x:t0p}
-list0_foreach_choose2
+list0_choose2_foreach
 (
   list0(INV(x)), fwork: cfun2(x, x, void)
 ) : void // end-of-function
 fun
 {x:t0p}
-list0_foreach_choose2_method
+list0_choose2_foreach_method
 (
   list0(INV(x))) (fwork: cfun2(x, x, void)
 ) : void // end-of-function
 //
-overload .foreach_choose2 with list0_foreach_choose2_method
+overload .choose2_foreach with list0_choose2_foreach_method
 //
 (* ****** ****** *)
 //
 fun{
 x,y:t0p
-} list0_foreach_xprod2
+} list0_xprod2_foreach
 (
   list0(INV(x)), list0(INV(y)), fwork: cfun2(x, y, void)
 ) : void // end-of-function
 fun
 {x,y:t0p}
-list0_foreach_xprod2_method
+list0_xprod2_foreach_method
 (
   list0(INV(x)), list0(INV(y)))(fwork: cfun2(x, y, void)
 ) : void // end-of-function
 //
 fun{
 x,y:t0p
-} list0_iforeach_xprod2
+} list0_xprod2_iforeach
 (
-  list0(INV(x)), list0(INV(y)), fwork: cfun4(intGte(0), x, intGte(0), y, void)
+  list0(INV(x))
+, list0(INV(y)), fwork: cfun4(intGte(0), x, intGte(0), y, void)
 ) : void // end-of-function
 fun
 {x,y:t0p}
-list0_iforeach_xprod2_method
+list0_xprod2_iforeach_method
 (
-  list0(INV(x)), list0(INV(y)))(fwork: cfun4(intGte(0), x, intGte(0), y, void)
+  list0(INV(x))
+, list0(INV(y)))(fwork: cfun4(intGte(0), x, intGte(0), y, void)
 ) : void // end-of-function
 //
-overload .foreach_xprod2 with list0_foreach_xprod2_method
-overload .iforeach_xprod2 with list0_iforeach_xprod2_method
+overload .xprod2_foreach with list0_xprod2_foreach_method
+overload .xprod2_iforeach with list0_xprod2_iforeach_method
 //
 (* ****** ****** *)
 //
 fun{a:t0p}
 streamize_list0_elt
   (list0(INV(a))):<!wrt> stream_vt(a)
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+streamize_list0_suffix
+  (list0(INV(a))):<!wrt> stream_vt(list0(a))
+//
+(* ****** ****** *)
 //
 fun{a:t0p}
 streamize_list0_choose2
@@ -1124,8 +1301,8 @@ list0_quicksort
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: gmmhwxiATgmailDOTcom *)
 (* Start time: July, 2012 *)
+(* Authoremail: gmmhwxiATgmailDOTcom *)
 
 (* ****** ****** *)
 //
@@ -1180,59 +1357,128 @@ sortdef vt0p = viewt@ype
 
 (* ****** ****** *)
 //
-fun{}
-array0_of_arrszref
-  {a:vt0p} (arrszref(a)):<> array0(a)
+fun
+{a:t0p}
+array0_tuple_0(): array0(a)
 //
-fun{}
-arrszref_of_array0
-  {a:vt0p} (A: array0(a)):<> arrszref(a)
+fun
+{a:t0p}
+array0_tuple_1(x0: a): array0(a)
+fun
+{a:t0p}
+array0_tuple_2(x0: a, x1: a): array0(a)
+fun
+{a:t0p}
+array0_tuple_3(x0: a, x1: a, x2: a): array0(a)
+//
+fun
+{a:t0p}
+array0_tuple_4
+  (x0: a, x1: a, x2: a, x3: a): array0(a)
+fun
+{a:t0p}
+array0_tuple_5
+  (x0: a, x1: a, x2: a, x3: a, x4: a): array0(a)
+fun
+{a:t0p}
+array0_tuple_6
+  (x0: a, x1: a, x2: a, x3: a, x4: a, x5: a): array0(a)
 //
 (* ****** ****** *)
 //
-symintr array0
+symintr array0_tuple
+//
+overload
+array0_tuple with array0_tuple_0
+overload
+array0_tuple with array0_tuple_1
+overload
+array0_tuple with array0_tuple_2
+overload
+array0_tuple with array0_tuple_3
+overload
+array0_tuple with array0_tuple_4
+overload
+array0_tuple with array0_tuple_5
+overload
+array0_tuple with array0_tuple_6
+//
+(* ****** ****** *)
+//
+fun{}
+array0_of_arrszref
+  {a:vt0p}(arrszref(a)):<> array0(a)
+//
+fun{}
+arrszref_of_array0
+  {a:vt0p}(A: array0(a)):<> arrszref(a)
+//
+(* ****** ****** *)
 //
 fun{}
 array0_make_arrpsz
   {a:vt0p}{n:int}
   (psz: arrpsz(INV(a), n)):<!wrt> array0(a)
-overload array0 with array0_make_arrpsz
 //
 fun{}
 array0_make_arrayref
   {a:vt0p}{n:int}
-  (A: arrayref(a, n), n: size_t (n)):<!wrt> array0(a)
+  (Arf: arrayref(a, n), n: size_t(n)):<!wrt> array0(a)
+//
+symintr array0
+//
+overload array0 with array0_make_arrpsz
 overload array0 with array0_make_arrayref
 //
 (* ****** ****** *)
 //
 fun{}
-array0_get_ref{a:vt0p} (A: array0(a)):<> Ptr1
+array0_get_ref
+{a:vt0p}(A: array0(a)):<> Ptr1
 fun{}
-array0_get_size{a:vt0p} (A: array0(a)):<> size_t
+array0_get_size
+{a:vt0p}(A: array0(a)):<> size_t
 //
 fun{}
 array0_get_refsize
   {a:vt0p}
-  (array0(a)):<> [n:nat] (arrayref(a, n), size_t(n))
+(
+A : array0(a)
+) :<> [n:nat] (arrayref(a, n), size_t(n))
+//
+(* ****** ****** *)
+//
+symintr
+array0_make_elt
+//
+fun{a:t0p}
+array0_make_elt_int
+  (asz: int, x0: a):<!wrt> array0(a)
+//
+fun{a:t0p}
+array0_make_elt_size
+  (asz: size_t, x0: a):<!wrt> array0(a)
+//
+overload
+array0_make_elt with array0_make_elt_int
+overload
+array0_make_elt with array0_make_elt_size
 //
 (* ****** ****** *)
 //
 fun{a:t0p}
-array0_make_elt (asz: size_t, x: a):<!wrt> array0(a)
-//
-(* ****** ****** *)
-//
+array0_make_list
+  (xs: list0(INV(a))):<!wrt> array0(a)
 fun{a:t0p}
-array0_make_list (xs: list0(INV(a))):<!wrt> array0(a)
-fun{a:t0p}
-array0_make_rlist (xs: list0(INV(a))):<!wrt> array0(a)
+array0_make_rlist
+  (xs: list0(INV(a))):<!wrt> array0(a)
 //
 (* ****** ****** *)
 
 fun{a:t0p}
 array0_make_subarray
-  (A: array0(a), st: size_t, ln: size_t):<!wrt> array0(a)
+( A: array0(a)
+, st: size_t, ln: size_t):<!wrt> array0(a)
 // end of [array0_make_subarray]
 
 (* ****** ****** *)
@@ -1240,66 +1486,87 @@ array0_make_subarray
 fun{a:t0p}
 array0_get_at_size
   (A: array0(a), i: size_t):<!exnref> (a)
-fun{a:t0p}{tk:tk}
+fun
+{a:t0p}{tk:tk}
 array0_get_at_gint
   (A: array0(a), i: g0int(tk)):<!exnref> (a)
-fun{a:t0p}{tk:tk}
+fun
+{a:t0p}{tk:tk}
 array0_get_at_guint
   (A: array0(a), i: g0uint(tk)):<!exnref> (a)
 //
 symintr array0_get_at
 //
-overload array0_get_at with array0_get_at_gint
-overload array0_get_at with array0_get_at_guint
+overload
+array0_get_at with array0_get_at_gint
+overload
+array0_get_at with array0_get_at_guint
 //
 (* ****** ****** *)
 //
 fun{a:t0p}
 array0_set_at_size
-  (A: array0(a), i: size_t, x: a):<!exnrefwrt> void
-fun{a:t0p}{tk:tk}
+( A: array0(a)
+, i: size_t, x: a):<!exnrefwrt> void
+fun
+{a:t0p}{tk:tk}
 array0_set_at_gint
-  (A: array0(a), i: g0int(tk), x: a):<!exnrefwrt> void
-fun{a:t0p}{tk:tk}
+( A: array0(a)
+, i: g0int(tk), x: a):<!exnrefwrt> void
+fun
+{a:t0p}{tk:tk}
 array0_set_at_guint
-  (A: array0(a), i: g0uint(tk), x: a):<!exnrefwrt> void
+( A: array0(a)
+, i: g0uint(tk), x: a):<!exnrefwrt> void
 //
 symintr array0_set_at
 //
-overload array0_set_at with array0_set_at_gint
-overload array0_set_at with array0_set_at_guint
+overload
+array0_set_at with array0_set_at_gint
+overload
+array0_set_at with array0_set_at_guint
 //
 (* ****** ****** *)
 //
 fun{a:vt0p}
 array0_exch_at_size
-  (A: array0(a), i: size_t, x: &a >> _):<!exnrefwrt> void
-fun{a:vt0p}{tk:tk}
+( A: array0(a)
+, i: size_t, x: &a >> _):<!exnrefwrt> void
+//
+fun
+{a:vt0p}{tk:tk}
 array0_exch_at_gint
-  (A: array0(a), i: g0int(tk), x: &a >> _):<!exnrefwrt> void
-fun{a:vt0p}{tk:tk}
+( A: array0(a)
+, i: g0int(tk), x: &a >> _):<!exnrefwrt> void
+fun
+{a:vt0p}{tk:tk}
 array0_exch_at_guint
-  (A: array0(a), i: g0uint(tk), x: &a >> _):<!exnrefwrt> void
+( A: array0(a)
+, i: g0uint(tk), x: &a >> _):<!exnrefwrt> void
 //
 symintr array0_exch_at
 //
-overload array0_exch_at with array0_exch_at_gint
-overload array0_exch_at with array0_exch_at_guint
+overload
+array0_exch_at with array0_exch_at_gint
+overload
+array0_exch_at with array0_exch_at_guint
 //
 (* ****** ****** *)
-
+//
 fun{a:vt0p}
 array0_interchange
-  (A: array0(a), i: size_t, j: size_t):<!exnrefwrt> void
+( A: array0(a)
+, i: size_t, j: size_t):<!exnrefwrt> void
 // end of [array0_interchange]
-
+//
 (* ****** ****** *)
-
+//
 fun{a:vt0p}
 array0_subcirculate
-  (A: array0(a), i: size_t, j: size_t):<!exnrefwrt> void
+( A: array0(a)
+, i: size_t, j: size_t):<!exnrefwrt> void
 // end of [array0_subcirculate]
-
+//
 (* ****** ****** *)
 //
 fun{a:vt0p}
@@ -1363,6 +1630,28 @@ array0_tabulate
 //
 (* ****** ****** *)
 //
+fun
+{a:vt0p}
+array0_tabulate_method_int
+  {n:nat}
+(
+  asz: int(n))(fopr: (natLt(n)) -<cloref1> a
+) : array0(a) // end of [array0_tabulate_method_int]
+fun
+{a:vt0p}
+array0_tabulate_method_size
+  {n:int}
+(
+  asz: size_t(n))(fopr: (sizeLt(n)) -<cloref1> a
+) : array0(a) // end of [array0_tabulate_method_size]
+//
+overload
+.array0_tabulate with array0_tabulate_method_int
+overload
+.array0_tabulate with array0_tabulate_method_size
+//
+(* ****** ****** *)
+//
 (*
 ** HX:
 ** Raising NotFoundExn
@@ -1372,14 +1661,14 @@ fun
 {a:vt0p}
 array0_find_exn
 (
-  A: array0(a), pred: (&a) -<cloref1> bool
+xs: array0(a), pred: (&a) -<cloref1> bool
 ) : size_t // end of [array0_find_exn]
 //
 fun
 {a:vt0p}
 array0_find_opt
 (
-  A: array0(a), pred: (&a) -<cloref1> bool
+xs: array0(a), pred: (&a) -<cloref1> bool
 ) : Option_vt(size_t) // end-of-function
 //
 (* ****** ****** *)
@@ -1388,34 +1677,41 @@ fun
 {a:vt0p}
 array0_exists
 (
-  A0: array0(a), pred: (&a) -<cloref1> bool
+xs: array0(a), pred: (&a) -<cloref1> bool
 ) : bool // end of [array0_exists]
 fun
 {a:vt0p}
 array0_exists_method
 (
-  A0: array0(a)) (pred: (&a) -<cloref1> bool
+xs: array0(a))(pred: (&a) -<cloref1> bool
 ) : bool // end of [array0_exists_method]
 //
-overload .exists with array0_exists_method
+overload
+exists with array0_exists
+overload
+.exists with array0_exists_method
 //
 (* ****** ****** *)
 //
 fun
 {a:t0p}
 array0_iexists
-(
-  xs: array0(a), pred: cfun(size_t, a, bool)
+( xs: array0(a)
+, pred: (size_t, &a) -<cloref1> bool
 ) : bool // end of [array0_iexists]
 //
 fun
 {a:t0p}
 array0_iexists_method
 (
-  xs: array0(a)) (pred: cfun(size_t, a, bool)
+xs: array0(a)
+)(pred: (size_t, &a) -<cloref1> bool
 ) : bool // end of [array0_iexists_method]
 //
-overload .iexists with array0_iexists_method
+overload
+iexists with array0_iexists
+overload
+.iexists with array0_iexists_method
 //
 (* ****** ****** *)
 //
@@ -1423,34 +1719,41 @@ fun
 {a:vt0p}
 array0_forall
 (
-  A0: array0(a), pred: (&a) -<cloref1> bool
+xs: array0(a), pred: (&a) -<cloref1> bool
 ) : bool // end of [array0_forall]
 fun
 {a:vt0p}
 array0_forall_method
 (
-  A0: array0(a)) (pred: (&a) -<cloref1> bool
+xs: array0(a)) (pred: (&a) -<cloref1> bool
 ) : bool // end of [array0_forall_method]
 //
-overload .forall with array0_forall_method
+overload
+forall with array0_forall
+overload
+.forall with array0_forall_method
 //
 (* ****** ****** *)
 //
 fun
 {a:t0p}
 array0_iforall
-(
-  xs: array0(a), pred: cfun(size_t, a, bool)
+( xs: array0(a)
+, pred: (size_t, &a) -<cloref1> bool
 ) : bool // end of [array0_iforall]
 //
 fun
 {a:t0p}
 array0_iforall_method
 (
-  xs: array0(a)) (pred: cfun(size_t, a, bool)
+xs: array0(a)
+)(pred: (size_t, &a) -<cloref1> bool
 ) : bool // end of [array0_iforall_method]
 //
-overload .iforall with array0_iforall_method
+overload
+iforall with array0_iforall
+overload
+.iforall with array0_iforall_method
 //
 (* ****** ****** *)
 //
@@ -1470,7 +1773,10 @@ array0_foreach_method
 ) (fwork: (&a >> _) -<cloref1> void): void
 // end of [array0_foreach_methon]
 //
-overload .foreach with array0_foreach_method
+overload
+foreach with array0_foreach
+overload
+.foreach with array0_foreach_method
 //
 (* ****** ****** *)
 //
@@ -1490,7 +1796,10 @@ array0_iforeach_method
 ) (fwork: (size_t, &a >> _) -<cloref1> void): void
 // end of [array0_iforeach_method]
 //
-overload .iforeach with array0_iforeach_method
+overload
+iforeach with array0_iforeach
+overload
+.iforeach with array0_iforeach_method
 //
 (* ****** ****** *)
 //
@@ -1506,7 +1815,10 @@ array0_rforeach_method
   (A: array0(a)) (fwork: (&a >> _) -<cloref1> void): void
 // end of [array0_rforeach]
 //
-overload .rforeach with array0_rforeach_method
+overload
+rforeach with array0_rforeach
+overload
+.rforeach with array0_rforeach_method
 //
 (* ****** ****** *)
 //
@@ -1536,8 +1848,8 @@ fun{
 res:vt0p}{a:vt0p
 } array0_ifoldleft
 (
-  A0: array0(a)
-, ini: res, fopr: (res, size_t, &a) -<cloref1> res
+  A0: array0(a), ini: res
+, fopr: (res, size_t, &a) -<cloref1> res
 ) : res // end of [array0_ifoldleft]
 //
 fun{
@@ -1547,10 +1859,14 @@ res:vt0p}{a:vt0p
   A: array0(a), TYPE(res)
 )
 (
-  ini: res, fopr: (res, size_t, &a) -<cloref1> res
+  ini: res
+, fopr: (res, size_t, &a) -<cloref1> res
 ) : res // end of [array0_ifoldleft_method]
 //
-overload .ifoldleft with array0_ifoldleft_method
+overload
+ifoldleft with array0_ifoldleft
+overload
+.ifoldleft with array0_ifoldleft_method
 //
 (* ****** ****** *)
 //
@@ -1574,39 +1890,50 @@ a:vt0p}{res:vt0p
   fopr: (&a, res) -<cloref1> res, snk: res
 ) : res // end of [array0_foldright_method]
 //
-overload .foldright with array0_foldright_method
+overload
+foldright with array0_foldright
+overload
+.foldright with array0_foldright_method
 //
 (* ****** ****** *)
 //
 fun
 {a:t0p}
-streamize_array0_elt(array0(a)):<!wrt> stream_vt(a)
+streamize_array0_elt
+  (A0: array0(a)):<!wrt> stream_vt(a)
 //
 (* ****** ****** *)
 //
 fun
 {a:vt0p}
 array0_is_ordered
-  (A0: array0(a), cmp: (&a, &a) -<cloref1> int): bool
+( A0: array0(a)
+, cmp: (&a, &a) -<cloref1> int): bool
 //
 (* ****** ****** *)
 //
 fun
 {a:vt0p}
 array0_quicksort
-  (A0: array0(a), cmp: (&a, &a) -<cloref1> int): void
+( A0: array0(a)
+, cmp: (&a, &a) -<cloref1> int): void
 //
 (* ****** ****** *)
 //
 // Overloading certain symbols
 //
 (* ****** ****** *)
-
-overload [] with array0_get_at_gint
-overload [] with array0_get_at_guint
-overload [] with array0_set_at_gint
-overload [] with array0_set_at_guint
-
+//
+overload
+[] with array0_get_at_gint
+overload
+[] with array0_set_at_gint
+//
+overload
+[] with array0_get_at_guint
+overload
+[] with array0_set_at_guint
+//
 (* ****** ****** *)
 
 overload size with array0_get_size
@@ -1656,16 +1983,16 @@ overload append with array0_append
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: gmhwxiATgmailDOTcom *)
 (* Start time: December, 2012 *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
 
 (* ****** ****** *)
 //
 #define
 ATS_PACKNAME "ATSLIB.libats.ML"
 //
-#define
-ATS_EXTERN_PREFIX "atslib_ML_" // prefix for external names
+#define // prefix for external
+ATS_EXTERN_PREFIX "atslib_ML_" // names
 //
 (* ****** ****** *)
 
@@ -1687,51 +2014,69 @@ matrix0_vt0ype_type
   (a: vt@ype(*invariant*)) = ptr
 stadef matrix0 = matrix0_vt0ype_type
 //
-#endif
+#endif // #if(0)
 
 (* ****** ****** *)
-
+//
 (*
-typedef matrix0 (a: vt@ype) = mtrxszref (a)
+typedef
+matrix0(a: vt@ype) = mtrxszref(a)
 *)
-
+//
 (* ****** ****** *)
-
-sortdef t0p = t@ype and vt0p = viewt@ype
-
+//
+(*
+//
+// HX: already defined
+//
+sortdef
+t0p = t@ype and vt0p = viewt@ype
+//
+*)
+//
 (* ****** ****** *)
 //
 fun{}
 matrix0_of_mtrxszref
-  {a:vt0p} (mtrxszref (a)):<> matrix0 (a)
+  {a:vt0p}(mtrxszref(a)):<> matrix0(a)
 //
 fun{}
 mtrxszref_of_matrix0
-  {a:vt0p} (M: matrix0 (a)):<> mtrxszref (a)
+  {a:vt0p}(M: matrix0(a)):<> mtrxszref(a)
 //
 (* ****** ****** *)
-
-fun{a:t0p}
+//
+symintr
 matrix0_make_elt
-  (nrow: size_t, ncol: size_t, init: a):<!wrt> matrix0 (a)
+//
+fun{a:t0p}
+matrix0_make_elt_int
+  (nrow: int, ncol: int, init: a):<!wrt> matrix0(a)
 // end of [matrix0_make_elt]
-
+fun{a:t0p}
+matrix0_make_elt_size
+  (nrow: size_t, ncol: size_t, init: a):<!wrt> matrix0(a)
+// end of [matrix0_make_elt]
+//
+overload matrix0_make_elt with matrix0_make_elt_int
+overload matrix0_make_elt with matrix0_make_elt_size
+//
 (* ****** ****** *)
 //
 fun{}
-matrix0_get_ref{a:vt0p} (M: matrix0 a):<> Ptr1
+matrix0_get_ref{a:vt0p}(M: matrix0 a):<> Ptr1
 //
 fun{}
-matrix0_get_nrow{a:vt0p} (M: matrix0 a):<> size_t
+matrix0_get_nrow{a:vt0p}(M: matrix0 a):<> size_t
 fun{}
-matrix0_get_ncol{a:vt0p} (M: matrix0 a):<> size_t
+matrix0_get_ncol{a:vt0p}(M: matrix0 a):<> size_t
 //
 fun{}
 matrix0_get_refsize
   {a:vt0p}
 (
-  M: matrix0 (a)
-) :<> [m,n:nat] (matrixref (a, m, n), size_t(m), size_t(n))
+M : matrix0(a)
+) :<> [m,n:nat] (matrixref(a, m, n), size_t(m), size_t(n))
 //
 (* ****** ****** *)
 //
@@ -1741,9 +2086,10 @@ matrix0_get_at_int
 //
 fun{a:t0p}
 matrix0_get_at_size
-  (M: matrix0 (a), i: size_t, j: size_t):<!exnref> a
+  (M: matrix0(a), i: size_t, j: size_t):<!exnref> a
 //
 symintr matrix0_get_at
+//
 overload matrix0_get_at with matrix0_get_at_int
 overload matrix0_get_at with matrix0_get_at_size
 //
@@ -1755,68 +2101,108 @@ matrix0_set_at_int
 //
 fun{a:t0p}
 matrix0_set_at_size
-  (M: matrix0 (a), i: size_t, j: size_t, x: a):<!exnrefwrt> void
+  (M: matrix0(a), i: size_t, j: size_t, x: a):<!exnrefwrt> void
 //
 symintr matrix0_set_at
+//
 overload matrix0_set_at with matrix0_set_at_int
 overload matrix0_set_at with matrix0_set_at_size
 //
 (* ****** ****** *)
 //
-fun{a:vt0p}
-print_matrix0 (M: matrix0 (a)): void
-fun{a:vt0p}
-prerr_matrix0 (M: matrix0 (a)): void
+fun
+{a:vt0p}
+print_matrix0(M: matrix0(a)): void
+fun
+{a:vt0p}
+prerr_matrix0(M: matrix0(a)): void
 //
 (*
 fprint_matrix$sep1 // col separation
 fprint_matrix$sep2 // row separation
 *)
-fun{a:vt0p}
-fprint_matrix0 (out: FILEref, M: matrix0 (a)): void
-fun{a:vt0p}
+//
+fun
+{a:vt0p}
+fprint_matrix0
+  (out: FILEref, M: matrix0(a)): void
+//
+fun
+{a:vt0p}
 fprint_matrix0_sep
-  (out: FILEref, M: matrix0 (a), sep1: string, sep2: string): void
+(
+  out: FILEref, M: matrix0(a), sep1: string, sep2: string
+) : void // end of [fprint_matrix0_sep]
 //
 (* ****** ****** *)
 
 fun{a:t0p}
-matrix0_copy (M: matrix0 (a)): matrix0 (a)
+matrix0_copy(M: matrix0(a)): matrix0(a)
 
 (* ****** ****** *)
-
-fun{a:vt0p}
+//
+fun
+{a:vt0p}
 matrix0_tabulate
-(
-  nrow: size_t, ncol: size_t, f: cfun (size_t, size_t, a)
-) : matrix0 (a) // end-of-fun
-
+  {m,n:int}
+( nrow: size_t(m)
+, ncol: size_t(n)
+, fopr: cfun(sizeLt(m), sizeLt(n), a)
+) : matrix0(a) // end of [matrix0_tabulate]
+//
 (* ****** ****** *)
-
-fun{a:vt0p}
+//
+fun
+{a:vt0p}
+matrix0_tabulate_method_int
+  {m,n:nat}
+( nrow: int(m)
+, ncol: int(n))(fopr: cfun(natLt(m), natLt(n), a)
+) : matrix0(a) // end of [matrix0_tabulate_method_int]
+//
+fun
+{a:vt0p}
+matrix0_tabulate_method_size
+  {m,n:int}
+( nrow: size_t(m)
+, ncol: size_t(n))(fopr: cfun(sizeLt(m), sizeLt(n), a)
+) : matrix0(a) // end of [matrix0_tabulate_method_size]
+//
+overload
+.matrix0_tabulate with matrix0_tabulate_method_int
+overload
+.matrix0_tabulate with matrix0_tabulate_method_size
+//
+(* ****** ****** *)
+//
+fun
+{a:vt0p}
 matrix0_foreach
-  (M: matrix0 (a), f: (&a >> _) -<cloref1> void): void
-// end of [matrix0_foreach]
-
-fun{a:vt0p}
+(
+M : matrix0(a), fwork: (&a >> _) -<cloref1> void
+) : void // end of [matrix0_foreach]
+//
+fun
+{a:vt0p}
 matrix0_iforeach
-  (M: matrix0 (a), f: (size_t, size_t, &a >> _) -<cloref1> void): void
-// end of [matrix0_iforeach]
-
+(
+M : matrix0(a), fwork: (size_t, size_t, &a >> _) -<cloref1> void
+) : void // end of [matrix0_iforeach]
+//
 (* ****** ****** *)
 
 fun{
 res:vt0p}{a:vt0p
 } matrix0_foldleft
 (
-  M: matrix0 (a), ini: res, f: (res, &a) -<cloref1> res
+  M: matrix0(a), ini: res, fopr: (res, &a) -<cloref1> res
 ) : res // end of [matrix0_foldleft]
 
 fun{
 res:vt0p}{a:vt0p
 } matrix0_ifoldleft
 (
-  M: matrix0 (a), ini: res, f: (res, size_t, size_t, &a) -<cloref1> res
+  M: matrix0(a), ini: res, fopr: (res, size_t, size_t, &a) -<cloref1> res
 ) : res // end of [matrix0_ifoldleft]
 
 (* ****** ****** *)
@@ -1829,19 +2215,21 @@ overload .nrow with matrix0_get_nrow
 overload .ncol with matrix0_get_ncol
 
 (* ****** ****** *)
-
+//
 overload [] with matrix0_get_at_int of 0
-overload [] with matrix0_get_at_size of 0
 overload [] with matrix0_set_at_int of 0
+//
+overload [] with matrix0_get_at_size of 0
 overload [] with matrix0_set_at_size of 0
-
+//
 (* ****** ****** *)
-
+//
 overload print with print_matrix0
 overload prerr with print_matrix0
+//
 overload fprint with fprint_matrix0
 overload fprint with fprint_matrix0_sep
-
+//
 (* ****** ****** *)
 
 (* end of [matrix0.sats] *)
@@ -1875,15 +2263,19 @@ overload fprint with fprint_matrix0_sep
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: gmmhwxiATgmailDOTcom *)
 (* Start time: October, 2016 *)
+(* Authoremail: gmmhwxiATgmailDOTcom *)
 
 (* ****** ****** *)
 //
 #define
-ATS_PACKNAME "ATSLIB.libats.ML"
+ATS_PACKNAME
+"ATSLIB.libats.ML"
+//
+// HX: prefix for external names
+//
 #define
-ATS_EXTERN_PREFIX "atslib_ML_" // prefix for external names
+ATS_EXTERN_PREFIX "atslib_ML_"
 //
 (* ****** ****** *)
 
@@ -1905,27 +2297,48 @@ stream_make_list0
 //
 (* ****** ****** *)
 //
+fun{
+a:t0p}{b:t0p
+} stream_map
+(
+xs: stream(INV(a)), fopr: (a) -<cloref> b
+) :<!laz> stream(b)
+//
 fun
 {a:t0p}{b:t0p}
 stream_map_method
 (
-  stream(INV(a)), TYPE(b)
+xs: stream(INV(a)), TYPE(b)
 ) (fopr: (a) -<cloref> b):<!laz> stream(b)
 //
 overload .map with stream_map_method
 //
 (* ****** ****** *)
 //
+fun{
+a:t0p}{b:t0p
+} stream_imap
+(
+xs: stream(INV(a)), fopr: (intGte(0), a) -<cloref> b
+) :<!laz> stream(b) // end-of-fun
+//
 fun
 {a:t0p}{b:t0p}
 stream_imap_method
 (
-  stream(INV(a)), TYPE(b)
+xs: stream(INV(a)), TYPE(b)
 ) (fopr: (intGte(0), a) -<cloref> b):<!laz> stream(b)
 //
 overload .imap with stream_imap_method
 //
 (* ****** ****** *)
+//
+fun
+{a:t0p}
+stream_filter
+(
+xs: stream(INV(a)), pred: (a) -<cloref> bool
+) :<!laz> stream(a) // end-of-function
 //
 fun
 {a:t0p}
@@ -1935,11 +2348,18 @@ stream_filter_method
 )
 (
   pred: (a) -<cloref> bool
-) :<!laz> stream(a) // end-of-fun
+) :<!laz> stream(a) // end-of-function
 //
 overload .filter with stream_filter_method
 //
 (* ****** ****** *)
+//
+fun{
+res:t0p}{x:t0p
+} stream_scan
+(
+  stream(INV(x)), ini: res, (res, x) -<cloref> res
+) :<!laz> stream(res) // end-of-function
 //
 fun{
 res:t0p}{x:t0p
@@ -1954,6 +2374,11 @@ overload .scan with stream_scan_method
 //
 fun
 {a:t0p}
+stream_foreach
+  (xs: stream(a), fwork: (a) -<cloref1> void): void
+//
+fun
+{a:t0p}
 stream_foreach_method
   (xs: stream(INV(a)))(fwork: (a) -<cloref1> void): void
 //
@@ -1961,6 +2386,26 @@ overload .foreach with stream_foreach_method
 //
 (* ****** ****** *)
 //
+fun
+{a:t0p}
+stream_iforeach
+( xs: stream(a)
+, fwork: (intGte(0), a) -<cloref1> void): void
+//
+fun
+{a:t0p}
+stream_iforeach_method
+  (xs: stream(INV(a)))
+  (fwork: (intGte(0), a) -<cloref1> void): void
+//
+overload .iforeach with stream_iforeach_method
+//
+(* ****** ****** *)
+//
+fun{
+res:vt0p}{a:t0p
+} stream_foldleft
+  (xs: stream(a), ini: res, fopr: (res, a) -<cloref1> res): res
 fun{
 res:vt0p}{a:t0p
 } stream_foldleft_method
@@ -2169,13 +2614,24 @@ fileref_get_line_string(filr: FILEref): string
 fun
 fileref_get_lines_stringlst(filr: FILEref): stringlst0
 //
+fun{}
+filename_get_lines_stringlst_opt(path: string): Option_vt(stringlst0)
+//
 (* ****** ****** *)
 //
 fun{}
 streamize_fileref_char(inp: FILEref): stream_vt(char)
+(*
+fun{}
+streamize_fileptr_char(inp: FILEptr1): stream_vt(char)
+*)
+//
+(* ****** ****** *)
 //
 fun{}
 streamize_fileref_line(inp: FILEref): stream_vt(string)
+fun{}
+streamize_fileptr_line(inp: FILEptr1): stream_vt(string)
 //
 (* ****** ****** *)
 //
@@ -2272,6 +2728,9 @@ fun{}
 int_forall_method
   (n: int) (f: cfun1 (int, bool)): bool
 //
+(*
+overload forall with int_forall_cloref
+*)
 overload .forall with int_forall_method
 //
 (* ****** ****** *)
@@ -2283,6 +2742,9 @@ fun{}
 int_foreach_method
   (n: int) (f: cfun1 (int, void)): void
 //
+(*
+overload foreach with int_foreach_cloref
+*)
 overload .foreach with int_foreach_method
 //
 (* ****** ****** *)
@@ -2295,6 +2757,9 @@ fun{res:vt0p}
 int_foldleft_method
   (int, TYPE(res))(ini: res, f: cfun2 (res, int, res)): res
 //
+(*
+overload foldleft with int_foldleft_cloref
+*)
 overload .foldleft with int_foldleft_method
 //
 (* ****** ****** *)
@@ -2306,6 +2771,9 @@ fun{}
 intrange_forall_method
   (lr: @(int, int)) (f: cfun1 (int, bool)): bool
 //
+(*
+overload forall with intrange_forall_cloref
+*)
 overload .forall with intrange_forall_method
 //
 (* ****** ****** *)
@@ -2317,6 +2785,9 @@ fun{}
 intrange_foreach_method
   (lr: @(int, int)) (f: cfun1 (int, void)): void
 //
+(*
+overload foreach with intrange_foreach_cloref
+*)
 overload .foreach with intrange_foreach_method
 //
 (* ****** ****** *)
@@ -2329,6 +2800,9 @@ fun{res:vt0p}
 intrange_foldleft_method
   ((int, int), TYPE(res))(ini: res, f: cfun2 (res, int, res)): res
 //
+(*
+overload foldleft with intrange_foldleft_cloref
+*)
 overload .foldleft with intrange_foldleft_method
 //
 (* ****** ****** *)
@@ -3110,11 +3584,40 @@ staload "libats/ML/SATS/list0.sats"
 //
 implement
 {a}(*tmp*)
-list0_make_sing (x) =
+list0_tuple_0() = list0_nil()
+//
+implement
+{a}(*tmp*)
+list0_tuple_1(x0) = g0ofg1($list{a}(x0))
+implement
+{a}(*tmp*)
+list0_tuple_2(x0, x1) = g0ofg1($list{a}(x0, x1))
+implement
+{a}(*tmp*)
+list0_tuple_3(x0, x1, x2) = g0ofg1($list{a}(x0, x1, x2))
+//
+implement
+{a}(*tmp*)
+list0_tuple_4
+(x0, x1, x2, x3) = g0ofg1($list{a}(x0, x1, x2, x3))
+implement
+{a}(*tmp*)
+list0_tuple_5
+(x0, x1, x2, x3, x4) = g0ofg1($list{a}(x0, x1, x2, x3, x4))
+implement
+{a}(*tmp*)
+list0_tuple_6
+(x0, x1, x2, x3, x4, x5) = g0ofg1($list{a}(x0, x1, x2, x3, x4, x5))
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+list0_make_sing(x) =
   list0_cons{a}(x, list0_nil)
 implement
 {a}(*tmp*)
-list0_make_pair (x1, x2) =
+list0_make_pair(x1, x2) =
   list0_cons{a}(x1, list0_cons{a}(x2, list0_nil))
 //
 (* ****** ****** *)
@@ -3537,7 +4040,7 @@ list0_fset_at_exn
   (xs, i0, x0) = let
 //
 fun
-loop
+fset
 {i:nat} .<i>.
 (
   xs: list0(a), i: int i
@@ -3549,19 +4052,19 @@ case+ xs of
     (x, xs) =>
   (
     if i > 0
-      then cons0(x, loop(xs, i-1)) else cons0(x0, xs)
+      then cons0(x, fset(xs, i-1)) else cons0(x0, xs)
     // end of [if]
   ) // end of [list0_cons]
 | list0_nil() => $raise ListSubscriptExn()
 //
-) (* end of [loop] *)
+) (* end of [fset] *)
 //
 val i0 = g1ofg0(i0)
 //
 in
 //
 if i0 >= 0
-  then loop(xs, i0) else $raise ListSubscriptExn()
+  then fset(xs, i0) else $raise ListSubscriptExn()
 //
 end // end of [list0_fset_at_exn]
 //
@@ -3582,6 +4085,88 @@ Some_vt{list0(a)}
 )
 with ~ListSubscriptExn((*void*)) => None_vt()
 ) (* $effmask_exn *)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+list0_fexch_at_exn
+  (xs, i0, x0) = let
+//
+val p0 = addr@(x0)
+//
+fun
+fexch
+{i:nat} .<i>.
+(
+xs: list0(a), i: int(i), visited: List0_vt(a)
+) :<!exnwrt> list0(a) =
+(
+case+ xs of
+| list0_cons
+    (x1, xs) =>
+  (
+    if
+    (i > 0)
+    then
+    (
+      fexch
+      (xs, i-1, list_vt_cons(x1, visited))
+    )
+    else let
+      val x2 = $UN.ptr0_get<a>(p0)
+      val () = $UN.ptr0_set<a>(p0, x1)
+      val x2_xs = g1ofg0(list0_cons(x2, xs))
+    in
+      g0ofg1(list_reverse_append1_vt(visited, x2_xs))
+    end // end of [else]
+  )  
+| list0_nil() => let
+    val () = list_vt_free(visited) in $raise ListSubscriptExn()
+  end // end of [list0_nil]
+)
+//
+val i0 = g1ofg0(i0)
+//
+in
+  if i0 >= 0
+    then fexch(xs, i0, list_vt_nil()) else $raise ListSubscriptExn()
+  // end of [if]
+end // end of [list0_fexch_at_exn]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+list0_fexch_at_opt
+(
+  xs, i0, x0
+) = let
+//
+val p0 = addr@x0
+//
+in
+//
+$effmask_exn
+(
+try
+Some_vt{list0(a)}
+(
+let
+  val
+  (pf, fpf | p0) =
+  $UN.ptr_vtake{a}(p0)
+  val res =
+  list0_fexch_at_exn<a>(xs, i0, !p0)
+  prval ((*returned*)) = fpf(pf)
+in
+  res
+end // end of [let]
+)
+with ~ListSubscriptExn((*void*)) => None_vt()
+) (* $effmask_exn *)
+//
+end // end of [list0_fexch_at_opt]
 
 (* ****** ****** *)
 
@@ -3802,19 +4387,24 @@ implement
 list0_take_exn
   (xs, i) = let
 //
-val i = g1ofg0_int (i)
-val xs = g1ofg0_list (xs)
+val i = g1ofg0_int(i)
+val xs = g1ofg0_list(xs)
 //
 in
-  if i >= 0 then let
-    val res =
-      $effmask_wrt (list_take_exn<a>(xs, i))
-    // end of [val]
-  in
-    list0_of_list_vt (res)
-  end else
-    $raise (IllegalArgExn"list0_take_exn:i")
-  // end of [if]
+//
+if
+(i >= 0)
+then let
+//
+val
+res =
+$effmask_wrt(list_take_exn<a>(xs, i))
+//
+in
+  list0_of_list_vt(res)
+end else (
+  $raise(IllegalArgExn"list0_take_exn:i")
+) (* end of [if] *)
 end // end of [list0_take_exn]
 
 (* ****** ****** *)
@@ -3828,13 +4418,28 @@ val i = g1ofg0_int (i)
 val xs = g1ofg0_list (xs)
 //
 in
-  if i >= 0 then
-    list0_of_list (list_drop_exn<a>(xs, i))
-  else
-    $raise (IllegalArgExn"list0_drop_exn:i")
-  // end of [if]
+//
+if
+(i >= 0)
+then
+g0ofg1(list_drop_exn<a>(xs, i))
+else
+$raise(IllegalArgExn"list0_drop_exn:i")
+//
 end // end of [list0_drop_exn]
 
+(* ****** ****** *)
+//
+implement
+{a}{b}//tmp
+list0_cata
+  (xs, fnil, fcons) =
+(
+case+ xs of
+| list0_nil() => fnil()
+| list0_cons(x, xs) => fcons(x, xs)
+)
+//
 (* ****** ****** *)
 //
 implement
@@ -4134,31 +4739,54 @@ list0_iexists_method(xs) =
 implement
 {a1,a2}
 list0_exists2
+  (xs1, xs2, p0) = let
+//
+var sgn: int // uninitized
+//
+in
+  list0_exists2_eq<a1,a2>(xs1, xs2, p0, sgn)
+end // end of [list0_exists2]
+
+implement
+{a1,a2}
+list0_exists2_eq
 (
-  xs1, xs2, pred
-) = let
+  xs1, xs2, pred, sgn
+) = loop(xs1, xs2, sgn) where
+{
 //
 fun
 loop
 (
   xs1: list0(a1)
 , xs2: list0(a2)
+, sgn: &int? >> _
 ) : bool =
 (
   case+ xs1 of
-  | list0_nil() => false
-  | list0_cons(x1, xs1) => (
+  | list0_nil() => (
     case+ xs2 of
-    | list0_nil() => false
-    | list0_cons(x2, xs2) =>
-        if pred(x1, x2) then true else loop(xs1, xs2)
-      // end of [list_cons]
+    | list0_nil() =>
+      (sgn := 0; false)
+    | list0_cons _ =>
+      (sgn := ~1; false)
     )
-) (* end of [loop] *)
-//
-in
-  loop(xs1, xs2)
-end // end of [list0_exists2]
+  | list0_cons
+      (x1, xs1) =>
+    (
+    case+ xs2 of
+    | list0_nil() =>
+      (sgn := 1; false)
+    | list0_cons
+        (x2, xs2) =>
+      (
+        if pred(x1, x2)
+          then (sgn := 0; true) else loop(xs1, xs2, sgn)
+        // end of [if]
+      ) (* end of [list0_cons] *)
+    )
+)
+} (* end of [list0_exists2_eq] *)
 
 (* ****** ****** *)
 
@@ -4219,10 +4847,12 @@ list0_iforall_method(xs) =
 implement
 {a1,a2}
 list0_forall2
-  (xs1, xs2, p) = let
-  var sgn: int // uninitialized
+  (xs1, xs2, p0) = let
+//
+var sgn: int // uninitized
+//
 in
-  list0_forall2_eq (xs1, xs2, p, sgn)
+  list0_forall2_eq<a1,a2>(xs1, xs2, p0, sgn)
 end // end of [list0_forall2]
 
 implement
@@ -4242,17 +4872,24 @@ loop
 ) : bool =
 (
   case+ xs1 of
-  | list0_nil() => (
+  | list0_nil() =>
+    (
     case+ xs2 of
-    | list0_nil() => (sgn := 0; true)
-    | list0_cons _ => (sgn := ~1; true)
+    | list0_nil() =>
+      (sgn := 0; true)
+    | list0_cons _ =>
+      (sgn := ~1; true)
     )
-  | list0_cons(x1, xs1) => (
+  | list0_cons
+      (x1, xs1) =>
+    (
     case+ xs2 of
-    | list0_nil() => (sgn := 1; true)
-    | list0_cons (x2, xs2) =>
+    | list0_nil() =>
+      (sgn := 1; true)
+    | list0_cons
+        (x2, xs2) =>
       (
-        if pred (x1, x2)
+        if pred(x1, x2)
           then loop(xs1, xs2, sgn) else (sgn := 0; false)
         // end of [if]
       ) (* end of [list0_cons] *)
@@ -4339,7 +4976,9 @@ case+ xs of
   // list0_nil
 | list0_cons(x, xs) =>
   (
-    if pred(x) then Some_vt{a}(x) else loop(xs)
+    if pred(x)
+      then Some_vt{a}(x) else loop(xs)
+    // end of [if]
   ) (* end of [list_cons] *)
 //
 } (* end of [list0_find_opt] *)
@@ -4376,10 +5015,128 @@ case+ xs of
 | list0_nil() => (~1)
 | list0_cons(x, xs) =>
   (
-    if pred(x) then (i) else loop(xs, i+1)
+    if pred(x)
+      then (i) else loop(xs, i+1)
+    // end of [if]
   ) (* end of [list0_cons] *)
 //
 } (* end of [list0_find_index] *)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+list0_find_suffix
+(
+  xs, pred
+) = loop(xs) where
+{
+//
+fun
+loop(xs: list0(a)): list0(a) =
+(
+case+ xs of
+| list0_nil() =>
+  list0_nil()
+| list0_cons(_, xs2) =>
+  if pred(xs) then xs else loop(xs2)
+)
+//
+} (* end of [list0_find_suffix] *)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+list0_skip_while
+  (xs, pred) =
+  auxmain(xs) where
+{
+//
+fun
+auxmain
+(
+xs: list0(a)
+) : list0(a) =
+(
+case+ xs of
+| list0_nil() =>
+  list0_nil()
+| list0_cons(x0, xs1) =>
+  if pred(x0) then auxmain(xs1) else xs
+)
+//
+} // end of [list0_skip_while]
+
+implement
+{a}(*tmp*)
+list0_skip_until
+  (xs, pred) =
+  auxmain(xs) where
+{
+//
+fun
+auxmain
+(
+xs: list0(a)
+) : list0(a) =
+(
+case+ xs of
+| list0_nil() =>
+  list0_nil()
+| list0_cons(x0, xs1) =>
+  if pred(x0) then xs else auxmain(xs1)
+)
+//
+} // end of [list0_skip_until]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+list0_take_while
+  (xs, pred) = let
+//
+fun
+auxmain
+(
+xs: list0(a), res: List0_vt(a)
+) : List0_vt(a) =
+(
+case+ xs of
+| list0_nil() => res
+| list0_cons(x0, xs1) =>
+  if pred(x0)
+    then auxmain(xs1, list_vt_cons(x0, res)) else res
+  // end of [if]
+)
+//
+in
+  g0ofg1(list_vt_reverse(auxmain(xs, list_vt_nil())))
+end // end of [list0_take_while]
+
+implement
+{a}(*tmp*)
+list0_take_until
+  (xs, pred) = let
+//
+fun
+auxmain
+(
+xs: list0(a), res: List0_vt(a)
+) : List0_vt(a) =
+(
+case+ xs of
+| list0_nil() => res
+| list0_cons(x0, xs1) =>
+  if pred(x0)
+    then res else auxmain(xs1, list_vt_cons(x0, res))
+  // end of [if]
+)
+//
+in
+  g0ofg1(list_vt_reverse(auxmain(xs, list_vt_nil())))
+end // end of [list0_take_until]
 
 (* ****** ****** *)
 
@@ -4435,6 +5192,29 @@ case+ xys of
 
 (* ****** ****** *)
 //
+implement
+{a}(*tmp*)
+list0_filter
+  (xs, pred) = let
+//
+implement{a2}
+list_filter$pred
+  (x) = pred($UN.cast{a}(x))
+//
+val ys = list_filter<a>(g1ofg0(xs))
+//
+in
+  list0_of_list_vt (ys)
+end // end of [list0_filter]
+//
+implement
+{a}(*tmp*)
+list0_filter_method
+  (xs) = lam(pred) => list0_filter<a>(xs, pred)
+//
+
+(* ****** ****** *)
+//
 (*
 implement
 {a}{b}
@@ -4483,32 +5263,34 @@ list0_mapopt
 fun loop
 (
   xs: list0 (a)
-, res: &ptr? >> List0_vt (b)
+, res: &ptr? >> List0_vt(b)
 ) : void = let
 in
 //
 case+ xs of
+| list0_nil () =>
+  (
+    res := list_vt_nil ()
+  ) (* end of [list0_nil] *)
 | list0_cons
     (x, xs) =>
   (
   case+ fopr(x) of
-  | ~Some_vt y => let
+  | ~Some_vt(y) => let
       val () =
       (
       res :=
       list_vt_cons{b}{0}(y, _)
       )
-      val+list_vt_cons (_, res1) = res
-      val () = loop (xs, res1)
-      prval () = fold@ (res)
+      val+
+      list_vt_cons(_, res1) = res
+      val () = loop(xs, res1)
+      prval ((*folded*)) = fold@(res)
     in
       // nothing
     end // end of [Some0]
-  | ~None_vt () => loop (xs, res)
+  | ~None_vt((*void*)) => loop(xs, res)
   ) (* end of [list0_cons] *)
-| list0_nil () => (
-    res := list_vt_nil ()
-  ) (* end of [list0_nil] *)
 //
 end // end of [loop]
 //
@@ -4550,6 +5332,23 @@ in
 end // end of [list0_mapcons]
 
 (* ****** ****** *)
+//
+implement
+{a}{b}
+list0_mapjoin
+( xs
+, fopr
+) =
+  list0_concat<b>
+  (list0_map<a><list0(b)>(xs, fopr))
+//
+implement
+{a}{b}
+list0_mapjoin_method
+  (xs) =
+  lam(fopr) => list0_mapjoin<a><b>(xs, fopr)
+//
+(* ****** ****** *)
 
 implement
 {a}{b}
@@ -4572,12 +5371,68 @@ in
 end // end of [list0_imap]
 
 (* ****** ****** *)
+
+implement
+{a}{b}
+list0_imapopt
+  (xs, fopr) = res where
+{
+//
+fun loop
+(
+  i0: int
+, xs: list0 (a)
+, res: &ptr? >> List0_vt(b)
+) : void = let
+in
+//
+case+ xs of
+| list0_nil () =>
+  (
+    res := list_vt_nil ()
+  ) (* end of [list0_nil] *)
+| list0_cons
+    (x, xs) =>
+  (
+  case+
+  fopr(i0, x) of
+  | ~Some_vt(y) => let
+      val () =
+      (
+      res :=
+      list_vt_cons{b}{0}(y, _)
+      )
+      val+
+      list_vt_cons(_, res1) = res
+      val () = loop(i0+1, xs, res1)
+      prval ((*folded*)) = fold@(res)
+    in
+      // nothing
+    end // end of [Some0]
+  | ~None_vt((*void*)) => loop(i0+1, xs, res)
+  ) (* end of [list0_cons] *)
+//
+end // end of [loop]
+//
+var res: ptr
+val () = loop(0, xs, res)
+val res = list0_of_list_vt(res)
+//
+} // end of [list0_imapopt]
+
+(* ****** ****** *)
 //
 implement
 {a}{b}
 list0_imap_method
   (xs, _(*TYPE*)) =
   lam(fopr) => list0_imap<a><b>(xs, fopr)
+//
+implement
+{a}{b}
+list0_imapopt_method
+  (xs, _(*TYPE*)) =
+  lam(fopr) => list0_imapopt<a><b>(xs, fopr)
 //
 (* ****** ****** *)
 //
@@ -4620,28 +5475,34 @@ $UN.castvwtp0{b2}
 in
   list0_of_list_vt{b}(list_map2<a1,a2><b>(g1ofg0(xs1), g1ofg0(xs2)))
 end // end of [list0_map2]
-
+//
 (* ****** ****** *)
 //
 implement
-{a}(*tmp*)
-list0_filter
-  (xs, pred) = let
+{a1,a2}{b}
+list0_imap2
+  (xs1, xs2, fopr) = let
 //
-implement{a2}
-list_filter$pred
-  (x) = pred($UN.cast{a}(x))
-//
-val ys = list_filter<a>(g1ofg0(xs))
-//
-in
-  list0_of_list_vt (ys)
-end // end of [list0_filter]
+var _n_: int = 0
+val nptr = addr@(_n_)
 //
 implement
-{a}(*tmp*)
-list0_filter_method
-  (xs) = lam(pred) => list0_filter<a>(xs, pred)
+{a11,a12}{b2}
+list_map2$fopr
+  (x1, x2) = let
+//
+val n0 =
+$UN.ptr0_get<int>(nptr)
+val res =
+$UN.castvwtp0{b2}
+  (fopr(n0, $UN.cast{a1}(x1), $UN.cast{a2}(x2)))
+in
+  $UN.ptr0_set<int>(nptr, n0+1); res
+end // end of [list_map2$fopr]
+//
+in
+  list0_of_list_vt{b}(list_map2<a1,a2><b>(g1ofg0(xs1), g1ofg0(xs2)))
+end // end of [list0_imap2]
 //
 (* ****** ****** *)
 
@@ -4777,7 +5638,7 @@ end // end of [list0_crosswith]
 
 implement
 {x}(*tmp*)
-list0_foreach_choose2
+list0_choose2_foreach
 (
   xs, fwork
 ) = loop(xs) where
@@ -4807,18 +5668,18 @@ case+ ys of
   end // end of [list_cons]
 )
 //
-} (* end of [list0_foreach_choose2] *)
+} (* end of [list0_choose2_foreach] *)
 //
 implement
 {x}(*tmp*)
-list0_foreach_choose2_method(xs) =
-  lam(fwork) => list0_foreach_choose2<x>(xs, fwork)
+list0_choose2_foreach_method(xs) =
+  lam(fwork) => list0_choose2_foreach<x>(xs, fwork)
 //
 (* ****** ****** *)
 
 implement
 {x,y}(*tmp*)
-list0_foreach_xprod2
+list0_xprod2_foreach
 (
   xs0, ys0, fwork
 ) = loop(xs0) where
@@ -4842,19 +5703,19 @@ case+ ys of
 | list0_cons(y, ys) => (fwork(x0, y); loop2(x0, xs, ys))
 )
 //
-} (* end of [list0_foreach_xprod2] *)
+} (* end of [list0_xprod2_foreach] *)
 //
 implement
 {x,y}(*tmp*)
-list0_foreach_xprod2_method
+list0_xprod2_foreach_method
   (xs, ys) =
-  lam(fwork) => list0_foreach_xprod2<x,y>(xs, ys, fwork)
+  lam(fwork) => list0_xprod2_foreach<x,y>(xs, ys, fwork)
 //
 (* ****** ****** *)
 
 implement
 {x,y}(*tmp*)
-list0_iforeach_xprod2
+list0_xprod2_iforeach
 (
   xs0, ys0, fwork
 ) = loop(0, xs0) where
@@ -4887,15 +5748,15 @@ case+ ys of
   // end of [list0_cons]
 )
 //
-} (* end of [list0_iforeach_xprod2] *)
+} (* end of [list0_xprod2_iforeach] *)
 //
 implement
 {x,y}(*tmp*)
-list0_iforeach_xprod2_method
+list0_xprod2_iforeach_method
   (xs, ys) =
 (
-lam(fwork) => list0_iforeach_xprod2<x,y>(xs, ys, fwork)
-) (* list0_iforeach_xprod2_method *)
+lam(fwork) => list0_xprod2_iforeach<x,y>(xs, ys, fwork)
+) (* list0_xprod2_iforeach_method *)
 //
 (* ****** ****** *)
 //
@@ -4903,6 +5764,37 @@ implement
 {a}(*tmp*)
 streamize_list0_elt
   (xs) = streamize_list_elt<a>(g1ofg0(xs))
+//
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+streamize_list0_suffix
+  (xs) =
+  auxmain(xs) where
+{
+//
+fun
+auxmain:
+$d2ctype
+(
+streamize_list0_suffix<a>
+) = lam(xs) => $ldelay
+(
+case+ xs of
+| list0_nil
+  (
+  // none
+  ) => stream_vt_nil()
+| list0_cons
+  (
+    x0, xs1
+  ) => stream_vt_cons(xs, auxmain(xs1))
+)
+} (* end of [streamize_list0_suffix] *)
+
+(* ****** ****** *)
+//
 implement
 {a}(*tmp*)
 streamize_list0_choose2
@@ -5119,6 +6011,42 @@ memcpy
 (* ****** ****** *)
 //
 implement
+{a}(*tmp*)
+array0_tuple_0
+  () = array0($arrpsz{a}())
+//
+implement
+{a}(*tmp*)
+array0_tuple_1
+  (x0) = array0($arrpsz{a}(x0))
+implement
+{a}(*tmp*)
+array0_tuple_2
+  (x0, x1) = array0($arrpsz{a}(x0, x1))
+implement
+{a}(*tmp*)
+array0_tuple_3
+  (x0, x1, x2) = array0($arrpsz{a}(x0, x1, x2))
+//
+implement
+{a}(*tmp*)
+array0_tuple_4
+  (x0, x1, x2, x3) =
+  array0($arrpsz{a}(x0, x1, x2, x3))
+implement
+{a}(*tmp*)
+array0_tuple_5
+  (x0, x1, x2, x3, x4) =
+  array0($arrpsz{a}(x0, x1, x2, x3, x4))
+implement
+{a}(*tmp*)
+array0_tuple_6
+  (x0, x1, x2, x3, x4, x5) =
+  array0($arrpsz{a}(x0, x1, x2, x3, x4, x5))
+//
+(* ****** ****** *)
+//
+implement
 {}(*tmp*)
 array0_of_arrszref{a}(A) = $UN.cast{array0(a)}(A)
 //
@@ -5133,7 +6061,7 @@ implement
 array0_get_ref
   (A0) = let
   val ASZ =
-    arrszref_of_array0 (A0) in arrszref_get_ref (ASZ)
+    arrszref_of_array0(A0) in arrszref_get_ref(ASZ)
   // end of [val]
 end // end of [array0_get_ref]
 
@@ -5142,7 +6070,7 @@ implement
 array0_get_size
   (A0) = let
   val ASZ =
-    arrszref_of_array0 (A0) in arrszref_get_size (ASZ)
+    arrszref_of_array0(A0) in arrszref_get_size(ASZ)
   // end of [val]
 end // end of [array0_get_size]
 
@@ -5151,8 +6079,8 @@ implement
 array0_get_refsize
   (A0) = let
   var asz: size_t
-  val ASZ = arrszref_of_array0 (A0)
-  val A = $effmask_wrt (arrszref_get_refsize (ASZ, asz))
+  val ASZ = arrszref_of_array0(A0)
+  val A = $effmask_wrt(arrszref_get_refsize(ASZ, asz))
 in
   @(A, asz)
 end // end of [array0_get_refsize]
@@ -5178,16 +6106,28 @@ array0_make_arrayref
 end // end of [array0_make_arrpsz]
 
 (* ****** ****** *)
-
+//
 implement
 {a}(*tmp*)
-array0_make_elt
+array0_make_elt_int
   (asz, x0) = let
-  val ASZ =
-    arrszref_make_elt<a>(asz, x0) in array0_of_arrszref(ASZ)
-  // end of [val]
-end // end of [array0_make_elt]
-
+//
+val asz = i2sz(max(g1ofg0(asz), 0))
+//
+in
+//
+array0_of_arrszref(arrszref_make_elt<a>(asz, x0))
+//
+end // end of [array0_make_elt_int]
+//
+implement
+{a}(*tmp*)
+array0_make_elt_size
+  (asz, x0) =
+(
+array0_of_arrszref(arrszref_make_elt<a>(asz, x0))
+) (* end of [array0_make_elt_size] *)
+//
 (* ****** ****** *)
 
 implement
@@ -5195,7 +6135,8 @@ implement
 array0_make_list
   (xs) = let
   val xs = g1ofg0(xs)
-  val ASZ = arrszref_make_list (xs) in array0_of_arrszref (ASZ)
+in
+  array0_of_arrszref{a}(arrszref_make_list<a>(xs))
 end // end of [array0_make_list]
 
 (* ****** ****** *)
@@ -5205,7 +6146,8 @@ implement
 array0_make_rlist
   (xs) = let
   val xs = g1ofg0(xs)
-  val ASZ = arrszref_make_rlist (xs) in array0_of_arrszref (ASZ)
+in
+  array0_of_arrszref{a}(arrszref_make_rlist<a>(xs))
 end // end of [array0_make_rlist]
 
 (* ****** ****** *)
@@ -5217,42 +6159,44 @@ array0_make_subarray
 //
 val st = g1ofg0(st)
 val ln = g1ofg0(ln)
-val [n:int] (A, asz) = array0_get_refsize (A0)
+//
+val [n:int]
+  (A, asz) = array0_get_refsize(A0)
 //
 val [st:int] st =
-  (if st <= asz then st else asz): sizeLte (n)
+  (if st <= asz then st else asz): sizeLte(n)
 val [ln:int] ln =
-  (if st + ln <= asz then ln else asz - st): sizeLte (n-st)
+  (if st + ln <= asz then ln else asz - st): sizeLte(n-st)
 //
-val A2 = arrayptr_make_uninitized<a> (ln)
-val p2 = memcpy (ptrcast(A2), ptr_add<a> (ptrcast(A), st), ln*sizeof<a>)
+val A2 = arrayptr_make_uninitized<a>(ln)
+val p2 = memcpy (ptrcast(A2), ptr_add<a>(ptrcast(A), st), ln*sizeof<a>)
 val A2 = $UN.castvwtp0{arrayref(a,ln)}(A2)
 //
 in
-  array0_make_arrayref (A2, ln)
+  array0_make_arrayref{a}(A2, ln)
 end // end of [array0_make_subarray]
 
 (* ****** ****** *)
 //
 implement
 {a}(*tmp*)
-print_array0 (A) =
-  fprint_array0<a> (stdout_ref, A)
+print_array0(A) =
+  fprint_array0<a>(stdout_ref, A)
 //
 implement
 {a}(*tmp*)
-prerr_array0 (A) =
-  fprint_array0<a> (stderr_ref, A)
+prerr_array0(A) =
+  fprint_array0<a>(stderr_ref, A)
 //
 implement
 {a}(*tmp*)
-fprint_array0 (out, A) =
-  fprint_arrszref (out, arrszref_of_array0(A))
+fprint_array0(out, A) =
+fprint_arrszref<a>(out, arrszref_of_array0(A))
 //
 implement
 {a}(*tmp*)
 fprint_array0_sep (out, A, sep) =
-  fprint_arrszref_sep (out, arrszref_of_array0(A), sep)
+fprint_arrszref_sep<a>(out, arrszref_of_array0(A), sep)
 //
 (* ****** ****** *)
 
@@ -5263,7 +6207,7 @@ array0_get_at_gint
 in
 //
 if i >= 0 then
-  array0_get_at_size (A0, g0i2u(i))
+  array0_get_at_size<a>(A0, g0i2u(i))
 else
   $raise ArraySubscriptExn() // neg index
 //
@@ -5274,49 +6218,47 @@ implement
 array0_get_at_guint
   (A0, i) = let
 in
-  array0_get_at_size (A0, g0u2u(i))
+  array0_get_at_size<a>(A0, g0u2u(i))
 end // end of [array0_get_at_guint]
 
 implement
 {a}(*tmp*)
 array0_get_at_size
-  (A0, i) = let
-  val ASZ =
-    arrszref_of_array0 (A0) in arrszref_get_at_size (ASZ, i)
-  // end of [val]
-end // end of [array0_get_at_size]
+  (A0, i) =
+(
+  arrszref_get_at_size<a>(arrszref_of_array0(A0), i)
+) // end of [array0_get_at_size]
 
 (* ****** ****** *)
 
 implement
 {a}{tk}
 array0_set_at_gint
-  (A0, i, x) = let
-in
+  (A0, i, x) =
+(
 //
 if i >= 0 then
-  array0_set_at_size (A0, g0i2u(i), x)
+  array0_set_at_size<a>(A0, g0i2u(i), x)
 else
   $raise ArraySubscriptExn() // neg index
 //
-end // end of [array0_set_at_gint]
+) // end of [array0_set_at_gint]
 
 implement
 {a}{tk}
 array0_set_at_guint
   (A0, i, x) =
 (
-  array0_set_at_size (A0, g0u2u(i), x)
+  array0_set_at_size<a>(A0, g0u2u(i), x)
 ) // end of [array0_set_at_guint]
 
 implement
 {a}(*tmp*)
 array0_set_at_size
-  (A0, i, x) = let
-  val ASZ =
-    arrszref_of_array0 (A0) in arrszref_set_at_size (ASZ, i, x)
-  // end of [val]
-end // end of [array0_set_at_size]
+  (A0, i, x) =
+(
+  arrszref_set_at_size<a>(arrszref_of_array0(A0), i, x)
+) // end of [array0_set_at_size]
 
 (* ****** ****** *)
 
@@ -5327,7 +6269,7 @@ array0_exch_at_gint
 in
 //
 if i >= 0 then
-  array0_exch_at_size (A0, g0i2u(i), x)
+  array0_exch_at_size<a>(A0, g0i2u(i), x)
 else
   $raise ArraySubscriptExn() // neg index
 //
@@ -5338,17 +6280,16 @@ implement
 array0_exch_at_guint
   (A0, i, x) =
 (
-  array0_exch_at_size (A0, g0u2u(i), x)
+  array0_exch_at_size<a>(A0, g0u2u(i), x)
 ) // end of [array0_exch_at_guint]
 
 implement
 {a}(*tmp*)
 array0_exch_at_size
-  (A0, i, x) = let
-  val ASZ =
-    arrszref_of_array0 (A0) in arrszref_exch_at_size (ASZ, i, x)
-  // end of [val]
-end // end of [array0_exch_at_size]
+  (A0, i, x) =
+(
+  arrszref_exch_at_size(arrszref_of_array0(A0), i, x)
+) // end of [array0_exch_at_size]
 
 (* ****** ****** *)
 
@@ -5357,7 +6298,7 @@ implement
 array0_interchange
   (A0, i, j) = let
   val ASZ =
-    arrszref_of_array0 (A0) in arrszref_interchange (ASZ, i, j)
+    arrszref_of_array0(A0) in arrszref_interchange(ASZ, i, j)
   // end of [val]
 end // end of [array0_interchange]
 
@@ -5368,7 +6309,7 @@ implement
 array0_subcirculate
   (A0, i, j) = let
   val ASZ =
-    arrszref_of_array0 (A0) in arrszref_subcirculate (ASZ, i, j)
+    arrszref_of_array0(A0) in arrszref_subcirculate(ASZ, i, j)
   // end of [val]
 end // end of [array0_subcirculate]
 
@@ -5379,23 +6320,27 @@ implement
 array0_copy
   (A0) = let
 //
-val ASZ = arrszref_of_array0 (A0)
+val
+ASZ =
+arrszref_of_array0(A0)
 //
-var asz: size_t
-val A = arrszref_get_refsize (ASZ, asz)
+var
+asz: size_t
 //
-val (
-  vbox pf | p
-) = arrayref_get_viewptr (A)
-val (pfarr, pfgc | q) = array_ptr_alloc<a> (asz)
-val () = array_copy<a> (!q, !p, asz)
+val A =
+arrszref_get_refsize(ASZ, asz)
 //
-val A2 = arrayptr_encode (pfarr, pfgc | q)
-val A2 = arrayptr_refize (A2) // non-linearizing
-val ASZ2 = arrszref_make_arrayref (A2, asz)
+val (vbox pf | p) = arrayref_get_viewptr(A)
+val (pfarr, pfgc | q) = array_ptr_alloc<a>(asz)
+//
+val () = array_copy<a>(!q, !p, asz)
+//
+val A2 = arrayptr_encode(pfarr, pfgc | q)
+val A2 = arrayptr_refize(A2) // non-linearizing
+val ASZ2 = arrszref_make_arrayref(A2, asz)
 //
 in
-  array0_of_arrszref (ASZ2)
+  array0_of_arrszref{a}(ASZ2)
 end // end of [array0_copy]
 
 (* ****** ****** *)
@@ -5405,42 +6350,51 @@ implement
 array0_append
   (A01, A02) = let
 //
-val ASZ1 = arrszref_of_array0 (A01)
-and ASZ2 = arrszref_of_array0 (A02)
+val ASZ1 = arrszref_of_array0(A01)
+and ASZ2 = arrszref_of_array0(A02)
 //
-var asz1: size_t and asz2: size_t
-val A1 = arrszref_get_refsize (ASZ1, asz1)
-and A2 = arrszref_get_refsize (ASZ2, asz2)
+var asz1: size_t
+and asz2: size_t
 //
-val (pf1box | p1) = arrayref_get_viewptr (A1)
-and (pf2box | p2) = arrayref_get_viewptr (A2)
+val A1 = arrszref_get_refsize(ASZ1, asz1)
+and A2 = arrszref_get_refsize(ASZ2, asz2)
+//
+val (pf1box | p1) = arrayref_get_viewptr(A1)
+and (pf2box | p2) = arrayref_get_viewptr(A2)
 //
 extern
-praxi unbox
-  : {v:view} vbox(v) -<prf> (v, v -<lin,prf> void)
+praxi
+unbox{v:view} :
+vbox(v) -<prf> (v, v -<lin,prf> void)
 //
-prval (pf1, fpf1) = unbox (pf1box)
-prval (pf2, fpf2) = unbox (pf2box)
+prval
+(pf1, fpf1) = unbox(pf1box) and (pf2, fpf2) = unbox(pf2box)
 //
 val asz = asz1 + asz2
-val (pfarr, pfgc | q) = array_ptr_alloc<a> (asz)
-prval (pf1arr, pf2arr) = array_v_split_at (pfarr | asz1)
 //
-val () = array_copy<a> (!q, !p1, asz1)
-val q2 = ptr1_add_guint<a> (q, asz1)
-val (pf2arr | q2) = viewptr_match (pf2arr | q2)
-val () = array_copy<a> (!q2, !p2, asz2)
+val
+(pfarr,pfgc|q) = array_ptr_alloc<a>(asz)
 //
-prval () = fpf1 (pf1) and () = fpf2 (pf2)
+prval
+(pf1arr,
+ pf2arr) = array_v_split_at(pfarr | asz1)
 //
-prval pfarr = array_v_unsplit (pf1arr, pf2arr)
+val () = array_copy<a>(!q, !p1, asz1)
+val q2 = ptr1_add_guint<a>(q, asz1)
+val (pf2arr | q2) = viewptr_match(pf2arr | q2)
+val () = array_copy<a>(!q2, !p2, asz2)
 //
-val A12 = arrayptr_encode (pfarr, pfgc | q)
-val A12 = arrayptr_refize (A12)
-val ASZ12 = arrszref_make_arrayref (A12, asz)
+prval () = fpf1(pf1) and () = fpf2(pf2)
+//
+prval
+pfarr = array_v_unsplit(pf1arr, pf2arr)
+//
+val A12 = arrayptr_encode(pfarr, pfgc | q)
+val A12 = arrayptr_refize(A12)
+val ASZ12 = arrszref_make_arrayref(A12, asz)
 //
 in
-  array0_of_arrszref (ASZ12)
+  array0_of_arrszref{a}(ASZ12)
 end // end of [array0_append]
 
 (* ****** ****** *)
@@ -5450,8 +6404,8 @@ implement
 array0_map
   (A, fopr) = let
 //
-val p0 = array0_get_ref (A)
-val asz = array0_get_size (A)
+val p0 = array0_get_ref(A)
+val asz = array0_get_size(A)
 //
 val fopr = $UN.cast{cfun1(ptr, b)}(fopr)
 //
@@ -5472,7 +6426,7 @@ array0_map_method
 implement
 {a}(*tmp*)
 array0_tabulate
-  {n}(asz, f) = let
+{n}(asz, fopr) = let
 //
 implement{a2}
 array_tabulate$fopr
@@ -5482,27 +6436,48 @@ array_tabulate$fopr
   $UN.cast{sizeLt(n)}(i)
 //
 in
-  $UN.castvwtp0{a2}(f(i))
+  $UN.castvwtp0{a2}(fopr(i))
 end // array_tabulate$fopr
 //
-val ASZ = arrszref_tabulate<a> (asz)
-//
 in
-  array0_of_arrszref (ASZ)  
+//
+array0_of_arrszref(arrszref_tabulate<a>(asz))
+//
 end // end of [array0_tabulate]
 
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+array0_tabulate_method_int
+  (asz) =
+(
+lam(fopr) =>
+array0_tabulate<a>
+  (i2sz(asz), lam(i) => fopr(sz2i(i)))
+)
+//
+implement
+{a}(*tmp*)
+array0_tabulate_method_size
+  (asz) =
+(
+lam(fopr) => array0_tabulate<a>(asz, fopr)
+)
+//
 (* ****** ****** *)
 
 implement
 {a}(*tmp*)
-array0_find_exn (A0, p) = let
+array0_find_exn
+  (A0, p) = let
 //
 val
-ASZ = arrszref_of_array0 (A0)
+ASZ = arrszref_of_array0(A0)
 //
 var
 asz : size_t
-val A = arrszref_get_refsize (ASZ, asz)
+val A = arrszref_get_refsize(ASZ, asz)
 //
 implement(tenv)
 array_foreach$cont<a><tenv>(x, env) = ~p(x)
@@ -6058,10 +7033,12 @@ staload "libats/ML/SATS/matrix0.sats"
 
 (* ****** ****** *)
 //
-implement{}
+implement
+{}(*tmp*)
 matrix0_of_mtrxszref{a}(A) = $UN.cast{matrix0(a)}(A)
 //
-implement{}
+implement
+{}(*tmp*)
 mtrxszref_of_matrix0{a}(A) = $UN.cast{mtrxszref(a)}(A)
 //
 (* ****** ****** *)
@@ -6070,36 +7047,58 @@ implement{
 } matrix0_get_ref (M) =
   mtrxszref_get_ref (mtrxszref_of_matrix0(M))
 //
-implement{
-} matrix0_get_nrow (M) =
-  mtrxszref_get_nrow (mtrxszref_of_matrix0(M))
-implement{
-} matrix0_get_ncol (M) =
-  mtrxszref_get_ncol (mtrxszref_of_matrix0(M))
+implement
+{}(*tmp*)
+matrix0_get_nrow(M) =
+  mtrxszref_get_nrow(mtrxszref_of_matrix0(M))
+implement
+{}(*tmp*)
+matrix0_get_ncol (M) =
+  mtrxszref_get_ncol(mtrxszref_of_matrix0(M))
 //
 (* ****** ****** *)
 
 implement{
-} matrix0_get_refsize (M) = let
-  var nrow: size_t and ncol: size_t
-  val Mref =
-  $effmask_wrt
-  (
-    mtrxszref_get_refsize(mtrxszref_of_matrix0(M), nrow, ncol)
-  ) (* end of [val] *)
+} matrix0_get_refsize
+  (M) = let
+//
+var nrow: size_t // uninitized
+and ncol: size_t // uninitized
+//
+val Mref =
+$effmask_wrt
+(
+mtrxszref_get_refsize(mtrxszref_of_matrix0(M), nrow, ncol)
+) (* end of [val] *)
+//
 in
   (Mref, nrow, ncol)
 end // end of [matrix0_get_refsize]
 
 (* ****** ****** *)
-
+//
 implement
 {a}(*tmp*)
-matrix0_make_elt
+matrix0_make_elt_int
+  (nrow, ncol, x0) = let
+//
+val
+nrow = i2sz(max(0, g1ofg0(nrow)))
+and
+ncol = i2sz(max(0, g1ofg0(ncol)))
+//
+in
+  matrix0_of_mtrxszref(mtrxszref_make_elt<a>(nrow, ncol, x0))
+end // end of [matrix0_make_elt_int]
+//
+implement
+{a}(*tmp*)
+matrix0_make_elt_size
   (nrow, ncol, x0) =
-  matrix0_of_mtrxszref (mtrxszref_make_elt<a> (nrow, ncol, x0))
-// end of [matrix0_make_elt]
-
+(
+  matrix0_of_mtrxszref(mtrxszref_make_elt<a>(nrow, ncol, x0))
+) (* end of [matrix0_make_elt_size] *)
+//
 (* ****** ****** *)
 
 implement
@@ -6110,10 +7109,11 @@ matrix0_get_at_int
   and j = g1ofg0_int(j)
 in
 //
-if i >= 0
+if
+i >= 0
 then (
 if j >= 0 then
-  matrix0_get_at_size<a> (M0, i2sz(i), i2sz(j))
+  matrix0_get_at_size<a>(M0, i2sz(i), i2sz(j))
 else
   $raise MatrixSubscriptExn((*void*)) // neg index
 // end of [if]
@@ -6129,9 +7129,13 @@ implement
 {a}(*tmp*)
 matrix0_get_at_size
   (M0, i, j) = let
-  val MSZ =
-    mtrxszref_of_matrix0 (M0) in mtrxszref_get_at_size (MSZ, i, j)
-  // end of [val]
+//
+val
+MSZ = mtrxszref_of_matrix0(M0)
+//
+in
+  mtrxszref_get_at_size<a>(MSZ, i, j)
+// end of [val]
 end // end of [matrix0_get_at_size]
 
 (* ****** ****** *)
@@ -6144,10 +7148,13 @@ matrix0_set_at_int
   and j = g1ofg0_int(j)
 in
 //
-if i >= 0
+if
+i >= 0
 then (
-if j >= 0 then
-  matrix0_set_at_size<a> (M0, i2sz(i), i2sz(j), x)
+if
+j >= 0
+then
+  matrix0_set_at_size<a>(M0, i2sz(i), i2sz(j), x)
 else
   $raise MatrixSubscriptExn((*void*)) (* neg index *)
 // end of [if]
@@ -6163,9 +7170,13 @@ implement
 {a}(*tmp*)
 matrix0_set_at_size
   (M0, i, j, x) = let
-  val MSZ =
-    mtrxszref_of_matrix0 (M0) in mtrxszref_set_at_size (MSZ, i, j, x)
-  // end of [val]
+//
+val
+MSZ =
+mtrxszref_of_matrix0{a}(M0)
+//
+in
+  mtrxszref_set_at_size<a>(MSZ, i, j, x)
 end // end of [matrix0_set_at_size]
 
 (* ****** ****** *)
@@ -6173,39 +7184,41 @@ end // end of [matrix0_set_at_size]
 implement
 {a}(*tmp*)
 print_matrix0 (A) =
-  fprint_matrix0<a> (stdout_ref, A)
+  fprint_matrix0<a>(stdout_ref, A)
 //
 implement
 {a}(*tmp*)
 prerr_matrix0 (A) =
-  fprint_matrix0<a> (stderr_ref, A)
+  fprint_matrix0<a>(stderr_ref, A)
 //
 implement
 {a}(*tmp*)
-fprint_matrix0 (out, M) =
-  fprint_mtrxszref (out, mtrxszref_of_matrix0(M))
+fprint_matrix0(out, M) =
+  fprint_mtrxszref<a>(out, mtrxszref_of_matrix0(M))
 //
 implement
 {a}(*tmp*)
-fprint_matrix0_sep (out, M, sep1, sep2) =
-  fprint_mtrxszref_sep (out, mtrxszref_of_matrix0(M), sep1, sep2)
+fprint_matrix0_sep(out, M, sep1, sep2) =
+  fprint_mtrxszref_sep<a>(out, mtrxszref_of_matrix0(M), sep1, sep2)
 //
 (* ****** ****** *)
 
 implement
 {a}(*tmp*)
-matrix0_copy (M0) = let
+matrix0_copy(M0) = let
 //
-val M = matrix0_get_ref (M0)
-val [m:int] m = g1ofg0 (M0.nrow())
-val [n:int] n = g1ofg0 (M0.ncol())
+val M = matrix0_get_ref(M0)
+//
+val [m:int] m = g1ofg0(M0.nrow())
+val [n:int] n = g1ofg0(M0.ncol())
+//
 val M =
-  matrixref_copy<a> ($UN.cast{matrixref(a,m,n)}(M), m, n)
+  matrixref_copy<a>($UN.cast{matrixref(a,m,n)}(M), m, n)
 // end of [val]
 in
 //
 matrix0_of_mtrxszref
-  (mtrxszref_make_matrixref (matrixptr_refize{a}(M), m, n))
+  (mtrxszref_make_matrixref{a}(matrixptr_refize{a}(M), m, n))
 //
 end // end of [matrix0_copy]
 
@@ -6214,42 +7227,80 @@ end // end of [matrix0_copy]
 implement
 {a}(*tmp*)
 matrix0_tabulate
-  (nrow, ncol, f) = let
+{m,n}
+(nrow, ncol, fopr) = let
 //
-implement{a2}
+implement
+{a2}(*tmp*)
 matrix_tabulate$fopr
-  (i, j) = $UN.castvwtp0{a2}(f(i,j))
-//
-val MSZ = mtrxszref_tabulate<a> (nrow, ncol)
+  (i, j) = let
+  val i =
+  $UN.cast{sizeLt(m)}(i)
+  val j =
+  $UN.cast{sizeLt(n)}(j)
+in  
+  $UN.castvwtp0{a2}(fopr(i,j))
+end // end of [matrix_tabulate$fopr]
 //
 in
-  matrix0_of_mtrxszref (MSZ)  
+  matrix0_of_mtrxszref{a}(mtrxszref_tabulate<a>(nrow, ncol))
 end // end of [matrix0_tabulate]
 
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+matrix0_tabulate_method_int
+  (nrow, ncol) =
+(
+lam(fopr) =>
+matrix0_tabulate<a>
+( i2sz(nrow)
+, i2sz(ncol), lam(i, j) => fopr(sz2i(i), sz2i(j))
+)
+)
+//
+implement
+{a}(*tmp*)
+matrix0_tabulate_method_size
+  (nrow, ncol) =
+(
+lam(fopr) => matrix0_tabulate<a>(nrow, ncol, fopr)
+)
+//
 (* ****** ****** *)
 
 implement
 {a}(*tmp*)
 matrix0_foreach
-  (M0, f) = let
+  (M0, fwork) = let
 //
-fun loop
+fun
+loop
 (
   p: ptr, i: size_t
 ) : void = (
-if i > 0 then let
-  val (pf, fpf | p) = $UN.ptr0_vtake (p)
-  val ((*void*)) = f (!p)
-  prval ((*void*)) = fpf (pf)
+if
+(i > 0)
+then let
+//
+  val
+  (pf, fpf | p) =
+  $UN.ptr0_vtake(p)
+//
+  val ((*void*)) = fwork(!p)
+//
+  prval ((*returned*)) = fpf(pf)
+//
 in
-  loop (ptr_succ<a> (p), pred (i))
+  loop(ptr_succ<a>(p), pred(i))
 end else ((*void*)) // end of [if]
 ) (* end of [loop] *)
 //
-val (M, m, n) = matrix0_get_refsize (M0)
+val (M, m, n) = matrix0_get_refsize(M0)
 //
 in
-  loop (ptrcast(M), m * n)
+  loop(ptrcast(M), m * n)
 end // end of [matrix0_foreach]
 
 (* ****** ****** *)
@@ -6257,7 +7308,7 @@ end // end of [matrix0_foreach]
 implement
 {a}(*tmp*)
 matrix0_iforeach
-  (M0, f) = let
+  (M0, fwork) = let
 //
 val (M, m, n) =
   matrix0_get_refsize (M0)
@@ -6267,26 +7318,33 @@ fun loop
   p: ptr
 , k: size_t, i: size_t, j: size_t
 ) : void = (
-if k > 0 then let
-  val (
-    pf, fpf | p
-  ) = $UN.ptr0_vtake (p)
-  val () = f (i, j, !p)
-  prval ((*void*)) = fpf (pf)
-  val p = ptr_succ<a> (p)
+if
+(k > 0)
+then let
+//
+  val
+  (pf, fpf | p) =
+  $UN.ptr0_vtake (p)
+//
+  val () = fwork(i, j, !p)
+//
+  prval ((*returned*)) = fpf(pf)
+//
+  val p = ptr_succ<a>(p)
   val k = pred(k) and j = succ(j)
+//
 in
 //
 if j < n
-  then loop (p, k, i, j)
-  else loop (p, k, succ(i), i2sz(0))
+  then loop(p, k, i, j)
+  else loop(p, k, succ(i), i2sz(0))
 // end of [if]
 //
 end else ((*void*)) // end of [if]
 ) (* end of [loop] *)
 //
 in
-  loop (ptrcast(M), m * n, i2sz(0), i2sz(0))
+  loop(ptrcast(M), m * n, i2sz(0), i2sz(0))
 end // end of [matrix0_iforeach]
 
 (* ****** ****** *)
@@ -6294,42 +7352,46 @@ end // end of [matrix0_iforeach]
 implement
 {res}{a}(*tmp*)
 matrix0_foldleft
-  (M0, ini, f) = let
+(
+M0, ini, fopr
+) = ini where
+{
 //
 var ini: res = ini
 val p_ini = addr@(ini)
 //
-var f2 =
-lam@ (x: &a): void =>
-  $UN.ptr0_set<res> (p_ini, f ($UN.ptr0_get<res> (p_ini), x))
+var fopr2 =
+lam@(x: &a): void =>
+  $UN.ptr0_set<res>(p_ini, fopr($UN.ptr0_get<res>(p_ini), x))
 //
 val () =
-matrix0_foreach<a> (M0, $UN.cast{(&a)-<cloref1>void}(addr@f2))
+matrix0_foreach<a>(M0, $UN.cast{(&a)-<cloref1>void}(addr@fopr2))
 //
-in
-  ini
-end // end of [matrix0_foldleft]
+} (* end of [matrix0_foldleft] *)
 
 (* ****** ****** *)
 
 implement
 {res}{a}(*tmp*)
 matrix0_ifoldleft
-  (M0, ini, f) = let
+(
+M0, ini, fopr
+) = ini where
+{
 //
 var ini: res = ini
 val p_ini = addr@(ini)
 //
-var f2 =
-lam@ (i: size_t, j: size_t, x: &a): void =>
-  $UN.ptr0_set<res> (p_ini, f ($UN.ptr0_get<res> (p_ini), i, j, x))
+var fopr2 =
+lam@(i: size_t, j: size_t, x: &a): void =>
+  $UN.ptr0_set<res>
+  (p_ini, fopr($UN.ptr0_get<res>(p_ini), i, j, x))
 //
 val () =
-matrix0_iforeach<a> (M0, $UN.cast{(size_t,size_t,&a)-<cloref1>void}(addr@f2))
+matrix0_iforeach<a>
+(M0, $UN.cast{(size_t,size_t,&a)-<cloref1>void}(addr@fopr2))
 //
-in
-  ini
-end // end of [matrix0_ifoldleft]
+} (* end of [matrix0_ifoldleft] *)
 
 (* ****** ****** *)
 
@@ -6416,6 +7478,14 @@ case+ xs of
 //
 implement
 {a}{b}
+stream_map
+  (xs, fopr) =
+(
+  stream_map_cloref<a><b>(xs, fopr)
+)
+//
+implement
+{a}{b}
 stream_map_method
   (xs, _) =
 (
@@ -6423,6 +7493,14 @@ lam(fopr) => stream_map_cloref<a><b>(xs, fopr)
 )
 //
 (* ****** ****** *)
+//
+implement
+{a}{b}
+stream_imap
+  (xs, fopr) =
+(
+  stream_imap_cloref<a><b>(xs, fopr)
+)
 //
 implement
 {a}{b}
@@ -6436,27 +7514,75 @@ lam(fopr) => stream_imap_cloref<a><b>(xs, fopr)
 //
 implement
 {a}(*tmp*)
-stream_filter_method(xs) =
+stream_filter
+  (xs, pred) = stream_filter_cloref<a>(xs, pred)
+implement
+{a}(*tmp*)
+stream_filter_method
+  (xs) =
+(
   lam(pred) => stream_filter_cloref<a>(xs, pred)
+)
 //
 (* ****** ****** *)
 //
 implement
 {res}{x}
+stream_scan
+  (xs, res, fopr) =
+(
+stream_scan_cloref<res><x>(xs, res, fopr)
+)
+//
+implement
+{res}{x}
 stream_scan_method(xs, _) =
-  lam(res, fopr) =>
+(
+lam(res, fopr) =>
   stream_scan_cloref<res><x>(xs, res, fopr)
+)
 //
 (* ****** ****** *)
 //
 implement
 {a}(*tmp*)
+stream_foreach
+  (xs, fwork) =
+  stream_foreach_cloref<a>(xs, fwork)
+//
+implement
+{a}(*tmp*)
 stream_foreach_method(xs) =
+(
   lam(fwork) =>
     stream_foreach_cloref<a>(xs, fwork)
   // end of [lam]
+)
 //
 (* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+stream_iforeach
+  (xs, fwork) =
+  stream_iforeach_cloref<a>(xs, fwork)
+//
+implement
+{a}(*tmp*)
+stream_iforeach_method(xs) =
+(
+  lam(fwork) =>
+    stream_iforeach_cloref<a>(xs, fwork)
+  // end of [lam]
+)
+//
+(* ****** ****** *)
+//
+implement
+{res}{a}
+stream_foldleft
+  (xs, ini, fopr) =
+  stream_foldleft_cloref<res><a>(xs, ini, fopr)
 //
 implement
 {res}{a}
@@ -6654,12 +7780,15 @@ macdef
 prelude_fileref_get_lines_stringlst = fileref_get_lines_stringlst
 
 (* ****** ****** *)
-
+//
 macdef
 prelude_streamize_fileref_char = streamize_fileref_char
+//
 macdef
 prelude_streamize_fileref_line = streamize_fileref_line
-
+macdef
+prelude_streamize_fileptr_line = streamize_fileptr_line
+//
 (* ****** ****** *)
 
 staload "libats/ML/SATS/basis.sats"
@@ -6703,9 +7832,10 @@ $UN.castvwtp0{list0(charlst0)}
 (* ****** ****** *)
 
 local
-
-staload _(*anon*) = "prelude/DATS/strptr.dats"
-
+//
+staload
+_(*anon*) = "prelude/DATS/strptr.dats"
+//
 in (* in of [local] *)
 
 implement
@@ -6727,12 +7857,40 @@ $UN.castvwtp0{list0(string)}
 end // end of [local]
 
 (* ****** ****** *)
+
+implement
+{}(*tmp*)
+filename_get_lines_stringlst_opt
+  (path) = let
+//
+val opt =
+  fileref_open_opt(path, file_mode_r)
+//
+in
+//
+case+ opt of
+| ~None_vt() =>
+   None_vt()
+| ~Some_vt(inp) =>
+   Some_vt(lines) where
+ {
+    val lines =
+      fileref_get_lines_stringlst(inp)
+    // end of [val]
+    val ((*void*)) = fileref_close(inp)
+ } (* end of [Some_vt] *) 
+//
+end // end of [filename_get_lines_stringlst_opt]
+
+(* ****** ****** *)
 //
 implement
 {}(*tmp*)
 streamize_fileref_char
   (filr) =
   prelude_streamize_fileref_char(filr)
+//
+(* ****** ****** *)
 //
 implement
 {}(*tmp*)
@@ -6742,6 +7900,14 @@ streamize_fileref_line
 $UN.castvwtp0{stream_vt(string)}
   (prelude_streamize_fileref_line(filr))
 ) // end of [streamize_fileref_line]
+implement
+{}(*tmp*)
+streamize_fileptr_line
+  (filp) =
+(
+$UN.castvwtp0{stream_vt(string)}
+  (prelude_streamize_fileptr_line(filp))
+) // end of [streamize_fileptr_line]
 //
 (* ****** ****** *)
 
@@ -6836,7 +8002,7 @@ implement
 {}(*tmp*)
 int_repeat_lazy
   (n, fopr) =
-  int_repeat_cloref<> (n, lazy2cloref(fopr))
+  int_repeat_cloref<>(n, lazy2cloref(fopr))
 //
 (* ****** ****** *)
 
@@ -6852,7 +8018,8 @@ loop
 ) : void = (
 //
 if n > 0
-  then let val () = fopr() in loop(n-1, fopr) end
+  then
+  let val () = fopr() in loop(n-1, fopr) end
   else ((*void*))
 //
 ) (* end of [loop] *)
@@ -8078,9 +9245,9 @@ end // end of [fprint_hashtbl]
 (* ****** ****** *)
 
 implement{}
-fprint_hashtbl$sep (out) = fprint (out, "; ")
+fprint_hashtbl$sep(out) = fprint(out, "; ")
 implement{}
-fprint_hashtbl$mapto (out) = fprint (out, "->")
+fprint_hashtbl$mapto(out) = fprint(out, "->")
 
 (* ****** ****** *)
 
@@ -8090,9 +9257,9 @@ fprint_hashtbl_sep_mapto
   (out, tbl, sep, mapto) = let
 //
 implement
-fprint_hashtbl$sep<> (out) = fprint (out, sep)
+fprint_hashtbl$sep<>(out) = fprint(out, sep)
 implement
-fprint_hashtbl$mapto<> (out) = fprint (out, mapto)
+fprint_hashtbl$mapto<>(out) = fprint(out, mapto)
 //
 in
   fprint_hashtbl<key,itm>(out, tbl)
@@ -8110,11 +9277,17 @@ var env: void = ((*void*))
 //
 implement
 (env)(*tmp*)
-$HT.hashtbl_foreach$fwork<key,itm><env> (k, x, env) = fwork(k, x)
+$HT.hashtbl_foreach$fwork<key,itm><env>
+  (k, x, env) = fwork(k, x)
 //
-val tbl = htdecode (tbl)
-val ((*void*)) = $HT.hashtbl_foreach_env<key,itm><void> (tbl, env)
-prval ((*void*)) = $UN.cast2void (tbl)
+val tbl = htdecode(tbl)
+//
+val
+((*void*)) =
+$HT.hashtbl_foreach_env<key,itm><void>
+  (tbl, env)
+//
+prval ((*returned*)) = $UN.cast2void(tbl)
 //
 } (* end of [hashtbl_foreach_cloref] *)
 
@@ -8128,9 +9301,13 @@ hashtbl_listize1
 //
 typedef ki = @(key, itm)
 //
-val tbl = htdecode (tbl)
-val kxs = $HT.hashtbl_listize1 (tbl)
-prval () = $UN.cast2void (tbl)
+val tbl = htdecode(tbl)
+//
+val kxs = $HT.hashtbl_listize1(tbl)
+//
+prval
+((*returned*)) = $UN.cast2void(tbl)
+//
 val kxs = list0_of_list_vt{(key,itm)}(kxs)
 //
 } (* end of [hashtbl_listize1] *)
