@@ -1,0 +1,397 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Recursive Functions (2)</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Crash into FP through ATS"
+HREF="book1.html"><LINK
+REL="PREVIOUS"
+TITLE="Recursive Functions (1)"
+HREF="c111.html"><LINK
+REL="NEXT"
+TITLE="Example: Sierpinski Triangle"
+HREF="c202.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Crash into FP through ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c111.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c202.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="lecture03"
+></A
+>Chapter 3. Recursive Functions (2)</H1
+><P
+>&#13;While recursion can be really powerful for solving problems, there is
+a serious issue of practicality with recursion. If we follow the semantics
+of C, then we know that the evaluation of a function call allocates a call
+frame on the run-time stack (for thread execution); this frame only unwinds
+after the evalutation returns; it is entirely possible that other function
+calls are made during the evaluation. Let us revisit the following implementation
+of the factorial function:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN162"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fact<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> n * fact<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Assume that we want to evaluate <FONT
+COLOR="RED"
+>fact(1000000)</FONT
+>.  Clearly,
+the evaluation of <FONT
+COLOR="RED"
+>fact(1000000)</FONT
+> calls
+<FONT
+COLOR="RED"
+>fact(999999)</FONT
+>, and the evaluation of
+<FONT
+COLOR="RED"
+>fact(999999)</FONT
+> calls <FONT
+COLOR="RED"
+>fact(999998)</FONT
+>, and so on.
+When <FONT
+COLOR="RED"
+>fact(0)</FONT
+> is called, there are 1000001 call frames on
+the run-time stack for evaluating <FONT
+COLOR="RED"
+>fact(n)</FONT
+>, where
+<FONT
+COLOR="RED"
+>n</FONT
+> goes from 1000000 down to 0.  In the case where the
+run-time stack is not deep enough for holding all of these call frames,
+stack overflow happens at some point of execution (and the evaluation
+of <FONT
+COLOR="RED"
+>fact(1000000)</FONT
+> terminates abnormally). Please write a
+program to evaluate <FONT
+COLOR="RED"
+>fact(1000000)</FONT
+> and see what actually
+happens when it is executed.
+</P
+><P
+>&#13;While evaluating <FONT
+COLOR="RED"
+>fact(1000000)</FONT
+> may be seen as a contrived
+example, stack overflow caused by deeply nested recursive calls is a very
+serious issue in practice. A common approach to addressing this issue makes
+use of tail-recursion as is illustrated in the following implementation of
+the factorial function:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN176"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fact2<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+loop<span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">if</span> i <span class="keyword">&lt;</span> n
+  <span class="keyword">then</span> loop<span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">,</span> <span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">)</span>*res<span class="keyword">)</span> <span class="keyword">else</span> res</span>
+<span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  loop<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> n<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fact2]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>loop</FONT
+> is a recursive function.  The recursive
+call in the body of <FONT
+COLOR="RED"
+>loop</FONT
+> is a tail-call in the sense that
+the return value of the call can be directly used as the return value
+of the caller. In contrast, the return value of the recursive call in
+the body of <FONT
+COLOR="RED"
+>fact</FONT
+> is not a tail-call (as the value needs to
+be multiplied by <FONT
+COLOR="RED"
+>n</FONT
+> in order to obtain the return value of the
+caller). Let us take a look at another example:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN182"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+f91<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">100</span> <span class="keyword">then</span> x-<span class="dynexp">10</span> <span class="keyword">else</span> f91<span class="keyword">(</span>f91<span class="keyword">(</span>x+<span class="dynexp">11</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+In the body of <FONT
+COLOR="RED"
+>f91</FONT
+>, there are two recursive calls;
+the outer call is a tail-call but the inner call is not (as the
+return value of the inner call needs to be passed to be outer call
+in order to obtain the return value of the caller).
+
+</P
+><P
+>&#13;If all of the recursive calls in the body of a function are
+tail-calls, the function is referred to as being tail-recursive.  By
+default, the ATS compiler translates each tail-recursive call into a
+local jump.  When a tail-recursive function is called, the evaluation
+of the call does not need to allocate any call frames for handling
+subseqent recursive calls and therefore it runs no risk of stack
+overflow due to deeply nested recursion.  Please write a program to
+evaluate <FONT
+COLOR="RED"
+>fact2(1000000)</FONT
+> and see what actually happens when
+it is executed.
+</P
+><P
+>&#13;In ATS, mutually recursive functions can be defined by simply
+joining a sequence of function definitions together. For instance,
+the functions <FONT
+COLOR="RED"
+>isevn</FONT
+> and <FONT
+COLOR="RED"
+>isodd</FONT
+> are defined
+mutually recursively in the following code:
+
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN190"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+isevn<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
+<span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> isodd<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> true
+<span class="comment">//</span>
+<span class="keyword">and</span>
+isodd<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
+<span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> isevn<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> false</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the keyword <FONT
+COLOR="RED"
+>and</FONT
+> is used for joining function
+definitions.  The call to <FONT
+COLOR="RED"
+>isodd</FONT
+> in the body of
+<FONT
+COLOR="RED"
+>isevn</FONT
+> is a tail-call, and so is the call to
+<FONT
+COLOR="RED"
+>isevn</FONT
+> in the body of <FONT
+COLOR="RED"
+>isodd</FONT
+>.  In order for the
+ATS compiler to recognize that these two calls are tail-recursive
+calls (and thus can be translated into local jumps), the keyword
+<FONT
+COLOR="RED"
+>fun</FONT
+> needs to be replaced with <FONT
+COLOR="RED"
+>fnx</FONT
+>.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/03/CODE"
+TARGET="_top"
+>on-line</A
+> the entirety of
+the code used in this chapter. Also, it can be found in <A
+HREF="http://ats-lang.sourceforge.net/EXAMPLE/EFFECTIVATS/loop-as-tailrec/main.html"
+TARGET="_top"
+>&#13;this article</A
+> a detailed explanation on tail-recursion and the
+support in ATS for turning tail-recursive calls into local jumps.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c111.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c202.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Recursive Functions (1)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Sierpinski Triangle</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

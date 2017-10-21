@@ -1,0 +1,735 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Linear Lazy Stream-Processing</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Crash into FP through ATS"
+HREF="book1.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Queen Puzzle Revisited"
+HREF="c1320.html"><LINK
+REL="NEXT"
+TITLE="Continuation-Passing Style"
+HREF="c1440.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Crash into FP through ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c1320.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c1440.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="lecture11"
+></A
+>Chapter 18. Linear Lazy Stream-Processing</H1
+><P
+>&#13;As the name suggests, linear lazy streams are the linear version of
+lazy streams. In ATS, a linear value is one that cannot be shared; it
+must be consumed properly for otherwise a type error is reported
+during typechecking. Before moving on to introduce programming with
+linear lazy streams, I would like to first explain a serious drawback in
+programming with (non-linear) lazy streams.
+
+</P
+><P
+>&#13;Given an integer n and a closure-function f, the following function
+<FONT
+COLOR="RED"
+>ftally</FONT
+> returns the sum of the values of f(i) for i ranging
+from 1 to n:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1359"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+ftally
+<span class="keyword">(</span>
+n <span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">,</span>
+f <span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">double</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> n <span class="keyword">=</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="dynexp">0.0</span> <span class="keyword">else</span> ftally<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">,</span> f<span class="keyword">)</span> + f<span class="keyword">(</span>n<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The next function <FONT
+COLOR="RED"
+>ftally2</FONT
+> is a stream-based implementation
+of <FONT
+COLOR="RED"
+>ftally</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1363"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+ftally2
+<span class="keyword">(</span>
+n <span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">,</span>
+f <span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">double</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> xs1 <span class="keyword">=</span> int_stream_from<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> xs2 <span class="keyword">=</span> stream_takeLte&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs1<span class="keyword">,</span> n<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> xs3 <span class="keyword">=</span> stream_map&lt;<span class="staexp">int</span><span class="keyword">&gt;&lt;</span><span class="staexp">double</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs2<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=&gt;</span> f<span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  stream_foldleft&lt;<span class="staexp">double</span><span class="keyword">&gt;&lt;</span><span class="staexp">double</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs3<span class="keyword">,</span> <span class="dynexp">0.0</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>res<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=&gt;</span> res+x<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [ftally2]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+In the body of <FONT
+COLOR="RED"
+>ftally2</FONT
+>, <FONT
+COLOR="RED"
+>xs1</FONT
+> refers to an
+infinite stream of integers starting from 1 (that are enumerated
+ascendingly); <FONT
+COLOR="RED"
+>xs2</FONT
+> refers to the prefix of <FONT
+COLOR="RED"
+>xs1</FONT
+>
+ending with the integer n; <FONT
+COLOR="RED"
+>xs3</FONT
+> refers to the stream
+consisting of f(i) for i ranging from 1 to n; and finally
+<FONT
+COLOR="RED"
+>stream_foldleft</FONT
+> is called to compute the sum of all of the
+numbers in <FONT
+COLOR="RED"
+>xs3</FONT
+>.
+For the code implementing
+<FONT
+COLOR="RED"
+>stream_takeLte</FONT
+> and <FONT
+COLOR="RED"
+>stream_foldleft</FONT
+>, please
+follow the link mentioned at the end of the chapter.
+
+</P
+><P
+>&#13;Clearly, the implementation of <FONT
+COLOR="RED"
+>ftally2</FONT
+> seems more complex
+than that of <FONT
+COLOR="RED"
+>ftally</FONT
+>. Is there any practical reason for prefering
+<FONT
+COLOR="RED"
+>ftally2</FONT
+> over <FONT
+COLOR="RED"
+>ftally</FONT
+>? Absolutely.
+
+</P
+><P
+>&#13;The implementation of <FONT
+COLOR="RED"
+>ftally2</FONT
+> is combinator-based.  In
+general, such an implementation makes it easier for the code to
+evolve. Let us imagine a scenario where the passed function f needs to
+perform computation at a remote site (because it needs to access a
+database) and the bottleneck for calling f lies in communicating the
+input and output over some network. A common approach to addressing
+this bottleneck issue is to provide a vectorial variant of f that can
+handle multiple inputs and outputs in one call. Assume that such a
+variant of f is available. We can implement a corresponding variant of
+<FONT
+COLOR="RED"
+>stream_map</FONT
+> based on this variant of f and the
+implementation of <FONT
+COLOR="RED"
+>ftally2</FONT
+> can then benefit immediately. As
+a matter of fact, it can be realistically expected that such a variant
+of <FONT
+COLOR="RED"
+>stream_map</FONT
+> is already made available as a library
+function.  On the other hand, we probably need to completely overhaul
+the implementation of <FONT
+COLOR="RED"
+>ftally</FONT
+> in order for it to benefit
+(from the vectorial variant of f).
+
+</P
+><P
+>&#13;An often touted feature of a (non-linear) stream is its support for
+caching: the elements in the stream are automatically saved for
+potential subsequent use once they are generated. As with any
+programming features, a constant question is whether one needs to pay
+for this feature even if one makes no use of it. In the case of
+automatic caching associated with (non-linear) streams, one clearly
+pays dearly for the time and memory spent on caching when the elements
+in such a stream need to be processed only once. In stream-based
+programming, most streams created to support intermediate computation
+are processed only once. For instance, the three streams in the body
+of <FONT
+COLOR="RED"
+>ftally2</FONT
+> are all processed once and only once.
+
+</P
+><P
+>&#13;While one can argue that an optimizing compiler may be able to
+generate code (e.g., based on some deforestation heuristics) that
+completely eliminates caching in the case of <FONT
+COLOR="RED"
+>ftally2</FONT
+>, the
+very problem with such an argument is that the optimizing compiler
+also may not. This is a bit like trying to control a puppet with a
+string of one hundred meter long: the consequence of such a practice is
+difficult to predict if not unpredictable.
+
+</P
+><P
+>&#13;Linear streams come to the rescue. A linear stream is very much like a
+non-linear stream except that it does not support caching (of its
+generated elements). While a linear stream presents an illusion of a
+(possibily infinte) sequence of elements, only the first element (if
+it exists) is available for use.  In order to gain access to the next
+element, the node for storing the first element needs to be freed.
+For the purpose of clarifying the concept of linearity, I would like
+to point out that the length of a (finite) linear stream can be
+readily obtained by evaluating a loop that traverses the entire linear
+stream but the linear stream itself is all consumed when its length is
+finally computed!
+
+</P
+><P
+>&#13;Given a type T, the type <FONT
+COLOR="RED"
+>stream_vt(T)</FONT
+> is for a linear
+stream of elements of the type T.  Evaluating a linear stream-value
+yields a linear stream-con value of type <FONT
+COLOR="RED"
+>stream_con(T)</FONT
+> for
+some T, where <FONT
+COLOR="RED"
+>stream_vt_con</FONT
+> is the following declared
+linear datatype:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1394"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">datavtype</span>
+<span class="staexp">stream_vt_con<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="dynexp">steam_vt_nil <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="dynexp">stream_vt_cons <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The constructor <FONT
+COLOR="RED"
+>stream_vt_nil</FONT
+>, the linear counterpart
+of <FONT
+COLOR="RED"
+>stream_nil</FONT
+>, is for creating a linear empty stream-con
+value, and the constructor <FONT
+COLOR="RED"
+>stream_vt_cons</FONT
+>, the linear
+counterpart of <FONT
+COLOR="RED"
+>stream_cons</FONT
+>, is for creating a linear
+non-empty stream-con value.
+
+</P
+><P
+>&#13;The following code implements a function for building a linear stream
+of integers starting from a given one:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1401"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+int_stream_vt_from<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+int_stream_vt_from<span class="keyword">(</span>n<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="dynexp"><span class="keyword">$ldelay</span><span class="keyword">(</span>stream_vt_cons<span class="keyword">(</span>n<span class="keyword">,</span> int_stream_vt_from<span class="keyword">(</span>n+1<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the keyword <FONT
+COLOR="RED"
+>$ldelay</FONT
+>, the linear counterpart of
+<FONT
+COLOR="RED"
+>$delay</FONT
+>, is for initiating the construction of a linear
+stream.
+
+</P
+><P
+>&#13;Given a linear stream xs and an integer n, the following function
+<FONT
+COLOR="RED"
+>stream_vt_takeLte</FONT
+> returns another stream consisting of the
+first n elements of xs if xs contains at least n elements or all of xs
+if not:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1407"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+stream_vt_takeLte
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_vt_takeLte
+  <span class="keyword">(</span>xs<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$ldelay</span>
+<span class="keyword">(</span>
+<span class="keyword">if</span>
+n <span class="keyword">&gt;</span> 0
+<span class="keyword">then</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+   stream_vt_nil<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+   stream_vt_cons<span class="keyword">(</span>x<span class="keyword">,</span> stream_vt_takeLte<span class="keyword">(</span>xs<span class="keyword">,</span> n-1<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span>
+<span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">~</span>xs<span class="keyword">;</span> stream_vt_nil<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">,</span>
+lazy_vt_free<span class="keyword">(</span>xs<span class="keyword">)</span> <span class="comment">// called when the stream is freed</span>
+<span class="keyword">)</span></span></span> <span class="comment">(* end of [stream_vt_takeLte] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a linear stream xs, we can call <FONT
+COLOR="RED"
+>lazy_vt_free</FONT
+> on xs
+to free it. We can also write <FONT
+COLOR="RED"
+>~(xs)</FONT
+> as a shorthand for
+<FONT
+COLOR="RED"
+>lazy_vt_free(xs)</FONT
+>. Assume that the keyword
+<FONT
+COLOR="RED"
+>$ldelay</FONT
+> initiates the construction of a linear stream.
+What follows the keyword <FONT
+COLOR="RED"
+>$ldelay</FONT
+> should be a pair of
+expressions; the first one is the body of the thunk that is called
+when the constructed linear stream is evaluated (to a linear
+stream-con value); the second one is the body of the thunk that is
+called when the constructed linear stream is to be freed by
+<FONT
+COLOR="RED"
+>lazy_vt_free</FONT
+>. If the second expression is missing, then
+calling <FONT
+COLOR="RED"
+>lazy_vt_free</FONT
+> on the constructed linear stream does
+nothing. In other words, a linear stream is like an object with two
+methods: One is called to evaluate the stream to a stream-con value
+and the other to free the stream. In the actual implementation, these
+two methods are combined into one, which is passed a boolean value to
+determine which of the two methods should be called. In the body of
+the function <FONT
+COLOR="RED"
+>stream_vt_takeLte</FONT
+>, the symbol <FONT
+COLOR="RED"
+>~</FONT
+>
+in front of the pattern <FONT
+COLOR="RED"
+>stream_vt_nil()</FONT
+> or
+<FONT
+COLOR="RED"
+>stream_vt_cons(x, xs)</FONT
+> means that the stream-con value that
+matches the pattern is freed (and thus no longer available for any
+subsequent use).
+
+</P
+><P
+>&#13;The following function <FONT
+COLOR="RED"
+>stream_vt_map</FONT
+> is just
+the counterpart of <FONT
+COLOR="RED"
+>stream_map</FONT
+> for linear streams:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1423"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+<span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+stream_vt_map
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
+stream_vt_map
+  <span class="keyword">(</span>xs<span class="keyword">,</span> fopr<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$ldelay</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+   stream_vt_nil<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+   stream_vt_cons<span class="keyword">(</span>fopr<span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">,</span> stream_vt_map&lt;a<span class="keyword">&gt;&lt;</span>b<span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> fopr<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">,</span> <span class="keyword">~</span><span class="keyword">(</span>xs<span class="keyword">)</span> <span class="comment">// called when the stream is freed</span>
+<span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The following function <FONT
+COLOR="RED"
+>stream_vt_foldleft</FONT
+> is just
+the counterpart of <FONT
+COLOR="RED"
+>stream_foldleft</FONT
+> for linear streams:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1427"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>res<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+stream_vt_foldleft
+<span class="keyword">(</span>
+xs<span class="keyword">:</span> <span class="staexp">stream_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span>
+r0<span class="keyword">:</span> <span class="staexp">res</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">res</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">res</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">res</span></span> <span class="comment">// end-of-function</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">res</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+stream_vt_foldleft<span class="keyword">(</span>xs<span class="keyword">,</span> r0<span class="keyword">,</span> fopr<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> r0
+<span class="keyword">|</span> <span class="keyword">~</span>stream_vt_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+   stream_vt_foldleft&lt;<span class="staexp">res</span><span class="keyword">&gt;&lt;</span><span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> fopr<span class="keyword">(</span>r0<span class="keyword">,</span> x<span class="keyword">)</span><span class="keyword">,</span> fopr<span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [stream_vt_foldleft] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The following function <FONT
+COLOR="RED"
+>ftally2_vt</FONT
+> is simply
+a variant of <FONT
+COLOR="RED"
+>ftally2</FONT
+> in which the combinators
+on (non-linear) streams are replaced with their counterparts
+on linear streams:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1432"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+ftally2_vt
+<span class="keyword">(</span>
+n <span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">,</span>
+f <span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">double</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">double</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> xs1 <span class="keyword">=</span> int_stream_vt_from<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> xs2 <span class="keyword">=</span> stream_vt_takeLte&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs1<span class="keyword">,</span> n<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> xs3 <span class="keyword">=</span> stream_vt_map&lt;<span class="staexp">int</span><span class="keyword">&gt;&lt;</span><span class="staexp">double</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs2<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=&gt;</span> f<span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  stream_vt_foldleft&lt;<span class="staexp">double</span><span class="keyword">&gt;&lt;</span><span class="staexp">double</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs3<span class="keyword">,</span> <span class="dynexp">0.0</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>res<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=&gt;</span> res+x<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [ftally2_vt]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a natural number n, <FONT
+COLOR="RED"
+>ftally2</FONT
+> creates three streams on
+heap and leave them there when it returns such that each of the three
+left streams contains n cached elements. Given the same natural
+number, <FONT
+COLOR="RED"
+>ftally2_vt</FONT
+> creates three linear streams and then
+frees all of them before it returns. When compared to
+<FONT
+COLOR="RED"
+>ftally2</FONT
+>, <FONT
+COLOR="RED"
+>ftally2_vt</FONT
+> is clearly of greater
+efficiency both time-wise and memory-wise.
+
+</P
+><P
+>&#13;As far as I can tell for now, the support for linear streams in ATS is
+unique and it is not yet available elsewhere.  In concern of
+stream-based programming, I see this support as a secret weapon that
+gives ATS a clear edge over others that can only provide support for
+non-linear streams.  Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/11/CODE"
+TARGET="_top"
+>on-line</A
+> the entirety of the code used in this chapter. 
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c1320.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c1440.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Queen Puzzle Revisited</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Continuation-Passing Style</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2FPCRASH-BOOK.js"></SCRIPT></BODY
+></HTML
+>

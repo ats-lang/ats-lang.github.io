@@ -1,0 +1,795 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Higher-Order Functions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Crash into FP through ATS"
+HREF="book1.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Sierpinski Triangle"
+HREF="c202.html"><LINK
+REL="NEXT"
+TITLE="Example: A Bit of Animation"
+HREF="c349.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Crash into FP through ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c202.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c349.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="lecture04"
+></A
+>Chapter 5. Higher-Order Functions</H1
+><P
+>&#13;In ATS, an anonymous function can be defined as a
+lambda-abstraction. For instance, the square function on integers can
+be defined as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN253"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+square <span class="keyword">=</span> <span class="keyword">lam</span><span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=&gt;</span> x * x</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the keyword <FONT
+COLOR="RED"
+>lam</FONT
+> is for constructing a
+lambda-abstraction.  For defining a recursive anonymous function, the
+keyword <FONT
+COLOR="RED"
+>fix</FONT
+> needed. For instance, the factorial function
+can also be implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN257"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> fact <span class="keyword">=</span>
+<span class="keyword">fix</span> f<span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=&gt;</span> <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> x * f<span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+A function value can be passed as a function argument just like any
+other values, and a higher-order function refers to one that takes a
+function value as its argument. As far as terminology is concerned, a
+first-order function takes no function arguments; a second-order
+function takes a first-order function as its argument; a third-order
+function takes a second-order function as its argument; etc. In
+practice, higher-order functions are overwhelmingly second-order ones.
+
+</P
+><P
+>&#13;At this point, I want to digress a bit by advocating a so-called
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>build-your-own-library</I
+></SPAN
+> approach to learning
+programming. Often a limitation faced by someone learning programming
+is that one does not have many opportunities to actually use the code
+written by oneself. For instance, we rarely see a case where someone
+makes extensive use of a data structure (such as hash table and
+associative map) implemented by his or her own. Most likely, one
+implements some data structure for the purpose of learning about it
+and then throws the code away afterwards. My own experience strongly
+indicates that one can learn a great deal more about programming if
+one insists on calling library functions implemented by oneself. From
+this point on, I will gradually build a library for this book and I
+encourage everyone reading the book to study the source code for the library
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/MYLIB"
+TARGET="_top"
+>on-line</A
+>.
+
+</P
+><P
+>&#13;As an example of higher-order function, let us implement a commonly
+used library function of the name <FONT
+COLOR="RED"
+>int_foreach</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN264"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+int_foreach
+<span class="keyword">(</span>n0<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">void</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the type <FONT
+COLOR="RED"
+>cfun(int, void)</FONT
+> is just a shorthand for
+<FONT
+COLOR="RED"
+>(int) -&#60;cloref1&#62; void</FONT
+>, which is assigned to a
+closure-function that takes an integer argument and returns void.
+There are two kinds of functions in ATS: envless function and
+closure-function; the former is just a function in the sense of C: a
+function pointer to some memory location where a sequence of
+instructions is stored; the latter is essentially a function pointer
+paired with an environment (represented as a tuple of values) for
+certain paramemters. For an envless function from <FONT
+COLOR="RED"
+>int</FONT
+> to
+<FONT
+COLOR="RED"
+>void</FONT
+>, its type is written as <FONT
+COLOR="RED"
+>(int) -&#62; void</FONT
+>
+or <FONT
+COLOR="RED"
+>(int) -&#60;fun1&#62; void</FONT
+>.  While turning an envless
+function into a closure-function is straightforward, there is no
+generic method for turning a closure-function into an envless
+function. Note that each function argument of a higher-order function
+is usually chosen to be a closure-function so as to make the
+higher-order function more applicable.
+
+</P
+><P
+>&#13;A standard implementation of <FONT
+COLOR="RED"
+>int_foreach</FONT
+> is given as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN274"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+int_foreach
+<span class="keyword">(</span>n0<span class="keyword">,</span> fwork<span class="keyword">)</span> <span class="keyword">=</span>
+loop<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span> <span class="keyword">where</span> <span class="keyword">{</span>
+  <span class="dynexp"><span class="keyword">fun</span>
+  loop<span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> i <span class="keyword">&lt;</span> n0 <span class="keyword">then</span> <span class="keyword">(</span>fwork<span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">;</span> loop<span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="comment">// end of [fun loop]</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [int_foreach] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;For testing <FONT
+COLOR="RED"
+>fact</FONT
+> (that implements the factorial
+function), we can simply make a call to <FONT
+COLOR="RED"
+>int_foreach</FONT
+>
+as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN279"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+testfact<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+int_foreach<span class="keyword">(</span>n<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">println!</span><span class="keyword">(</span><span class="dynstr">"fact("</span><span class="keyword">,</span> i<span class="keyword">,</span> <span class="dynstr">") = "</span><span class="keyword">,</span> fact<span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;As another example, let us implement a higher-order function of the
+name <FONT
+COLOR="RED"
+>int_foldleft</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN283"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>res<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+int_foldleft
+<span class="keyword">(</span> n0<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">res</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">res</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">res</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">res</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">res</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+int_foldleft
+  <span class="keyword">(</span>n0<span class="keyword">,</span> res<span class="keyword">,</span> fopr<span class="keyword">)</span> <span class="keyword">=</span>
+  loop<span class="keyword">(</span>res<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop<span class="keyword">(</span>res<span class="keyword">:</span> <span class="staexp">res</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">res</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> i <span class="keyword">&lt;</span> n0 <span class="keyword">then</span> loop<span class="keyword">(</span>fopr<span class="keyword">(</span>res<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">,</span> i+<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> res</span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [int_foldleft] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>int_foldleft</FONT
+> is declared as a function template.
+For someone who knows the standard left-folding function on a list
+(for folding the list from left to right), <FONT
+COLOR="RED"
+>int_foldleft</FONT
+>
+does essentially the same as left-folding a list consisting of
+integers from <FONT
+COLOR="RED"
+>0</FONT
+> to <FONT
+COLOR="RED"
+>n-1</FONT
+>, where <FONT
+COLOR="RED"
+>n</FONT
+> is
+the first argument passed to <FONT
+COLOR="RED"
+>int_foldleft</FONT
+>. For instance,
+we can implement the factorial function as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN291"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fact<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+int_foldleft&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span>n<span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>res<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=&gt;</span> res * <span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+If we want a function <FONT
+COLOR="RED"
+>sqsum</FONT
+> to sum up the squares of the
+first <FONT
+COLOR="RED"
+>n</FONT
+> positive integers for any given natural number
+<FONT
+COLOR="RED"
+>n</FONT
+>, we can implement it with a call to <FONT
+COLOR="RED"
+>int_foldleft</FONT
+> as well:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN297"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+sq<span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> i*i</span>
+<span class="dynexp"><span class="keyword">fun</span>
+sqsum<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+int_foldleft&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span>n<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>res<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=&gt;</span> res + sq<span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Higher-order functions like <FONT
+COLOR="RED"
+>int_foreach</FONT
+> and
+<FONT
+COLOR="RED"
+>int_foldleft</FONT
+> are often referred to as combinators.  By
+making use of combinators, one can often shorten the code needed for
+solving a particular problem. Much more importantly, combinators can
+help one formulate high-level solutions that tend to significantly
+reduce the need for directly handling minute programming details. As
+we all know too well, handling such details is a very rich source for
+programming errors.
+
+</P
+><P
+>&#13;As the last example in this chapter, let us see
+a combinator-based implementation of matrix multiplication.
+In imperative programming, the following style of code
+is common:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN303"
+></A
+><PRE
+CLASS="programlisting"
+>&#13;for (i = 0; i &#60; m; i = i+1) for (j = 0; i &#60; n; j = j+1) fwork(i, j);
+</PRE
+><P
+></P
+></DIV
+>
+
+where one for-loop is embedded in the body of another for-loop.  A
+combinator <FONT
+COLOR="RED"
+>int_cross_foreach</FONT
+> is given as follows for doing
+the same:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN306"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+int_cross_foreach
+<span class="keyword">(</span>m<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">void</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+int_cross_foreach
+  <span class="keyword">(</span>m<span class="keyword">,</span> n<span class="keyword">,</span> fwork<span class="keyword">)</span> <span class="keyword">=</span>
+  int_foreach<span class="keyword">(</span>m<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=&gt;</span> int_foreach<span class="keyword">(</span>n<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>j<span class="keyword">)</span> <span class="keyword">=&gt;</span> fwork<span class="keyword">(</span>i<span class="keyword">,</span> j<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The following function <FONT
+COLOR="RED"
+>matrix_mulby</FONT
+> takes six arguments
+<FONT
+COLOR="RED"
+>p</FONT
+>, <FONT
+COLOR="RED"
+>q</FONT
+>, <FONT
+COLOR="RED"
+>r</FONT
+>, <FONT
+COLOR="RED"
+>A</FONT
+>,
+<FONT
+COLOR="RED"
+>B</FONT
+>, and <FONT
+COLOR="RED"
+>C</FONT
+>, where it is assumed that
+<FONT
+COLOR="RED"
+>A</FONT
+>, <FONT
+COLOR="RED"
+>B</FONT
+>, and <FONT
+COLOR="RED"
+>C</FONT
+> are matrices of
+dimensions <FONT
+COLOR="RED"
+>p</FONT
+> by <FONT
+COLOR="RED"
+>q</FONT
+>, <FONT
+COLOR="RED"
+>q</FONT
+> by
+<FONT
+COLOR="RED"
+>r</FONT
+>, and <FONT
+COLOR="RED"
+>p</FONT
+> by <FONT
+COLOR="RED"
+>r</FONT
+>, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN324"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+matrix_mulby
+<span class="keyword">(</span> p<span class="keyword">:</span><span class="staexp">int</span><span class="keyword">,</span> q<span class="keyword">:</span><span class="staexp">int</span><span class="keyword">,</span> r<span class="keyword">:</span><span class="staexp">int</span>
+<span class="keyword">,</span> A<span class="keyword">:</span><span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> B<span class="keyword">:</span><span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> C<span class="keyword">:</span><span class="staexp">matrix0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> add <span class="keyword">=</span> gadd_val_val&lt;<span class="staexp">a</span><span class="keyword">&gt;</span></span>
+<span class="dynexp"><span class="keyword">val</span> mul <span class="keyword">=</span> gmul_val_val&lt;<span class="staexp">a</span><span class="keyword">&gt;</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fwork<span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="dynexp">C[i<span class="keyword">,</span>j<span class="keyword">]</span></span> :=
+  int_foldleft&lt;<span class="staexp">a</span><span class="keyword">&gt;</span>
+  <span class="keyword">(</span> q<span class="keyword">,</span> <span class="dynexp">C[i<span class="keyword">,</span>j<span class="keyword">]</span></span>
+  <span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>res<span class="keyword">,</span> k<span class="keyword">)</span> <span class="keyword">=&gt;</span> add<span class="keyword">(</span>res<span class="keyword">,</span> mul<span class="keyword">(</span><span class="dynexp">A[i<span class="keyword">,</span>k<span class="keyword">]</span></span><span class="keyword">,</span> <span class="dynexp">B[k<span class="keyword">,</span>j<span class="keyword">]</span></span><span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  int_cross_foreach<span class="keyword">(</span>p<span class="keyword">,</span> r<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>i<span class="keyword">,</span> j<span class="keyword">)</span> <span class="keyword">=&gt;</span> fwork<span class="keyword">(</span>i<span class="keyword">,</span> j<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [matrix_mulby]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the function templates <FONT
+COLOR="RED"
+>gadd_val_val</FONT
+> and
+<FONT
+COLOR="RED"
+>gmul_val_val</FONT
+> are for addition and multiplication
+operations on generic numbers of type <FONT
+COLOR="RED"
+>a</FONT
+>.  What
+<FONT
+COLOR="RED"
+>matrix_mulby</FONT
+> does is simply updating <FONT
+COLOR="RED"
+>C</FONT
+> with
+<FONT
+COLOR="RED"
+>C</FONT
+> plus the product of <FONT
+COLOR="RED"
+>A</FONT
+> and <FONT
+COLOR="RED"
+>B</FONT
+>. 
+</P
+><P
+>&#13;In ATS code, dot-notation is often seen for calling combinators.
+For instance, we can introduce the following curried version of
+<FONT
+COLOR="RED"
+>int_foreach</FONT
+> and <FONT
+COLOR="RED"
+>int_foldleft</FONT
+> plus some
+overload declarations:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN337"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+int_foreach_method
+<span class="keyword">(</span>n0<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">(</span>fwork<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">void</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>res<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+int_foldleft_method
+<span class="keyword">(</span>n0<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> ty<span class="keyword">:</span> <span class="staexp">TYPE</span><span class="keyword">(</span><span class="staexp">res</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">(</span>res<span class="keyword">:</span> <span class="staexp">res</span><span class="keyword">,</span> fopr<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">res</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">res</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">res</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>foreach <span class="keyword">with</span> int_foreach_method</span>
+<span class="dynexp"><span class="keyword">overload</span> <span class="keyword">.</span>foldleft <span class="keyword">with</span> int_foldleft_method</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+We can then
+implement the functions <FONT
+COLOR="RED"
+>fact</FONT
+> and <FONT
+COLOR="RED"
+>testfact</FONT
+>
+as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN341"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> fact<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">(</span>n<span class="keyword">)</span><span class="dynexp"><span class="keyword">.</span>foldleft</span><span class="keyword">(</span>TYPE<span class="staexp"><span class="keyword">{</span>int<span class="keyword">}</span></span><span class="keyword">)</span><span class="keyword">(</span><span class="keyword">lam</span><span class="keyword">(</span>res<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=&gt;</span> res*<span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> testfact<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">(</span>n<span class="keyword">)</span><span class="dynexp"><span class="keyword">.</span>foreach</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">(</span><span class="keyword">lam</span><span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynstr">"fact("</span><span class="keyword">,</span> i+<span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">") = "</span><span class="keyword">,</span> fact<span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>TYPE{int}</FONT
+> is a form of type-annotation; it
+indicates to the typechecker of ATS that the template parameter for
+the involved instance of <FONT
+COLOR="RED"
+>int_foldleft_method</FONT
+> is
+<FONT
+COLOR="RED"
+>int</FONT
+>.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/04/CODE"
+TARGET="_top"
+>on-line</A
+> the entirety of
+the code used in this chapter. The multable example mentioned previously
+is modified a bit so as to make use of the <FONT
+COLOR="RED"
+>int_foreach_method</FONT
+>
+combinator. 
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c202.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c349.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Sierpinski Triangle</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: A Bit of Animation</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2FPCRASH-BOOK.js"></SCRIPT></BODY
+></HTML
+>

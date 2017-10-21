@@ -1,0 +1,819 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Continuation-Passing Style</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Crash into FP through ATS"
+HREF="book1.html"><LINK
+REL="PREVIOUS"
+TITLE="Linear Lazy Stream-Processing"
+HREF="c1354.html"><LINK
+REL="NEXT"
+TITLE="Example: A Bit More of Animation"
+HREF="c1536.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Crash into FP through ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c1354.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c1536.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="lecture12"
+></A
+>Chapter 19. Continuation-Passing Style</H1
+><P
+>&#13;One can approach the notion of continuation from many different
+angles.  I would like to start with asynchronous function calls in
+Javascript (JS), which are often employed for the purpose of
+eliminating potential blocking due to inputs or resources needed for
+execution being yet to be made available.
+
+</P
+><P
+>&#13;Let us use <FONT
+COLOR="RED"
+>do_async1</FONT
+> and <FONT
+COLOR="RED"
+>do_async2</FONT
+> to refer to
+two functions such that calls made to them are supposed to be executed
+asynchronously (so as to avoid potential blocking of entire program
+execution):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1446"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> do_async1<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">fun</span> do_async2<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+In the body of the following function <FONT
+COLOR="RED"
+>do_async12</FONT
+>, a call
+to <FONT
+COLOR="RED"
+>do_async1</FONT
+> is followed by another call to <FONT
+COLOR="RED"
+>do_async2</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1451"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+do_async12<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">{</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> do_async1<span class="keyword">(</span><span class="keyword">)</span></span><span class="keyword">;</span> <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> do_async2<span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [do_async12] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Calling <FONT
+COLOR="RED"
+>do_async1</FONT
+> returns immediately after the actual
+work to be done is scheduled. And the same can be said about calling
+<FONT
+COLOR="RED"
+>do_async2</FONT
+>. There is in general no guarantee that the work
+scheduled for calling <FONT
+COLOR="RED"
+>do_async1</FONT
+> is done ahead of the work
+scheduled for calling <FONT
+COLOR="RED"
+>do_async2</FONT
+> or vice versa. What needs
+to be done if we want to enforce such an order? One solution is to
+provide a variant of <FONT
+COLOR="RED"
+>do_async1</FONT
+> of the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1458"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> do_async1_cont<span class="keyword">(</span>k<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">void</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The argument passed to <FONT
+COLOR="RED"
+>do_async1_cont</FONT
+> is a thunk (that is,
+a nullary closure-function), which is supposed to be called
+immediately after the work scheduled for <FONT
+COLOR="RED"
+>do_async1</FONT
+> is
+done.  And this thunk is often given the name
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>continuation</I
+></SPAN
+>, referring to the work that needs to be
+continued. In the following presentatin, <FONT
+COLOR="RED"
+>cont0()</FONT
+> may also
+be used as a shorthand for <FONT
+COLOR="RED"
+>cfun(void)</FONT
+>.  With
+<FONT
+COLOR="RED"
+>do_async1_cont</FONT
+>, the function <FONT
+COLOR="RED"
+>do_async1()</FONT
+> can
+be given the following implementation:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1467"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+do_async1
+<span class="keyword">(</span>
+<span class="comment">// argless</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> do_async1_cont<span class="keyword">(</span><span class="keyword">lam</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+which simply means that no more work is needed after
+the work scheduled for calling <FONT
+COLOR="RED"
+>do_async1</FONT
+> is done.
+As for
+the function <FONT
+COLOR="RED"
+>do_async12()</FONT
+>, the following implementation
+can be given:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1471"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+do_async12<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">{</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> do_async1_cont<span class="keyword">(</span><span class="keyword">lam</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> do_async2<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [do_async12] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where a call to <FONT
+COLOR="RED"
+>do_async2</FONT
+> is to be made only after the
+work scheduled for <FONT
+COLOR="RED"
+>do_async1</FONT
+> is finished. In fact, we
+can require that each function take a continuation argument if it ever
+schedules work to be done asynchronously. For instance, we can have
+the following variant of <FONT
+COLOR="RED"
+>do_async12</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1476"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+do_async12_cont
+  <span class="keyword">(</span>k<span class="keyword">:</span> <span class="staexp">cont0</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">{</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> do_async1_cont<span class="keyword">(</span><span class="keyword">lam</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> do_async2_cont<span class="keyword">(</span>k<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [do_async12] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the interface for <FONT
+COLOR="RED"
+>do_async2_cont</FONT
+> is just like that
+for <FONT
+COLOR="RED"
+>do_async1_cont</FONT
+>. And this style of coding is often
+referred to as continuation-passing style (CPS).
+
+</P
+><P
+>&#13;In the following presentation, I would like to present a few more
+examples that contrast the direct style with the CPS-style. Let
+<FONT
+COLOR="RED"
+>cont1</FONT
+> be declared as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1482"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">typedef</span> <span class="staexp">cont1<span class="keyword">(</span><span class="staexp">res<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">res</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">void</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The functions <FONT
+COLOR="RED"
+>fact</FONT
+> and <FONT
+COLOR="RED"
+>k_fact</FONT
+> given below are
+implemented in the direct style and the CPS-style, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1486"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fact
+<span class="keyword">(</span>
+n <span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> n * fact<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+k_fact
+<span class="keyword">(</span>
+n <span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">,</span>
+k <span class="keyword">:</span> <span class="staexp">cont1</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">if</span>
+<span class="keyword">(</span>n <span class="keyword">&gt;</span> <span class="dynexp">0</span><span class="keyword">)</span>
+<span class="keyword">then</span> k_fact<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>res<span class="keyword">)</span> <span class="keyword">=&gt;</span> k<span class="keyword">(</span>n*res<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">else</span> k<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span>
+<span class="comment">// end of [if]</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [k_fact] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given an integer n and a continuation k, <FONT
+COLOR="RED"
+>k_fact(n, k)</FONT
+>
+basically means to pass <FONT
+COLOR="RED"
+>fact(n)</FONT
+> to the continuation k.
+Please note that the continuation argument passed to the recursive
+call in the body of <FONT
+COLOR="RED"
+>k_fact</FONT
+> is a newly built closure-function
+that multiplies by n whatever integer passed to it and then passes the
+product to the original continuation.
+
+</P
+><P
+>&#13;The next example is slightly more involved.
+The functions <FONT
+COLOR="RED"
+>fibo</FONT
+> and <FONT
+COLOR="RED"
+>k_fibo</FONT
+> given below are
+implemented in the direct style and the CPS-style, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1494"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fibo
+<span class="keyword">(</span>
+n <span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">if</span> n &gt;= <span class="dynexp">2</span> <span class="keyword">then</span> fibo<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span>+fibo<span class="keyword">(</span>n-<span class="dynexp">2</span><span class="keyword">)</span> <span class="keyword">else</span> n</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+k_fibo
+<span class="keyword">(</span>
+n <span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">,</span>
+k <span class="keyword">:</span> <span class="staexp">cont1</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">if</span>
+<span class="keyword">(</span>n &gt;= <span class="dynexp">2</span><span class="keyword">)</span>
+<span class="keyword">then</span>
+k_fibo
+<span class="keyword">(</span> n-<span class="dynexp">1</span>
+<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>r1<span class="keyword">)</span> <span class="keyword">=&gt;</span> k_fibo<span class="keyword">(</span>n-<span class="dynexp">2</span><span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>r2<span class="keyword">)</span> <span class="keyword">=&gt;</span> k<span class="keyword">(</span>r1+r2<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="comment">(* end of [then] *)</span>
+<span class="keyword">else</span> k<span class="keyword">(</span>n<span class="keyword">)</span> <span class="comment">// end of [else]</span>
+<span class="comment">// end of [if]</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [k_fibo] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given an integer n and a continuation k, <FONT
+COLOR="RED"
+>k_fibo(n, k)</FONT
+>
+basically means to pass <FONT
+COLOR="RED"
+>fibo(n)</FONT
+> to the continuation k.
+There are two recursive calls in the body of <FONT
+COLOR="RED"
+>fibo</FONT
+>; they
+are translated into two recurisve calls in the body of <FONT
+COLOR="RED"
+>k_fibo</FONT
+>,
+where the second one appears in the continuation passed to the first one.
+
+</P
+><P
+>&#13;Going from <FONT
+COLOR="RED"
+>fact</FONT
+> to <FONT
+COLOR="RED"
+>k_fact</FONT
+> and <FONT
+COLOR="RED"
+>fibo</FONT
+>
+to <FONT
+COLOR="RED"
+>k_fibo</FONT
+> is often referred to as CPS-translation. Note
+that the recursive calls in the bodies of <FONT
+COLOR="RED"
+>k_fact</FONT
+> and
+<FONT
+COLOR="RED"
+>k_fibo</FONT
+> are all tail-calls. In general, each recursive call
+in an implementation written in the direct style should be translated
+into a tail-recursive one in the corresponding implementation written
+in the CPS-style. If a recursive call in the direct style happens to
+be tail-recursive, then the corresponding tail-recursive call in the
+CPS-style is passed the same continuation as the one passed to its
+caller. For instance, the following example shows a tail-recursive
+function (<FONT
+COLOR="RED"
+>fact2</FONT
+>) in the direct style being translated into
+one (<FONT
+COLOR="RED"
+>k_fact2</FONT
+>) in the CPS-style:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1509"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+fact2
+<span class="keyword">(</span>n <span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> fact2<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">,</span> n*res<span class="keyword">)</span> <span class="keyword">else</span> res</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+k_fact2
+<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> k<span class="keyword">:</span> <span class="staexp">cont1</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span>  <span class="keyword">=</span>
+<span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> k_fact2<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">,</span> n*res<span class="keyword">,</span> k<span class="keyword">)</span> <span class="keyword">else</span> k<span class="keyword">(</span>res<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;As yet another
+example,
+let us
+see
+<FONT
+COLOR="RED"
+>list0_map</FONT
+> of the direct style
+contrasted with
+<FONT
+COLOR="RED"
+>list0_kmap</FONT
+> of the CPS-style:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1514"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+<span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_map
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> f0<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+<span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_kmap
+<span class="keyword">(</span> xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">,</span> f0<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cont1</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">void</span><span class="keyword">)</span><span class="keyword">,</span> k0<span class="keyword">:</span> <span class="staexp">cont1</span><span class="keyword">(</span><span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
+list0_map<span class="keyword">(</span>xs<span class="keyword">,</span> f0<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  list0_nil<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  list0_cons<span class="keyword">(</span>f0<span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">,</span> list0_map&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> f0<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="keyword">{</span><span class="staexp">b</span><span class="keyword">}</span>
+list0_kmap<span class="keyword">(</span>xs<span class="keyword">,</span> f0<span class="keyword">,</span> k0<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  k0<span class="keyword">(</span>list0_nil<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  f0<span class="keyword">(</span>x<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>y<span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_kmap&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> f0<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>ys<span class="keyword">)</span> <span class="keyword">=&gt;</span> k0<span class="keyword">(</span>list0_cons<span class="keyword">(</span>y<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the argument f0 (for <FONT
+COLOR="RED"
+>list0_kmap</FONT
+>) takes a
+continuation as its second argument, which makes f0 a second-order
+function. Therefore, <FONT
+COLOR="RED"
+>list0_kmap</FONT
+> is itself a third-order
+function.
+
+</P
+><P
+>&#13;The last example in this chapter is the following
+stream-processing function written in CPS-style:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1519"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+stream_kforeach
+<span class="keyword">(</span> xs<span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">INV</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">,</span> f0<span class="keyword">:</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cont1</span><span class="keyword">(</span><span class="staexp">bool</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">void</span><span class="keyword">)</span><span class="keyword">,</span> k0<span class="keyword">:</span> <span class="staexp">cont0</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_kforeach<span class="keyword">(</span>xs<span class="keyword">,</span> f0<span class="keyword">,</span> k0<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> <span class="keyword">!</span>xs <span class="keyword">of</span>
+<span class="keyword">|</span> stream_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> k0<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> stream_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  f0<span class="keyword">(</span>x<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span>y<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">if</span> y <span class="keyword">then</span> stream_kforeach&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> f0<span class="keyword">,</span> k0<span class="keyword">)</span> <span class="keyword">else</span> k0<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a stream and a function, <FONT
+COLOR="RED"
+>stream_kforeach</FONT
+> processes
+an element in the given stream by applying the given function to it;
+if the function returns true, then <FONT
+COLOR="RED"
+>stream_kforeach</FONT
+> repeats
+to process the next element (if it exists); if the function returns
+false, then <FONT
+COLOR="RED"
+>stream_kforeach</FONT
+> stops processing the rest of
+the elements and terminates. Of course, what is described here is
+actually done in CPS-style. Please click <A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/12/CODE/Sieve.html"
+TARGET="_top"
+>here</A
+>
+to see a demo of <FONT
+COLOR="RED"
+>stream_kforeach</FONT
+> being called to display
+the (infinite) stream of prime numbers: 2, 3, 5, 7, 11, etc. For the source code
+of demo, please see
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/12/CODE/Sieve.dats"
+TARGET="_top"
+>Sieve.dats</A
+>.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/12/CODE"
+TARGET="_top"
+>on-line</A
+> the entirety of
+the code used in this chapter. The mentioned URL link(s) can be found
+as follows:
+
+<P
+></P
+><UL
+><LI
+><P
+><A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/12/CODE/Sieve.html"
+TARGET="_top"
+>https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/12/CODE/Sieve.html</A
+>
+</P
+></LI
+><LI
+><P
+><A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/12/CODE/Sieve.dats"
+TARGET="_top"
+>https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/12/CODE/Sieve.dats</A
+>
+</P
+></LI
+></UL
+>
+
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c1354.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c1536.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Linear Lazy Stream-Processing</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: A Bit More of Animation</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2FPCRASH-BOOK.js"></SCRIPT></BODY
+></HTML
+>

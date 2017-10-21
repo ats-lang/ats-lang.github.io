@@ -1,0 +1,232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Accessing ATS libraries</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Crash into FP through ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Introducing ATS"
+HREF="c34.html"><LINK
+REL="PREVIOUS"
+TITLE="Compiling ATS code"
+HREF="x75.html"><LINK
+REL="NEXT"
+TITLE="Recursive Functions (1)"
+HREF="c111.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Crash into FP through ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x75.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Introducing ATS</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c111.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="lecture01:libaccessing"
+>Accessing ATS libraries</A
+></H1
+><P
+>&#13;There are many libraries in the ATS programming language system.  For
+instance, the name <TT
+CLASS="filename"
+>ATSLIB/prelude</TT
+> refers to the prelude
+library in ATS that targets C code generation; the name
+<TT
+CLASS="filename"
+>ATSLIB/libats</TT
+> refers to the libats library in ATS that
+targets C code generation as well; the name <TT
+CLASS="filename"
+>LIBATSCC2JS</TT
+>
+refers to a library for targeting Javascript (JS) code generation; the
+name <TT
+CLASS="filename"
+>LIBATSCC2PHP</TT
+> refers to a library for targeting PHP
+code generation; etc.
+
+</P
+><P
+>&#13;If a function is implemented as a template, the ATS compiler needs
+to access the source of the function implementation in order to generate
+code for each instance call of the function. For instance, the following
+line can be added to the beginning of a file so as to indicate to the compiler
+that <TT
+CLASS="filename"
+>ATSLIB/prelude</TT
+> needs to be first loaded for compiling the
+rest of the ATS code in the file:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN105"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#include</span> "share/atspre_staload.hats"</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For accessing the library <TT
+CLASS="filename"
+>ATSLIB/libats/ML</TT
+> (which is
+somewhat an ML-like portion of <TT
+CLASS="filename"
+>ATSLIB/libats</TT
+>), the following line
+can be used:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN109"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#include</span> "share/atspre_staload_libats_ML.hats"</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Various library functions are to be introduced in the sample code presented in this book.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x75.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c111.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Compiling ATS code</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c34.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Recursive Functions (1)</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/ATS2FPCRASH-BOOK.js"></SCRIPT></BODY
+></HTML
+>
