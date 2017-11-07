@@ -91,17 +91,22 @@ sudo apt-get install -y erlang
 # For building atscc2js
 #
 (cd ATS2/contrib/CATS-atscc2js && time make all)
-(cd ATS2/contrib/CATS-atscc2js && mv -f atscc2js ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2js && mv -f bin/atscc2js ${PATSHOME}/bin)
+#
+# For building atscc2php
+#
+(cd ATS2/contrib/CATS-atscc2php && time make all)
+(cd ATS2/contrib/CATS-atscc2php && mv -f bin/atscc2php ${PATSHOME}/bin)
 #
 # For building atscc2py3
 #
 (cd ATS2/contrib/CATS-atscc2py3 && time make all)
-(cd ATS2/contrib/CATS-atscc2py3 && mv -f atscc2py3 ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2py3 && mv -f bin/atscc2py3 ${PATSHOME}/bin)
 #
 # For building atscc2erl
 #
 (cd ATS2/contrib/CATS-atscc2erl && time make all)
-(cd ATS2/contrib/CATS-atscc2erl && mv -f atscc2erl ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2erl && mv -f bin/atscc2erl ${PATSHOME}/bin)
 #
 ######
 #
