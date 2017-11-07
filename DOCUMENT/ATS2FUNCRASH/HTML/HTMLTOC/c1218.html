@@ -14,7 +14,7 @@ TITLE="Raising and Catching Exceptions"
 HREF="c1167.html"><LINK
 REL="NEXT"
 TITLE="Example: Queen Puzzle Revisited"
-HREF="c1320.html"><LINK
+HREF="c1333.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
@@ -59,7 +59,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="c1320.html"
+HREF="c1333.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -113,10 +113,12 @@ NAME="AEN1225"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="keyword">datatype</span>
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">datatype</span>
 <span class="staexp">stream_con<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">)</span> <span class="keyword">=</span>
   <span class="keyword">|</span> <span class="dynexp">steam_nil <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
   <span class="keyword">|</span> <span class="dynexp">stream_cons <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
 </p></PRE
 ><P
 ></P
@@ -410,6 +412,156 @@ a stream-con value (instead of a stream value).
 
 </P
 ><P
+>&#13;Improper use of streams is abundant in practice.  In particular, it is
+very common to see streams being treated as lists, which defeats the
+purpose of having streams in the first place. I would like to make a
+point on proper stream construction by comparing three implementations
+of the following function <FONT
+COLOR="RED"
+>stream_make_list0</FONT
+> for turning a
+given list into a stream:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1270"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+stream_make_list0<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">stream</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The first implementation is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1272"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_make_list0
+  <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$delay</span>
+<span class="keyword">(</span>
+<span class="keyword">case</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  stream_nil<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  stream_cons<span class="keyword">(</span>x<span class="keyword">,</span> stream_make_list0&lt;a<span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span></span> <span class="comment">(* end of [stream_make_list0] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+This one is what I consider to be a proper implementation
+of stream construction. It is <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>fully lazy</I
+></SPAN
+> in the
+sense that the implementation does nothing when called
+upon a given list0-value except for constructing a thunk
+(that represents the returned stream).
+
+The next implementation of <FONT
+COLOR="RED"
+>stream_make_list0</FONT
+> is a slight
+variant of the previous one:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1276"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_make_list0
+  <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="dynexp"><span class="keyword">$delay</span><span class="keyword">(</span>stream_nil<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="dynexp"><span class="keyword">$delay</span><span class="keyword">(</span>stream_cons<span class="keyword">(</span>x<span class="keyword">,</span> stream_make_list0&lt;a<span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [stream_make_list0] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note this one is not fully lazy as it inspects whether
+the given list is empty before it constructs a thunk (that
+represents the returned stream).
+
+The implementation of
+<FONT
+COLOR="RED"
+>stream_make_list0</FONT
+> that should definitely be
+avoided is the following one:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1279"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+stream_make_list0
+  <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="dynexp"><span class="keyword">$delay</span><span class="keyword">(</span>stream_nil<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> xs <span class="keyword">=</span>
+    stream_make_list0&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">)</span></span> <span class="keyword">in</span> <span class="dynexp"><span class="keyword">$delay</span><span class="keyword">(</span>stream_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="keyword">end</span> <span class="comment">// end of [list0_cons]</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [stream_make_list0] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where there is essentially no laziness involved in
+the construction of the stream being generated. This is
+a typical example that shows clearly what is meant by treating
+a stream as a list.
+
+</P
+><P
 >&#13;With streams, we can facilitate the use of (general) recursion in
 problem-solving by eliminating the risk of stack overflow caused by
 deeply nested recursive calls. In the case of
@@ -457,7 +609,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1277"
+NAME="AEN1290"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -504,7 +656,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1282"
+NAME="AEN1295"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -565,7 +717,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1289"
+NAME="AEN1302"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -623,7 +775,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1296"
+NAME="AEN1309"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -675,7 +827,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1303"
+NAME="AEN1316"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -740,7 +892,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1309"
+NAME="AEN1322"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -852,7 +1004,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="c1320.html"
+HREF="c1333.html"
 ACCESSKEY="N"
 >Next</A
 ></TD

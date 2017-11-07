@@ -1,0 +1,500 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: A Bit More of Animation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="A Crash into FP through ATS"
+HREF="book1.html"><LINK
+REL="PREVIOUS"
+TITLE="Continuation-Passing Style"
+HREF="c1444.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/ATS2FPCRASH-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A Crash into FP through ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c1444.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+>&nbsp;</TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="lecture12-10"
+></A
+>Chapter 20. Example: A Bit More of Animation</H1
+><P
+>&#13;With continuation, we can readily insert break points into the
+execution of a program so as to support some interactive form of
+program execution (e.g., animation).
+
+</P
+><P
+>&#13;Hanoi Towers is a puzzle that is often chosen to illustrate recursion
+and exponentiation.
+
+Given three poles: Pole 1, Pole 2 and Pole 3, there are 64 disks of
+distinct sizes stacked on Pole 1 such that no disk is stacked on one
+of a lesser size, and both Pole 2 and Pole 3 are empty. The player is
+asked to finish the task of moving all the disks from Pole 1 to Pole 2
+(while using Pole 3 as a spare): Only one disk can be moved from one
+pole to another one at any time and no disk is ever allowed to be
+stacked on another one of a lesser size during the entire process of
+disk-moving.
+</P
+><P
+>&#13;With recursion, it is quite straightforward for one to infer that
+2<SUP
+>64</SUP
+>-1 moves are needed in order to accomplish the aforementioned task.
+For instance, the following code shows how this task can be done:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1546"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+move<span class="keyword">(</span>src<span class="keyword">:</span> <span class="staexp">pole</span><span class="keyword">,</span> dst<span class="keyword">:</span> <span class="staexp">pole</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+nmove<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> src<span class="keyword">:</span> <span class="staexp">pole</span><span class="keyword">,</span> dst<span class="keyword">:</span> <span class="staexp">pole</span><span class="keyword">,</span> tmp<span class="keyword">:</span> <span class="staexp">pole</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+nmove
+<span class="keyword">(</span> n
+<span class="keyword">,</span> src<span class="keyword">,</span> dst<span class="keyword">,</span> tmp<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">if</span>
+<span class="keyword">(</span>n <span class="keyword">&gt;</span> <span class="dynexp">0</span><span class="keyword">)</span>
+<span class="keyword">then</span>
+<span class="keyword">(</span>
+nmove<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">,</span> src<span class="keyword">,</span> tmp<span class="keyword">,</span> dst<span class="keyword">)</span><span class="keyword">;</span> move<span class="keyword">(</span>src<span class="keyword">,</span> dst<span class="keyword">)</span><span class="keyword">;</span> nmove<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">,</span> tmp<span class="keyword">,</span> dst<span class="keyword">,</span> src<span class="keyword">)</span><span class="keyword">;</span>
+<span class="keyword">)</span></span>
+<span class="comment">// end of [if] // end of [nmove]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given two poles <FONT
+COLOR="RED"
+>src</FONT
+> and <FONT
+COLOR="RED"
+>dst</FONT
+>, the function
+<FONT
+COLOR="RED"
+>move</FONT
+>, which is not implemented here, moves the top disk at
+pole <FONT
+COLOR="RED"
+>src</FONT
+> and stack it on the top of the disks at pole
+<FONT
+COLOR="RED"
+>dst</FONT
+>.  Given a natural number <FONT
+COLOR="RED"
+>n</FONT
+> and three poles
+<FONT
+COLOR="RED"
+>src</FONT
+>, <FONT
+COLOR="RED"
+>dst</FONT
+>, and <FONT
+COLOR="RED"
+>tmp</FONT
+>, the function
+<FONT
+COLOR="RED"
+>nmove</FONT
+> moves the top <FONT
+COLOR="RED"
+>n</FONT
+> disks at pole
+<FONT
+COLOR="RED"
+>src</FONT
+> and stack them on the top of the disks at pole
+<FONT
+COLOR="RED"
+>dst</FONT
+> while using pole <FONT
+COLOR="RED"
+>tmp</FONT
+> as the spare.  Assume
+that <FONT
+COLOR="RED"
+>n</FONT
+> is greater than 0.  In order to move the top
+<FONT
+COLOR="RED"
+>n</FONT
+> disks from pole <FONT
+COLOR="RED"
+>src</FONT
+> to pole <FONT
+COLOR="RED"
+>dst</FONT
+>,
+<FONT
+COLOR="RED"
+>nmove</FONT
+> first moves the top <FONT
+COLOR="RED"
+>n-1</FONT
+> disks from pole
+<FONT
+COLOR="RED"
+>src</FONT
+> to pole <FONT
+COLOR="RED"
+>tmp</FONT
+> and then calls
+<FONT
+COLOR="RED"
+>move</FONT
+> to move 1 disk from pole <FONT
+COLOR="RED"
+>src</FONT
+> to pole
+<FONT
+COLOR="RED"
+>dist</FONT
+> and then move the top <FONT
+COLOR="RED"
+>n-1</FONT
+> disks from pole
+<FONT
+COLOR="RED"
+>tmp</FONT
+> to pole <FONT
+COLOR="RED"
+>dst</FONT
+>. Note that <FONT
+COLOR="RED"
+>nmove</FONT
+>
+eventually makes <FONT
+COLOR="RED"
+>2<SUP
+>n</SUP
+>-1</FONT
+> calls to <FONT
+COLOR="RED"
+>move</FONT
+>
+for each given natural number <FONT
+COLOR="RED"
+>n</FONT
+>.
+</P
+><P
+>&#13;Suppose that we want to animate the process of disk-moving incurred
+by calling <FONT
+COLOR="RED"
+>nmove</FONT
+>. A very natural approach that we can take
+is to first translate <FONT
+COLOR="RED"
+>nmove</FONT
+> (implemented in the direct-style)
+into the following <FONT
+COLOR="RED"
+>k_nmove</FONT
+> implemented in the CPS-style:
+
+</P
+><P
+>&#13;<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1586"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">cont<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">cfun</span><span class="keyword">(</span><span class="staexp">void</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+k_move<span class="keyword">(</span>src<span class="keyword">:</span> <span class="staexp">pole</span><span class="keyword">,</span> dst<span class="keyword">:</span> <span class="staexp">pole</span><span class="keyword">,</span> k<span class="keyword">:</span> <span class="staexp">cont</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+k_nmove<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> src<span class="keyword">:</span> <span class="staexp">pole</span><span class="keyword">,</span> dst<span class="keyword">:</span> <span class="staexp">pole</span><span class="keyword">,</span> tmp<span class="keyword">:</span> <span class="staexp">pole</span><span class="keyword">,</span> k<span class="keyword">:</span> <span class="staexp">cont</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+k_nmove
+<span class="keyword">(</span> n
+<span class="keyword">,</span> src<span class="keyword">,</span> dst<span class="keyword">,</span> tmp
+<span class="keyword">,</span> k0<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">if</span>
+<span class="keyword">(</span>n <span class="keyword">&gt;</span> <span class="dynexp">0</span><span class="keyword">)</span>
+<span class="keyword">then</span>
+<span class="keyword">(</span>
+k_nmove
+<span class="keyword">(</span> n-<span class="dynexp">1</span><span class="keyword">,</span> src<span class="keyword">,</span> tmp<span class="keyword">,</span> dst
+<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> k_move<span class="keyword">(</span>src<span class="keyword">,</span> dst<span class="keyword">,</span> <span class="keyword">lam</span><span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> k_nmove<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">,</span> tmp<span class="keyword">,</span> dst<span class="keyword">,</span> src<span class="keyword">,</span> k0<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span>
+<span class="keyword">else</span> k0<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+<span class="comment">// end of [if] // end of [k_nmove]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Usually, the function <FONT
+COLOR="RED"
+>k_move</FONT
+> is expected to be implemented
+in the follow way:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1590"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+k_move
+<span class="keyword">(</span>src<span class="keyword">,</span> dst<span class="keyword">,</span> k0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> move<span class="keyword">(</span>src<span class="keyword">,</span> dst<span class="keyword">)</span></span> <span class="keyword">in</span> k0<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [k_move]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+After calling <FONT
+COLOR="RED"
+>move</FONT
+> to create some effects,
+<FONT
+COLOR="RED"
+>k_move</FONT
+> calls the passed continuation immediately to
+initiate the work to be continued. For the sake of animation, the
+function <FONT
+COLOR="RED"
+>k_move</FONT
+> can be implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1595"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+k_move
+<span class="keyword">(</span>src<span class="keyword">,</span> dst<span class="keyword">,</span> k0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> move<span class="keyword">(</span>src<span class="keyword">,</span> dst<span class="keyword">)</span></span> <span class="keyword">in</span> save_cont<span class="keyword">(</span>k0<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [k_move]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the function <FONT
+COLOR="RED"
+>save_cont</FONT
+> stores a given continuation
+somewhere so that it can be fetched and then called at a chosen point
+in future.
+
+</P
+><P
+>&#13;Please see <A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/12-10/CODE/HanoiTowers.html"
+TARGET="_top"
+>on-line</A
+>
+a demo that animates the process of disk-moving involved in solving
+the puzzle of Hanoi Towers, where the animation is achieved by a
+controlled way of evaluating the continuation saved by each call to
+<FONT
+COLOR="RED"
+>k_move</FONT
+>. Also please refer to <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/12-10/CODE/HanoiTowers.dats"
+TARGET="_top"
+>HanoiTowers.dats</A
+>
+for various implementation details.
+
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/12-10/CODE"
+TARGET="_top"
+>on-line</A
+> the entirety
+of the code used in this chapter. The mentioned URL link(s) can be found as follows:
+
+<P
+></P
+><UL
+><LI
+><P
+><A
+HREF="https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/12-10/CODE/HanoiTowers.html"
+TARGET="_top"
+>https://ats-lang.github.io/DOCUMENT/ATS2FUNCRASH/LECTURE/12-10/CODE/HanoiTowers.html</A
+>
+</P
+></LI
+><LI
+><P
+><A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/12-10/CODE/HanoiTowers.dats"
+TARGET="_top"
+>https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/ATS2FUNCRASH/LECTURE/12-10/CODE/HanoiTowers.dats</A
+>
+</P
+></LI
+></UL
+>
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c1444.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Continuation-Passing Style</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
