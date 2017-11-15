@@ -169,16 +169,9 @@ mv ${PWD}/ATS2/prelude/CATS/CODEGEN/*.cats ${PWD}/ATS2/prelude/CATS/
 # For building atscc2js
 #
 (cd ATS2/contrib/CATS-atscc2js && time make all)
-(cd ATS2/contrib/CATS-atscc2js && mv -f atscc2js ${PATSHOME}/bin)
+(cd ATS2/contrib/CATS-atscc2js && mv -f bin/atscc2js ${PATSHOME}/bin)
 #
 # (cd ATS2-contrib/contrib/libatscc/libatscc2js && time make all && time make all_in_one)
-#
-# For building atscc2erl
-#
-# (cd ATS2/contrib/CATS-atscc2erl && time make all)
-# (cd ATS2/contrib/CATS-atscc2erl && mv -f atscc2erl ${PATSHOME}/bin)
-# (cd ATS2-contrib/contrib/libatscc/libatscc2erl && time make all && time make all_in_one)
-# (cd ATS2-contrib/contrib/libatscc/libatscc2erl/Session && time make all && time make all_in_one)
 #
 ######
 #
