@@ -1,7 +1,7 @@
 
 /*
 Time of Generation:
-Wed Nov 15 09:52:36 EST 2017
+Sun Nov 19 10:21:36 EST 2017
 */
 
 /*
@@ -909,191 +909,6 @@ ats2jspre_gvhashtbl_exch_atkey(tbl, k0, x0)
 
 /*
 ******
-* beg of [JSmath_cats.js]
-******
-*/
-
-/* ****** ****** */
-//
-var
-ats2jspre_JSmath_E = Math.E
-var
-ats2jspre_JSmath_PI = Math.PI
-var
-ats2jspre_JSmath_SQRT2 = Math.SQRT2
-var
-ats2jspre_JSmath_SQRT1_2 = Math.SQRT1_2
-var
-ats2jspre_JSmath_LN2 = Math.LN2
-var
-ats2jspre_JSmath_LN10 = Math.LN10
-var
-ats2jspre_JSmath_LOG2E = Math.LOG2E
-var
-ats2jspre_JSmath_LOG10E = Math.LOG10E
-//
-/* ****** ****** */
-//
-function
-ats2jspre_JSmath_abs(x) { return Math.abs(x); }
-//
-function
-ats2jspre_JSmath_max(x, y) { return Math.max(x, y); }
-//
-function
-ats2jspre_JSmath_min(x, y) { return Math.min(x, y); }
-//
-/* ****** ****** */
-//
-function
-ats2jspre_JSmath_sqrt(x) { return Math.sqrt(x); }
-//
-/* ****** ****** */
-//
-function
-ats2jspre_JSmath_exp(x) { return Math.exp(x); }
-//
-function
-ats2jspre_JSmath_pow(x, y) { return Math.pow(x, y); }
-//
-function
-ats2jspre_JSmath_log(x) { return Math.log(x); }
-//
-/* ****** ****** */
-//
-function
-ats2jspre_JSmath_ceil(x) { return Math.ceil(x); }
-function
-ats2jspre_JSmath_floor(x) { return Math.floor(x); }
-function
-ats2jspre_JSmath_round(x) { return Math.round(x); }
-//
-/* ****** ****** */
-//
-function
-ats2jspre_JSmath_sin(x) { return Math.sin(x); }
-function
-ats2jspre_JSmath_cos(x) { return Math.cos(x); }
-function
-ats2jspre_JSmath_tan(x) { return Math.tan(x); }
-//
-/* ****** ****** */
-//
-function
-ats2jspre_JSmath_asin(x) { return Math.asin(x); }
-function
-ats2jspre_JSmath_acos(x) { return Math.acos(x); }
-function
-ats2jspre_JSmath_atan(x) { return Math.atan(x); }
-function
-ats2jspre_JSmath_atan2(y, x) { return Math.atan2(y, x); }
-//
-/* ****** ****** */
-//
-function
-ats2jspre_JSmath_random() { return Math.random(); }
-//
-/* ****** ****** */
-
-/* end of [JSmath_cats.js] */
-/*
-******
-*
-* HX-2014-08:
-* for JavaScript code
-* translated from ATS
-*
-******
-*/
-
-/*
-******
-* beg of [JSdate_cats.js]
-******
-*/
-
-/* ****** ****** */
-//
-function
-ats2jspre_Date_new_0
-  () { return new Date(); }
-function
-ats2jspre_Date_new_1_int
-  (msec) { return new Date(msec); }
-function
-ats2jspre_Date_new_1_string
-  (date) { return new Date(date); }
-function
-ats2jspre_Date_new_7
-  (year, mon, day, hour, min, sec, ms)
-{
-  return new Date(year, mon, day, hour, min, sec, ms);
-}
-//
-/* ****** ****** */
-//
-function
-ats2jspre_getTime
-  (date) { return date.getTime(); }
-function
-ats2jspre_getTimezoneOffset
-  (date) { return date.getTimezoneOffset(); }
-//
-/* ****** ****** */
-//
-function
-ats2jspre_getDay(date) { return date.getDay(); }
-function
-ats2jspre_getDate(date) { return date.getDate(); }
-function
-ats2jspre_getMonth(date) { return date.getMonth(); }
-function
-ats2jspre_getFullYear(date) { return date.getFullYear(); }
-//
-function
-ats2jspre_getHours(date) { return date.getHours(); }
-function
-ats2jspre_getMinutes(date) { return date.getMinutes(); }
-function
-ats2jspre_getSeconds(date) { return date.getSeconds(); }
-function
-ats2jspre_getMilliseconds(date) { return date.getMilliseconds(); }
-//
-/* ****** ****** */
-//
-function
-ats2jspre_getUTCDay(date) { return date.getUTCDay(); }
-function
-ats2jspre_getUTCDate(date) { return date.getUTCDate(); }
-function
-ats2jspre_getUTCMonth(date) { return date.getUTCMonth(); }
-function
-ats2jspre_getUTCFullYear(date) { return date.getUTCFullYear(); }
-//
-function
-ats2jspre_getUTCHours(date) { return date.getUTCHours(); }
-function
-ats2jspre_getUTCMinutes(date) { return date.getUTCMinutes(); }
-function
-ats2jspre_getUTCSeconds(date) { return date.getUTCSeconds(); }
-function
-ats2jspre_getUTCMilliseconds(date) { return date.getUTCMilliseconds(); }
-//
-/* ****** ****** */
-
-/* end of [JSdate_cats.js] */
-/*
-******
-*
-* HX-2014-08:
-* for JavaScript code
-* translated from ATS
-*
-******
-*/
-
-/*
-******
 * beg of [JSarray_cats.js]
 ******
 */
@@ -1206,6 +1021,191 @@ ats2jspre_JSarray_sort_2(A, cmp)
 
 /*
 ******
+* beg of [JSdate_cats.js]
+******
+*/
+
+/* ****** ****** */
+//
+function
+ats2js_libc_Date_new_0
+  () { return new Date(); }
+function
+ats2js_libc_Date_new_1_int
+  (msec) { return new Date(msec); }
+function
+ats2js_libc_Date_new_1_string
+  (date) { return new Date(date); }
+function
+ats2js_libc_Date_new_7_all
+  (year, mon, day, hour, min, sec, ms)
+{
+  return new Date(year, mon, day, hour, min, sec, ms);
+}
+//
+/* ****** ****** */
+//
+function
+ats2js_libc_getTime
+  (date) { return date.getTime(); }
+function
+ats2js_libc_getTimezoneOffset
+  (date) { return date.getTimezoneOffset(); }
+//
+/* ****** ****** */
+//
+function
+ats2js_libc_getDay(date) { return date.getDay(); }
+function
+ats2js_libc_getDate(date) { return date.getDate(); }
+function
+ats2js_libc_getMonth(date) { return date.getMonth(); }
+function
+ats2js_libc_getFullYear(date) { return date.getFullYear(); }
+//
+function
+ats2js_libc_getHours(date) { return date.getHours(); }
+function
+ats2js_libc_getMinutes(date) { return date.getMinutes(); }
+function
+ats2js_libc_getSeconds(date) { return date.getSeconds(); }
+function
+ats2js_libc_getMilliseconds(date) { return date.getMilliseconds(); }
+//
+/* ****** ****** */
+//
+function
+ats2js_libc_getUTCDay(date) { return date.getUTCDay(); }
+function
+ats2js_libc_getUTCDate(date) { return date.getUTCDate(); }
+function
+ats2js_libc_getUTCMonth(date) { return date.getUTCMonth(); }
+function
+ats2js_libc_getUTCFullYear(date) { return date.getUTCFullYear(); }
+//
+function
+ats2js_libc_getUTCHours(date) { return date.getUTCHours(); }
+function
+ats2js_libc_getUTCMinutes(date) { return date.getUTCMinutes(); }
+function
+ats2js_libc_getUTCSeconds(date) { return date.getUTCSeconds(); }
+function
+ats2js_libc_getUTCMilliseconds(date) { return date.getUTCMilliseconds(); }
+//
+/* ****** ****** */
+
+/* end of [JSdate_cats.js] */
+/*
+******
+*
+* HX-2014-08:
+* for JavaScript code
+* translated from ATS
+*
+******
+*/
+
+/*
+******
+* beg of [JSmath_cats.js]
+******
+*/
+
+/* ****** ****** */
+//
+var
+ats2js_libc_JSmath_E = Math.E
+var
+ats2js_libc_JSmath_PI = Math.PI
+var
+ats2js_libc_JSmath_SQRT2 = Math.SQRT2
+var
+ats2js_libc_JSmath_SQRT1_2 = Math.SQRT1_2
+var
+ats2js_libc_JSmath_LN2 = Math.LN2
+var
+ats2js_libc_JSmath_LN10 = Math.LN10
+var
+ats2js_libc_JSmath_LOG2E = Math.LOG2E
+var
+ats2js_libc_JSmath_LOG10E = Math.LOG10E
+//
+/* ****** ****** */
+//
+function
+ats2js_libc_JSmath_abs(x) { return Math.abs(x); }
+//
+function
+ats2js_libc_JSmath_max(x, y) { return Math.max(x, y); }
+//
+function
+ats2js_libc_JSmath_min(x, y) { return Math.min(x, y); }
+//
+/* ****** ****** */
+//
+function
+ats2js_libc_JSmath_sqrt(x) { return Math.sqrt(x); }
+//
+/* ****** ****** */
+//
+function
+ats2js_libc_JSmath_exp(x) { return Math.exp(x); }
+//
+function
+ats2js_libc_JSmath_pow(x, y) { return Math.pow(x, y); }
+//
+function
+ats2js_libc_JSmath_log(x) { return Math.log(x); }
+//
+/* ****** ****** */
+//
+function
+ats2js_libc_JSmath_ceil(x) { return Math.ceil(x); }
+function
+ats2js_libc_JSmath_floor(x) { return Math.floor(x); }
+function
+ats2js_libc_JSmath_round(x) { return Math.round(x); }
+//
+/* ****** ****** */
+//
+function
+ats2js_libc_JSmath_sin(x) { return Math.sin(x); }
+function
+ats2js_libc_JSmath_cos(x) { return Math.cos(x); }
+function
+ats2js_libc_JSmath_tan(x) { return Math.tan(x); }
+//
+/* ****** ****** */
+//
+function
+ats2js_libc_JSmath_asin(x) { return Math.asin(x); }
+function
+ats2js_libc_JSmath_acos(x) { return Math.acos(x); }
+function
+ats2js_libc_JSmath_atan(x) { return Math.atan(x); }
+function
+ats2js_libc_JSmath_atan2(y, x) { return Math.atan2(y, x); }
+//
+/* ****** ****** */
+//
+function
+ats2js_libc_JSmath_random() { return Math.random(); }
+//
+/* ****** ****** */
+
+/* end of [JSmath_cats.js] */
+/*
+******
+*
+* HX-2014-08:
+* for JavaScript code
+* translated from ATS
+*
+******
+*/
+
+/*
+******
 * beg of [JSglobal_cats.js]
 ******
 */
@@ -1213,54 +1213,54 @@ ats2jspre_JSarray_sort_2(A, cmp)
 /* ****** ****** */
 
 function
-ats2jspre_eval(code) { return eval(code); }
+ats2js_libc_eval(code) { return eval(code); }
 
 /* ****** ****** */
 
 function
-ats2jspre_Number(obj) { return Number(obj); }
+ats2js_libc_Number(obj) { return Number(obj); }
 function
-ats2jspre_String(obj) { return String(obj); }
+ats2js_libc_String(obj) { return String(obj); }
 
 /* ****** ****** */
 
 function
-ats2jspre_isFinite_int(x) { return isFinite(x); }
+ats2js_libc_isFinite_int(x) { return isFinite(x); }
 function
-ats2jspre_isFinite_double(x) { return isFinite(x); }
+ats2js_libc_isFinite_double(x) { return isFinite(x); }
 
 /* ****** ****** */
 
 function
-ats2jspre_isNaN_int(x) { return isNaN(x); }
+ats2js_libc_isNaN_int(x) { return isNaN(x); }
 function
-ats2jspre_isNaN_double(x) { return isNaN(x); }
+ats2js_libc_isNaN_double(x) { return isNaN(x); }
 
 /* ****** ****** */
 
 function
-ats2jspre_parseInt_1(rep) { return parseInt(rep); }
+ats2js_libc_parseInt_1(rep) { return parseInt(rep); }
 function
-ats2jspre_parseInt_2(rep, base) { return parseInt(rep, base); }
+ats2js_libc_parseInt_2(rep, base) { return parseInt(rep, base); }
 
 /* ****** ****** */
 
 function
-ats2jspre_parseFloat(rep) { return parseFloat(rep); }
+ats2js_libc_parseFloat(rep) { return parseFloat(rep); }
 
 /* ****** ****** */
 
 function
-ats2jspre_encodeURI(uri) { return encodeURI(uri); }
+ats2js_libc_encodeURI(uri) { return encodeURI(uri); }
 function
-ats2jspre_decodeURI(uri) { return decodeURI(uri); }
+ats2js_libc_decodeURI(uri) { return decodeURI(uri); }
 
 /* ****** ****** */
 
 function
-ats2jspre_encodeURIComponent(uri) { return encodeURIComponent(uri); }
+ats2js_libc_encodeURIComponent(uri) { return encodeURIComponent(uri); }
 function
-ats2jspre_decodeURIComponent(uri) { return decodeURIComponent(uri); }
+ats2js_libc_decodeURIComponent(uri) { return decodeURIComponent(uri); }
 
 /* ****** ****** */
 
@@ -1338,7 +1338,7 @@ function
 ats2js_Ajax_XMLHttpRequest_set_onreadystatechange
   (xmlhttp, f_action)
 {
-  xmlhttp.onreadystatechange = function() { f_action[0](f_action); };
+  xmlhttp.onreadystatechange = function(){ f_action[0](f_action); };
 }
 //
 /* ****** ****** */
@@ -1602,7 +1602,7 @@ ats2js_HTML5_canvas2d_set_strokeStyle_gradient
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -1752,7 +1752,7 @@ _ats2jspre_basics_patsfun_21(env0, arg0, arg1, arg2)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -1926,7 +1926,7 @@ ats2jspre_char_isspace(arg0)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -2460,7 +2460,7 @@ _ats2jspre_string_patsfun_24__24__1(arg0)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -5467,7 +5467,7 @@ _ats2jspre_list_loop_118(env0, env1, arg0, arg1)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -5724,7 +5724,7 @@ _ats2jspre_list_loop_10(arg0, arg1)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -5852,7 +5852,7 @@ ats2jspre_option_is_none(arg0)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -8107,7 +8107,7 @@ ats2jspre_stream_nth_exn(arg0, arg1)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -9504,7 +9504,7 @@ _ats2jspre_stream_vt_patsfun_58(env0, env1, arg0)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -9584,7 +9584,7 @@ ats2jspre_gvalue_string(arg0)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -11295,7 +11295,7 @@ _ats2jspre_intrange_loop1_78(env0, env1, arg0, arg1, arg2, arg3, arg4)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -11499,7 +11499,7 @@ _ats2jspre_JSarray_loop_5(env0, env1, env2, arg0)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -11597,7 +11597,7 @@ ats2jspre_ref_exch_elt(arg0, arg1)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -11899,7 +11899,7 @@ ats2jspre_arrszref_set_at(arg0, arg1, arg2)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -12477,7 +12477,7 @@ ats2jspre_matrixref_set_at(arg0, arg1, arg2, arg3, arg4)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -12595,7 +12595,716 @@ ats2jspre_gmatrixref_foreach_cloref(arg0, arg1)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
+**
+*/
+
+function
+ats2jspre_funarray_make_nil()
+{
+//
+// knd = 0
+  var tmpret0
+  var tmplab, tmplab_js
+//
+  // __patsflab_funarray_make_nil
+  tmpret0 = null;
+  return tmpret0;
+} // end-of-function
+
+
+function
+ats2jspre_funarray_size(arg0)
+{
+//
+// knd = 0
+  var tmpret1
+  var tmplab, tmplab_js
+//
+  // __patsflab_funarray_size
+  tmpret1 = _ats2jspre_funarray_size_3(arg0);
+  return tmpret1;
+} // end-of-function
+
+
+function
+_ats2jspre_funarray_diff_2(arg0, arg1)
+{
+//
+// knd = 1
+  var apy0
+  var apy1
+  var tmpret2
+  var tmp4
+  var tmp5
+  var tmp6
+  var tmp7
+  var tmp8
+  var tmp9
+  var tmp10
+  var funlab_js
+  var tmplab, tmplab_js
+//
+  while(true) {
+    funlab_js = 0;
+    // __patsflab__ats2jspre_funarray_diff_2
+    // ATScaseofseq_beg
+    tmplab_js = 1;
+    while(true) {
+      tmplab = tmplab_js; tmplab_js = 0;
+      switch(tmplab) {
+        // ATSbranchseq_beg
+        case 1: // __atstmplab0
+        if(ATSCKptriscons(arg1)) {
+          { tmplab_js = 4; break; }
+        } // ifthen
+        case 2: // __atstmplab1
+        tmpret2 = 0;
+        break;
+        // ATSbranchseq_end
+        // ATSbranchseq_beg
+        case 3: // __atstmplab2
+        case 4: // __atstmplab3
+        tmp4 = arg1[1];
+        tmp5 = arg1[2];
+        tmp6 = ats2jspre_gt_int1_int1(arg0, 0);
+        if(tmp6) {
+          tmp7 = ats2jspre_half_int1(arg0);
+          tmp9 = ats2jspre_add_int1_int1(tmp7, tmp7);
+          tmp8 = ats2jspre_gt_int1_int1(arg0, tmp9);
+          if(tmp8) {
+            // ATStailcalseq_beg
+            apy0 = tmp7;
+            apy1 = tmp4;
+            arg0 = apy0;
+            arg1 = apy1;
+            funlab_js = 1; // __patsflab__ats2jspre_funarray_diff_2
+            // ATStailcalseq_end
+          } else {
+            tmp10 = ats2jspre_sub_int1_int1(tmp7, 1);
+            // ATStailcalseq_beg
+            apy0 = tmp10;
+            apy1 = tmp5;
+            arg0 = apy0;
+            arg1 = apy1;
+            funlab_js = 1; // __patsflab__ats2jspre_funarray_diff_2
+            // ATStailcalseq_end
+          } // end-of-if
+        } else {
+          tmpret2 = 1;
+        } // end-of-if
+        break;
+        // ATSbranchseq_end
+      } // end-of-switch
+      if (tmplab_js === 0) break;
+    } // endwhile
+    // ATScaseofseq_end
+    if (funlab_js > 0) continue; else return tmpret2;
+  } // endwhile-fun
+} // end-of-function
+
+
+function
+_ats2jspre_funarray_size_3(arg0)
+{
+//
+// knd = 0
+  var tmpret11
+  var tmp13
+  var tmp14
+  var tmp15
+  var tmp16
+  var tmp17
+  var tmp18
+  var tmplab, tmplab_js
+//
+  // __patsflab__ats2jspre_funarray_size_3
+  // ATScaseofseq_beg
+  tmplab_js = 1;
+  while(true) {
+    tmplab = tmplab_js; tmplab_js = 0;
+    switch(tmplab) {
+      // ATSbranchseq_beg
+      case 1: // __atstmplab4
+      if(ATSCKptriscons(arg0)) {
+        { tmplab_js = 4; break; }
+      } // ifthen
+      case 2: // __atstmplab5
+      tmpret11 = 0;
+      break;
+      // ATSbranchseq_end
+      // ATSbranchseq_beg
+      case 3: // __atstmplab6
+      case 4: // __atstmplab7
+      tmp13 = arg0[1];
+      tmp14 = arg0[2];
+      tmp15 = _ats2jspre_funarray_size_3(tmp14);
+      tmp17 = _ats2jspre_funarray_diff_2(tmp15, tmp13);
+      tmp16 = ats2jspre_add_int1_int1(1, tmp17);
+      tmp18 = ats2jspre_mul_int1_int1(2, tmp15);
+      tmpret11 = ats2jspre_add_int1_int1(tmp18, tmp16);
+      break;
+      // ATSbranchseq_end
+    } // end-of-switch
+    if (tmplab_js === 0) break;
+  } // endwhile
+  // ATScaseofseq_end
+  return tmpret11;
+} // end-of-function
+
+
+function
+ats2jspre_funarray_get_at(arg0, arg1)
+{
+//
+// knd = 0
+  var tmpret19
+  var tmplab, tmplab_js
+//
+  // __patsflab_funarray_get_at
+  tmpret19 = _ats2jspre_funarray_get_at_5(arg0, arg1);
+  return tmpret19;
+} // end-of-function
+
+
+function
+_ats2jspre_funarray_get_at_5(arg0, arg1)
+{
+//
+// knd = 1
+  var apy0
+  var apy1
+  var tmpret20
+  var tmp21
+  var tmp22
+  var tmp23
+  var tmp24
+  var tmp25
+  var tmp26
+  var tmp27
+  var tmp28
+  var funlab_js
+  var tmplab, tmplab_js
+//
+  while(true) {
+    funlab_js = 0;
+    // __patsflab__ats2jspre_funarray_get_at_5
+    tmp21 = ats2jspre_gt_int1_int1(arg1, 0);
+    if(tmp21) {
+      tmp22 = ats2jspre_half_int1(arg1);
+      tmp24 = ats2jspre_add_int1_int1(tmp22, tmp22);
+      tmp23 = ats2jspre_gt_int1_int1(arg1, tmp24);
+      if(tmp23) {
+        tmp25 = arg0[1];
+        // ATStailcalseq_beg
+        apy0 = tmp25;
+        apy1 = tmp22;
+        arg0 = apy0;
+        arg1 = apy1;
+        funlab_js = 1; // __patsflab__ats2jspre_funarray_get_at_5
+        // ATStailcalseq_end
+      } else {
+        tmp26 = arg0[2];
+        tmp27 = ats2jspre_sub_int1_int1(tmp22, 1);
+        // ATStailcalseq_beg
+        apy0 = tmp26;
+        apy1 = tmp27;
+        arg0 = apy0;
+        arg1 = apy1;
+        funlab_js = 1; // __patsflab__ats2jspre_funarray_get_at_5
+        // ATStailcalseq_end
+      } // end-of-if
+    } else {
+      tmp28 = arg0[0];
+      tmpret20 = tmp28;
+    } // end-of-if
+    if (funlab_js > 0) continue; else return tmpret20;
+  } // endwhile-fun
+} // end-of-function
+
+
+function
+ats2jspre_funarray_set_at(arg0, arg1, arg2)
+{
+//
+// knd = 0
+  var tmpret29
+  var tmplab, tmplab_js
+//
+  // __patsflab_funarray_set_at
+  tmpret29 = _ats2jspre_funarray_set_at_7(arg0, arg1, arg2);
+  return tmpret29;
+} // end-of-function
+
+
+function
+_ats2jspre_funarray_set_at_7(arg0, arg1, arg2)
+{
+//
+// knd = 0
+  var tmpret30
+  var tmp31
+  var tmp32
+  var tmp33
+  var tmp34
+  var tmp35
+  var tmp36
+  var tmp37
+  var tmp38
+  var tmp39
+  var tmp40
+  var tmp41
+  var tmp42
+  var tmplab, tmplab_js
+//
+  // __patsflab__ats2jspre_funarray_set_at_7
+  tmp31 = ats2jspre_gt_int1_int1(arg1, 0);
+  if(tmp31) {
+    tmp32 = ats2jspre_half_int1(arg1);
+    tmp33 = arg0[0];
+    tmp34 = arg0[1];
+    tmp35 = arg0[2];
+    tmp37 = ats2jspre_add_int1_int1(tmp32, tmp32);
+    tmp36 = ats2jspre_gt_int1_int1(arg1, tmp37);
+    if(tmp36) {
+      tmp38 = _ats2jspre_funarray_set_at_7(tmp34, tmp32, arg2);
+      tmpret30 = [tmp33, tmp38, tmp35];
+    } else {
+      tmp40 = ats2jspre_sub_int1_int1(tmp32, 1);
+      tmp39 = _ats2jspre_funarray_set_at_7(tmp35, tmp40, arg2);
+      tmpret30 = [tmp33, tmp34, tmp39];
+    } // end-of-if
+  } else {
+    tmp41 = arg0[1];
+    tmp42 = arg0[2];
+    tmpret30 = [arg2, tmp41, tmp42];
+  } // end-of-if
+  return tmpret30;
+} // end-of-function
+
+
+function
+ats2jspre_funarray_insert_l(arg0, arg1)
+{
+//
+// knd = 0
+  var tmpret43
+  var tmplab, tmplab_js
+//
+  // __patsflab_funarray_insert_l
+  tmpret43 = _ats2jspre_funarray_ins_l_9(arg0, arg1);
+  return tmpret43;
+} // end-of-function
+
+
+function
+_ats2jspre_funarray_ins_l_9(arg0, arg1)
+{
+//
+// knd = 0
+  var tmpret44
+  var tmp45
+  var tmp46
+  var tmp47
+  var tmp48
+  var tmp49
+  var tmp50
+  var tmplab, tmplab_js
+//
+  // __patsflab__ats2jspre_funarray_ins_l_9
+  // ATScaseofseq_beg
+  tmplab_js = 1;
+  while(true) {
+    tmplab = tmplab_js; tmplab_js = 0;
+    switch(tmplab) {
+      // ATSbranchseq_beg
+      case 1: // __atstmplab8
+      if(ATSCKptriscons(arg0)) {
+        { tmplab_js = 4; break; }
+      } // ifthen
+      case 2: // __atstmplab9
+      tmp48 = null;
+      tmp49 = null;
+      tmpret44 = [arg1, tmp48, tmp49];
+      break;
+      // ATSbranchseq_end
+      // ATSbranchseq_beg
+      case 3: // __atstmplab10
+      case 4: // __atstmplab11
+      tmp45 = arg0[0];
+      tmp46 = arg0[1];
+      tmp47 = arg0[2];
+      tmp50 = _ats2jspre_funarray_ins_l_9(tmp47, tmp45);
+      tmpret44 = [arg1, tmp50, tmp46];
+      break;
+      // ATSbranchseq_end
+    } // end-of-switch
+    if (tmplab_js === 0) break;
+  } // endwhile
+  // ATScaseofseq_end
+  return tmpret44;
+} // end-of-function
+
+
+function
+ats2jspre_funarray_insert_r(arg0, arg1, arg2)
+{
+//
+// knd = 0
+  var tmpret51
+  var tmplab, tmplab_js
+//
+  // __patsflab_funarray_insert_r
+  tmpret51 = _ats2jspre_funarray_ins_r_11(arg0, arg1, arg2);
+  return tmpret51;
+} // end-of-function
+
+
+function
+_ats2jspre_funarray_ins_r_11(arg0, arg1, arg2)
+{
+//
+// knd = 0
+  var tmpret52
+  var tmp53
+  var tmp54
+  var tmp55
+  var tmp56
+  var tmp57
+  var tmp58
+  var tmp59
+  var tmp60
+  var tmp61
+  var tmp62
+  var tmp63
+  var tmp64
+  var tmplab, tmplab_js
+//
+  // __patsflab__ats2jspre_funarray_ins_r_11
+  tmp53 = ats2jspre_gt_int1_int1(arg1, 0);
+  if(tmp53) {
+    tmp54 = ats2jspre_half_int1(arg1);
+    tmp55 = arg0[0];
+    tmp56 = arg0[1];
+    tmp57 = arg0[2];
+    tmp59 = ats2jspre_add_int1_int1(tmp54, tmp54);
+    tmp58 = ats2jspre_gt_int1_int1(arg1, tmp59);
+    if(tmp58) {
+      tmp60 = _ats2jspre_funarray_ins_r_11(tmp56, tmp54, arg2);
+      tmpret52 = [tmp55, tmp60, tmp57];
+    } else {
+      tmp62 = ats2jspre_sub_int1_int1(tmp54, 1);
+      tmp61 = _ats2jspre_funarray_ins_r_11(tmp57, tmp62, arg2);
+      tmpret52 = [tmp55, tmp56, tmp61];
+    } // end-of-if
+  } else {
+    tmp63 = null;
+    tmp64 = null;
+    tmpret52 = [arg2, tmp63, tmp64];
+  } // end-of-if
+  return tmpret52;
+} // end-of-function
+
+
+function
+ats2jspre_funarray_remove_l(arg0)
+{
+//
+// knd = 0
+  var tmpret65
+  var tmplab, tmplab_js
+//
+  // __patsflab_funarray_remove_l
+  tmpret65 = _ats2jspre_funarray_rem_l_13(arg0);
+  return tmpret65;
+} // end-of-function
+
+
+function
+_ats2jspre_funarray_rem_l_13(arg0)
+{
+//
+// knd = 0
+  var tmpret66
+  var tmp67
+  var tmp68
+  var tmp70
+  var tmp71
+  var tmp72
+  var tmp73
+  var tmp74
+  var tmp75
+  var tmp76
+  var tmp77
+  var tmplab, tmplab_js
+//
+  // __patsflab__ats2jspre_funarray_rem_l_13
+  // ATScaseofseq_beg
+  tmplab_js = 1;
+  while(true) {
+    tmplab = tmplab_js; tmplab_js = 0;
+    switch(tmplab) {
+      // ATSbranchseq_beg
+      case 1: // __atstmplab12
+      tmp68 = arg0[1];
+      case 2: // __atstmplab13
+      if(ATSCKptriscons(tmp68)) {
+        { tmplab_js = 5; break; }
+      } // ifthen
+      case 3: // __atstmplab14
+      tmp67 = arg0[0];
+      tmp73 = null;
+      tmpret66 = [tmp73, tmp67];
+      break;
+      // ATSbranchseq_end
+      // ATSbranchseq_beg
+      case 4: // __atstmplab15
+      case 5: // __atstmplab16
+      tmp70 = arg0[0];
+      tmp71 = arg0[1];
+      tmp72 = arg0[2];
+      tmp74 = _ats2jspre_funarray_rem_l_13(tmp71);
+      tmp75 = tmp74[0];
+      tmp76 = tmp74[1];
+      tmp77 = [tmp70, tmp72, tmp75];
+      tmpret66 = [tmp77, tmp76];
+      break;
+      // ATSbranchseq_end
+    } // end-of-switch
+    if (tmplab_js === 0) break;
+  } // endwhile
+  // ATScaseofseq_end
+  return tmpret66;
+} // end-of-function
+
+
+function
+ats2jspre_funarray_remove_r(arg0, arg1)
+{
+//
+// knd = 0
+  var tmpret78
+  var tmplab, tmplab_js
+//
+  // __patsflab_funarray_remove_r
+  tmpret78 = _ats2jspre_funarray_rem_r_15(arg0, arg1);
+  return tmpret78;
+} // end-of-function
+
+
+function
+_ats2jspre_funarray_rem_r_15(arg0, arg1)
+{
+//
+// knd = 0
+  var tmpret79
+  var tmp80
+  var tmp81
+  var tmp82
+  var tmp83
+  var tmp84
+  var tmp85
+  var tmp86
+  var tmp87
+  var tmp88
+  var tmp89
+  var tmp90
+  var tmp91
+  var tmp92
+  var tmp93
+  var tmp94
+  var tmplab, tmplab_js
+//
+  // __patsflab__ats2jspre_funarray_rem_r_15
+  tmp80 = ats2jspre_half_int1(arg1);
+  tmp81 = arg0[0];
+  tmp82 = arg0[1];
+  tmp83 = arg0[2];
+  // ATScaseofseq_beg
+  tmplab_js = 1;
+  while(true) {
+    tmplab = tmplab_js; tmplab_js = 0;
+    switch(tmplab) {
+      // ATSbranchseq_beg
+      case 1: // __atstmplab17
+      if(ATSCKptriscons(tmp82)) {
+        { tmplab_js = 4; break; }
+      } // ifthen
+      case 2: // __atstmplab18
+      tmp84 = null;
+      tmpret79 = [tmp84, tmp81];
+      break;
+      // ATSbranchseq_end
+      // ATSbranchseq_beg
+      case 3: // __atstmplab19
+      case 4: // __atstmplab20
+      tmp86 = ats2jspre_add_int1_int1(tmp80, tmp80);
+      tmp85 = ats2jspre_gt_int1_int1(arg1, tmp86);
+      if(tmp85) {
+        tmp87 = _ats2jspre_funarray_rem_r_15(tmp83, tmp80);
+        tmp88 = tmp87[0];
+        tmp89 = tmp87[1];
+        tmp90 = [tmp81, tmp82, tmp88];
+        tmpret79 = [tmp90, tmp89];
+      } else {
+        tmp91 = _ats2jspre_funarray_rem_r_15(tmp82, tmp80);
+        tmp92 = tmp91[0];
+        tmp93 = tmp91[1];
+        tmp94 = [tmp81, tmp92, tmp83];
+        tmpret79 = [tmp94, tmp93];
+      } // end-of-if
+      break;
+      // ATSbranchseq_end
+    } // end-of-switch
+    if (tmplab_js === 0) break;
+  } // endwhile
+  // ATScaseofseq_end
+  return tmpret79;
+} // end-of-function
+
+
+/* ****** ****** */
+
+/* end-of-compilation-unit */
+/*
+**
+** The JavaScript code is generated by atscc2js
+** The starting compilation time is: 2017-11-19: 10h:21m
+**
+*/
+
+function
+slistref_make_nil()
+{
+//
+// knd = 0
+  var tmpret0
+  var tmp1
+  var tmplab, tmplab_js
+//
+  // __patsflab_slistref_make_nil
+  tmp1 = null;
+  tmpret0 = ats2jspre_ref(tmp1);
+  return tmpret0;
+} // end-of-function
+
+
+function
+slistref_length(arg0)
+{
+//
+// knd = 0
+  var tmpret2
+  var tmp3
+  var tmplab, tmplab_js
+//
+  // __patsflab_slistref_length
+  tmp3 = ats2jspre_ref_get_elt(arg0);
+  tmpret2 = ats2jspre_list_length(tmp3);
+  return tmpret2;
+} // end-of-function
+
+
+function
+slistref_push(arg0, arg1)
+{
+//
+// knd = 0
+  var tmp5
+  var tmp6
+  var tmplab, tmplab_js
+//
+  // __patsflab_slistref_push
+  tmp6 = ats2jspre_ref_get_elt(arg0);
+  tmp5 = [arg1, tmp6];
+  ats2jspre_ref_set_elt(arg0, tmp5);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+slistref_pop_opt(arg0)
+{
+//
+// knd = 0
+  var tmpret7
+  var tmp8
+  var tmp9
+  var tmp10
+  var tmplab, tmplab_js
+//
+  // __patsflab_slistref_pop_opt
+  tmp8 = ats2jspre_ref_get_elt(arg0);
+  // ATScaseofseq_beg
+  tmplab_js = 1;
+  while(true) {
+    tmplab = tmplab_js; tmplab_js = 0;
+    switch(tmplab) {
+      // ATSbranchseq_beg
+      case 1: // __atstmplab0
+      if(ATSCKptriscons(tmp8)) {
+        { tmplab_js = 4; break; }
+      } // ifthen
+      case 2: // __atstmplab1
+      tmpret7 = null;
+      break;
+      // ATSbranchseq_end
+      // ATSbranchseq_beg
+      case 3: // __atstmplab2
+      case 4: // __atstmplab3
+      tmp9 = tmp8[0];
+      tmp10 = tmp8[1];
+      ats2jspre_ref_set_elt(arg0, tmp10);
+      tmpret7 = [tmp9];
+      break;
+      // ATSbranchseq_end
+    } // end-of-switch
+    if (tmplab_js === 0) break;
+  } // endwhile
+  // ATScaseofseq_end
+  return tmpret7;
+} // end-of-function
+
+
+function
+slistref_foldleft(arg0, arg1, arg2)
+{
+//
+// knd = 0
+  var tmpret12
+  var tmp13
+  var tmplab, tmplab_js
+//
+  // __patsflab_slistref_foldleft
+  tmp13 = ats2jspre_ref_get_elt(arg0);
+  tmpret12 = ats2jspre_list_foldleft(tmp13, arg1, arg2);
+  return tmpret12;
+} // end-of-function
+
+
+function
+slistref_foldright(arg0, arg1, arg2)
+{
+//
+// knd = 0
+  var tmpret14
+  var tmp15
+  var tmplab, tmplab_js
+//
+  // __patsflab_slistref_foldright
+  tmp15 = ats2jspre_ref_get_elt(arg0);
+  tmpret14 = ats2jspre_list_foldright(tmp15, arg1, arg2);
+  return tmpret14;
+} // end-of-function
+
+
+/* ****** ****** */
+
+/* end-of-compilation-unit */
+/*
+**
+** The JavaScript code is generated by atscc2js
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -12999,142 +13708,7 @@ _ats2jspre_qlistref_auxr_9(env0, arg0, arg1)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
-**
-*/
-
-function
-slistref_make_nil()
-{
-//
-// knd = 0
-  var tmpret0
-  var tmp1
-  var tmplab, tmplab_js
-//
-  // __patsflab_slistref_make_nil
-  tmp1 = null;
-  tmpret0 = ats2jspre_ref(tmp1);
-  return tmpret0;
-} // end-of-function
-
-
-function
-slistref_length(arg0)
-{
-//
-// knd = 0
-  var tmpret2
-  var tmp3
-  var tmplab, tmplab_js
-//
-  // __patsflab_slistref_length
-  tmp3 = ats2jspre_ref_get_elt(arg0);
-  tmpret2 = ats2jspre_list_length(tmp3);
-  return tmpret2;
-} // end-of-function
-
-
-function
-slistref_push(arg0, arg1)
-{
-//
-// knd = 0
-  var tmp5
-  var tmp6
-  var tmplab, tmplab_js
-//
-  // __patsflab_slistref_push
-  tmp6 = ats2jspre_ref_get_elt(arg0);
-  tmp5 = [arg1, tmp6];
-  ats2jspre_ref_set_elt(arg0, tmp5);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-slistref_pop_opt(arg0)
-{
-//
-// knd = 0
-  var tmpret7
-  var tmp8
-  var tmp9
-  var tmp10
-  var tmplab, tmplab_js
-//
-  // __patsflab_slistref_pop_opt
-  tmp8 = ats2jspre_ref_get_elt(arg0);
-  // ATScaseofseq_beg
-  tmplab_js = 1;
-  while(true) {
-    tmplab = tmplab_js; tmplab_js = 0;
-    switch(tmplab) {
-      // ATSbranchseq_beg
-      case 1: // __atstmplab0
-      if(ATSCKptriscons(tmp8)) {
-        { tmplab_js = 4; break; }
-      } // ifthen
-      case 2: // __atstmplab1
-      tmpret7 = null;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      case 3: // __atstmplab2
-      case 4: // __atstmplab3
-      tmp9 = tmp8[0];
-      tmp10 = tmp8[1];
-      ats2jspre_ref_set_elt(arg0, tmp10);
-      tmpret7 = [tmp9];
-      break;
-      // ATSbranchseq_end
-    } // end-of-switch
-    if (tmplab_js === 0) break;
-  } // endwhile
-  // ATScaseofseq_end
-  return tmpret7;
-} // end-of-function
-
-
-function
-slistref_foldleft(arg0, arg1, arg2)
-{
-//
-// knd = 0
-  var tmpret12
-  var tmp13
-  var tmplab, tmplab_js
-//
-  // __patsflab_slistref_foldleft
-  tmp13 = ats2jspre_ref_get_elt(arg0);
-  tmpret12 = ats2jspre_list_foldleft(tmp13, arg1, arg2);
-  return tmpret12;
-} // end-of-function
-
-
-function
-slistref_foldright(arg0, arg1, arg2)
-{
-//
-// knd = 0
-  var tmpret14
-  var tmp15
-  var tmplab, tmplab_js
-//
-  // __patsflab_slistref_foldright
-  tmp15 = ats2jspre_ref_get_elt(arg0);
-  tmpret14 = ats2jspre_list_foldright(tmp15, arg1, arg2);
-  return tmpret14;
-} // end-of-function
-
-
-/* ****** ****** */
-
-/* end-of-compilation-unit */
-/*
-**
-** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -15343,7 +15917,7 @@ _ats2jspre_ML_list0_aux_102(arg0, arg1)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -15574,13 +16148,35 @@ _ats2jspre_ML_array0_patsfun_14(env0, arg0)
 } // end-of-function
 
 
+function
+ats2jspre_ML_array0_tabulate(arg0, arg1)
+{
+//
+// knd = 0
+  var tmpret15
+  var tmp16
+  var tmp17
+  var tmplab, tmplab_js
+//
+  // __patsflab_array0_tabulate
+  tmp17 = ats2jspre_gte_int1_int1(arg0, 0);
+  if(tmp17) {
+    tmp16 = arg0;
+  } else {
+    tmp16 = 0;
+  } // end-of-if
+  tmpret15 = ats2jspre_arrszref_tabulate_cloref(tmp16, arg1);
+  return tmpret15;
+} // end-of-function
+
+
 /* ****** ****** */
 
 /* end-of-compilation-unit */
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
@@ -15847,7 +16443,7 @@ ats2jspre_ML_cbind_matrix0_matrix0(arg0, arg1)
 /*
 **
 ** The JavaScript code is generated by atscc2js
-** The starting compilation time is: 2017-11-15:  9h:52m
+** The starting compilation time is: 2017-11-19: 10h:21m
 **
 */
 
