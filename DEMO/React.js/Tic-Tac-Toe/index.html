@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8" />
+<title>Tic-Tac-Toe</title>
+
+<link rel="stylesheet" type="text/css" href="./index.css">
+  
+<script
+ src="https://unpkg.com/react@16.0.0/umd/react.production.min.js"></script>
+<script
+ src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.production.min.js"></script>
+<script
+ src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+<script
+ src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"> 
+</script>
+<script
+  src="https://ats-lang.github.io/LIBRARY/libatscc2js/ATS2-0.3.2/libatscc2js_all.js">
+</script>
+<script
+  src="https://ats-lang.github.io/LIBRARY/libatscc2js/ATS2-0.3.2/libatscc2js_print_store_cats.js">
+</script>
+<script src="./Tic-Tac-Toe_dats.js"></script>
+
+</head>
+
+<body>
+
+<div
+ id="errors"
+ style="
+  background: #c00;
+  color: #fff;
+  display: none;
+  margin: -20px -20px 20px;
+  padding: 20px;
+  white-space: pre-wrap;
+ "></div>
+
+<center>
+  <h1>Tic-Tac-Toe</h1>
+</center>
+
+<div id="myroot"></div>
+
+<script type="text/babel">
+
+// ================== //
+
+class Game
+extends React.Component
+{
+  render() {
+    return (
+      <div className="game">
+        <div
+	 className="game-board">
+         <Board></Board>
+        </div>
+      </div>
+    );
+  }
+} // end of [class Game]
+
+// ================== //
+//
+function
+Square_render
+  (board, i, j)
+{
+return (
+<td>
+<button
+ className="square"
+ onClick=
+ {
+   function()
+   {
+     board.setState({});
+     Square_handle_click(i, j);
+   }
+ }
+>{ theSquares_get_text(i, j) }</button></td>
+); // return
+}
+//
+// ================== //
+
+class Board
+extends React.Component
+{
+//
+constructor(props)
+  {
+    super(props);
+    this.state = {};
+  }
+//
+  render() {
+//
+    const
+    status = theStatus_get();
+    const
+    styles = { textAlign:'center'};
+//
+    return (
+      <div
+       style={styles}
+       className="board"
+      >
+        <div
+	 className="status"
+	>{status}</div>
+	<table
+	 style={{display:'inline'}}
+	>
+        <tr>
+          {Square_render(this, 0, 0)}
+          {Square_render(this, 0, 1)}
+          {Square_render(this, 0, 2)}
+        </tr>
+        <tr>
+          {Square_render(this, 1, 0)}
+          {Square_render(this, 1, 1)}
+          {Square_render(this, 1, 2)}
+	</tr>
+        <tr>
+          {Square_render(this, 2, 0)}
+          {Square_render(this, 2, 1)}
+          {Square_render(this, 2, 2)}
+	</tr>
+	</table>
+      </div>
+    ); // return
+  } // end of [render]
+//
+} // end of [Board]
+
+// ================== //
+
+ReactDOM.render
+(
+  <Game></Game>,
+  document.getElementById('myroot')
+);
+
+// ================== //
+
+</script>
+
+</body>
+
+</html>
+
+<!-- end of [index.html] -->
+
