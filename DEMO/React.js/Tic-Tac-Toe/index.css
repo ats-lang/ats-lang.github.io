@@ -47,18 +47,13 @@ ol, ul {
 
 .game {
     display: flex;
-    flex-direction: row;
 /*
     background: #a0a0a0;
 */
 }
 
-.game-info {
-    margin: 20px;
-}
-
 .game-board {
-    margin: 0px auto;
+    margin: 20px auto;
 /*
     background: #808080;
 */
