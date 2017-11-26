@@ -1,29 +1,36 @@
+(* ****** ****** *)
 (*
-** For processing English words
+** For processing
+** the English words
 *)
-
 (* ****** ****** *)
 //
+(*
 #include
 "share/atspre_define.hats"
+*)
+#define
+LIBATSCC2JS_targetloc
+"$PATSHOME\
+/contrib/libatscc2js/ATS2-0.3.2"
 #include
 "{$LIBATSCC2JS}/staloadall.hats"
 //
 (* ****** ****** *)
 //
 #define
-ATS_PACKNAME "BUCASCS320.words"
+ATS_PACKNAME "BUCS320.words"
 #define
-ATS_EXTERN_PREFIX "BUCASCS320_words_"
+ATS_EXTERN_PREFIX "BUCS320_words_"
 #define
-ATS_STATIC_PREFIX "_BUCASCS320_words_static_"
+ATS_STATIC_PREFIX "_BUCS320_words_"
 //
 (* ****** ****** *)
 //
 #define
 ATS_MAINATSFLAG 1
 #define
-ATS_DYNLOADNAME "BUCASCS320_words_dynload"
+ATS_DYNLOADNAME "BUCS320_words_dynload"
 //
 (* ****** ****** *)
 

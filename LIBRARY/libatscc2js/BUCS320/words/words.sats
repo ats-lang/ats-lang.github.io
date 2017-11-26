@@ -1,11 +1,11 @@
+(* ****** ****** *)
 (*
 ** For processing English words
 *)
-
 (* ****** ****** *)
 //
 #define
-ATS_PACKNAME "BUCASCS320.words"
+ATS_PACKNAME "BUCS320.words"
 //
 (* ****** ****** *)
 //
