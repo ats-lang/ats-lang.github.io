@@ -1,7 +1,7 @@
+(* ****** ****** *)
 (*
 ** Patsopt-atscc2js-eval
 *)
-
 (* ****** ****** *)
 //
 #include
@@ -15,26 +15,31 @@ ATS_MAINATSFLAG 1
 ATS_DYNLOADNAME "inputform_dynload"
 //
 (* ****** ****** *)
-
-#include "{$LIBATSCC2JS}/staloadall.hats"
-
+//
+#define
+LIBATSCC2JS_targetloc
+"$PATSHOME\
+/contrib/libatscc2js/ATS2-0.3.2"
+//
 (* ****** ****** *)
 //
-staload
+#include
+"{$LIBATSCC2JS}/staloadall.hats"
+//
+(* ****** ****** *)
+//
+#staload
 "{$LIBATSCC2JS}/SATS/Worker/channel.sats"
-staload
+#staload
 "{$LIBATSCC2JS}/DATS/Worker/channel.dats"
 #include
 "{$LIBATSCC2JS}/DATS/Worker/channeg.dats"
 //
 (* ****** ****** *)
 //
-staload
-"{$PATSHOME}\
-/utils/libatsopt/SATS/libatsopt_ext.sats"
-staload
-"{$PATSHOMERELOC}\
-/projects/MEDIUM/CATS-atsccomp/CATS-atscc2js/libatscc2js_ext.sats"
+#staload
+"{$PATSHOME}/contrib\
+/CATS-atscc2js/DATS/libatscc2js_ext.dats"
 //
 (* ****** ****** *)
 
@@ -432,6 +437,15 @@ in
 end // end of [Atscc2js_output_box_onclick]
 
 (* ****** ****** *)
+//
+datatype
+patsoptres =
+PATSOPTRES of
+(
+  int(*nerr*), string(*stdout*), string(*stderr*)
+) (* end of [patsoptres] *)
+//
+(* ****** ****** *)
 
 datatype
 patsoptres_ =
@@ -549,7 +563,7 @@ Patsopt_arglst
 //
 val
 chn =
-channeg_new_file
+channeg0_new_file
 (
   "./Assets/libatsopt_ext_worker.js"
 ) (* end of [val] *)
@@ -559,20 +573,20 @@ val () = alert("Worker is ready!")
 *)
 //
 val () =
-channeg_send{int}
+channeg0_send{int}
 (
 chn
 ,
 lam(chn, res) =>
 // theWorker is ready
-channeg_recv{comarglst1}
+channeg0_recv{comarglst1}
 (
 chn
 ,
 args
 ,
 lam(chn) =>
-channeg_send{patsoptres}
+channeg0_send{patsoptres}
 (
 chn
 ,
@@ -582,7 +596,7 @@ val
 res =
 chmsg_parse<patsoptres>(res)
 //
-val () = channeg_close(chn)
+val () = channeg0_close(chn)
 //
 val+
 PATSOPTRES
@@ -699,7 +713,7 @@ Atscc2js_arglst
 //
 val
 chn =
-channeg_new_file
+channeg0_new_file
 (
   "./Assets/libatscc2js_ext_worker.js"
 ) (* end of [val] *)
@@ -709,20 +723,20 @@ val () = alert("Worker is ready!")
 *)
 //
 val () =
-channeg_send{int}
+channeg0_send{int}
 (
 chn
 ,
 lam(chn, res) =>
 // theWorker is ready
-channeg_recv{comarglst1}
+channeg0_recv{comarglst1}
 (
 chn
 ,
 args
 ,
 lam(chn) =>
-channeg_send{atscc2jsres}
+channeg0_send{atscc2jsres}
 (
 chn
 ,
@@ -732,7 +746,7 @@ val
 res =
 chmsg_parse<atscc2jsres>(res)
 //
-val () = channeg_close(chn)
+val () = channeg0_close(chn)
 //
 val+
 ATSCC2JSRES
