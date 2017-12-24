@@ -48,11 +48,11 @@ clean:: ; $(RMF) *_?ats.c
 #
 cleanall:: clean
 #
-cleanall:: ; $(RMF) inputform_dats.js
-cleanall:: ; $(RMF) libatsopt_ext_worker.js
-cleanall:: ; $(RMF) libatsopt_ext_worker.data
-cleanall:: ; $(RMF) libatsopt_ext_worker.js.mem
-cleanall:: ; $(RMF) libatscc2js_ext_worker.js
-cleanall:: ; $(RMF) libatscc2js_ext_worker.js.mem
+# cleanall:: ; $(RMF) inputform_dats.js
+# cleanall:: ; $(RMF) libatsopt_ext_worker.js
+# cleanall:: ; $(RMF) libatsopt_ext_worker.data
+# cleanall:: ; $(RMF) libatsopt_ext_worker.js.mem
+# cleanall:: ; $(RMF) libatscc2js_ext_worker.js
+# cleanall:: ; $(RMF) libatscc2js_ext_worker.js.mem
 #
 ###### end of [Makefile] ######
