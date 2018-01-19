@@ -80,9 +80,9 @@ sudo apt-get install -y libjson-c-dev
 # (cd ATS2/contrib/ATS-extsolve-smt2 && mv -f patsolve_smt2 ${PATSHOME}/bin)
 #
 ######
-
-sudo apt-get install -y erlang
-
+#
+# sudo apt-get install -y erlang
+#
 ######
 #
 # For parsing C code
@@ -108,8 +108,8 @@ sudo apt-get install -y erlang
 #
 # For building atscc2erl
 #
-(cd ATS2/contrib/CATS-atscc2erl && time make all)
-(cd ATS2/contrib/CATS-atscc2erl && mv -f bin/atscc2erl ${PATSHOME}/bin)
+# (cd ATS2/contrib/CATS-atscc2erl && time make all)
+# (cd ATS2/contrib/CATS-atscc2erl && mv -f bin/atscc2erl ${PATSHOME}/bin)
 #
 ######
 #
