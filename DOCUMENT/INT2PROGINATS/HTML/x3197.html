@@ -1,0 +1,310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Safe Matrix Subscripting</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Programming with Theorem-Proving"
+HREF="c3155.html"><LINK
+REL="PREVIOUS"
+TITLE="Programming with Theorem-Proving"
+HREF="c3155.html"><LINK
+REL="NEXT"
+TITLE="Specifying with Enhanced Precision"
+HREF="x3216.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c3155.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 12. Programming with Theorem-Proving</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3216.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_safe_matrix_subscripting"
+>Example: Safe Matrix Subscripting</A
+></H1
+><P
+>&#13;Internally, a matrix of the dimension m by n is represented as an array
+of the size m*n. For matrix subscripting, we need to implement a function
+template of the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3200"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> matrix_get
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">:</span>nat <span class="keyword">|</span> i <span class="keyword">&lt;</span> m<span class="keyword">;</span> j <span class="keyword">&lt;</span> n<span class="keyword">}</span></span>
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrayref</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="staexp">*</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> col<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">i</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">j</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">// end of [matrix_get]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Assume that the matrix is represented in the row-major style. Then the
+element indexed by i and j in the matrix is the element indexed by i*n + j
+in the array that represents the matrix, where i and j are natural numbers
+less than m and n, respectively. However, the following implementation
+fails to pass typechecking:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3202"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+matrix_get <span class="keyword">(</span>A<span class="keyword">,</span> n<span class="keyword">,</span> i<span class="keyword">,</span> j<span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">A[i*n+j<span class="keyword">]</span></span></span> <span class="comment">// it fails to typecheck!!!</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The simple reason for this failure is due to the ATS constraint solver not
+being able to automatically verify that i*n+j is a natural number strictly
+less than m*n. An implementation of <FONT
+COLOR="RED"
+>matrix_get</FONT
+> that typechecks
+can be given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3205"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+matrix_get
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">}</span></span>
+  <span class="keyword">(</span>A<span class="keyword">,</span> n<span class="keyword">,</span> i<span class="keyword">,</span> j<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> _in_<span class="keyword">)</span> <span class="keyword">=</span> imul2 <span class="keyword">(</span>i<span class="keyword">,</span> n<span class="keyword">)</span></span>
+<span class="comment">//</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> mul_elim<span class="keyword">(</span>pf<span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> mul_nat_nat_nat<span class="keyword">(</span>pf<span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> mul_gte_gte_gte<span class="staexp"><span class="keyword">{</span>m-1-i<span class="keyword">,</span>n<span class="keyword">}</span></span><span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="dynexp">A[_in_+j<span class="keyword">]</span></span>
+<span class="keyword">end</span></span> <span class="comment">// end of [matrix_get]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the functions called in the body of <FONT
+COLOR="RED"
+>matrix_get</FONT
+>
+are assigned the following interfaces:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3208"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+imul2<span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span><span class="staexp">int</span> <span class="staexp">i</span><span class="keyword">,</span> <span class="staexp">int</span> <span class="staexp">j</span><span class="keyword">)</span><span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>ij<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">i</span><span class="keyword">,</span> <span class="staexp">j</span><span class="keyword">,</span> <span class="staexp">ij</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">int</span> <span class="staexp">ij</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+mul_elim
+  <span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>ij<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">i</span><span class="keyword">,</span> <span class="staexp">j</span><span class="keyword">,</span> <span class="staexp">ij</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>i*j==ij<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+mul_nat_nat_nat
+  <span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>ij<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">i</span><span class="keyword">,</span> <span class="staexp">j</span><span class="keyword">,</span> <span class="staexp">ij</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>ij &gt;= 0<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+mul_gte_gte_gte
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int <span class="keyword">|</span> m &gt;= 0<span class="keyword">;</span> n &gt;= 0<span class="keyword">}</span></span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>m*n &gt;= 0<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Assume that m and n are natural numbers and i and j are natural numbers
+less than m and n, respectively.  The proof code employed in the
+implementation of <FONT
+COLOR="RED"
+>matrix_get</FONT
+> to show i*n+j &#60; m*n proves
+(m-1-i)*n &#62;= 0, which clearly implies m*n &#62;= i*n+n &#62; i*n+j.
+
+</P
+><P
+>&#13;
+Note that there are a variety of proof functions declared in
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/ATS-Postiats/prelude/SATS/arith_prf.sats"
+TARGET="_top"
+>arith_prf.sats</A
+> for helping prove
+theorems involving arithmetic operations. For examples of proof
+construction in ATS, please find the implementation of some of these proof
+functions in <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/ATS-Postiats/prelude/DATS/arith_prf.dats"
+TARGET="_top"
+>arith_prf.dats</A
+>.
+</P
+><P
+>&#13;The entirety of the above presented code is available
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_PRGTHMPRV/matget.dats"
+TARGET="_top"
+>on-line</A
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c3155.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3216.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Programming with Theorem-Proving</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3155.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Specifying with Enhanced Precision</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

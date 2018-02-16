@@ -1,0 +1,345 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Specifying with Enhanced Precision</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Programming with Theorem-Proving"
+HREF="c3153.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Safe Matrix Subscripting"
+HREF="x3195.html"><LINK
+REL="NEXT"
+TITLE="Example: Another Verified Factorial"
+HREF="x3240.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3195.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 12. Programming with Theorem-Proving</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3240.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="specifying_with_precision"
+>Specifying with Enhanced Precision</A
+></H1
+><P
+>&#13;The integer addition function can be assigned the following
+(dependent) type in ATS to indicate that it returns the sum of
+its two integer arguments:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3217"
+></A
+><PRE
+CLASS="programlisting"
+>{i,j:int} (int(i), int(j)) -&#62; int(i+j)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+This type gives a full specification of integer addition as the only
+(terminating) function that can be given the type is the integer addition
+function. However, the factorial function, which yields the product of the
+first n positive integers when applied to a natural number n, cannot be
+given the following type:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3219"
+></A
+><PRE
+CLASS="programlisting"
+>{n:int | n &#62;= 0} int(n) -&#62; int(fact(n))</PRE
+><P
+></P
+></DIV
+>
+
+
+as <FONT
+COLOR="RED"
+>fact</FONT
+>, which refers to the factorial function, does not exist in
+the statics of ATS. Evidently, a highly interesting and relevant question is
+whether a type can be formed in ATS that fully captures the functional
+relation specified by <FONT
+COLOR="RED"
+>fact</FONT
+>? The answer is affirmative. We can not
+only construct such a type but also assign it to a (terminating) function
+implemented in ATS.
+</P
+><P
+>Let us recall that the factorial function can be defined by the following
+two equations:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3224"
+></A
+><PRE
+CLASS="programlisting"
+>fact(0) = 1
+fact(n) = n * fact(n-1) (for all n &#62; 0)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+Naturally, these equations can be encoded by the constructors associated
+with the dataprop <FONT
+COLOR="RED"
+>FACT</FONT
+> declared as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3227"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">dataprop</span>
+<span class="staexp">FACT<span class="keyword">(</span>int<span class="keyword">,</span> int<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="prfexp">FACTbas<span class="keyword">(</span><span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">1</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>r1<span class="keyword">,</span>r<span class="keyword">:</span>int<span class="keyword">}</span></span>
+    FACTind<span class="keyword">(</span><span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">FACT</span><span class="keyword">(</span><span class="staexp">n</span><span class="staexp">-</span><span class="staexp">1</span><span class="keyword">,</span> <span class="staexp">r1</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">r1</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [FACT]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that for any given natural number n and integer r, <FONT
+COLOR="RED"
+>FACT(n,
+r)</FONT
+> can be assigned to a proof if and only if <FONT
+COLOR="RED"
+>fact(n)</FONT
+> equals
+r. Therefore, the following type:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3231"
+></A
+><PRE
+CLASS="programlisting"
+>{n:nat} int(n) -&#62; [r:int] (FACT(n, r) | int(r))
+</PRE
+><P
+></P
+></DIV
+>
+
+
+can only be assigned to a function that, if applied to a natural number n,
+returns a proof and an integer such that the proof attests to the integer
+being equal to <FONT
+COLOR="RED"
+>fact(n)</FONT
+>. For instance, the following defined
+function <FONT
+COLOR="RED"
+>ifact</FONT
+> is assigned this type:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3235"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+ifact
+<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:&lt;</span><span class="keyword">&gt;</span> <span class="staexp"><span class="keyword">[</span>r<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">FACT</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">int</span> <span class="staexp">r</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">if</span>
+n <span class="keyword">=</span> <span class="dynexp">0</span>
+<span class="keyword">then</span> <span class="keyword">(</span><span class="prfexp">FACTbas<span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp">1</span><span class="keyword">)</span>
+<span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pf1</span> <span class="keyword">|</span> r1<span class="keyword">)</span> <span class="keyword">=</span> ifact <span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span></span> <span class="comment">// pf1: FACT(n-1, r1)</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pfmul</span> <span class="keyword">|</span> r<span class="keyword">)</span> <span class="keyword">=</span> imul2 <span class="keyword">(</span>n<span class="keyword">,</span> r1<span class="keyword">)</span></span> <span class="comment">// pfmul: FACT(n, r1, r)</span>
+<span class="keyword">in</span>
+  <span class="keyword">(</span><span class="prfexp">FACTind<span class="keyword">(</span>pf1<span class="keyword">,</span> pfmul<span class="keyword">)</span></span> <span class="keyword">|</span> r<span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [else]</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [ifact] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+After proof erasure, <FONT
+COLOR="RED"
+>ifact</FONT
+> precisely implements the factorial
+function.
+
+</P
+><P
+>&#13;Please find the entirety of the above presented code plus some testing code
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_PRGTHMPRV/ifact.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3195.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3240.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Safe Matrix Subscripting</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3153.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Another Verified Factorial</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

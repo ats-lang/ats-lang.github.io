@@ -1,0 +1,549 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Locking and Unlocking</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Abstract Views and Viewtypes"
+HREF="c4185.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Array-Based Circular Buffers"
+HREF="x4301.html"><LINK
+REL="NEXT"
+TITLE="Linear Channels for Asynchronous IPC"
+HREF="x4386.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x4301.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 16. Abstract Views and Viewtypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x4386.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="locking-and-unlocking"
+>Locking and Unlocking</A
+></H1
+><P
+>&#13;In concurrent programming, the issue of safely locking and unlocking
+shared resources is both essential and challenging. I am to demonstrate
+in this section concretely and convincingly that linear types can be used
+with great effectiveness to address this issue.
+
+</P
+><P
+>&#13;Let us first introduce a linear abstract type <FONT
+COLOR="RED"
+>shared</FONT
+>
+as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4343"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="staexp"><span class="keyword">absvtype</span> shared<span class="keyword">(</span>a<span class="keyword">:</span>vtype<span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a viewtype VT (for some resources), a value of the type
+<FONT
+COLOR="RED"
+>shared(VT)</FONT
+> is essentially a boxed record containing a resource
+of the type VT plus a lock (or several) of some kind. The following
+function <FONT
+COLOR="RED"
+>shared_make</FONT
+> is called to turn a resource into a shared
+resource:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4347"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> shared_make<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vtype<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">shared</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>  
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Notice that the type <FONT
+COLOR="RED"
+>shared(VT)</FONT
+> itself is linear. In terms of
+implementation, there is usually a reference count inside a linear shared
+resource that is protected by a spin-lock. The functions
+<FONT
+COLOR="RED"
+>shared_ref</FONT
+> and <FONT
+COLOR="RED"
+>shared_unref</FONT
+> are for increasing and
+descreasing the reference count inside a shared resource:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4352"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> shared_ref<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vtype<span class="keyword">}</span></span><span class="keyword">(</span><span class="staexp"><span class="keyword">!</span></span><span class="staexp">shared</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">shared</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span> shared_unref<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vtype<span class="keyword">}</span></span><span class="keyword">(</span><span class="staexp">shared</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">Option_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+If the reference count of a shared resource is 1, then calling
+<FONT
+COLOR="RED"
+>shared_unref</FONT
+> on the shared resource frees the memory used in
+its representation and then returns the resource stored inside it.
+
+</P
+><P
+>&#13;The function <FONT
+COLOR="RED"
+>shared_lock</FONT
+> acquires the resource from a
+given shared resource and the function <FONT
+COLOR="RED"
+>shared_unlock</FONT
+> does
+the opposite:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4358"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="staexp"><span class="keyword">absview</span> locked_v</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> shared_lock<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vtype<span class="keyword">}</span></span><span class="keyword">(</span><span class="staexp"><span class="keyword">!</span></span><span class="staexp">shared</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">locked_v</span> <span class="keyword">|</span> <span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">fun</span> shared_unlock<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vtype<span class="keyword">}</span></span><span class="keyword">(</span><span class="prfexp"><span class="staexp">locked_v</span></span> <span class="keyword">|</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">shared</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the abstract view <FONT
+COLOR="RED"
+>locked_v</FONT
+> is introduced for linear
+proofs that are meant to remind the programmer that a shared resoure needs
+to be released after it is acquired.
+
+</P
+><P
+>&#13;As can be expected, a shared resource can be implemented as a boxed tuple
+consisting of a spin-lock, a reference count and a pointer (referring to
+the stored resource):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4362"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">datavtype</span>
+<span class="staexp">shared_ <span class="keyword">(</span>a<span class="keyword">:</span>vtype<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="dynexp">SHARED <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">spin1_vt</span><span class="comment">(*lock*)</span><span class="keyword">,</span> <span class="staexp">int</span><span class="comment">(*count*)</span><span class="keyword">,</span> <span class="staexp">ptr</span><span class="keyword">)</span></span></span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">assume</span> shared <span class="keyword">=</span> shared_</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the type <FONT
+COLOR="RED"
+>spin1_vt</FONT
+> is for linear spin-locks. The
+function <FONT
+COLOR="RED"
+>shared_ref</FONT
+> is implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4366"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+shared_ref
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>sh<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>SHARED
+  <span class="keyword">(</span>spin<span class="keyword">,</span> count<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> sh</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+spin <span class="keyword">=</span> <span class="comment">// for temp. use</span>
+  unsafe_spin_vt2t<span class="keyword">(</span>spin<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+<span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=</span> spin_lock<span class="keyword">(</span>spin<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> c0 <span class="keyword">=</span> count</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> count := c0 + <span class="dynexp">1</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> spin_unlock<span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> spin<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span>sh</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  $UN<span class="keyword">.</span>castvwtp1<span class="staexp"><span class="keyword">{</span>shared<span class="keyword">(</span>a<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>sh<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [shared_ref]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, the implementation makes use of several unsafe casts.  An
+implementation without such casts would be highly involved even if it could
+be done.  The spin-lock must be acquired before the binding between
+<FONT
+COLOR="RED"
+>c0</FONT
+> and the integer stored in <FONT
+COLOR="RED"
+>count</FONT
+> is formed for
+otherwise a race condition can appear. The function <FONT
+COLOR="RED"
+>shared_unref</FONT
+>
+is implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4371"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+shared_unref
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>sh<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>SHARED
+  <span class="keyword">(</span>spin<span class="keyword">,</span> count<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=</span> sh</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+spin <span class="keyword">=</span> <span class="comment">// for temp. use</span>
+  unsafe_spin_vt2t<span class="keyword">(</span>spin<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+<span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=</span> spin_lock<span class="keyword">(</span>spin<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> c0 <span class="keyword">=</span> count</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> count := c0 - <span class="dynexp">1</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> spin_unlock<span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> spin<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span>sh</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span>
+c0 &lt;= <span class="dynexp">1</span>
+<span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val+</span><span class="keyword">~</span>SHARED<span class="keyword">(</span>spin<span class="keyword">,</span> _<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> sh</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*freed*)</span><span class="keyword">)</span> <span class="keyword">=</span> spin_vt_destroy<span class="keyword">(</span>spin<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  Some_vt<span class="keyword">(</span>$UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [then]</span>
+<span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> $UN<span class="keyword">.</span>cast2void<span class="keyword">(</span>sh<span class="keyword">)</span></span> <span class="keyword">in</span> None_vt<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [else]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [shared_unref]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+In the case where the reference count is 1,
+then the shared resource is freed, the spin-lock in it
+is destroyed, and the resource in it is returned.
+
+</P
+><P
+>&#13;The functions
+<FONT
+COLOR="RED"
+>shared_lock</FONT
+>
+and
+<FONT
+COLOR="RED"
+>shared_unlock</FONT
+>
+are implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4376"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+shared_lock
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>sh<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>SHARED<span class="keyword">(</span>spin<span class="keyword">,</span> _<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> sh</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+spin <span class="keyword">=</span>
+  unsafe_spin_vt2t<span class="keyword">(</span>spin<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+<span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=</span> spin_lock<span class="keyword">(</span>spin<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> x0 <span class="keyword">=</span> $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span>sh</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">(</span><span class="prfexp">$UN<span class="keyword">.</span>castview0<span class="keyword">(</span>pf<span class="keyword">)</span></span> <span class="keyword">|</span> x0<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [shared_lock]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4378"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+shared_unlock
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> sh<span class="keyword">,</span> x0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>SHARED<span class="keyword">(</span>spin<span class="keyword">,</span> _<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=</span> sh</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span>
+spin <span class="keyword">=</span>
+  unsafe_spin_vt2t<span class="keyword">(</span>spin<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x := $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>ptr<span class="keyword">}</span></span><span class="keyword">(</span>x0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+  spin_unlock<span class="keyword">(</span><span class="prfexp">$UN<span class="keyword">.</span>castview0<span class="keyword">(</span>pf<span class="keyword">)</span></span> <span class="keyword">|</span> spin<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span>sh</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [shared_unlock]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+In the case of <FONT
+COLOR="RED"
+>shared_lock</FONT
+>, please notice that the content
+stored in the variable <FONT
+COLOR="RED"
+>x</FONT
+> is read out after the spin-lock is
+acquired. This is crucial for otherwise a race condition can readily
+appear. In the case of <FONT
+COLOR="RED"
+>shared_unlock</FONT
+>, the content of the
+variable <FONT
+COLOR="RED"
+>x</FONT
+> is updated before the acquired spin-lock is
+released.
+</P
+><P
+>&#13;Please find on-line the file
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_ABSVTYPE/shared_vt.dats"
+TARGET="_top"
+>shared_vt.dats</A
+>
+containing the entirety of the code presented in this section. In addition,
+the file also contains an implementation of three threads that move in
+locked steps: thread 0 moves; thread 1 moves; thread 2 moves; thread 0
+moves; thread 1 moves; thread 2 moves; etc.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x4301.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x4386.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Array-Based Circular Buffers</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c4185.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Linear Channels for Asynchronous IPC</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

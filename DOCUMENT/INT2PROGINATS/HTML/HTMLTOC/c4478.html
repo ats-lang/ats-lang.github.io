@@ -1,0 +1,602 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>From Genericity to Late-Binding</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Programming with Function Templates"
+HREF="p4476.html"><LINK
+REL="PREVIOUS"
+TITLE="Programming with Function Templates"
+HREF="p4476.html"><LINK
+REL="NEXT"
+TITLE="Example: Generic Operations on Numbers"
+HREF="x4542.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="p4476.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x4542.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="from-genericity-to-late-binding"
+></A
+>Chapter 17. From Genericity to Late-Binding</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c4478.html#genericity-of-template-implementations"
+>Genericity of Template Implementations</A
+></DT
+><DT
+><A
+HREF="x4542.html"
+>Example: Generic Operations on Numbers</A
+></DT
+><DT
+><A
+HREF="x4575.html"
+>Templates as a Special Form of Functors</A
+></DT
+><DT
+><A
+HREF="x4612.html"
+>Example: Templates for Loop Construction</A
+></DT
+><DT
+><A
+HREF="x4665.html"
+>Template-Based Support for Late-Binding</A
+></DT
+></DL
+></DIV
+><P
+>&#13;The support for function templates in ATS is deeply ingrained in the design
+and implementation of ATS. Primarily, function templates are meant to
+provide a general approach to code reuse in ATS that is highly flexible (in
+terms of applicability) while incurring minimal run-time overhead if
+any. Both ATSPRE (that is, ATSLIB/prelude) and ATSLIB/libats are nearly
+entirely template-based, and the templates in these libraries are for use
+by <B
+CLASS="command"
+>atsopt</B
+> to generate C code that implements template
+instances in the ATS source being compiled. The library files of ATS for
+linking (<TT
+CLASS="filename"
+>libatslib.a</TT
+> and <TT
+CLASS="filename"
+>libatslib.so</TT
+>) are minimal, and
+they are not even necessary for compiling ATS source into executable binaries.
+
+</P
+><P
+>&#13;The code employed for illustration in this chapter plus some additional
+code for testing is available <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_FNTMPINT/"
+TARGET="_top"
+>on-line</A
+>.
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="genericity-of-template-implementations"
+>Genericity of Template Implementations</A
+></H1
+><P
+>&#13;As is briefly explained in Part I of the book, function templates can be
+seen as a natural solution to the problem of supporting parametric
+polymorphism in the presence of native unboxed data. However, function
+templates can do much more than just supporting parametric polymorphism.
+Let <FONT
+COLOR="RED"
+>myprint</FONT
+> be a function template of the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4490"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span> myprint <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a value, <FONT
+COLOR="RED"
+>myprint</FONT
+> is supposed to print out some kind of
+representation for this value. For example, we can implement
+<FONT
+COLOR="RED"
+>myprint</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4494"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span> myprint <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> print_string <span class="dynstr">"?"</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+This implementation of <FONT
+COLOR="RED"
+>myprint</FONT
+> is often referred to as a
+(fully) generic template implementation due to no restriction being imposed
+on the template parameter. Following is another way to code the same
+implementation:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4497"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> myprint&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> print_string <span class="dynstr">"?"</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, the above generic implementation of <FONT
+COLOR="RED"
+>myprint</FONT
+> is
+unsatisfactory as it outputs no specific information on a given value.  We
+may want to implement <FONT
+COLOR="RED"
+>myprint</FONT
+> as follows for only values of the
+type <FONT
+COLOR="RED"
+>int</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4502"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span> myprint&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">=</span> print_int <span class="keyword">(</span>x<span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>print_int</FONT
+> is called to print out a given integer. This
+implementation of <FONT
+COLOR="RED"
+>myprint</FONT
+> is often referred to as a specific
+template implementation due to the template parameter being bound to a
+specific type (that is, <FONT
+COLOR="RED"
+>int</FONT
+> in this case). The following code
+implements <FONT
+COLOR="RED"
+>myprint</FONT
+> for list-values (that is, values of type
+<FONT
+COLOR="RED"
+>List(T)</FONT
+> for some type T):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4509"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+myprint&lt;<span class="staexp">List</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+    <span class="keyword">(</span>myprint&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">;</span> myprint&lt;<span class="staexp">List</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+This implementation of <FONT
+COLOR="RED"
+>myprint</FONT
+> is often referred to as a
+partially generic template implementation. In order for an instance of
+<FONT
+COLOR="RED"
+>myprint</FONT
+> to use this implementation, the template parameter for
+the instance must be of the form <FONT
+COLOR="RED"
+>List(T)</FONT
+> for some type T.
+As an example, the following code calls an instance of <FONT
+COLOR="RED"
+>myprint</FONT
+>
+to print out a list of two integer lists:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4515"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">(*
+** The output is "0123401234"
+*)</span>
+<span class="dynexp"><span class="keyword">val</span> ys <span class="keyword">=</span> <span class="keyword">$list</span><span class="keyword">{</span><span class="staexp">int</span><span class="keyword">}</span><span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span><span class="dynexp">1</span><span class="keyword">,</span><span class="dynexp">2</span><span class="keyword">,</span><span class="dynexp">3</span><span class="keyword">,</span><span class="dynexp">4</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> yss <span class="keyword">=</span> <span class="keyword">$list</span><span class="keyword">{</span><span class="staexp">List</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span><span class="keyword">}</span><span class="keyword">(</span>ys<span class="keyword">,</span> ys<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> myprint&lt;<span class="staexp">List</span><span class="keyword">(</span><span class="staexp">List</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>yss<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> print_newline<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Implementations of a function template can be ordered according to an
+obvious partial ordering referred to as genericity ordering: The genericity
+of one implementation is less than or equal to that of another one if the
+former implementation is an instance of the latter one. Please note that
+the first-fit (instead of best-fit) strategy is employed to locate the
+template implementation needed for compiling a given template instance.
+More specifically, locating the template implementation for a particular
+template instance follows the standard principle of lexical scoping to
+search for the first one that is available for use.
+
+</P
+><P
+>&#13;In practice, there is quite a bit of subtlety in locating a template
+implementation for a template instance. Let <FONT
+COLOR="RED"
+>myprint2</FONT
+> be a
+function template of the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4520"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span> myprint2 <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Following is a partially generic implementation of <FONT
+COLOR="RED"
+>myprint2</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4523"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+myprint2&lt;<span class="staexp">List</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+    <span class="keyword">(</span>myprint&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">;</span> <span class="dynexp">1</span> + myprint2 <span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+This template implementation actually behaves very differently from what
+one might have expected. Note that the template parameter of the called
+instance of <FONT
+COLOR="RED"
+>myprint2</FONT
+> in the body of the implementation is
+synthesized to be a type of the form <FONT
+COLOR="RED"
+>list(a, N)</FONT
+> for some static
+term N (of the sort <FONT
+COLOR="RED"
+>int</FONT
+>). As this form can never match
+<FONT
+COLOR="RED"
+>List(T)</FONT
+> for any type T, the called instance of the template
+<FONT
+COLOR="RED"
+>myprint2</FONT
+> cannot be compiled according to the given template
+implementation of <FONT
+COLOR="RED"
+>myprint2</FONT
+>. This issue can be readily fixed by
+passing explicity the type <FONT
+COLOR="RED"
+>List(a)</FONT
+> (as a template parameter) to
+the called instance of <FONT
+COLOR="RED"
+>myprint2</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4533"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+myprint2&lt;<span class="staexp">List</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+    <span class="keyword">(</span>myprint&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">;</span> <span class="dynexp">1</span> + myprint2&lt;<span class="staexp">List</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The instance <FONT
+COLOR="RED"
+>myprint2&#60;List(a)&#62;</FONT
+> in this example is often
+referred to as a recursive instance. In general, it is a good programming
+practice to <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>avoid</I
+></SPAN
+> using recursive instances. For example, the
+following equivalent implementation of <FONT
+COLOR="RED"
+>myprint2</FONT
+> makes no use of
+recursive instances:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4538"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+myprint2&lt;<span class="staexp">List</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">&gt;</span>
+  <span class="keyword">(</span>xs<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+aux
+<span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">List</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> xs <span class="keyword">of</span>
+<span class="keyword">|</span> list_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">0</span>
+<span class="keyword">|</span> list_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span>myprint&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">;</span> <span class="dynexp">1</span> + aux<span class="keyword">(</span>xs<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  aux <span class="keyword">(</span>xs<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [myprint2&lt;List(a)&gt;]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Please find on-line the file
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_FNTMPINT/myprint.dats"
+TARGET="_top"
+>myprint.dats</A
+> containing the
+entirety of the code presented in this section plus some testing code.
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="p4476.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x4542.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Programming with Function Templates</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p4476.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Generic Operations on Numbers</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

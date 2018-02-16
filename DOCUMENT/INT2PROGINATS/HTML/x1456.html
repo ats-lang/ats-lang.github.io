@@ -1,0 +1,405 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Testing for Braun Trees</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Effectful Programming Features"
+HREF="c1379.html"><LINK
+REL="PREVIOUS"
+TITLE="Effectful Programming Features"
+HREF="c1379.html"><LINK
+REL="NEXT"
+TITLE="References"
+HREF="x1491.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c1379.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 6. Effectful Programming Features</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1491.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_testing_for_braun_trees"
+>Example: Testing for Braun Trees</A
+></H1
+><P
+>&#13;Braun trees are special binary trees that can be defined
+inductively as follows:
+
+<P
+></P
+><UL
+><LI
+><P
+>If a binary tree is empty, then it is a Braun tree.
+</P
+></LI
+><LI
+><P
+>If both children of a binary tree are Braun trees and the
+size of the left child minus the size of the right child equals 0 or 1,
+then the binary tree is a Braun tree.
+</P
+></LI
+></UL
+>
+
+Given a natural number n, there is exactly one Braun tree of size n.  It is
+straightforward to prove that Braun trees are balanced.
+</P
+><P
+>&#13;A polymorphic datatype is declared as follows for representing binary trees:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1465"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">datatype</span> <span class="staexp">tree <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="dynexp">tree_nil <span class="keyword">of</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="dynexp">tree_cons <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="comment">(*left*)</span><span class="keyword">,</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="comment">(*right*)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [tree] // end of [datatype]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The following defined function <FONT
+COLOR="RED"
+>brauntest0</FONT
+> tests whether a
+given binary tree is a Braun tree:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1468"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> size
+<span class="keyword">(</span>
+t0<span class="keyword">:</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> t0 <span class="keyword">of</span>
+<span class="keyword">|</span> tree_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">0</span>
+<span class="keyword">|</span> tree_cons<span class="keyword">(</span>_<span class="keyword">,</span> tl<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">1</span> + size<span class="keyword">(</span>tl<span class="keyword">)</span> + size<span class="keyword">(</span>tr<span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [size] *)</span>
+
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> brauntest0
+<span class="keyword">(</span>
+t0<span class="keyword">:</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+<span class="keyword">case+</span> t0 <span class="keyword">of</span>
+<span class="keyword">|</span> tree_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> true
+<span class="keyword">|</span> tree_cons<span class="keyword">(</span>_<span class="keyword">,</span> tl<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> test <span class="keyword">=</span> brauntest0<span class="keyword">(</span>tl<span class="keyword">)</span> andalso brauntest0<span class="keyword">(</span>tr<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">if</span> test
+      <span class="keyword">then</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> dif <span class="keyword">=</span> size<span class="keyword">(</span>tl<span class="keyword">)</span>-size<span class="keyword">(</span>tr<span class="keyword">)</span></span> <span class="keyword">in</span> <span class="keyword">(</span>dif<span class="keyword">=</span><span class="dynexp">0</span><span class="keyword">)</span> orelse <span class="keyword">(</span>dif<span class="keyword">=</span><span class="dynexp">1</span><span class="keyword">)</span>
+      <span class="keyword">end</span> <span class="keyword">else</span> false
+    <span class="comment">// end of [if]</span>
+  <span class="keyword">end</span> <span class="comment">// end of [tree_cons]</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [brauntest0] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The implementation of <FONT
+COLOR="RED"
+>brauntest0</FONT
+> follows the definition of
+Braun trees closely. If applied to binary trees of size n, the
+time-complexity of the function <FONT
+COLOR="RED"
+>size</FONT
+> is O(n) and the
+time-complexity of the function <FONT
+COLOR="RED"
+>brauntest0</FONT
+> is O(n(log(n))).
+</P
+><P
+>&#13;In the following program, the defined function <FONT
+COLOR="RED"
+>brauntest1</FONT
+> also
+tests whether a given binary tree is a Braun tree:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1475"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> brauntest1
+<span class="keyword">(</span>
+t0<span class="keyword">:</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">exception</span> <span class="dynexp">Negative <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+  <span class="dynexp"><span class="keyword">fun</span>
+  aux
+  <span class="keyword">(</span>
+  t0<span class="keyword">:</span> <span class="staexp">tree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+  <span class="keyword">(</span>
+    <span class="keyword">case+</span> t0 <span class="keyword">of</span>
+    <span class="keyword">|</span> tree_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">0</span>
+    <span class="keyword">|</span> tree_cons
+        <span class="keyword">(</span>_<span class="keyword">,</span> tl<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> szl <span class="keyword">=</span> aux<span class="keyword">(</span>tl<span class="keyword">)</span>
+        <span class="keyword">and</span> szr <span class="keyword">=</span> aux<span class="keyword">(</span>tr<span class="keyword">)</span></span>
+        <span class="dynexp"><span class="keyword">val</span> dif <span class="keyword">=</span> szl - szr</span>
+      <span class="keyword">in</span>
+        <span class="keyword">if</span> <span class="keyword">(</span>dif<span class="keyword">=</span><span class="dynexp">0</span> orelse dif<span class="keyword">=</span><span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">then</span> <span class="dynexp">1</span>+szl+szr <span class="keyword">else</span> <span class="dynexp"><span class="keyword">$raise</span> Negative<span class="keyword">(</span><span class="keyword">)</span></span>
+      <span class="keyword">end</span> <span class="comment">// end of [tree_cons]</span>
+  <span class="keyword">)</span></span> <span class="comment">(* end of [aux] *)</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="dynexp"><span class="keyword">try</span> <span class="keyword">let</span>
+    <span class="keyword">val</span> _ <span class="keyword">=</span> aux<span class="keyword">(</span>t0<span class="keyword">)</span>
+  <span class="keyword">in</span>
+    true <span class="comment">// [t] is a Braun tree</span>
+  <span class="keyword">end</span> <span class="keyword">with</span>
+    <span class="keyword">~</span>Negative<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> false</span> <span class="comment">// [t] is not a Braun tree</span>
+  <span class="comment">// end of [try]</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [brauntest1]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, a binary tree cannot be a Braun tree if one of its subtrees,
+proper or improper, is not a Braun tree. The auxiliary function
+<FONT
+COLOR="RED"
+>aux</FONT
+> is defined to return the size of a binary tree if the tree
+is a Braun tree or raise an exception otherwise. When the evaluation of the
+try-expression in the body of <FONT
+COLOR="RED"
+>brauntest1</FONT
+> starts, the call to
+<FONT
+COLOR="RED"
+>aux</FONT
+> on a binary tree t is first evaluated. If the evaluation of
+this call returns, then t is a Braun tree and the boolean value
+<FONT
+COLOR="RED"
+>true</FONT
+> is returned as the value of the try-expression. Otherwise,
+the exception <FONT
+COLOR="RED"
+>Negative()</FONT
+> is raised and then caught, and the
+boolean value <FONT
+COLOR="RED"
+>false</FONT
+> is returned as the value of the
+try-expression.  The time complexity of <FONT
+COLOR="RED"
+>brauntest1</FONT
+> is the same
+as that of <FONT
+COLOR="RED"
+>aux</FONT
+>, which is O(n).
+</P
+><P
+>&#13;The use of the exception mechanism in the implementation of
+<FONT
+COLOR="RED"
+>brauntest1</FONT
+> is a convincing one because the range between the
+point where an exception is raised and the point where the raised exception
+is captured can span many function calls. If this range is short (e.g.,
+spanning only one function call) in a case, then the programmer should
+probably investigate whether it is a sensible use of the exception
+mechanism. For instance, the use of exception in the following example may
+seem interesting but it actually leads to very inefficient code:
+
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1487"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> list0_length
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+  <span class="dynexp"><span class="keyword">try</span> 1 + list0_length<span class="keyword">(</span>xs<span class="keyword">.</span>tail<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">with</span> <span class="keyword">~</span>ListSubscriptExn<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> 0</span></span>
+<span class="comment">// end of [list0_length]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Therefore, making use of exceptions in this style should be avoided.
+
+</P
+><P
+>&#13;Please find the entirety of the code in this section plus some additional
+code for testing <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_EFFECTFUL/brauntest.dats"
+TARGET="_top"
+>on-line</A
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c1379.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1491.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Effectful Programming Features</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1379.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>References</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

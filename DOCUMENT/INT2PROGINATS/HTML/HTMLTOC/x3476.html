@@ -1,0 +1,490 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Stack-Allocated Variables</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Introduction to Views and Viewtypes"
+HREF="c3322.html"><LINK
+REL="PREVIOUS"
+TITLE="Left-Values and Call-by-Reference"
+HREF="x3449.html"><LINK
+REL="NEXT"
+TITLE="Heap-Allocated Linear Closure-Functions"
+HREF="x3535.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3449.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 13. Introduction to Views and Viewtypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3535.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="stack-allocated_variables"
+>Stack-Allocated Variables</A
+></H1
+><P
+>&#13;Given a type T and an address L, how can a proof of the view
+<FONT
+COLOR="RED"
+>T@L</FONT
+> be obtained in the first place? There are actually a
+variety of methods for obtaining such proofs in practice, and I present one
+as follows that is based on stack-allocation of local variables.
+
+</P
+><P
+>&#13;In the body of the following function <FONT
+COLOR="RED"
+>foo</FONT
+>, some stack-allocated
+local variables are declared:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3482"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span> foo <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">var</span> x0<span class="keyword">:</span> <span class="staexp">int</span> <span class="comment">// view@(x0): int? @ x0</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x0 := <span class="dynexp">0</span></span> <span class="comment">// view@(x0): int(0) @ x0</span>
+  <span class="keyword">var</span> x1<span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="dynexp">1</span> <span class="comment">// view@(x1): int(1) @ x1</span>
+<span class="comment">//</span>
+<span class="comment">// [with] is a keyword in ATS</span>
+<span class="comment">//</span>
+  <span class="keyword">var</span> y<span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">with</span> <span class="prfexp">pfy</span> <span class="comment">// pfy is an alias of view@(y): int? @ y</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> y := <span class="dynexp">2</span></span> <span class="comment">// pfy = view@(y): int(2) @ y</span>
+  <span class="keyword">var</span> z<span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">with</span> <span class="prfexp">pfz</span> <span class="keyword">=</span> <span class="dynexp">3</span> <span class="comment">// pfz is an alias of view@(z): int(3) @ z</span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [foo]</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;The keyword <FONT
+COLOR="RED"
+>var</FONT
+> is for declaring a local variable. When a
+variable is declared, either its type or its initial value needs to be
+given. If a variable is declared without a type, then the type of its
+initial value is assumed to be its type. Assume that a variable x is
+declared of type T. Then the pointer to the location of the variable is
+denoted by <FONT
+COLOR="RED"
+>addr@(x)</FONT
+>, where <FONT
+COLOR="RED"
+>addr@</FONT
+> is a keyword, and
+its associated linear proof (of some at-view) can be referred to as
+<FONT
+COLOR="RED"
+>view@(x)</FONT
+>, where <FONT
+COLOR="RED"
+>view@</FONT
+> is a keyword. A variable is
+another form of left-value in ATS. In the body of <FONT
+COLOR="RED"
+>foo</FONT
+>,
+<FONT
+COLOR="RED"
+>x0</FONT
+> is declared to be a variable of the type <FONT
+COLOR="RED"
+>int</FONT
+> and
+then it is initialized with the integer 0; <FONT
+COLOR="RED"
+>x1</FONT
+> is declared to be
+a variable of the type <FONT
+COLOR="RED"
+>int</FONT
+> that is given the initial value 1;
+<FONT
+COLOR="RED"
+>y</FONT
+> is declared to be a variable of the type <FONT
+COLOR="RED"
+>int</FONT
+>
+while <FONT
+COLOR="RED"
+>pfy</FONT
+> is introduced as an alias for <FONT
+COLOR="RED"
+>view@(y)</FONT
+>,
+and then <FONT
+COLOR="RED"
+>y</FONT
+> is initialized with the integer 2; <FONT
+COLOR="RED"
+>z</FONT
+> is
+declared to be a variable of the type <FONT
+COLOR="RED"
+>int</FONT
+> that is given the
+initial value 3 while <FONT
+COLOR="RED"
+>pfz</FONT
+> is introduced as an alias for
+<FONT
+COLOR="RED"
+>view@(z)</FONT
+>.
+
+</P
+><P
+>&#13;The following code gives an implementation of the factorial function:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3505"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span> fact<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+  <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">fun</span> loop<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+    <span class="keyword">(</span><span class="prfexp">pf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">int</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span></span> <span class="keyword">|</span> n<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>res := n * <span class="keyword">!</span>res</span> <span class="keyword">in</span> loop <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> n-<span class="dynexp">1</span><span class="keyword">,</span> res<span class="keyword">)</span>
+    <span class="keyword">end</span></span> <span class="comment">// end of [if]</span>
+  <span class="comment">// end of [loop]</span>
+  <span class="keyword">var</span> res<span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">with</span> <span class="prfexp">pf</span> <span class="keyword">=</span> <span class="dynexp">1</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> n<span class="keyword">,</span> <span class="dynexp"><span class="keyword">addr@</span></span>res<span class="keyword">)</span></span> <span class="comment">// addr@res: the pointer to res</span>
+<span class="keyword">in</span>
+  res
+<span class="keyword">end</span></span> <span class="comment">// end of [fact]</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;Note that the variable <FONT
+COLOR="RED"
+>res</FONT
+> holds the intermediate result during
+the execution of the loop. As <FONT
+COLOR="RED"
+>res</FONT
+> is stack-allocated, there is
+no garbage generated after a call to <FONT
+COLOR="RED"
+>fact</FONT
+> is evaluated. When
+this style of programming is done in C, there is often a concern about the
+pointer to <FONT
+COLOR="RED"
+>res</FONT
+> being derefenced after a call to
+<FONT
+COLOR="RED"
+>fact</FONT
+> returns, which is commonly referred to as derefencing a
+dangling pointer.  This concern is completely eliminated in ATS as it is
+required by the type system of ATS that a linear proof of the at-view
+associated with the variable <FONT
+COLOR="RED"
+>res</FONT
+> be present at the end of legal
+scope for <FONT
+COLOR="RED"
+>res</FONT
+>. More specifically, if x is a declared variable
+of the type T, then a linear proof of the view <FONT
+COLOR="RED"
+>T?@L</FONT
+>, where L is
+the address of x, must be available when typechecking reaches the end of
+the scope for x.  This requirement ensures that a variable can no longer be
+accessed after the portion of the stack in which it is allocated is
+reclaimed as no linear proof of the at-view associated with the variable is
+ever available from that point on.
+
+</P
+><P
+>&#13;Arrays in ATS can also be stack-allocated. For instance, the following code
+allocates two arrays of doubles in the frame of the function
+<FONT
+COLOR="RED"
+>main0</FONT
+> and then passes them to <FONT
+COLOR="RED"
+>dotprod</FONT
+> to compute
+their dot product:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3519"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+main0 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+<span class="keyword">var</span> A <span class="keyword">=</span> <span class="dynexp"><span class="keyword">@[</span>double<span class="keyword">]</span><span class="keyword">[</span>3<span class="keyword">]</span><span class="keyword">(</span>1.0<span class="keyword">)</span></span> <span class="comment">// initialized with 1.0, 1.0, 1.0</span>
+<span class="keyword">var</span> B <span class="keyword">=</span> <span class="dynexp"><span class="keyword">@[</span>double<span class="keyword">]</span><span class="keyword">(</span>1.0<span class="keyword">,</span> 2.0<span class="keyword">,</span> 3.0<span class="keyword">)</span></span> <span class="comment">// initialized with 1.0, 2.0, 3.0</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynstr">"A * B = "</span><span class="keyword">,</span> dotprod <span class="keyword">(</span>A<span class="keyword">,</span> B<span class="keyword">)</span><span class="keyword">)</span></span> <span class="comment">// A * B = 6.0</span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [main0] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The at-view associated with the variable A is <FONT
+COLOR="RED"
+>(@[double][3])@A</FONT
+>,
+where A also refers to the address of the variable A. Similarly, the
+at-view associated with the variable B is <FONT
+COLOR="RED"
+>(@[double][3])@B</FONT
+>.
+
+For the sake of completeness, I mention the syntax for uninitialized arrays
+as follows: Given a type T and an integer N, the syntax
+<FONT
+COLOR="RED"
+>@[T][N]()</FONT
+> is for an array consisting of N uninitialized values
+of type T.
+
+</P
+><P
+>&#13;Note that allocating large arrays in the call frame of a function may not
+be a good practice as doing so can greatly increase the likelihood of
+stack-overflow at run-time.
+
+</P
+><P
+>&#13;It is also allowed in ATS to allocate a closure in the call frame of a
+function. For instance, the following code implements a function named
+<FONT
+COLOR="RED"
+>foo</FONT
+> that stores a flat closure-function in a stack-allocated
+variable named <FONT
+COLOR="RED"
+>bar</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3528"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> foo
+<span class="keyword">(</span>
+  x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">var</span> bar <span class="keyword">=</span> <span class="keyword">lam@</span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=&gt;</span> x * y
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  bar <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [foo]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the special keyword <FONT
+COLOR="RED"
+>lam@</FONT
+> should be used to form a
+flat closure-function. For the sake of completeness, I present another example
+as follows to show that a recursive closure-function can also be stored in
+a stack-allocated variable:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3531"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> foo2
+<span class="keyword">(</span>
+  x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">var</span> bar2 <span class="keyword">=</span> <span class="keyword">fix@</span> f <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=&gt;</span> <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> y + f<span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">0</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  bar2 <span class="keyword">(</span>x<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [foo]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the special keyword <FONT
+COLOR="RED"
+>fix@</FONT
+> should be used to form
+a flat recursive closure-function.
+
+</P
+><P
+>&#13;In a setting where dynamic memory allocation is not
+allowed, stack-allocated closures can play a pivotal role in supporting
+programming with higher-order functions.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3449.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3535.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Left-Values and Call-by-Reference</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3322.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Heap-Allocated Linear Closure-Functions</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

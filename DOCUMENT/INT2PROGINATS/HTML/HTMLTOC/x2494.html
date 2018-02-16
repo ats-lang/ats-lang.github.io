@@ -1,0 +1,395 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Termination-Checking for Recursive Functions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Introduction to Dependent Types"
+HREF="c2237.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Binary Search on Arrays"
+HREF="x2469.html"><LINK
+REL="NEXT"
+TITLE="Example: Dependent Types for Debugging"
+HREF="x2544.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2469.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Introduction to Dependent Types</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2544.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="termination-checking_for_recursive_functions"
+>Termination-Checking for Recursive Functions</A
+></H1
+><P
+>&#13;There is a mechanism in ATS that allows the programmer to supply
+termination metrics for checking whether recursively defined functions are
+terminating.  It will soon become clear that this mechanism of
+termination-checking plays a fundamental role in the design of ATS/LF, a
+theorem-proving subsystem of ATS, where proofs are constructed as total
+functional programs.
+</P
+><P
+>&#13;A termination metric is just a tuple of natural numbers and the standard
+lexicographic ordering on natural numbers is used to order such tuples. In
+the following example, a singleton metric <FONT
+COLOR="RED"
+>n</FONT
+> is supplied to
+verify that the recursive function <FONT
+COLOR="RED"
+>fact</FONT
+> is terminating, where
+<FONT
+COLOR="RED"
+>n</FONT
+> is the value of the integer argument of <FONT
+COLOR="RED"
+>fact</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2502"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> fact <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> x * fact <span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span></span>
+<span class="comment">// end of [fact]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the metric attached to the recursive call <FONT
+COLOR="RED"
+>fact(x-1)</FONT
+>
+is <FONT
+COLOR="RED"
+>n-1</FONT
+>, which is strictly less than the initial metric
+<FONT
+COLOR="RED"
+>n</FONT
+>. Essentially, termination-checking in ATS verifies that the
+metric attached to each recursive call in the body of a function is
+strictly less that the initial metric attached to the function.
+</P
+><P
+>&#13;A more difficult and also more interesting example is given as follows,
+where the MacCarthy's 91-function is implemented:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2508"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> f91 <span class="staexp"><span class="keyword">{</span>i<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">max</span><span class="keyword">(</span><span class="staexp">101</span><span class="staexp">-</span><span class="staexp">i</span><span class="keyword">,</span><span class="staexp">0</span><span class="keyword">)</span><span class="keyword">&gt;.</span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">i</span><span class="keyword">)</span>
+  <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>j<span class="keyword">:</span>int <span class="keyword">|</span> <span class="keyword">(</span>i <span class="keyword">&lt;</span> 101 &amp;&amp; j==91<span class="keyword">)</span> || <span class="keyword">(</span>i &gt;= 101 &amp;&amp; j==i-10<span class="keyword">)</span><span class="keyword">]</span></span> <span class="staexp">int</span> <span class="keyword">(</span><span class="staexp">j</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> x &gt;= <span class="dynexp">101</span> <span class="keyword">then</span> x-<span class="dynexp">10</span> <span class="keyword">else</span> f91 <span class="keyword">(</span>f91 <span class="keyword">(</span>x+<span class="dynexp">11</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">// end of [f91]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The metric supplied to verify the termination of <FONT
+COLOR="RED"
+>f91</FONT
+> is
+<FONT
+COLOR="RED"
+>max(101-i,0)</FONT
+>, where <FONT
+COLOR="RED"
+>i</FONT
+> is the value of the
+integer argument of <FONT
+COLOR="RED"
+>f91</FONT
+>. Please try to verify manually that
+this metric suffices for verifying the termination of <FONT
+COLOR="RED"
+>f91</FONT
+>.
+</P
+><P
+>&#13;As another example, the following code implements the Ackermann's function,
+which is well-known for being recursive but not primitive recursive:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2516"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> acker
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">m</span><span class="keyword">,</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">m</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">Nat</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> x <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span>
+    <span class="keyword">if</span> y <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> acker <span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">,</span> acker <span class="keyword">(</span>x<span class="keyword">,</span> y-<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> acker <span class="keyword">(</span>x-<span class="dynexp">1</span><span class="keyword">,</span> <span class="dynexp">1</span><span class="keyword">)</span>
+  <span class="keyword">else</span> y + <span class="dynexp">1</span></span>
+<span class="comment">// end of [acker]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The metric supplied for verifying the termination of <FONT
+COLOR="RED"
+>acker</FONT
+> is a
+pair <FONT
+COLOR="RED"
+>(m,n)</FONT
+>, where <FONT
+COLOR="RED"
+>m</FONT
+> and <FONT
+COLOR="RED"
+>n</FONT
+> are values of
+the two integer arguments of <FONT
+COLOR="RED"
+>acker</FONT
+>. The metrics attached to the
+three recursive calls to <FONT
+COLOR="RED"
+>acker</FONT
+> are, from left to right,
+<FONT
+COLOR="RED"
+>(m-1,k)</FONT
+> for some natural number k, <FONT
+COLOR="RED"
+>(m,n-1)</FONT
+>, and
+<FONT
+COLOR="RED"
+>(m-1,1)</FONT
+>. Clearly, these metrics are all strictly less than the
+initial metric <FONT
+COLOR="RED"
+>(m,n)</FONT
+> according to the lexicographic ordering on
+pairs of natural numbers.
+</P
+><P
+>&#13;Termination-checking for mutually recursive functions is similar.  In the
+following example, <FONT
+COLOR="RED"
+>isevn</FONT
+> and <FONT
+COLOR="RED"
+>isodd</FONT
+> are defined
+mutually recursively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2531"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> isevn
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">2</span><span class="staexp">*</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> n <span class="keyword">=</span> <span class="dynexp">0</span> <span class="keyword">then</span> true <span class="keyword">else</span> isodd <span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span>
+<span class="keyword">and</span> isodd
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">2</span><span class="staexp">*</span><span class="staexp">n</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span> not <span class="keyword">(</span>isevn <span class="keyword">(</span>n<span class="keyword">)</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The metrics supplied for verifying the termination of <FONT
+COLOR="RED"
+>isevn</FONT
+> and
+<FONT
+COLOR="RED"
+>isodd</FONT
+> are <FONT
+COLOR="RED"
+>2*n</FONT
+> and <FONT
+COLOR="RED"
+>2*n+1</FONT
+>, respectively,
+where <FONT
+COLOR="RED"
+>n</FONT
+> is the value of the integer argument of
+<FONT
+COLOR="RED"
+>isevn</FONT
+> and also the value of the integer argument of
+<FONT
+COLOR="RED"
+>isodd</FONT
+>.  Clearly, if the metrics <FONT
+COLOR="RED"
+>(n, 0)</FONT
+> and
+<FONT
+COLOR="RED"
+>(n, 1)</FONT
+> are supplied for <FONT
+COLOR="RED"
+>isevn</FONT
+> and
+<FONT
+COLOR="RED"
+>isodd</FONT
+>, respectively, the termination of these two functions can
+also be verified.  Note that it is required that the metrics for mutually
+recursively defined functions be tuples of the same length.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2469.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2544.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Binary Search on Arrays</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2237.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Dependent Types for Debugging</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

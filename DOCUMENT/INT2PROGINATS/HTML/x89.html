@@ -142,7 +142,8 @@ cleanall::
 # Please uncomment the following three lines and replace the name [foo]
 # with the name of the file you want to compile
 #
-# foo: foo.dats ; #   $(ATSCC) $(ATSCCFLAGS) -o $@ $&#60; || echo $@ ": ERROR!!!"
+# foo: foo.dats ; \
+#   $(ATSCC) $(ATSCCFLAGS) -o $@ $&#60; || echo $@ ": ERROR!!!"
 # cleanall:: ; $(RMF) foo
 #
 ######

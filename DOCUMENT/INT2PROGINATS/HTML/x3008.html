@@ -1,0 +1,468 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Algebraic Datasorts</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Theorem-Proving in ATS/LF"
+HREF="c2860.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Commutativity of Multiplication"
+HREF="x2991.html"><LINK
+REL="NEXT"
+TITLE="Example: Establishing Properties on Braun Trees"
+HREF="x3051.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2991.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 11. Theorem-Proving in ATS/LF</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3051.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="datasorts"
+>Algebraic Datasorts</A
+></H1
+><P
+>A datasort is rather similar to a dataype. However, the former is
+declared in the statics of ATS while the latter in the dynamics of ATS. To
+see a typical need for datasorts, let us try to encode a theorem in ATS
+stating that s is strictly less than 2<SUP
+>h</SUP
+> if s and
+h are the size and height, respectively, of a given binary tree. To
+represent binary trees in the statics, we first declare a datasort as
+follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3012"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="staexp"><span class="keyword">datasort</span> tree <span class="keyword">=</span> E <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">|</span> B <span class="keyword">of</span> <span class="keyword">(</span>tree<span class="keyword">,</span> tree<span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The name of the declared datasort is <FONT
+COLOR="RED"
+>tree</FONT
+> and there are two
+constructor associated with it: <FONT
+COLOR="RED"
+>E</FONT
+> and <FONT
+COLOR="RED"
+>B</FONT
+>, where E
+forms the empty tree and B forms a tree by joining two given trees.  For
+instance, <FONT
+COLOR="RED"
+>B(E(), E())</FONT
+> is a static term of the sort
+<FONT
+COLOR="RED"
+>tree</FONT
+> that represents a singleton tree, that is, a tree
+consisting of exactly one node.  Please note that the trees formed by E and
+B are really just tree skeletons carrying no data.
+</P
+><P
+>We now declare two dataprops as follows for capturing the notion of
+size and height of trees:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3020"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">dataprop</span>
+<span class="staexp">SZ <span class="keyword">(</span>tree<span class="keyword">,</span> int<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="prfexp">SZE <span class="keyword">(</span><span class="staexp">E</span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>tl<span class="keyword">,</span>tr<span class="keyword">:</span>tree<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>sl<span class="keyword">,</span>sr<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+    SZB <span class="keyword">(</span><span class="staexp">B</span> <span class="keyword">(</span><span class="staexp">tl</span><span class="keyword">,</span> <span class="staexp">tr</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">1</span><span class="staexp">+</span><span class="staexp">sl</span><span class="staexp">+</span><span class="staexp">sr</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">tl</span><span class="keyword">,</span> <span class="staexp">sl</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">tr</span><span class="keyword">,</span> <span class="staexp">sr</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [SZ]</span>
+<span class="comment">//</span>
+<span class="keyword">dataprop</span>
+<span class="staexp">HT <span class="keyword">(</span>tree<span class="keyword">,</span> int<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="prfexp">HTE <span class="keyword">(</span><span class="staexp">E</span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>tl<span class="keyword">,</span>tr<span class="keyword">:</span>tree<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>hl<span class="keyword">,</span>hr<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+    HTB <span class="keyword">(</span><span class="staexp">B</span> <span class="keyword">(</span><span class="staexp">tl</span><span class="keyword">,</span> <span class="staexp">tr</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">1</span><span class="staexp">+</span><span class="staexp">max</span><span class="keyword">(</span><span class="staexp">hl</span><span class="keyword">,</span><span class="staexp">hr</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">HT</span> <span class="keyword">(</span><span class="staexp">tl</span><span class="keyword">,</span> <span class="staexp">hl</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">HT</span> <span class="keyword">(</span><span class="staexp">tr</span><span class="keyword">,</span> <span class="staexp">hr</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [HT]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a tree t and an integer s, SZ(t, s) encodes the relation that the
+size of t equals s. Similiarly, given a tree t and an integer h, HZ(t, h)
+encodes the relation that the height of t equals h.
+</P
+><P
+>As the power function (of base 2) is not available in the statics of ATS,
+we declare a dataprop as follows to capture it:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3023"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">dataprop</span>
+<span class="staexp">POW2 <span class="keyword">(</span>int<span class="keyword">,</span> int<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="prfexp">POW2bas <span class="keyword">(</span><span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">1</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>p<span class="keyword">:</span>int<span class="keyword">}</span></span> POW2ind <span class="keyword">(</span><span class="staexp">n</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">,</span> <span class="staexp">p</span><span class="staexp">+</span><span class="staexp">p</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="staexp">POW2</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [POW2]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given two integers h and p, POW2 (h, p) encodes the relation that
+2<SUP
+>h</SUP
+> equals p.
+</P
+><P
+>It should be clear by now that the following proof function
+interface encodes the theorem stating that s is strictly less than
+2<SUP
+>h</SUP
+> if s and h are the size and height of a
+given binary tree:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3028"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">prfun</span>
+lemma_tree_size_height
+  <span class="staexp"><span class="keyword">{</span>t<span class="keyword">:</span>tree<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>s<span class="keyword">,</span>h<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>p<span class="keyword">:</span>int<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  pf1<span class="keyword">:</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">t</span><span class="keyword">,</span> <span class="staexp">s</span><span class="keyword">)</span><span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">HT</span> <span class="keyword">(</span><span class="staexp">t</span><span class="keyword">,</span> <span class="staexp">h</span><span class="keyword">)</span><span class="keyword">,</span> pf3<span class="keyword">:</span> <span class="staexp">POW2</span> <span class="keyword">(</span><span class="staexp">h</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>s <span class="keyword">&lt;</span> p<span class="keyword">]</span></span> <span class="staexp">void</span></span> <span class="comment">// end of [prfun]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Let us now construct an implementation of this proof function as follows.
+</P
+><P
+>We first establish some elementary properties on the power function
+(of base 2):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3031"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">prfun</span>
+pow2_istot
+  <span class="staexp"><span class="keyword">{</span>h<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">h</span><span class="keyword">&gt;.</span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>p<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">POW2</span> <span class="keyword">(</span><span class="staexp">h</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">sif</span> <span class="staexp">h</span><span class="staexp">==</span><span class="staexp">0</span>
+    <span class="keyword">then</span> POW2bas <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">else</span> POW2ind <span class="keyword">(</span>pow2_istot <span class="staexp"><span class="keyword">{</span>h-1<span class="keyword">}</span></span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="comment">// end of [sif]</span>
+<span class="comment">// end of [pow2_istot]</span>
+
+<span class="prfexp"><span class="keyword">prfun</span>
+pow2_pos
+  <span class="staexp"><span class="keyword">{</span>h<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>p<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">h</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>pf<span class="keyword">:</span> <span class="staexp">POW2</span> <span class="keyword">(</span><span class="staexp">h</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>p <span class="keyword">&gt;</span> 0<span class="keyword">]</span></span> <span class="staexp">void</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> pf <span class="keyword">of</span>
+  <span class="keyword">|</span> POW2bas <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">|</span> POW2ind <span class="keyword">(</span>pf1<span class="keyword">)</span> <span class="keyword">=&gt;</span> pow2_pos <span class="keyword">(</span>pf1<span class="keyword">)</span></span>
+<span class="comment">// end of [pow2_pos]</span>
+
+<span class="prfexp"><span class="keyword">prfun</span>
+pow2_inc
+  <span class="staexp"><span class="keyword">{</span>h1<span class="keyword">,</span>h2<span class="keyword">:</span>nat <span class="keyword">|</span> h1 &lt;= h2<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>p1<span class="keyword">,</span>p2<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">h2</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>pf1<span class="keyword">:</span> <span class="staexp">POW2</span> <span class="keyword">(</span><span class="staexp">h1</span><span class="keyword">,</span> <span class="staexp">p1</span><span class="keyword">)</span><span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">POW2</span> <span class="keyword">(</span><span class="staexp">h2</span><span class="keyword">,</span> <span class="staexp">p2</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>p1 &lt;= p2<span class="keyword">]</span></span> <span class="staexp">void</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> pf1 <span class="keyword">of</span>
+  <span class="keyword">|</span> POW2bas <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> pow2_pos <span class="keyword">(</span>pf2<span class="keyword">)</span>
+  <span class="keyword">|</span> POW2ind <span class="keyword">(</span>pf11<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span> POW2ind <span class="keyword">(</span>pf21<span class="keyword">)</span> <span class="keyword">=</span> pf2</span> <span class="keyword">in</span> pow2_inc <span class="keyword">(</span>pf11<span class="keyword">,</span> pf21<span class="keyword">)</span>
+    <span class="keyword">end</span></span> <span class="comment">// end of [POW2ind]</span>
+<span class="comment">// end of [pow2_inc]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, <FONT
+COLOR="RED"
+>pow2_istot</FONT
+> shows that the relation encoded by the
+dataprop <FONT
+COLOR="RED"
+>POW2</FONT
+> is a total relation; <FONT
+COLOR="RED"
+>pow2_pos</FONT
+> proves
+that the power of each natural number is positive; <FONT
+COLOR="RED"
+>pow2_inc</FONT
+>
+establishes that the power function is increasing.
+</P
+><P
+>&#13;The function <FONT
+COLOR="RED"
+>lemma_tree_size_height</FONT
+> can be implemented
+as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3039"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">primplement</span>
+lemma_tree_size_height
+  <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2<span class="keyword">,</span> pf3<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+lemma<span class="staexp"><span class="keyword">{</span>t<span class="keyword">:</span>tree<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>s<span class="keyword">,</span>h<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>p<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">t</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  pf1<span class="keyword">:</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">t</span><span class="keyword">,</span> <span class="staexp">s</span><span class="keyword">)</span>
+<span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">HT</span> <span class="keyword">(</span><span class="staexp">t</span><span class="keyword">,</span> <span class="staexp">h</span><span class="keyword">)</span>
+<span class="keyword">,</span> pf3<span class="keyword">:</span> <span class="staexp">POW2</span> <span class="keyword">(</span><span class="staexp">h</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>p <span class="keyword">&gt;</span> s<span class="keyword">]</span></span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="dynexp"><span class="keyword">scase</span> t <span class="keyword">of</span>
+  <span class="keyword">|</span> E <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="keyword">prval</span> SZE <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf1
+      <span class="keyword">prval</span> HTE <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf2
+      <span class="keyword">prval</span> POW2bas <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf3
+   <span class="keyword">in</span>
+     <span class="comment">// nothing</span>
+   <span class="keyword">end</span> <span class="comment">// end of [E]</span>
+  <span class="keyword">|</span> B <span class="keyword">(</span>tl<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="keyword">prval</span> SZB <span class="keyword">(</span>pf1l<span class="keyword">,</span> pf1r<span class="keyword">)</span> <span class="keyword">=</span> pf1
+      <span class="keyword">prval</span> HTB <span class="keyword">{</span>tl<span class="keyword">,</span>tr<span class="keyword">}</span><span class="keyword">{</span>hl<span class="keyword">,</span>hr<span class="keyword">}</span> <span class="keyword">(</span>pf2l<span class="keyword">,</span> pf2r<span class="keyword">)</span> <span class="keyword">=</span> pf2
+      <span class="keyword">prval</span> POW2ind <span class="keyword">(</span>pf31<span class="keyword">)</span> <span class="keyword">=</span> pf3
+      <span class="keyword">prval</span> pf3l <span class="keyword">=</span> pow2_istot <span class="keyword">{</span>hl<span class="keyword">}</span> <span class="keyword">(</span><span class="keyword">)</span>
+      <span class="keyword">prval</span> pf3r <span class="keyword">=</span> pow2_istot <span class="keyword">{</span>hr<span class="keyword">}</span> <span class="keyword">(</span><span class="keyword">)</span>
+      <span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> lemma <span class="keyword">(</span>pf1l<span class="keyword">,</span> pf2l<span class="keyword">,</span> pf3l<span class="keyword">)</span>
+      <span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> lemma <span class="keyword">(</span>pf1r<span class="keyword">,</span> pf2r<span class="keyword">,</span> pf3r<span class="keyword">)</span>
+      <span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pow2_inc <span class="keyword">(</span>pf3l<span class="keyword">,</span> pf31<span class="keyword">)</span>
+      <span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pow2_inc <span class="keyword">(</span>pf3r<span class="keyword">,</span> pf31<span class="keyword">)</span>
+    <span class="keyword">in</span>
+      <span class="comment">// nothing</span>
+    <span class="keyword">end</span></span> <span class="comment">// end of [B]</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [lemma] *)</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  lemma <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2<span class="keyword">,</span> pf3<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [lemma_tree_size_height]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The inner function <FONT
+COLOR="RED"
+>lemma</FONT
+>, which is given a termination metric
+consisting of a static term of the sort <FONT
+COLOR="RED"
+>tree</FONT
+>, corresponds to a
+proof based on structural induction (where the involved structure is the
+binary tree <FONT
+COLOR="RED"
+>t</FONT
+>).  Given two terms t1 and t2 of the sort
+<FONT
+COLOR="RED"
+>tree</FONT
+>, t1 is (strictly) less than t2 if t1 is a (proper)
+substructure of t2. Evidently, this is a well-founded ordering.  The
+keyword <FONT
+COLOR="RED"
+>scase</FONT
+> is used to form a dynamic expression that does
+case-analysis on a static term (built by constructors associated with some
+declared datasort). So the relation between <FONT
+COLOR="RED"
+>sif</FONT
+> and
+<FONT
+COLOR="RED"
+>scase</FONT
+> is essentially parallel to that between <FONT
+COLOR="RED"
+>if</FONT
+>
+and <FONT
+COLOR="RED"
+>case</FONT
+>.  Please find the entirety of the above code
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_THMPRVING/tree.dats"
+TARGET="_top"
+>on-line</A
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2991.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3051.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Commutativity of Multiplication</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2860.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Establishing Properties on Braun Trees</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

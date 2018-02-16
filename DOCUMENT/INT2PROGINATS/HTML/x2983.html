@@ -1,0 +1,281 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Distributivity of Multiplication</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Theorem-Proving in ATS/LF"
+HREF="c2867.html"><LINK
+REL="PREVIOUS"
+TITLE="Constructing Proofs as Total Functions"
+HREF="x2929.html"><LINK
+REL="NEXT"
+TITLE="Example: Commutativity of Multiplication"
+HREF="x2998.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2929.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 11. Theorem-Proving in ATS/LF</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2998.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_distributivity_of_multiplication"
+>Example: Distributivity of Multiplication</A
+></H1
+><P
+>The distributivity of multiplication over addition means that the following
+equation holds
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2986"
+></A
+><PRE
+CLASS="programlisting"
+>m * (n1 + n2) = m * n1 + m * n2</PRE
+><P
+></P
+></DIV
+>
+
+
+for m, n1 and n2 ranging over integers. A direct encoding of the equation
+is given by the following (proof) function interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2988"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+mul_distribute
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n1<span class="keyword">,</span>n2<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>p1<span class="keyword">,</span>p2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span><span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="keyword">,</span> <span class="staexp">p1</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n2</span><span class="keyword">,</span> <span class="staexp">p2</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="staexp">+</span><span class="staexp">n2</span><span class="keyword">,</span> <span class="staexp">p1</span><span class="staexp">+</span><span class="staexp">p2</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Plainly speaking, the encoding states that the product of m and (n1+n2) is
+p1+p2 if the product of m and n1 is p1 and the product of m and n2 is p2.
+An implementation of <FONT
+COLOR="RED"
+>mul_distribute</FONT
+> is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2991"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">primplement</span>
+mul_distribute
+<span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n1<span class="keyword">,</span>n2<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>p1<span class="keyword">,</span>p2<span class="keyword">}</span></span>
+  <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+auxnat
+<span class="staexp"><span class="keyword">{</span>m<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>p1<span class="keyword">,</span>p2<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">m</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  pf1<span class="keyword">:</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="keyword">,</span> <span class="staexp">p1</span><span class="keyword">)</span><span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n2</span><span class="keyword">,</span> <span class="staexp">p2</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="staexp">+</span><span class="staexp">n2</span><span class="keyword">,</span> <span class="staexp">p1</span><span class="staexp">+</span><span class="staexp">p2</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2<span class="keyword">)</span> <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>MULbas<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> MULbas<span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> MULbas<span class="keyword">(</span><span class="keyword">)</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>MULind pf1<span class="keyword">,</span> MULind pf2<span class="keyword">)</span> <span class="keyword">=&gt;</span> MULind<span class="keyword">(</span>auxnat <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [auxnat] *)</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">sif</span>
+<span class="staexp">m</span> <span class="staexp">&gt;=</span> <span class="staexp">0</span>
+<span class="keyword">then</span> <span class="keyword">(</span>
+  auxnat <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2<span class="keyword">)</span>
+<span class="keyword">)</span> <span class="comment">// end of [then]</span>
+<span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prval</span> MULneg<span class="keyword">(</span>pf1<span class="keyword">)</span> <span class="keyword">=</span> pf1</span>
+  <span class="prfexp"><span class="keyword">prval</span> MULneg<span class="keyword">(</span>pf2<span class="keyword">)</span> <span class="keyword">=</span> pf2</span>
+<span class="keyword">in</span>
+  MULneg<span class="keyword">(</span>auxnat <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2<span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [else]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [mul_distribute]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The inner function <FONT
+COLOR="RED"
+>auxnat</FONT
+> encodes a straighforward
+proof based on mathematical induction that establishes the following
+equation:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2994"
+></A
+><PRE
+CLASS="programlisting"
+>m * (n1 + n2) = m * n1 + m * n2
+</PRE
+><P
+></P
+></DIV
+>
+
+
+for m ranging over natural numbers and n1 and n2 ranging over integers. The
+function <FONT
+COLOR="RED"
+>mul_distribute</FONT
+> can then be implemented immediately
+based on <FONT
+COLOR="RED"
+>auxnat</FONT
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2929.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2998.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Constructing Proofs as Total Functions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2867.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Commutativity of Multiplication</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

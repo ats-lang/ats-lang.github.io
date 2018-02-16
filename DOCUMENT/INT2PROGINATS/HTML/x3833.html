@@ -1,0 +1,1021 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Linear Lists</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Dataviewtypes as Linear Datatypes"
+HREF="c3804.html"><LINK
+REL="PREVIOUS"
+TITLE="Dataviewtypes as Linear Datatypes"
+HREF="c3804.html"><LINK
+REL="NEXT"
+TITLE="Example: Merge-Sort on Linear Lists"
+HREF="x3986.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c3804.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 15. Dataviewtypes as Linear Datatypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3986.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="linear_lists"
+>Linear Lists</A
+></H1
+><P
+>&#13;A linear list is essentially the same as a singly-linked list depicted by
+the dataview <FONT
+COLOR="RED"
+>slist_v</FONT
+>. However, memory allocation and
+deallocation of list-nodes not handled previously are handled this time.
+The following declaration introduces a linear datatype <FONT
+COLOR="RED"
+>list_vt</FONT
+>,
+which forms a boxed type (of the sort <FONT
+COLOR="RED"
+>viewtype</FONT
+>) when applied to
+a type and an integer:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3839"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">datavtype</span>
+<span class="staexp">list_vt <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype+</span><span class="keyword">,</span> int<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="dynexp">list_vt_nil <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="dynexp"><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+    list_vt_cons <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [list_vt]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a type T and an integer I, <FONT
+COLOR="RED"
+>list_vt(T, I)</FONT
+> is
+for linear lists of length I in which each element is of the type T.
+
+</P
+><P
+>&#13;Assume that a data constructor named <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>foo</I
+></SPAN
+> is associated with a
+dataviewtype.  Then there is a corresponding viewtype construtor of the name
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>foo_unfold</I
+></SPAN
+> that takes n+1 addresses to form a viewtype, where
+n is the arity of <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>foo</I
+></SPAN
+>. For instance, there is a viewtype
+constructor <FONT
+COLOR="RED"
+>list_vt_cons_unfold</FONT
+> that takes 3 address L0, L1 and
+L2 to form a viewtype <FONT
+COLOR="RED"
+>list_vt_cons_unfold(L0, L1, L2)</FONT
+>. This
+viewtype is for a list-node created by a call to <FONT
+COLOR="RED"
+>list_vt_cons</FONT
+>
+such that the node is located at L0 and the two arguments of
+<FONT
+COLOR="RED"
+>list_vt_cons</FONT
+> are located at L1 and L2 while the proofs for the
+at-views associated with L1 and L2 are put in the store for currently
+available proofs.
+
+</P
+><P
+>&#13;The following function template <FONT
+COLOR="RED"
+>length</FONT
+> computes the length of a
+given linear list:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3852"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> length<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">fun</span> loop
+    <span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">:</span>nat <span class="keyword">|</span> i+j==n<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">i</span><span class="keyword">&gt;.</span>
+    <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">j</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span>
+    <span class="keyword">case+</span> xs <span class="keyword">of</span>
+    <span class="keyword">|</span> list_vt_cons <span class="keyword">(</span>_<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=&gt;</span> loop <span class="keyword">(</span>xs1<span class="keyword">,</span> j+<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">|</span> list_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> j</span>
+  <span class="comment">// end of [loop]</span>
+<span class="keyword">in</span>
+  loop <span class="keyword">(</span>xs<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [length]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The interface of <FONT
+COLOR="RED"
+>length</FONT
+> indicates that
+<FONT
+COLOR="RED"
+>length&#60;T&#62;</FONT
+> returns an integer equal to I when applied to a
+list of the type <FONT
+COLOR="RED"
+>list_vt(T, I)</FONT
+>, where T and I are a type and an
+integer, respectively. Note that the symbol <FONT
+COLOR="RED"
+>!</FONT
+> in front of the
+type of a function argument indicates that the argument is call-by-value
+and it is preserved after a call to the function. The function
+<FONT
+COLOR="RED"
+>loop</FONT
+> inside the body of <FONT
+COLOR="RED"
+>length</FONT
+> is tail-recursive.
+Given a linear list and an integer, <FONT
+COLOR="RED"
+>loop</FONT
+> returns the sum of the
+length of the list and the integer. In the body of <FONT
+COLOR="RED"
+>loop</FONT
+>, if
+<FONT
+COLOR="RED"
+>xs</FONT
+> matches the pattern <FONT
+COLOR="RED"
+>list_vt_cons(_, xs1)</FONT
+>, then
+the name <FONT
+COLOR="RED"
+>xs1</FONT
+> is bound to the tail of <FONT
+COLOR="RED"
+>xs</FONT
+>. Note that
+<FONT
+COLOR="RED"
+>xs1</FONT
+> is a value (instead of a variable), and it is not allowed
+that <FONT
+COLOR="RED"
+>xs1</FONT
+> be modified into another value (of a different type).
+
+</P
+><P
+>&#13;Suppose that we do want to modify the content stored in a list-node.
+For instance, we may want to double the value of each integer stores in a
+linear integer list. The following code implements a function named
+<FONT
+COLOR="RED"
+>list_vt_2x</FONT
+> that does precisely this:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3870"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+list_vt_2x<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> xs <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>list_vt_cons
+      <span class="keyword">(</span>x<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> x := <span class="dynexp">2</span> * x</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> list_vt_2x <span class="keyword">(</span>xs1<span class="keyword">)</span></span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>xs<span class="keyword">)</span></span>
+    <span class="dynexp"><span class="keyword">in</span>
+      <span class="comment">// nothing</span>
+    <span class="keyword">end</span></span> <span class="comment">// end of [list_vt_cons]</span>
+  <span class="keyword">|</span> list_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [list_vt_2x] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a type T, the notation (<FONT
+COLOR="RED"
+>!T &#62;&#62; _</FONT
+>) is a shorthand for
+(<FONT
+COLOR="RED"
+>!T &#62;&#62; T</FONT
+>).  Note that the special symbol <FONT
+COLOR="RED"
+>@</FONT
+> in
+front of the pattern <FONT
+COLOR="RED"
+>list_vt_cons(x, xs1)</FONT
+> means
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>unfolding</I
+></SPAN
+>. If <FONT
+COLOR="RED"
+>xs</FONT
+> matches this pattern, then
+<FONT
+COLOR="RED"
+>x</FONT
+> and <FONT
+COLOR="RED"
+>xs1</FONT
+> are bound to the pointers pointing to
+some memory locations L1 and L2 where the head and tail of <FONT
+COLOR="RED"
+>xs</FONT
+>
+are stored, respectively, and the type of <FONT
+COLOR="RED"
+>xs</FONT
+> changes into
+<FONT
+COLOR="RED"
+>list_vt_cons_unfold(L0, L1, L2)</FONT
+> for L0 being the location of
+the list-node referred to by <FONT
+COLOR="RED"
+>xs</FONT
+>.  In the body of the clause
+guarded by the pattern <FONT
+COLOR="RED"
+>list_vt_cons(x, xs1)</FONT
+>, <FONT
+COLOR="RED"
+>x</FONT
+> and
+<FONT
+COLOR="RED"
+>xs1</FONT
+> are treated as variables (which are a form of
+left-value). The special proof function <FONT
+COLOR="RED"
+>fold@</FONT
+> is called on
+<FONT
+COLOR="RED"
+>xs</FONT
+> to fold it plus the proofs of at-views attached to L1 and L2
+into a linear list.
+
+</P
+><P
+>&#13;Let us now see an example where linear list-nodes are explicitly freed:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3890"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> list_vt_free
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> xs <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">~</span>list_vt_cons
+      <span class="keyword">(</span>x<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=&gt;</span> list_vt_free <span class="keyword">(</span>xs1<span class="keyword">)</span>
+  <span class="keyword">|</span> <span class="keyword">~</span>list_vt_nil <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [list_vt_free] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;Given a linear list, the function <FONT
+COLOR="RED"
+>list_vt_free</FONT
+> frees all the
+nodes in the list. Let us go over the body of <FONT
+COLOR="RED"
+>list_vt_free</FONT
+>
+carefully.  If <FONT
+COLOR="RED"
+>xs</FONT
+> matches the pattern <FONT
+COLOR="RED"
+>list_vt_cons(x,
+xs1)</FONT
+>, then the names <FONT
+COLOR="RED"
+>x</FONT
+> and <FONT
+COLOR="RED"
+>xs1</FONT
+> are bound to the
+head and tail of <FONT
+COLOR="RED"
+>xs</FONT
+>, respectively; the special symbol
+<FONT
+COLOR="RED"
+>~</FONT
+> in front of the pattern indicates that the list-node referred
+to by <FONT
+COLOR="RED"
+>xs</FONT
+> is freed immediately after <FONT
+COLOR="RED"
+>xs</FONT
+> matches the
+pattern.  If <FONT
+COLOR="RED"
+>xs</FONT
+> matches the pattern <FONT
+COLOR="RED"
+>list_vt_nil()</FONT
+>,
+no bindings are generated; the special symbol <FONT
+COLOR="RED"
+>~</FONT
+> in front of the
+pattern indicates that the list-node referred to by <FONT
+COLOR="RED"
+>xs</FONT
+> is
+freed; nothing in this case is actually freed at run-time as
+<FONT
+COLOR="RED"
+>list_vt_nil</FONT
+> is mapped to the null pointer.
+
+</P
+><P
+>&#13;It is also possible to use the special function <FONT
+COLOR="RED"
+>free@</FONT
+> to
+explicitly free a node (also called a skeleton) left in a linear variable
+after the variable matches a pattern formed with a constructor associated
+with some dataviewtype. For instance, the following code gives another
+implementation of <FONT
+COLOR="RED"
+>list_vt_free</FONT
+>:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3911"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> list_vt_free
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span> <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> xs <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>list_vt_cons
+      <span class="keyword">(</span>x<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> xs1_ <span class="keyword">=</span> xs1</span> <span class="comment">// [xs1_] is the value stored in [xs1]</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">free@</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>0<span class="keyword">}</span></span><span class="keyword">(</span>xs<span class="keyword">)</span></span> <span class="keyword">in</span> list_vt_free <span class="keyword">(</span>xs1_<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [list_vt_cons]</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>list_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">free@</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span> <span class="keyword">(</span>xs<span class="keyword">)</span></span>
+<span class="comment">// end of [list_vt_free]</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;As it can be a bit tricky to use <FONT
+COLOR="RED"
+>free@</FONT
+> in practice, I present
+more details as follows. First, let us note that the constructors
+<FONT
+COLOR="RED"
+>list_vt_nil</FONT
+> and <FONT
+COLOR="RED"
+>list_vt_cons</FONT
+> associated with
+<FONT
+COLOR="RED"
+>list_vt</FONT
+> are assigned the following types:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3918"
+></A
+><PRE
+CLASS="programlisting"
+>list_vt_nil : // one quantifier
+  {a:t@ype} () -&#62; list_vt (a, 0)
+list_vt_cons : // two quantifiers
+  {a:t@ype}{n:nat} (a, list_vt (a, n)) -&#62; list_vt (a, n+1)
+</PRE
+><P
+></P
+></DIV
+><P
+>&#13;If <FONT
+COLOR="RED"
+>free@</FONT
+> is applied to a node of the type
+<FONT
+COLOR="RED"
+>list_vt_nil()</FONT
+>, it needs one static argument, which is a type,
+to instantiate the quantifier in the type of the constructor
+<FONT
+COLOR="RED"
+>list_vt_nil</FONT
+>. If <FONT
+COLOR="RED"
+>free@</FONT
+> is applied to a node of the
+type <FONT
+COLOR="RED"
+>list_vt_cons_unfold(L0, L1, L2)</FONT
+>, then it needs two static
+arguments, which are a type and an integer, to instantiate the two
+quantifiers in the type of the constructor <FONT
+COLOR="RED"
+>list_vt_cons</FONT
+>. In the
+case where the type of <FONT
+COLOR="RED"
+>xs</FONT
+> is <FONT
+COLOR="RED"
+>list_vt_cons_unfold(L0,
+L1, L2)</FONT
+>, typechecking the call <FONT
+COLOR="RED"
+>free@{a}{0}(xs)</FONT
+> implicitly
+consumes a proof of the at-view <FONT
+COLOR="RED"
+>a?@L1</FONT
+> and another proof of the
+at-view <FONT
+COLOR="RED"
+>list_vt(a, 0)?@L2</FONT
+>.  As there is no difference between
+<FONT
+COLOR="RED"
+>list_vt(T, 0)?</FONT
+> and <FONT
+COLOR="RED"
+>list_vt(T, I)?</FONT
+> for any T and I,
+the static argument 0 is chosen in the code. As a matter of fact, any
+natural number can be used in place of 0 as the second static argument of
+<FONT
+COLOR="RED"
+>free@</FONT
+>.
+
+</P
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="linear-list-reversing"
+>Linear List-Reversing</A
+></H2
+><P
+>&#13;The following code implements a function <FONT
+COLOR="RED"
+>reverse</FONT
+> that turns a
+given linear list into its reverse:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3939"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> reverse<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">fun</span> revapp
+    <span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>j<span class="keyword">:</span>nat <span class="keyword">|</span> i+j==n<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">i</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>
+    xs<span class="keyword">:</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">j</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span>
+    <span class="keyword">case+</span> xs <span class="keyword">of</span>
+    <span class="keyword">|</span> <span class="keyword">@</span>list_vt_cons
+        <span class="keyword">(</span>_<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> xs1_ <span class="keyword">=</span> xs1</span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> xs1 := ys</span>
+        <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>xs<span class="keyword">)</span></span>
+      <span class="keyword">in</span>
+        revapp <span class="keyword">(</span>xs1_<span class="keyword">,</span> xs<span class="keyword">)</span>
+      <span class="keyword">end</span> <span class="comment">// end of [list_vt_cons]</span>
+    <span class="keyword">|</span> <span class="keyword">~</span>list_vt_nil <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> ys</span>
+  <span class="comment">// end of [revapp]</span>
+<span class="keyword">in</span>
+  revapp <span class="keyword">(</span>xs<span class="keyword">,</span> list_vt_nil<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [reverse]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The type assigned to <FONT
+COLOR="RED"
+>reverse</FONT
+> indicates that the function
+returns a linear list of the same length as the one it consumes.  Note that
+the inner function <FONT
+COLOR="RED"
+>revapp</FONT
+> is tail-recursive.  This
+implementation of linear list-reversing directly corresponds to the one
+presented previously that is based the dataview <FONT
+COLOR="RED"
+>slseg_v</FONT
+> (for
+singly-linked list segments). Comparing the two implementations, we can see
+that the one based on dataviewtype is significantly simplified at the level
+of types. For instance, there is no explicit mentioning of pointers in the
+types assigned to functions <FONT
+COLOR="RED"
+>reverse</FONT
+> and <FONT
+COLOR="RED"
+>revapp</FONT
+>.
+
+</P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="linear-list-appending"
+>Linear List-Appending</A
+></H2
+><P
+>&#13;The following code implements a function <FONT
+COLOR="RED"
+>append</FONT
+> that
+concatenates two given linear lists into one:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3950"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> append<span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">)</span>
+<span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="staexp">+</span><span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">fun</span> loop <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">m</span><span class="keyword">&gt;.</span> <span class="comment">// [loop] is tail-recursive</span>
+  <span class="keyword">(</span>
+    xs<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="staexp">+</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+    <span class="keyword">case+</span> xs <span class="keyword">of</span>
+    <span class="keyword">|</span> <span class="keyword">@</span>list_vt_cons
+        <span class="keyword">(</span>_<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span>xs1<span class="keyword">,</span> ys<span class="keyword">)</span></span> <span class="keyword">in</span> <span class="keyword">fold@</span> <span class="keyword">(</span>xs<span class="keyword">)</span>
+      <span class="keyword">end</span> <span class="comment">// end of [list_vt_cons]</span>
+    <span class="keyword">|</span> <span class="keyword">~</span>list_vt_nil <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> xs := ys</span>
+  <span class="comment">// end of [loop]</span>
+  <span class="keyword">var</span> xs<span class="keyword">:</span> <span class="staexp">List_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span> xs <span class="comment">// creating a left-value for [xs]</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  xs
+<span class="keyword">end</span></span> <span class="comment">// end of [append]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+As the call <FONT
+COLOR="RED"
+>fold@(xs)</FONT
+> in the body of the function
+<FONT
+COLOR="RED"
+>loop</FONT
+> is erased after typechecking, <FONT
+COLOR="RED"
+>loop</FONT
+> is a
+tail-recursive function.  Therefore, <FONT
+COLOR="RED"
+>append</FONT
+> can be called on
+lists of any length without the concern of possible stack overflow. The
+type for the first argument of <FONT
+COLOR="RED"
+>loop</FONT
+> begins with the symbol
+<FONT
+COLOR="RED"
+>&#38;</FONT
+>, which indicates that this argument is
+call-by-reference. The type of <FONT
+COLOR="RED"
+>loop</FONT
+> simply means that its first
+argument is changed from a list of length <FONT
+COLOR="RED"
+>m</FONT
+> into a list of
+length <FONT
+COLOR="RED"
+>m+n</FONT
+> while its second argument is consumed.
+
+</P
+><P
+>&#13;This implementation of list append essentially corresponds to the
+one presented previously that is based on the dataview <FONT
+COLOR="RED"
+>slseg_v</FONT
+>.
+Comparing these two, we can easily see that the above one is much simpler
+and cleaner, demonstrating concretely some advantage of dataviewtypes over
+dataviews.
+
+</P
+><P
+>&#13;This is also a good place for me to mention a closely related issue
+involving (functional) list construction and tail-recursion. Following is a
+typical implementation of functioal list concatenation:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3964"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> append1<span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">)</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="staexp">+</span><span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> xs <span class="keyword">of</span>
+  <span class="keyword">|</span> list_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> ys
+  <span class="keyword">|</span> list_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> list_cons<span class="keyword">(</span>x<span class="keyword">,</span> append1&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">// end of [append1]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, <FONT
+COLOR="RED"
+>append1</FONT
+> is not tail-recursive, which means that it may
+cause stack overflow at run-time if its first argument is very long (e.g.,
+containing 1 million elements). There is, however, a direct and type-safe
+way in ATS to implement functional list concatenation in a tail-recursive
+manner, thus eliminating the concern of potential stack overflow. For
+instance, the following implementation of <FONT
+COLOR="RED"
+>append2</FONT
+> returns the
+concatenation of two given functional lists while being tail-recursive:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3968"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> append2<span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">)</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="staexp">+</span><span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> loop
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">m</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">)</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="keyword">(</span><span class="staexp">List</span> <span class="staexp">a</span><span class="keyword">)</span><span class="staexp">?</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">list</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="staexp">+</span><span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> xs <span class="keyword">of</span>
+  <span class="keyword">|</span> list_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+      <span class="keyword">(</span>res := ys<span class="keyword">)</span>
+    <span class="comment">// end of [list_nil]</span>
+  <span class="keyword">|</span> list_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> 
+      res := list_cons<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>0<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">,</span> _<span class="keyword">)</span></span>
+      <span class="dynexp"><span class="keyword">val+</span> list_cons <span class="keyword">(</span>_<span class="keyword">,</span> res1<span class="keyword">)</span> <span class="keyword">=</span> res</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">,</span> res1<span class="keyword">)</span></span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>res<span class="keyword">)</span></span>
+    <span class="dynexp"><span class="keyword">in</span>
+      <span class="comment">// nothing</span>
+    <span class="keyword">end</span></span> <span class="comment">// end of [list_cons]</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [loop] *)</span>
+<span class="comment">//</span>
+<span class="keyword">var</span> res<span class="keyword">:</span> <span class="staexp">List</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> loop <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">,</span> res<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  res
+<span class="keyword">end</span></span> <span class="comment">// end of [append2]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+During typechecking, the expression <FONT
+COLOR="RED"
+>list_cons{a}{0}(x, _)</FONT
+>
+is assigned the (linear) type <FONT
+COLOR="RED"
+>list_cons_unfold(L0, L1, L2)</FONT
+>
+for some addresses L0, L1 and L2 while a proof of the at-view
+<FONT
+COLOR="RED"
+>a@L1</FONT
+> and another proof of the at-view <FONT
+COLOR="RED"
+>list(a,
+0)?@L2</FONT
+> are put into the store for currently available proofs. Note
+that the special symbol <FONT
+COLOR="RED"
+>_</FONT
+> simply indicates that the tail
+of the newly constructed list is uninitialized. A partially
+initialized list of the type <FONT
+COLOR="RED"
+>list_cons_unfold(L0, L1, L2)</FONT
+>
+is guaranteed to match the pattern <FONT
+COLOR="RED"
+>list_cons(_, res1)</FONT
+>,
+yielding a binding between <FONT
+COLOR="RED"
+>res1</FONT
+> and the pointer pointing
+to L2 where the (possibly uninitialized) tail of the list is
+stored. When <FONT
+COLOR="RED"
+>fold@</FONT
+> is called on a variable of the type
+<FONT
+COLOR="RED"
+>list_cons_unfold(L0, L1, L2)</FONT
+>, it changes the type of the
+variable to <FONT
+COLOR="RED"
+>list(T, N+1)</FONT
+> by consuming a proof of the
+at-view <FONT
+COLOR="RED"
+>T@L1</FONT
+> and another proof of the at-view
+<FONT
+COLOR="RED"
+>list(T, N)@L2</FONT
+>, where T and N are a type and an integer,
+respectively.
+</P
+></DIV
+><DIV
+CLASS="sect2"
+><H2
+CLASS="sect2"
+><A
+NAME="linear-list-summary"
+>Summary</A
+></H2
+><P
+>&#13;With dataviewtypes, we can largely retain the convenience of pattern
+matching associated with datatypes while supporting explicit memory
+management.  Compared to dataviews, dataviewtypes are less
+general. However, if a dataviewtype can be employed to solve a problem,
+then the solution is often significantly simpler and cleaner than an
+alternative dataview-based one.
+
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c3804.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3986.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Dataviewtypes as Linear Datatypes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3804.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: Merge-Sort on Linear Lists</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

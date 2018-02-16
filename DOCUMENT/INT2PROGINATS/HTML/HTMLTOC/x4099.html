@@ -1,0 +1,620 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Linear Binary Search Trees</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Dataviewtypes as Linear Datatypes"
+HREF="c3810.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Quick-Sort on Linear Lists"
+HREF="x4062.html"><LINK
+REL="NEXT"
+TITLE="Transition from Datatypes to Dataviewtypes"
+HREF="x4153.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x4062.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 15. Dataviewtypes as Linear Datatypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x4153.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="linear_binary_search_trees"
+>Linear Binary Search Trees</A
+></H1
+><P
+>&#13;A binary search tree with respect to a given ordering is a binary tree such
+that the value stored in each node inside the tree is greater than or equal
+to those stored in the left child of the node and less than or equal to
+those stored in the right child of the node.  Binary search trees are a
+common data structure for implementing finite maps.
+
+</P
+><P
+>&#13;A family of binary
+trees are said to be balanced if there is a fixed constant C (for the
+entire family) such that the ratio between the length of a longest path and
+the length of a shortest path is bounded by C for every tree in the
+family. For instance, common examples of balanced binary trees include AVL
+trees and red-black trees. Finite maps based on balanced binary search
+trees support guaranteed log-time insertion and deletion operations, that
+is, the time to complete such an operation is O(log(n)) in the worst case,
+where n is the size of the map.
+
+</P
+><P
+>&#13;In this section, I am to implement several basic operations on linear
+binary search trees, further illustrating some use of dataviewtypes. Let us
+first declare as follows a dataviewtype <FONT
+COLOR="RED"
+>bstree_vt</FONT
+> for linear
+binary (search) trees:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4105"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">datavtype</span>
+<span class="staexp">bstree_vt
+<span class="keyword">(</span>
+  a<span class="keyword">:</span><span class="keyword">t@ype+</span><span class="keyword">,</span> int
+<span class="keyword">)</span> <span class="keyword">=</span> <span class="comment">// bstree_vt</span>
+  <span class="keyword">|</span> <span class="dynexp">bstree_vt_nil <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="dynexp"><span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+    bstree_vt_cons <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="staexp">+</span><span class="staexp">n2</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">bstree_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">bstree_vt</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n2</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [bstree_vt]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Note that the integer index of <FONT
+COLOR="RED"
+>bstree_vt</FONT
+> captures the size
+information of a binary (search) tree.  There are two constructors
+<FONT
+COLOR="RED"
+>bstree_vt_cons</FONT
+> and <FONT
+COLOR="RED"
+>bstree_vt_nil</FONT
+> associated with
+<FONT
+COLOR="RED"
+>bstree_vt</FONT
+>. It should be pointed out that the tree created by
+<FONT
+COLOR="RED"
+>bstree_vt_nil</FONT
+> is empty and thus not a leaf, which on the other
+hand is a node whose left and right children are both empty.  As a simple
+example, the following function template <FONT
+COLOR="RED"
+>size</FONT
+> computes the size
+of a given tree:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4114"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> size<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  t<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> t <span class="keyword">of</span>
+  <span class="keyword">|</span> bstree_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">0</span>
+  <span class="keyword">|</span> bstree_vt_cons
+     <span class="keyword">(</span>tl<span class="keyword">,</span> _<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="dynexp">1</span> + size <span class="keyword">(</span>tl<span class="keyword">)</span> + size <span class="keyword">(</span>tr<span class="keyword">)</span></span>
+<span class="comment">// end of [size]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Assume that we have a binary search tree with repect to some ordering.  If
+a predicate P on the elements stored in the tree possesses the property
+that P(x1) implies P(x2) whenever x1 is less than x2 (according to the
+ordering), then we can locate the least element in the tree that satisfies
+the predicate P by employing so-called binary search as is demonstrated in
+the following implementation of <FONT
+COLOR="RED"
+>search</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4118"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> search
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  t<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> P<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">&amp;</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref</span><span class="keyword">&gt;</span> <span class="staexp">bool</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">Option_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> t <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>bstree_vt_cons
+      <span class="keyword">(</span>tl<span class="keyword">,</span> x<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+      <span class="keyword">if</span> P <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">then</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> search <span class="keyword">(</span>tl<span class="keyword">,</span> P<span class="keyword">)</span></span>
+        <span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> <span class="keyword">(</span>
+          <span class="keyword">case+</span> res <span class="keyword">of</span>
+          <span class="keyword">|</span> <span class="keyword">~</span>None_vt <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> Some_vt <span class="keyword">(</span>x<span class="keyword">)</span> <span class="keyword">|</span> _ <span class="keyword">=&gt;</span> res
+        <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">Option_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+      <span class="keyword">in</span>
+        <span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span><span class="keyword">;</span> res
+      <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> search <span class="keyword">(</span>tr<span class="keyword">,</span> P<span class="keyword">)</span></span> <span class="keyword">in</span> <span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span><span class="keyword">;</span> res
+      <span class="keyword">end</span> <span class="comment">// end of [if]</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>bstree_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span><span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span><span class="keyword">;</span> None_vt <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">// end of [search]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, if the argument <FONT
+COLOR="RED"
+>t</FONT
+> of <FONT
+COLOR="RED"
+>search</FONT
+> ranges over a
+family of balanced trees, then the time-complexity of <FONT
+COLOR="RED"
+>search</FONT
+> is
+O(log(n)) (assuming that <FONT
+COLOR="RED"
+>P</FONT
+> is O(1)).
+
+</P
+><P
+>&#13;Let us next see some code implementing an operation that inserts a given
+element into a binary search tree:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4125"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> insert<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  t<span class="keyword">:</span> <span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">a</span><span class="keyword">,</span> cmp<span class="keyword">:</span> <span class="staexp">cmp</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> t <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>bstree_vt_cons
+      <span class="keyword">(</span>tl<span class="keyword">,</span> x<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> sgn <span class="keyword">=</span> compare&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x0<span class="keyword">,</span> x<span class="keyword">,</span> cmp<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">if</span> sgn &lt;= <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tl := insert <span class="keyword">(</span>tl<span class="keyword">,</span> x0<span class="keyword">,</span> cmp<span class="keyword">)</span></span>
+      <span class="keyword">in</span>
+        <span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span><span class="keyword">;</span> t
+      <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tr := insert <span class="keyword">(</span>tr<span class="keyword">,</span> x0<span class="keyword">,</span> cmp<span class="keyword">)</span></span>
+      <span class="keyword">in</span>
+        <span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span><span class="keyword">;</span> t
+      <span class="keyword">end</span> <span class="comment">(* end of [if] *)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [bstree_vt_cons]</span>
+  <span class="keyword">|</span> <span class="keyword">~</span>bstree_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+      bstree_vt_cons <span class="keyword">(</span>bstree_vt_nil<span class="keyword">,</span> x0<span class="keyword">,</span> bstree_vt_nil<span class="keyword">)</span></span>
+    <span class="comment">// end of [bstree_vt_nil]</span>
+<span class="comment">// end of [insert]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;When inserting an element, the function template <FONT
+COLOR="RED"
+>insert</FONT
+> extends
+the given tree with a new leaf node containing the element, and this form
+of insertion is often referred to as leaf-insertion.  There is another form
+of insertion often referred to as root-insertion, which always puts at the
+root position the new node containing the inserted element. The following
+function template <FONT
+COLOR="RED"
+>insertRT</FONT
+> is implemented to perform a standard
+root-insertion operation:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4130"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> insertRT<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  t<span class="keyword">:</span> <span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">a</span><span class="keyword">,</span> cmp<span class="keyword">:</span> <span class="staexp">cmp</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> t <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>bstree_vt_cons
+      <span class="keyword">(</span>tl<span class="keyword">,</span> x<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> sgn <span class="keyword">=</span> compare&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x0<span class="keyword">,</span> x<span class="keyword">,</span> cmp<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">if</span> sgn &lt;= <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> tl_ <span class="keyword">=</span> insertRT <span class="keyword">(</span>tl<span class="keyword">,</span> x0<span class="keyword">,</span> cmp<span class="keyword">)</span></span>
+        <span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>bstree_vt_cons <span class="keyword">(</span>_<span class="keyword">,</span> tll<span class="keyword">,</span> tlr<span class="keyword">)</span> <span class="keyword">=</span> tl_</span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tl := tlr</span>
+        <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span></span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tlr := t</span>
+      <span class="keyword">in</span>
+        <span class="keyword">fold@</span> <span class="keyword">(</span>tl_<span class="keyword">)</span><span class="keyword">;</span> tl_
+      <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> tr_ <span class="keyword">=</span> insertRT <span class="keyword">(</span>tr<span class="keyword">,</span> x0<span class="keyword">,</span> cmp<span class="keyword">)</span></span>
+        <span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>bstree_vt_cons <span class="keyword">(</span>trl<span class="keyword">,</span> _<span class="keyword">,</span> trr<span class="keyword">)</span> <span class="keyword">=</span> tr_</span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tr := trl</span>
+        <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span></span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> trl := t</span>
+      <span class="keyword">in</span>
+        <span class="keyword">fold@</span> <span class="keyword">(</span>tr_<span class="keyword">)</span><span class="keyword">;</span> tr_
+      <span class="keyword">end</span>
+    <span class="keyword">end</span> <span class="comment">// end of [bstree_vt_cons]</span>
+  <span class="keyword">|</span> <span class="keyword">~</span>bstree_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+      bstree_vt_cons <span class="keyword">(</span>bstree_vt_nil<span class="keyword">,</span> x0<span class="keyword">,</span> bstree_vt_nil<span class="keyword">)</span></span>
+    <span class="comment">// end of [bstree_vt_nil]</span>
+<span class="comment">// end of [insertRT]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The code immediately following the first recursive call to
+<FONT
+COLOR="RED"
+>insertRT</FONT
+> performs a right tree rotation. Let us use T(tl, x,
+tr) for a tree such that its root node contains the element x and its left
+and right children are tl and tr, respectively. Then a right rotation turns
+T(T(tll, xl, tlr), x, tr) into T(tll, xl, T(tlr, x, tr)).  The code
+immediately following the second recursive call to <FONT
+COLOR="RED"
+>insertRT</FONT
+>
+performs a left tree rotation, which turns T(tl, x, T(trl, xr, trr)) into
+T(T(tl, x, tlr), xr, trr).
+
+</P
+><P
+>&#13;To further illustrate tree rotations, I present as follows
+two function templates <FONT
+COLOR="RED"
+>lrotate</FONT
+> and <FONT
+COLOR="RED"
+>rrotate</FONT
+>, which
+implement the left and right tree rotations, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4137"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> lrotate
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">,</span>l_tl<span class="keyword">,</span>l_x<span class="keyword">,</span>l_tr<span class="keyword">:</span>addr<span class="keyword">}</span></span> 
+  <span class="staexp"><span class="keyword">{</span>nl<span class="keyword">,</span>nr<span class="keyword">:</span>int <span class="keyword">|</span> nl &gt;= 0<span class="keyword">;</span> nr <span class="keyword">&gt;</span> 0<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="prfexp">pf_tl<span class="keyword">:</span> <span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">nl</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_tl</span></span>
+<span class="keyword">,</span> <span class="prfexp">pf_x<span class="keyword">:</span> <span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_x</span></span>
+<span class="keyword">,</span> <span class="prfexp">pf_tr<span class="keyword">:</span> <span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">nr</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_tr</span></span>
+<span class="keyword">|</span> t<span class="keyword">:</span> <span class="staexp">bstree_vt_cons_unfold</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">l_tl</span><span class="keyword">,</span> <span class="staexp">l_x</span><span class="keyword">,</span> <span class="staexp">l_tr</span><span class="keyword">)</span>
+<span class="keyword">,</span> p_tl<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l_tl</span>
+<span class="keyword">,</span> p_tr<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l_tr</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">1</span><span class="staexp">+</span><span class="staexp">nl</span><span class="staexp">+</span><span class="staexp">nr</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> tr <span class="keyword">=</span> <span class="keyword">!</span>p_tr</span>
+  <span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>bstree_vt_cons <span class="keyword">(</span>trl<span class="keyword">,</span> _<span class="keyword">,</span> trr<span class="keyword">)</span> <span class="keyword">=</span> tr</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p_tr := trl</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span></span><span class="keyword">;</span> <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> trl := t</span>
+<span class="keyword">in</span>
+  <span class="keyword">fold@</span> <span class="keyword">(</span>tr<span class="keyword">)</span><span class="keyword">;</span> tr
+<span class="keyword">end</span></span> <span class="comment">// end of [lrotate]</span>
+
+<span class="dynexp"><span class="keyword">fn</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> rrotate
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">,</span>l_tl<span class="keyword">,</span>l_x<span class="keyword">,</span>l_tr<span class="keyword">:</span>addr<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>nl<span class="keyword">,</span>nr<span class="keyword">:</span>int <span class="keyword">|</span> nl <span class="keyword">&gt;</span> 0<span class="keyword">;</span> nr &gt;= 0<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="prfexp">pf_tl<span class="keyword">:</span> <span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">nl</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_tl</span></span>
+<span class="keyword">,</span> <span class="prfexp">pf_x<span class="keyword">:</span> <span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_x</span></span>
+<span class="keyword">,</span> <span class="prfexp">pf_tr<span class="keyword">:</span> <span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">nr</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_tr</span></span>
+<span class="keyword">|</span> t<span class="keyword">:</span> <span class="staexp">bstree_vt_cons_unfold</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">l_tl</span><span class="keyword">,</span> <span class="staexp">l_x</span><span class="keyword">,</span> <span class="staexp">l_tr</span><span class="keyword">)</span>
+<span class="keyword">,</span> p_tl<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l_tl</span>
+<span class="keyword">,</span> p_tr<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="staexp">l_tr</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">1</span><span class="staexp">+</span><span class="staexp">nl</span><span class="staexp">+</span><span class="staexp">nr</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> tl <span class="keyword">=</span> <span class="keyword">!</span>p_tl</span>
+  <span class="dynexp"><span class="keyword">val+</span><span class="keyword">@</span>bstree_vt_cons <span class="keyword">(</span>tll<span class="keyword">,</span> x<span class="keyword">,</span> tlr<span class="keyword">)</span> <span class="keyword">=</span> tl</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p_tl := tlr</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span></span><span class="keyword">;</span> <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tlr := t</span>
+<span class="keyword">in</span>
+  <span class="keyword">fold@</span> <span class="keyword">(</span>tl<span class="keyword">)</span><span class="keyword">;</span> tl
+<span class="keyword">end</span></span> <span class="comment">// end of [rrotate]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given 4 addresses L0, L1, L2 and L3, the type
+<FONT
+COLOR="RED"
+>bstree_vt_cons_unfold(L0, L1, L2, l3)</FONT
+> is for a tree node
+created by a call to <FONT
+COLOR="RED"
+>bstree_vt_cons</FONT
+> such that the node is
+located at L0 and the three arguments of <FONT
+COLOR="RED"
+>bstree_vt_cons</FONT
+> are
+located at L1, L2 and L3, and the proofs for the at-views associated with
+L1, L2 and L3 are put in the store for currently available proofs.
+
+</P
+><P
+>&#13;The function template <FONT
+COLOR="RED"
+>insertRT</FONT
+> for root-insertion can now be
+implemented as follows by making direct use of <FONT
+COLOR="RED"
+>lrotate</FONT
+> and
+<FONT
+COLOR="RED"
+>rrotate</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4146"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> insertRT <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  t<span class="keyword">:</span> <span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">a</span><span class="keyword">,</span> cmp<span class="keyword">:</span> <span class="staexp">cmp</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bstree_vt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> t <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>bstree_vt_cons
+      <span class="keyword">(</span>tl<span class="keyword">,</span> x<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span> pf_x <span class="keyword">=</span> <span class="dynexp"><span class="keyword">view@</span></span>x</span>
+      <span class="prfexp"><span class="keyword">prval</span> pf_tl <span class="keyword">=</span> <span class="dynexp"><span class="keyword">view@</span></span>tl</span>
+      <span class="prfexp"><span class="keyword">prval</span> pf_tr <span class="keyword">=</span> <span class="dynexp"><span class="keyword">view@</span></span>tr</span>
+      <span class="dynexp"><span class="keyword">val</span> sgn <span class="keyword">=</span> compare&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x0<span class="keyword">,</span> x<span class="keyword">,</span> cmp<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">if</span> sgn &lt;= <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tl := insertRT&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>tl<span class="keyword">,</span> x0<span class="keyword">,</span> cmp<span class="keyword">)</span></span>
+      <span class="keyword">in</span>
+        rrotate&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="prfexp">pf_tl</span><span class="keyword">,</span> <span class="prfexp">pf_x</span><span class="keyword">,</span> <span class="prfexp">pf_tr</span> <span class="keyword">|</span> t<span class="keyword">,</span> <span class="dynexp"><span class="keyword">addr@</span></span>tl<span class="keyword">,</span> <span class="dynexp"><span class="keyword">addr@</span></span>tr<span class="keyword">)</span>
+      <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tr := insertRT&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>tr<span class="keyword">,</span> x0<span class="keyword">,</span> cmp<span class="keyword">)</span></span>
+      <span class="keyword">in</span>
+        lrotate&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="prfexp">pf_tl</span><span class="keyword">,</span> <span class="prfexp">pf_x</span><span class="keyword">,</span> <span class="prfexp">pf_tr</span> <span class="keyword">|</span> t<span class="keyword">,</span> <span class="dynexp"><span class="keyword">addr@</span></span>tl<span class="keyword">,</span> <span class="dynexp"><span class="keyword">addr@</span></span>tr<span class="keyword">)</span>
+      <span class="keyword">end</span> <span class="comment">(* end of [if] *)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [bstree_vt_cons]</span>
+  <span class="keyword">|</span> <span class="keyword">~</span>bstree_vt_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+      bstree_vt_cons <span class="keyword">(</span>bstree_vt_nil<span class="keyword">,</span> x0<span class="keyword">,</span> bstree_vt_nil<span class="keyword">)</span></span>
+    <span class="comment">// end of [bstree_vt_nil]</span>
+<span class="comment">// end of [insertRT]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;I would like to point out that neither <FONT
+COLOR="RED"
+>insert</FONT
+> nor
+<FONT
+COLOR="RED"
+>insertRT</FONT
+> is tail-recursive. While it is straightforward to give
+the former a tail-recursive implementation, there is no direct way to do
+the same to the latter. In order to implement root-insertion in a
+tail-recursive manner, we are in need of binary search trees with parental
+pointers (so as to allow each node to gain direct access to its parent),
+which can be done with dataviews but not with dataviewtypes.
+
+</P
+><P
+>&#13;Please find the entire code in this section plus some additional
+code for testing <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_DATAVTYPE/bstree_vt.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x4062.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x4153.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Quick-Sort on Linear Lists</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3810.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Transition from Datatypes to Dataviewtypes</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

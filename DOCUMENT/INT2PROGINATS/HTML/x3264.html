@@ -1,0 +1,582 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Verified Fast Exponentiation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Programming with Theorem-Proving"
+HREF="c3154.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Another Verified Factorial"
+HREF="x3241.html"><LINK
+REL="NEXT"
+TITLE="Programming with Views and Viewtypes"
+HREF="p3319.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3241.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 12. Programming with Theorem-Proving</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="p3319.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_verified_fast_exponentiation"
+>Example: Verified Fast Exponentiation</A
+></H1
+><P
+>Given an integer x, pow(x, n), the nth power of x, can be defined
+inductively as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3267"
+></A
+><PRE
+CLASS="programlisting"
+>pow (x, 0) = 1
+pow (x, n) = x * pow (x, n-1) (for all n &#62; 0)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+A direct implementation of this definition is given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3269"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> ipow <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> x * ipow <span class="keyword">(</span>x<span class="keyword">,</span> n-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span></span>
+<span class="comment">// end of [ipow]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+which is of time-complexity O(n) (assuming multiplication is O(1)). A
+more efficient implmentation can be given as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3271"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+ifastpow
+<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> n2 <span class="keyword">=</span> half<span class="keyword">(</span>n<span class="keyword">)</span></span>
+    <span class="dynexp"><span class="keyword">val</span> i2 <span class="keyword">=</span> n-<span class="keyword">(</span><span class="dynexp">2</span>*n2<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">if</span> i2 <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> ifastpow <span class="keyword">(</span>x*x<span class="keyword">,</span> n2<span class="keyword">)</span> <span class="keyword">else</span> x * ifastpow <span class="keyword">(</span>x*x<span class="keyword">,</span> n2<span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="dynexp">1</span></span> <span class="comment">// end of [if]</span>
+<span class="comment">// end of [ifastpow]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+which makes use of the property that pow(x, n) equals pow(x*x, n/2) if n is
+even or x * pow(x*x, n/2) if n is odd. This is referred to as fast
+exponentiation. Note that <FONT
+COLOR="RED"
+>ifastpow</FONT
+> is of time-complexity O(log(n)).
+
+</P
+><P
+>&#13;Clearly, what is done above is not restricted to exponentiation on
+integers. As long as the underlying multiplication is associative, fast
+exponentiation can be employed to compute powers of any given element. In
+particular, powers of square matrices can be computed in this way.  I now
+present as follows a verified generic implementation of fast exponentiation.
+
+</P
+><P
+>Handling generic data properly in a verified implementation often requires some
+finesse with the type system of ATS. Let us first introduce an abstract type
+constructor <FONT
+COLOR="RED"
+>ELT</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3277"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="staexp"><span class="keyword">sortdef</span> elt <span class="keyword">=</span> int</span> <span class="comment">// [elt] is just an alias for [int]</span>
+<span class="staexp"><span class="keyword">abst@ype</span> ELT<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">,</span> x<span class="keyword">:</span>elt<span class="keyword">)</span> <span class="keyword">=</span> a</span> <span class="comment">// [x] is an imaginary stamp</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+This is often referred to as <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>stamping</I
+></SPAN
+>. For each type T and stamp
+x, <FONT
+COLOR="RED"
+>ELT(T, x)</FONT
+> is just T as far as data representation is concerned.
+The stamps are imaginary and they are solely used for the purpose of
+specification. Let us next introduce an abstract prop-type <FONT
+COLOR="RED"
+>MUL</FONT
+> and
+a function template <FONT
+COLOR="RED"
+>mul_elt_elt</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3283"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="staexp"><span class="keyword">absprop</span> MUL<span class="keyword">(</span>elt<span class="keyword">,</span> elt<span class="keyword">,</span> elt<span class="keyword">)</span></span> <span class="comment">// abstract mul relation</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+mul_elt_elt<span class="staexp"><span class="keyword">{</span>x<span class="keyword">,</span>y<span class="keyword">:</span>elt<span class="keyword">}</span></span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">ELT</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span><span class="keyword">,</span> y<span class="keyword">:</span> <span class="staexp">ELT</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>xy<span class="keyword">:</span>elt<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">,</span> <span class="staexp">xy</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">ELT</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">xy</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">// end of [mul_elt_elt]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Please do not confuse <FONT
+COLOR="RED"
+>MUL</FONT
+> with the one of the same name that is
+declared in <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/ATS-Postiats/prelude/SATS/arith_prf.sats"
+TARGET="_top"
+>arith_prf.sats</A
+>. To
+state that the encoded multiplication is associative, we can introduce the
+following proof function:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3287"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">praxi</span>
+mul_assoc
+<span class="staexp"><span class="keyword">{</span>x<span class="keyword">,</span>y<span class="keyword">,</span>z<span class="keyword">:</span>elt<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>xy<span class="keyword">,</span>yz<span class="keyword">:</span>elt<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>xy_z<span class="keyword">,</span>x_yz<span class="keyword">:</span>elt<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">,</span> <span class="staexp">xy</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">xy</span><span class="keyword">,</span> <span class="staexp">z</span><span class="keyword">,</span> <span class="staexp">xy_z</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">y</span><span class="keyword">,</span> <span class="staexp">z</span><span class="keyword">,</span> <span class="staexp">yz</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">yz</span><span class="keyword">,</span> <span class="staexp">x_yz</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>xy_z==x_yz<span class="keyword">]</span></span> <span class="staexp">void</span></span> <span class="comment">// end of [mul_assoc]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The keyword <FONT
+COLOR="RED"
+>praxi</FONT
+> indicates that <FONT
+COLOR="RED"
+>mul_assoc</FONT
+> is treated as
+a form of axiom, which is not expected to be implemented.
+
+</P
+><P
+>&#13;The abstract power function can be readily specified in terms of the
+abstract prop-type <FONT
+COLOR="RED"
+>MUL</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3293"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">dataprop</span>
+<span class="staexp">POW <span class="keyword">(</span>
+  elt<span class="comment">(*base*)</span><span class="keyword">,</span> int<span class="comment">(*exp*)</span><span class="keyword">,</span> elt<span class="comment">(*res*)</span>
+<span class="keyword">)</span> <span class="keyword">=</span> <span class="comment">// res = base^exp</span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>elt<span class="keyword">}</span></span>
+    POWbas<span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">1</span><span class="comment">(*unit*)</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>elt<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>p<span class="keyword">,</span>p1<span class="keyword">:</span>elt<span class="keyword">}</span></span>
+    POWind<span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">,</span> <span class="staexp">p1</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">POW</span><span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">,</span> <span class="staexp">p1</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [POW]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+As can be expected, generic fast exponentiation is given the following
+interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3295"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+fastpow_elt_int<span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>elt<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+  <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">ELT</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>p<span class="keyword">:</span>elt<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">POW</span><span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">ELT</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">// end of [fastpow_elt_int]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;With the preparation done above, a straightforward implementation of
+<FONT
+COLOR="RED"
+>fastpow_elt_int</FONT
+> can now be presented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3299"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+fastpow_elt_int
+  <span class="keyword">(</span>x<span class="keyword">,</span> n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="comment">(*
+lemma: (x*x)^n = x^(2n)
+*)</span>
+<span class="keyword">extern</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+lemma
+<span class="staexp"><span class="keyword">{</span>x<span class="keyword">:</span>elt<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>xx<span class="keyword">:</span>elt<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>y<span class="keyword">:</span>elt<span class="keyword">}</span></span>
+  <span class="keyword">(</span>pfxx<span class="keyword">:</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">xx</span><span class="keyword">)</span><span class="keyword">,</span> pfpow<span class="keyword">:</span> <span class="staexp">POW</span><span class="keyword">(</span><span class="staexp">xx</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">POW</span><span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">2</span><span class="staexp">*</span><span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> * <span class="keyword">with</span> mul_elt_elt</span> <span class="comment">// [*] loaded with mul_elt_elt</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span>
+n <span class="keyword">=</span> <span class="dynexp">0</span>
+<span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> mulunit&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">in</span> <span class="keyword">(</span><span class="prfexp">POWbas <span class="keyword">(</span><span class="keyword">)</span></span> <span class="keyword">|</span> res<span class="keyword">)</span> <span class="comment">// res = 1</span>
+<span class="keyword">end</span> <span class="comment">// end of [then]</span>
+<span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> n2 <span class="keyword">=</span> half n</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pfxx</span> <span class="keyword">|</span> xx<span class="keyword">)</span> <span class="keyword">=</span> x * x</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pfpow2</span> <span class="keyword">|</span> res<span class="keyword">)</span> <span class="keyword">=</span> fastpow_elt_int&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xx<span class="keyword">,</span> n2<span class="keyword">)</span></span> <span class="comment">// xx^n2 = res</span>
+  <span class="prfexp"><span class="keyword">prval</span> pfpow <span class="keyword">=</span> lemma <span class="keyword">(</span>pfxx<span class="keyword">,</span> pfpow2<span class="keyword">)</span></span> <span class="comment">// pfpow: x^(2*n2) = res</span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> n<span class="keyword">=</span><span class="dynexp">2</span>*n2
+    <span class="keyword">then</span> <span class="keyword">(</span><span class="prfexp">pfpow</span> <span class="keyword">|</span> res<span class="keyword">)</span>
+    <span class="keyword">else</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pfmul</span> <span class="keyword">|</span> xres<span class="keyword">)</span> <span class="keyword">=</span> x * res</span> <span class="keyword">in</span> <span class="keyword">(</span><span class="prfexp">POWind<span class="keyword">(</span>pfpow<span class="keyword">,</span> pfmul<span class="keyword">)</span></span> <span class="keyword">|</span> xres<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [else]</span>
+<span class="keyword">end</span> <span class="comment">// end of [else]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [fastpow_elt_int]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that this implementation of <FONT
+COLOR="RED"
+>fastpow_elt_int</FONT
+> is not
+tail-recursive.  The function template <FONT
+COLOR="RED"
+>mulunit</FONT
+>, which is called to
+produce a unit for the underlying multiplication, is assigned the following
+interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3303"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span> mulunit <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">ELT</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">1</span><span class="comment">(*stamp*)</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The proof function <FONT
+COLOR="RED"
+>lemma</FONT
+> simply establishes that pow(x, 2*n)=
+pow(x*x, n) for each natural number n.  I have made an implementation of
+<FONT
+COLOR="RED"
+>lemma</FONT
+> available on-line but I suggest that the interested
+reader give it a try first to implement <FONT
+COLOR="RED"
+>lemma</FONT
+> before taking a
+look at the given implementation. Note that the following axioms are needed
+to implement <FONT
+COLOR="RED"
+>lemma</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3309"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+mul_istot <span class="comment">// MUL is total</span>
+  <span class="staexp"><span class="keyword">{</span>x<span class="keyword">,</span>y<span class="keyword">:</span>elt<span class="keyword">}</span></span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>xy<span class="keyword">:</span>elt<span class="keyword">]</span></span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">,</span> <span class="staexp">xy</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">praxi</span>
+mul_isfun <span class="comment">// MUL is functional</span>
+  <span class="staexp"><span class="keyword">{</span>x<span class="keyword">,</span>y<span class="keyword">:</span>elt<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>z1<span class="keyword">,</span>z2<span class="keyword">:</span>elt<span class="keyword">}</span></span><span class="keyword">(</span><span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">,</span> <span class="staexp">z1</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">x</span><span class="keyword">,</span> <span class="staexp">y</span><span class="keyword">,</span> <span class="staexp">z2</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>z1==z2<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Another interesting (and possibly a bit challenging) exercise is to
+implement <FONT
+COLOR="RED"
+>fastpow_elt_int</FONT
+> in a tail-recursive fashion.
+
+</P
+><P
+>&#13;Please find on-line the two files
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_PRGTHMPRV/fastexp.sats"
+TARGET="_top"
+>fastexp.sats</A
+> and
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_PRGTHMPRV/fastexp.dats"
+TARGET="_top"
+>fastexp.dats</A
+> that contain the
+entirety of the above presented code.
+
+</P
+><P
+>&#13;Now we have implemented <FONT
+COLOR="RED"
+>fastpow_elt_int</FONT
+>. How can it be used?
+Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_PRGTHMPRV/test_fastexp.dats"
+TARGET="_top"
+>on-line</A
+> an
+example in which <FONT
+COLOR="RED"
+>fastpow_elt_int</FONT
+> is called to implement fast
+exponentiation on a 2-by-2 matrix so that the Fibonacci numbers can be computed
+in a highly efficient manner.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3241.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="p3319.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Another Verified Factorial</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3154.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Programming with Views and Viewtypes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

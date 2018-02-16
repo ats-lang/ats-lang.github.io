@@ -1,0 +1,382 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Mergesort on Lists</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Parametric Polymorphism"
+HREF="c1126.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Function Templates on Lists"
+HREF="x1259.html"><LINK
+REL="NEXT"
+TITLE="Support for Practical Programming"
+HREF="p1377.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1259.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Parametric Polymorphism</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="p1377.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_mergesort"
+>Example: Mergesort on Lists</A
+></H1
+><P
+>&#13;Mergesort is a simple sorting algorithm that is guaranteed to be
+log-linear.  It is stable in the sense that the order of two equal elements
+always stay the same after sorting. I give as follows a typical functional
+style of implementation of mergesort on lists.
+
+</P
+><P
+>&#13;First, let us introduce abbreviations
+for the list constructors <FONT
+COLOR="RED"
+>list0_nil</FONT
+> and <FONT
+COLOR="RED"
+>list0_cons</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1349"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="neuexp"><span class="keyword">#define</span> :: list0_cons</span> <span class="comment">// writing [::] for list0_cons</span>
+<span class="neuexp"><span class="keyword">#define</span> cons0 list0_cons</span> <span class="comment">// writing [cons0] for list0_cons</span>
+<span class="neuexp"><span class="keyword">#define</span> nil0 list0_nil</span> <span class="comment">// writing [nil0] for list0_nil</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the operator <FONT
+COLOR="RED"
+>::</FONT
+> is already given the infix status.
+For instance, the list consisting of the first 5 natural numbers can be
+constructed as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1352"
+></A
+><PRE
+CLASS="programlisting"
+>cons0(0, cons0(1, 2 :: 3 :: 4 :: nil0((*void*))))
+</PRE
+><P
+></P
+></DIV
+>
+
+
+In practice, there is of course no point in mixing <FONT
+COLOR="RED"
+>cons0</FONT
+>
+with <FONT
+COLOR="RED"
+>::</FONT
+>.
+
+</P
+><P
+>&#13;We next implement a function template <FONT
+COLOR="RED"
+>merge</FONT
+> to merge two given
+ordered lists into a single ordered one:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1358"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">typedef</span>
+<span class="staexp">lte <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">bool</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> merge <span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span><span class="keyword">,</span> lte<span class="keyword">:</span> <span class="staexp">lte</span> <span class="staexp">a</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> xs <span class="keyword">of</span>
+  <span class="keyword">|</span> cons0 <span class="keyword">(</span>x<span class="keyword">,</span> xs1<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span>
+    <span class="keyword">case+</span> ys <span class="keyword">of</span>
+    <span class="keyword">|</span> cons0 <span class="keyword">(</span>y<span class="keyword">,</span> ys1<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+        <span class="keyword">if</span> x lte y <span class="keyword">then</span>
+          cons0<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">,</span> merge&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs1<span class="keyword">,</span> ys<span class="keyword">,</span> lte<span class="keyword">)</span><span class="keyword">)</span>
+        <span class="keyword">else</span>
+          cons0<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>y<span class="keyword">,</span> merge&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> ys1<span class="keyword">,</span> lte<span class="keyword">)</span><span class="keyword">)</span>
+        <span class="comment">// end of [if]</span>
+    <span class="keyword">|</span> nil0 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> xs
+    <span class="keyword">)</span> <span class="comment">// end of [cons0]</span>
+  <span class="keyword">|</span> nil0 <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> ys
+<span class="keyword">)</span></span> <span class="comment">(* end of [merge] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For instance, suppose that the two given lists are (1, 3, 4, 8) and (2, 5,
+6, 7, 9), and the comparison function (the third argument of
+<FONT
+COLOR="RED"
+>merge</FONT
+>) is the standard less-than-or-equal-to function on
+integers. Then the list returned by <FONT
+COLOR="RED"
+>merge</FONT
+> is (1, 2, 3, 4, 5, 6,
+7, 8, 9). The syntax <FONT
+COLOR="RED"
+>lte</FONT
+> means that the particular occurrence
+of <FONT
+COLOR="RED"
+>lte</FONT
+> following the backslash symbol (<FONT
+COLOR="RED"
+>\</FONT
+>) is
+given the infix status, and thus the expression <FONT
+COLOR="RED"
+>x \lte y</FONT
+>
+means the same as <FONT
+COLOR="RED"
+>lte(x, y)</FONT
+>.
+</P
+><P
+>&#13;The following function template <FONT
+COLOR="RED"
+>mergesort</FONT
+> implements the
+standard mergesort algorithm:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1369"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> mergesort
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> lte<span class="keyword">:</span> <span class="staexp">lte</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> n <span class="keyword">=</span> list0_length&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> msort
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> lte<span class="keyword">:</span> <span class="staexp">lte</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> n &gt;= <span class="dynexp">2</span> <span class="keyword">then</span> split<span class="keyword">(</span>xs<span class="keyword">,</span> n<span class="keyword">,</span> lte<span class="keyword">,</span> n/<span class="dynexp">2</span><span class="keyword">,</span> nil0<span class="keyword">)</span> <span class="keyword">else</span> xs
+<span class="comment">//</span>
+<span class="keyword">and</span> split
+<span class="keyword">(</span>
+  xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> lte<span class="keyword">:</span> <span class="staexp">lte</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> xsf<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> i <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val-</span>cons0 <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=</span> xs</span>
+  <span class="keyword">in</span>
+    split <span class="keyword">(</span>xs<span class="keyword">,</span> n<span class="keyword">,</span> lte<span class="keyword">,</span> i-<span class="dynexp">1</span><span class="keyword">,</span> cons0<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">,</span> xsf<span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> xsf <span class="keyword">=</span> list0_reverse&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xsf<span class="keyword">)</span></span> <span class="comment">// make sorting stable!</span>
+    <span class="dynexp"><span class="keyword">val</span> xsf <span class="keyword">=</span> msort <span class="keyword">(</span>xsf<span class="keyword">,</span> n/<span class="dynexp">2</span><span class="keyword">,</span> lte<span class="keyword">)</span> <span class="keyword">and</span> xs <span class="keyword">=</span> msort <span class="keyword">(</span>xs<span class="keyword">,</span> n-n/<span class="dynexp">2</span><span class="keyword">,</span> lte<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    merge&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xsf<span class="keyword">,</span> xs<span class="keyword">,</span> lte<span class="keyword">)</span>
+  <span class="keyword">end</span></span> <span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  msort <span class="keyword">(</span>xs<span class="keyword">,</span> n<span class="keyword">,</span> lte<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [mergesort]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Suppose we want to sort the list (8, 3, 4, 1, 2, 7, 6, 5, 9); we first
+divide it into two lists: (8, 3, 4, 1) and (2, 7, 6, 5, 9); by performing
+mergesort on each of them, we obtain two ordered lists: (1, 3, 4, 8) and
+(2, 5, 6, 7, 9); by merging these two ordered list, we obtain the ordered
+list (1, 2, 3, 4, 5, 6, 7, 8, 9), which is a permutation of the originally
+given list (8, 3, 4, 1, 2, 7, 6, 5, 9).
+</P
+><P
+>&#13;Note that the function template <FONT
+COLOR="RED"
+>merge</FONT
+> is not tail-recursive as
+the call to <FONT
+COLOR="RED"
+>merge</FONT
+> in its body is not a tail-call. This can be a
+serious problem in practice: It is almost certain that a stack overflow is
+to occur if the above implementation of mergesort is employed to sort a
+list that is very long (e.g., containing 1,000,000 elements or more). I
+will later give a tail-recursive implementation of the <FONT
+COLOR="RED"
+>merge</FONT
+>
+function in ATS that makes use of linear types.  </P
+><P
+>&#13;Please find the entire code in this section plus some additional code for
+testing <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_POLYMORPH/mergesort.dats"
+TARGET="_top"
+>on-line</A
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1259.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="p1377.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Function Templates on Lists</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1126.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Support for Practical Programming</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

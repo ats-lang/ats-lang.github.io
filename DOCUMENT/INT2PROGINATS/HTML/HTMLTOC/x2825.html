@@ -1,0 +1,517 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Functional Red-Black Trees</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Datatype Refinement"
+HREF="c2584.html"><LINK
+REL="PREVIOUS"
+TITLE="Sequentiality of Pattern Matching"
+HREF="x2796.html"><LINK
+REL="NEXT"
+TITLE="Theorem-Proving in ATS/LF"
+HREF="c2868.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2796.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 10. Datatype Refinement</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c2868.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_fun_red-black_trees"
+>Example: Functional Red-Black Trees</A
+></H1
+><P
+>&#13;A red-black tree is defined as a binary tree such that each node in it is
+colored red or black and every path from the root to a leaf has the same
+number of black nodes while containing no occurrences of two red nodes in a
+row.  Clearly, the length of a longest path in each red-black tree is
+bounded by 2 times the length of a shortest path in it. Therefore,
+red-black trees are a family of balanced trees. The number of black nodes
+occurring on each path in a red-black tree is often referred to as the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>black height</I
+></SPAN
+> of the tree.
+
+</P
+><P
+>&#13;Formally, a datatype precisely for red-black trees can be declared in ATS
+as follows:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2830"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span> BLK 0</span>
+<span class="neuexp"><span class="keyword">#define</span> RED 1</span>
+<span class="staexp"><span class="keyword">sortdef</span> clr <span class="keyword">=</span> <span class="keyword">{</span>c<span class="keyword">:</span>nat <span class="keyword">|</span> c &lt;= 1<span class="keyword">}</span></span>
+<span class="comment">//</span>
+<span class="keyword">datatype</span> <span class="staexp">rbtree
+<span class="keyword">(</span>
+  a<span class="keyword">:</span><span class="keyword">t@ype+</span>
+<span class="keyword">,</span> int<span class="comment">(*color*)</span>
+<span class="keyword">,</span> int<span class="comment">(*bheight*)</span>
+<span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">|</span> <span class="dynexp">rbtree_nil <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">BLK</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span></span>
+<span class="keyword">|</span> <span class="dynexp"><span class="staexp"><span class="keyword">{</span>c<span class="keyword">,</span>cl<span class="keyword">,</span>cr<span class="keyword">:</span>clr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>bh<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>cl &lt;= 1-c<span class="keyword">;</span> cr &lt;= 1-c<span class="keyword">}</span></span>
+  rbtree_cons<span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="staexp">+</span><span class="staexp">1</span><span class="staexp">-</span><span class="staexp">c</span><span class="keyword">)</span> <span class="keyword">of</span>
+    <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">rbtree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cl</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">rbtree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cr</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [rbtree]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;The color of a tree is the color of its root node or is black if the tree
+is empty.  Given a type T, a color C (represented by a integer) and an
+integer BH, the type <FONT
+COLOR="RED"
+>rbtree(T, C, BH)</FONT
+> is for red-black trees
+carrying elements of the type T that is of the color C and the black height
+BH.
+
+</P
+><P
+>&#13;When implementing various operations (such as insertion and deletion) on a
+red-black tree, we often need to first construct intermediate trees that
+contain color violations caused by a red node being followed by another red
+node and then employ tree rotations to fix such violations. This need makes
+the above datatype <FONT
+COLOR="RED"
+>rbtree</FONT
+> too rigid as it cannot be assigned to
+any intermediate trees containing color violations. To address this issue,
+we can declare <FONT
+COLOR="RED"
+>rbtree</FONT
+> as follows:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2837"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">datatype</span> <span class="staexp">rbtree
+<span class="keyword">(</span>
+  a<span class="keyword">:</span><span class="keyword">t@ype+</span>
+<span class="keyword">,</span> int <span class="comment">// color</span>
+<span class="keyword">,</span> int <span class="comment">// bheight</span>
+<span class="keyword">,</span> int <span class="comment">// violations</span>
+<span class="keyword">)</span> <span class="keyword">=</span> <span class="comment">// rbtree</span>
+  <span class="keyword">|</span> <span class="dynexp">rbtree_nil <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">BLK</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="dynexp"><span class="staexp"><span class="keyword">{</span>c<span class="keyword">,</span>cl<span class="keyword">,</span>cr<span class="keyword">:</span>clr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>bh<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>v<span class="keyword">:</span>int<span class="keyword">}</span></span>
+    <span class="staexp"><span class="keyword">{</span>c==BLK &amp;&amp; v==0 || c == RED &amp;&amp; v==cl+cr<span class="keyword">}</span></span>
+    rbtree_cons<span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="staexp">+</span><span class="staexp">1</span><span class="staexp">-</span><span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">v</span><span class="keyword">)</span> <span class="keyword">of</span>
+    <span class="keyword">(</span>
+      <span class="staexp">int</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">rbtree0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cl</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">rbtree0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cr</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">)</span>
+    <span class="keyword">)</span></span></span> <span class="comment">(* end of [rbtree_cons] *)</span>
+<span class="comment">// end of [rbtree]</span>
+<span class="comment">//</span>
+<span class="keyword">where</span> <span class="staexp">rbtree0<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">,</span> <span class="staexp">c<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">bh<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">rbtree</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;We count each occurrence of two red nodes in a row as one color violation.
+Given a type T, a color C (represented by a integer), an integer BH and an
+integer V, the type <FONT
+COLOR="RED"
+>rbtree(T, C, BH, V)</FONT
+> is for trees carrying
+elements of the type T that is of the color C and the black height BH and
+contains exactly V color violations. Therefore, the type
+<FONT
+COLOR="RED"
+>rbtree(T, C, BH, 0)</FONT
+> is for valid red-black trees (containing no
+color violations).
+
+</P
+><P
+>&#13;Given a tree containing at most one color violation, an element and another
+tree containing no violations, the following operation constructs a valid
+red-black tree:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2843"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> insfix_l <span class="comment">// right rotation for fixing left insertion</span>
+  <span class="staexp"><span class="keyword">{</span>cl<span class="keyword">,</span>cr<span class="keyword">:</span>clr<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>bh<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>v<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">(</span>
+  tl<span class="keyword">:</span> <span class="staexp">rbtree</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cl</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">,</span> <span class="staexp">v</span><span class="keyword">)</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> tr<span class="keyword">:</span> <span class="staexp">rbtree</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cr</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>c<span class="keyword">:</span>clr<span class="keyword">]</span></span> <span class="staexp">rbtree0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="neuexp"><span class="keyword">#define</span> B BLK</span><span class="keyword">;</span> <span class="neuexp"><span class="keyword">#define</span> R RED</span><span class="keyword">;</span> <span class="neuexp"><span class="keyword">#define</span> cons rbtree_cons</span>
+<span class="keyword">in</span>
+  <span class="keyword">case+</span> <span class="keyword">(</span>tl<span class="keyword">,</span> x0<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>cons<span class="keyword">(</span>R<span class="keyword">,</span> cons<span class="keyword">(</span>R<span class="keyword">,</span> a<span class="keyword">,</span> x<span class="keyword">,</span> b<span class="keyword">)</span><span class="keyword">,</span> y<span class="keyword">,</span> c<span class="keyword">)</span><span class="keyword">,</span> z<span class="keyword">,</span> d<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+      cons<span class="keyword">(</span>R<span class="keyword">,</span> cons<span class="keyword">(</span>B<span class="keyword">,</span> a<span class="keyword">,</span> x<span class="keyword">,</span> b<span class="keyword">)</span><span class="keyword">,</span> y<span class="keyword">,</span> cons<span class="keyword">(</span>B<span class="keyword">,</span> c<span class="keyword">,</span> z<span class="keyword">,</span> d<span class="keyword">)</span><span class="keyword">)</span> <span class="comment">// shallow rot</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>cons<span class="keyword">(</span>R<span class="keyword">,</span> a<span class="keyword">,</span> x<span class="keyword">,</span> cons<span class="keyword">(</span>R<span class="keyword">,</span> b<span class="keyword">,</span> y<span class="keyword">,</span> c<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> z<span class="keyword">,</span> d<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+      cons<span class="keyword">(</span>R<span class="keyword">,</span> cons<span class="keyword">(</span>B<span class="keyword">,</span> a<span class="keyword">,</span> x<span class="keyword">,</span> b<span class="keyword">)</span><span class="keyword">,</span> y<span class="keyword">,</span> cons<span class="keyword">(</span>B<span class="keyword">,</span> c<span class="keyword">,</span> z<span class="keyword">,</span> d<span class="keyword">)</span><span class="keyword">)</span> <span class="comment">// deep rotation</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>a<span class="keyword">,</span> x<span class="keyword">,</span> b<span class="keyword">)</span> <span class="keyword">=&gt;&gt;</span> cons<span class="keyword">(</span>B<span class="keyword">,</span> a<span class="keyword">,</span> x<span class="keyword">,</span> b<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [insfix_l]</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;By simply reading the interface of <FONT
+COLOR="RED"
+>insfix_l</FONT
+>, we can see that the
+two tree arguments are required to be of the same black height bh for some
+natural number bh and the returned tree is of the black height bh+1.
+
+</P
+><P
+>&#13;The following operation <FONT
+COLOR="RED"
+>insfix_r</FONT
+> is just the mirror image of
+<FONT
+COLOR="RED"
+>insfix_l</FONT
+>:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2850"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> insfix_r <span class="comment">// left rotation for fixing right insertion</span>
+  <span class="staexp"><span class="keyword">{</span>cl<span class="keyword">,</span>cr<span class="keyword">:</span>clr<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>bh<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="staexp"><span class="keyword">{</span>v<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">(</span>
+  tl<span class="keyword">:</span> <span class="staexp">rbtree</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cl</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> tr<span class="keyword">:</span> <span class="staexp">rbtree</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cr</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">,</span> <span class="staexp">v</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>c<span class="keyword">:</span>clr<span class="keyword">]</span></span> <span class="staexp">rbtree0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="neuexp"><span class="keyword">#define</span> B BLK</span><span class="keyword">;</span> <span class="neuexp"><span class="keyword">#define</span> R RED</span><span class="keyword">;</span> <span class="neuexp"><span class="keyword">#define</span> cons rbtree_cons</span>
+<span class="keyword">in</span>
+  <span class="keyword">case+</span> <span class="keyword">(</span>tl<span class="keyword">,</span> x0<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>a<span class="keyword">,</span> x<span class="keyword">,</span> cons<span class="keyword">(</span>R<span class="keyword">,</span> b<span class="keyword">,</span> y<span class="keyword">,</span> cons<span class="keyword">(</span>R<span class="keyword">,</span> c<span class="keyword">,</span> z<span class="keyword">,</span> d<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+      cons<span class="keyword">(</span>R<span class="keyword">,</span> cons<span class="keyword">(</span>B<span class="keyword">,</span> a<span class="keyword">,</span> x<span class="keyword">,</span> b<span class="keyword">)</span><span class="keyword">,</span> y<span class="keyword">,</span> cons<span class="keyword">(</span>B<span class="keyword">,</span> c<span class="keyword">,</span> z<span class="keyword">,</span> d<span class="keyword">)</span><span class="keyword">)</span> <span class="comment">// shallow rot</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>a<span class="keyword">,</span> x<span class="keyword">,</span> cons<span class="keyword">(</span>R<span class="keyword">,</span> cons<span class="keyword">(</span>R<span class="keyword">,</span> b<span class="keyword">,</span> y<span class="keyword">,</span> c<span class="keyword">)</span><span class="keyword">,</span> z<span class="keyword">,</span> d<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+      cons<span class="keyword">(</span>R<span class="keyword">,</span> cons<span class="keyword">(</span>B<span class="keyword">,</span> a<span class="keyword">,</span> x<span class="keyword">,</span> b<span class="keyword">)</span><span class="keyword">,</span> y<span class="keyword">,</span> cons<span class="keyword">(</span>B<span class="keyword">,</span> c<span class="keyword">,</span> z<span class="keyword">,</span> d<span class="keyword">)</span><span class="keyword">)</span> <span class="comment">// deep rotation</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>a<span class="keyword">,</span> x<span class="keyword">,</span> b<span class="keyword">)</span> <span class="keyword">=&gt;&gt;</span> cons<span class="keyword">(</span>B<span class="keyword">,</span> a<span class="keyword">,</span> x<span class="keyword">,</span> b<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [insfix_r]</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;The preparation for implementing insertion on a red-black tree is all done
+by now, and we are ready to see an implementation of insertion guaranteeing
+that the tree obtained from inserting an element into a given red-black
+tree is always a valid red-black tree itself. This guarantee is precisely
+captured in the following interface for insertion:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2853"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> rbtree_insert
+  <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>clr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>bh<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  t<span class="keyword">:</span> <span class="staexp">rbtree0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">)</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> cmp<span class="keyword">:</span> <span class="staexp">cmp</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>bh1<span class="keyword">:</span>nat<span class="keyword">]</span></span> <span class="staexp">rbtree0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">BLK</span><span class="keyword">,</span> <span class="staexp">bh1</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;Interestingly, this interface also implies that the tree returned by a call
+to <FONT
+COLOR="RED"
+>rbtree_insert</FONT
+> is always black. The code presented below
+gives an implementation of <FONT
+COLOR="RED"
+>rbtree_insert</FONT
+>:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2858"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+rbtree_insert
+  <span class="keyword">(</span>t<span class="keyword">,</span> x0<span class="keyword">,</span> cmp<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span> B BLK</span>
+<span class="neuexp"><span class="keyword">#define</span> R RED</span>
+<span class="neuexp"><span class="keyword">#define</span> nil rbtree_nil</span>
+<span class="neuexp"><span class="keyword">#define</span> cons rbtree_cons</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> ins
+  <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>clr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>bh<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">bh</span><span class="keyword">,</span><span class="staexp">c</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  t<span class="keyword">:</span> <span class="staexp">rbtree0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">)</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">a</span>
+<span class="keyword">)</span> <span class="keyword">:</span>
+<span class="staexp"><span class="keyword">[</span>
+  cl<span class="keyword">:</span>clr<span class="keyword">;</span>v<span class="keyword">:</span>nat <span class="keyword">|</span> v &lt;= c
+<span class="keyword">]</span></span> <span class="staexp">rbtree</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cl</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">,</span> <span class="staexp">v</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> t <span class="keyword">of</span>
+  <span class="keyword">|</span> nil<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+    cons<span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>0<span class="keyword">}</span></span><span class="keyword">(</span>R<span class="keyword">,</span> nil<span class="keyword">,</span> x0<span class="keyword">,</span> nil<span class="keyword">)</span>
+  <span class="keyword">|</span> cons<span class="keyword">(</span>c<span class="keyword">,</span> tl<span class="keyword">,</span> x<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> sgn <span class="keyword">=</span> compare<span class="keyword">(</span>x0<span class="keyword">,</span> x<span class="keyword">,</span> cmp<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="comment">//</span>
+      <span class="comment">// [ifcase] for combining a sequence</span>
+      <span class="comment">// of if-then-else expressions together</span>
+      <span class="comment">//</span>
+      <span class="dynexp"><span class="keyword">ifcase</span>
+      <span class="keyword">|</span> sgn <span class="keyword">&lt;</span> 0 <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+          <span class="keyword">val</span> <span class="keyword">[</span>cl<span class="keyword">:</span>int<span class="keyword">,</span>v<span class="keyword">:</span>int<span class="keyword">]</span> tl <span class="keyword">=</span> ins<span class="keyword">(</span>tl<span class="keyword">,</span> x0<span class="keyword">)</span>
+        <span class="keyword">in</span>
+          <span class="keyword">if</span> c <span class="keyword">=</span> B
+            <span class="keyword">then</span> insfix_l<span class="keyword">(</span>tl<span class="keyword">,</span> x<span class="keyword">,</span> tr<span class="keyword">)</span>
+            <span class="keyword">else</span> cons<span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span><span class="keyword">{</span>cl<span class="keyword">}</span><span class="keyword">(</span>R<span class="keyword">,</span> tl<span class="keyword">,</span> x<span class="keyword">,</span> tr<span class="keyword">)</span>
+          <span class="comment">// end of [if]</span>
+        <span class="keyword">end</span> <span class="comment">(* sgn &lt; 0 *)</span>
+      <span class="keyword">|</span> sgn <span class="keyword">&gt;</span> 0 <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+          <span class="keyword">val</span> <span class="keyword">[</span>cr<span class="keyword">:</span>int<span class="keyword">,</span>v<span class="keyword">:</span>int<span class="keyword">]</span> tr <span class="keyword">=</span> ins<span class="keyword">(</span>tr<span class="keyword">,</span> x0<span class="keyword">)</span>
+        <span class="keyword">in</span>
+          <span class="keyword">if</span> c <span class="keyword">=</span> B
+            <span class="keyword">then</span> insfix_r<span class="keyword">(</span>tl<span class="keyword">,</span> x<span class="keyword">,</span> tr<span class="keyword">)</span>
+            <span class="keyword">else</span> cons<span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span><span class="keyword">{</span>cr<span class="keyword">}</span><span class="keyword">(</span>R<span class="keyword">,</span> tl<span class="keyword">,</span> x<span class="keyword">,</span> tr<span class="keyword">)</span>
+          <span class="comment">// end of [if]</span>
+        <span class="keyword">end</span> <span class="comment">(* sgn &gt; 0 *)</span>
+      <span class="keyword">|</span> _<span class="comment">(* sgn = 0 *)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span>t<span class="keyword">)</span></span> <span class="comment">// end of [ifcase]</span>
+    <span class="keyword">end</span> <span class="comment">// end of [cons]</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [ins] *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> t <span class="keyword">=</span> ins <span class="keyword">(</span>t<span class="keyword">,</span> x0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  <span class="keyword">case+</span> t <span class="keyword">of</span> cons<span class="keyword">(</span>R<span class="keyword">,</span> tl<span class="keyword">,</span> x<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">=&gt;</span> cons<span class="keyword">(</span>B<span class="keyword">,</span> tl<span class="keyword">,</span> x<span class="keyword">,</span> tr<span class="keyword">)</span> <span class="keyword">|</span> _ <span class="keyword">=&gt;&gt;</span> t
+<span class="keyword">end</span></span> <span class="comment">// end of [rbtree_insert]</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;Note that the type assigned to the inner function <FONT
+COLOR="RED"
+>ins</FONT
+> is so
+informative that it literally gives an formal explanation about the way in
+which insertion works on a red-black tree. Many a programmer implements
+red-black trees by simply following an algorithm written in some format of
+pseudo code while having little understanding about the innerworkings of
+the algorithm. For instance, if the above inner function <FONT
+COLOR="RED"
+>ins</FONT
+> is
+implemented in C, few programmers are likely to see that the function
+always maintain the black height of a given red-black tree after insertion
+but may introduce one color violation if the root of the tree is red. On
+the other hand, knowing this invariant is essential to gaining a thorough
+understanding of the insertion algorithm on red-black trees.
+
+</P
+><P
+>&#13;The insertion operation implemented above does not insert an element if it
+is already in the given red-black tree. It may be desirable to require that
+the operation inform the caller if such a case occurs. For instance, an
+exception can be raised for this purpose. An alternative is to give
+<FONT
+COLOR="RED"
+>rbtree_insert</FONT
+> a call-by-reference argument so that a flag can be
+returned in it to indicate whether the element to be inserted is actually
+inserted. I will explain elsewhere what call-by-reference is and how it is
+supported in ATS.
+
+</P
+><P
+>&#13;Often deleting an element from a binary search tree is significantly more
+difficult to implement than inserting one.  This is especially so in the
+case of a red-black tree.  I refer the interested reader to the libats
+library of ATS for some code implementing a deletion operation on red-black
+trees that can guarantee based on types each tree returned by the operation
+being a valid red-black tree (containing no color violations).
+
+</P
+><P
+>&#13;Please find the entire code in this section plus some additional code for
+testing <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_DEPDTREF/rbtree.dats"
+TARGET="_top"
+>on-line</A
+>.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2796.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c2868.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Sequentiality of Pattern Matching</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2584.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Theorem-Proving in ATS/LF</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

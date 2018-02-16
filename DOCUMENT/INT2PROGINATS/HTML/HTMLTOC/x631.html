@@ -164,7 +164,7 @@ CLASS="programlisting"
 
 <span class="dynexp"><span class="keyword">fun</span> print_row <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
-  print_dots <span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">;</span> print <span class="dynstr">"Q "</span><span class="keyword">;</span> print_dots <span class="keyword">(</span>N-i-<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">;</span> print <span class="dynstr">"n"</span><span class="keyword">;</span>
+  print_dots <span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">;</span> print <span class="dynstr">"Q "</span><span class="keyword">;</span> print_dots <span class="keyword">(</span>N-i-<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">;</span> print <span class="dynstr">"\n"</span><span class="keyword">;</span>
 <span class="keyword">)</span></span> <span class="comment">// end of [print_row]</span>
 
 <span class="dynexp"><span class="keyword">fun</span> print_board <span class="keyword">(</span>bd<span class="keyword">:</span> <span class="staexp">int8</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
@@ -443,7 +443,7 @@ CLASS="programlisting"
     <span class="keyword">in</span>
       <span class="keyword">if</span> i+<span class="dynexp">1</span> <span class="keyword">=</span> N
         <span class="keyword">then</span> <span class="keyword">let</span>
-          <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">print!</span> <span class="keyword">(</span><span class="dynstr">"Solution #"</span><span class="keyword">,</span> nsol+<span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">":nn"</span><span class="keyword">)</span></span>
+          <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="dynexp">print!</span> <span class="keyword">(</span><span class="dynstr">"Solution #"</span><span class="keyword">,</span> nsol+<span class="dynexp">1</span><span class="keyword">,</span> <span class="dynstr">":\n\n"</span><span class="keyword">)</span></span>
           <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> print_board <span class="keyword">(</span>bd1<span class="keyword">)</span></span>
         <span class="keyword">in</span>
           search <span class="keyword">(</span>bd<span class="keyword">,</span> i<span class="keyword">,</span> j+<span class="dynexp">1</span><span class="keyword">,</span> nsol+<span class="dynexp">1</span><span class="keyword">)</span>

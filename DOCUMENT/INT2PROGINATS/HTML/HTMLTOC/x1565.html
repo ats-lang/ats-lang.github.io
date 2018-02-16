@@ -1,0 +1,433 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Ordering Permutations</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Effectful Programming Features"
+HREF="c1379.html"><LINK
+REL="PREVIOUS"
+TITLE="Arrays"
+HREF="x1525.html"><LINK
+REL="NEXT"
+TITLE="Matrices"
+HREF="x1601.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1525.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 6. Effectful Programming Features</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1601.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_ordering_permutations"
+>Example: Ordering Permutations</A
+></H1
+><P
+>Given a natural number n, we want to print out all the permutations
+consisting of integers ranging from 1 to n, inclusive. In addition, we
+want to print them out according to the lexicographic ordering on integer
+sequences. For instance, we want the following output to be generated when
+n is 3:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1568"
+></A
+><PRE
+CLASS="programlisting"
+>1, 2, 3
+1, 3, 2
+2, 1, 3
+2, 3, 1
+3, 1, 2
+3, 2, 1
+</PRE
+><P
+></P
+></DIV
+>
+
+</P
+><P
+>Let us first define a function as follows for printing out an array
+of integers:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1571"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax">
+<span class="dynexp"><span class="keyword">fun</span>
+print_intarray
+  <span class="keyword">(</span>A<span class="keyword">:</span> <span class="staexp">arrszref</span><span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+  loop<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynstr">", "</span><span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+  <span class="dynexp"><span class="keyword">val</span> asz <span class="keyword">=</span>
+  g0uint2int_size_int<span class="keyword">(</span>A<span class="dynexp"><span class="keyword">.</span>size</span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">// The integers are to be separated by the string [sep]</span>
+<span class="comment">//</span>
+  <span class="dynexp"><span class="keyword">fun</span> loop
+    <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> sep<span class="keyword">:</span> <span class="staexp">string</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> i <span class="keyword">&lt;</span> asz <span class="keyword">then</span>
+      <span class="keyword">(</span><span class="keyword">if</span> i <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> print sep<span class="keyword">;</span> print <span class="dynexp">A[i<span class="keyword">]</span></span><span class="keyword">;</span> loop<span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">,</span> sep<span class="keyword">)</span><span class="keyword">)</span></span>
+    <span class="comment">// end of [if]</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [print_intarray] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+</P
+><P
+>&#13;We next implement two functions <FONT
+COLOR="RED"
+>lrotate</FONT
+> and <FONT
+COLOR="RED"
+>rrotate</FONT
+>
+for rearranging the elements in a given integer array:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1576"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+lrotate
+<span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="staexp">int</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">fun</span>
+  lshift
+  <span class="keyword">(</span>
+    A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="staexp">int</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> i <span class="keyword">&lt;</span> j
+    <span class="keyword">then</span> <span class="keyword">(</span><span class="dynexp">A[i<span class="keyword">]</span></span> := <span class="dynexp">A[i+1<span class="keyword">]</span></span><span class="keyword">;</span> lshift<span class="keyword">(</span>A<span class="keyword">,</span> i+<span class="dynexp">1</span><span class="keyword">,</span> j<span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="comment">// end of [if]</span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> i <span class="keyword">&lt;</span> j <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> tmp <span class="keyword">=</span> <span class="dynexp">A[i<span class="keyword">]</span></span></span> <span class="keyword">in</span> lshift<span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">,</span> j<span class="keyword">)</span><span class="keyword">;</span> <span class="dynexp">A[j<span class="keyword">]</span></span> := tmp
+  <span class="keyword">end</span> <span class="comment">// end of [if]</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [lrotate]</span>
+
+<span class="dynexp"><span class="keyword">fun</span>
+rrotate
+<span class="keyword">(</span>
+  A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="staexp">int</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">fun</span>
+  rshift
+  <span class="keyword">(</span>
+    A<span class="keyword">:</span> <span class="staexp">arrszref</span> <span class="staexp">int</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> i <span class="keyword">&lt;</span> j
+    <span class="keyword">then</span> <span class="keyword">(</span><span class="dynexp">A[j<span class="keyword">]</span></span> := <span class="dynexp">A[j-1<span class="keyword">]</span></span><span class="keyword">;</span> rshift<span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">,</span> j-<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="comment">// end of [if]</span>
+<span class="keyword">in</span>
+  <span class="keyword">if</span> i <span class="keyword">&lt;</span> j <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> tmp <span class="keyword">=</span> <span class="dynexp">A[j<span class="keyword">]</span></span></span> <span class="keyword">in</span> rshift<span class="keyword">(</span>A<span class="keyword">,</span> i<span class="keyword">,</span> j<span class="keyword">)</span><span class="keyword">;</span> <span class="dynexp">A[i<span class="keyword">]</span></span> := tmp
+  <span class="keyword">end</span> <span class="comment">// end of [if]</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [rrotate]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+When applied to an array and two valid indexes i and j for the array such
+that i is less than or equal to j, <FONT
+COLOR="RED"
+>lrotate</FONT
+> moves simultaneously
+the content of cell i into cell j and the content of cell k to cell k-1 for
+k ranging from i+1 to j, inclusive. The function <FONT
+COLOR="RED"
+>rrotate</FONT
+> is
+similar to <FONT
+COLOR="RED"
+>lrotate</FONT
+> but shuffles elements in the opposite
+direction.
+</P
+><P
+>Given a natural number n, the following defined function
+<FONT
+COLOR="RED"
+>permute</FONT
+> prints out all the permutations consisting of integers
+ranging from 1 to n, inclusive while arranging the output according to
+the lexicographic ordering on integer sequences.
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1583"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+permute
+<span class="keyword">(</span>
+ n<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+  aux<span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+<span class="comment">//</span>
+  <span class="neuexp"><span class="keyword">#define</span> i2sz g0int2uint_int_size</span>
+<span class="comment">//</span>
+<span class="comment">// Creating array A of size n</span>
+<span class="comment">//</span>
+  <span class="dynexp"><span class="keyword">val</span> A <span class="keyword">=</span>
+  arrszref_make_elt&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span>i2sz<span class="keyword">(</span>n<span class="keyword">)</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="comment">// Initializing A</span>
+<span class="comment">// with integers from 1 to n, inclusive</span>
+<span class="comment">//</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> init<span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span> <span class="keyword">where</span>
+  <span class="keyword">{</span>
+    <span class="dynexp"><span class="keyword">fun</span> init<span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+      <span class="keyword">if</span> i <span class="keyword">&lt;</span> n
+        <span class="keyword">then</span> <span class="keyword">(</span><span class="dynexp">A[i<span class="keyword">]</span></span> := i+<span class="dynexp">1</span><span class="keyword">;</span> init<span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span></span>
+      <span class="comment">// end of [if]</span>
+  <span class="keyword">}</span></span> <span class="comment">// end of [where] // end of [val]</span>
+<span class="comment">//</span>
+  <span class="dynexp"><span class="keyword">fun</span> aux
+    <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+  <span class="keyword">(</span>
+    <span class="keyword">if</span> i &lt;= n
+      <span class="keyword">then</span> aux2<span class="keyword">(</span>i<span class="keyword">,</span> i<span class="keyword">)</span>
+      <span class="keyword">else</span> <span class="keyword">(</span>
+        print_intarray<span class="keyword">(</span>A<span class="keyword">)</span><span class="keyword">;</span> print_newline<span class="keyword">(</span><span class="keyword">)</span>
+      <span class="keyword">)</span> <span class="comment">(* end of [else] *)</span>
+  <span class="keyword">)</span> <span class="comment">(* end of [aux] *)</span>
+<span class="comment">//</span>
+  <span class="keyword">and</span> aux2
+    <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span>
+  <span class="keyword">(</span>
+    <span class="keyword">if</span> j &lt;= n <span class="keyword">then</span> <span class="keyword">let</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>
+        rrotate<span class="keyword">(</span>A<span class="keyword">,</span> i-<span class="dynexp">1</span><span class="keyword">,</span> j-<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">;</span> aux<span class="keyword">(</span>i+<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">;</span> lrotate<span class="keyword">(</span>A<span class="keyword">,</span> i-<span class="dynexp">1</span><span class="keyword">,</span> j-<span class="dynexp">1</span><span class="keyword">)</span>
+      <span class="keyword">)</span></span> <span class="comment">// end of [val]</span>
+    <span class="keyword">in</span>
+      aux2 <span class="keyword">(</span>i<span class="keyword">,</span> j + <span class="dynexp">1</span><span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [if]</span>
+  <span class="keyword">)</span></span> <span class="comment">(* end of [aux2] *)</span>
+<span class="comment">//</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [permute] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>where</FONT
+> is a keyword, and the expression
+(exp <FONT
+COLOR="RED"
+>where</FONT
+> <FONT
+COLOR="RED"
+>{</FONT
+> decseq <FONT
+COLOR="RED"
+>}</FONT
+>)
+for some expression exp and declaration sequence decseq is equivalent to
+the let-expression of the form (<FONT
+COLOR="RED"
+>let</FONT
+> decseq <FONT
+COLOR="RED"
+>in</FONT
+> exp
+<FONT
+COLOR="RED"
+>end</FONT
+>). To understand the behavior of the function
+<FONT
+COLOR="RED"
+>aux</FONT
+>, let us evaluate <FONT
+COLOR="RED"
+>aux(1)</FONT
+> while assuming that
+<FONT
+COLOR="RED"
+>n</FONT
+> is 4 and the 4 elements of the array <FONT
+COLOR="RED"
+>A</FONT
+> are 1, 2,
+3, and 4. It should be fairly straightforward to see that this evaluation
+leads to the evaluation of <FONT
+COLOR="RED"
+>aux(2)</FONT
+> for 4 times: the array
+<FONT
+COLOR="RED"
+>A</FONT
+> contains (1, 2, 3, 4) for the first time, and (2, 1, 3, 4)
+for the second time, and (3, 1, 2, 4) for the third time, and (4, 1, 2, 3)
+for the fourth time. With some inductive reasoning, it should not be
+difficult to see that evaluating <FONT
+COLOR="RED"
+>aux(1)</FONT
+> indeed leads to all the
+permutations being output according to the lexicographic ordering on
+integer sequences.
+</P
+><P
+>&#13;Please find the entire code in this section plus some additional
+code for testing <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_EFFECTFUL/permord.dats"
+TARGET="_top"
+>on-line</A
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1525.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1601.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Arrays</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1379.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Matrices</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

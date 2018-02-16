@@ -1,0 +1,576 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Proof Functions for View-Changes</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Dataviews as Linear Dataprops"
+HREF="c3554.html"><LINK
+REL="PREVIOUS"
+TITLE="Dataview for Singly-Linked Lists"
+HREF="x3702.html"><LINK
+REL="NEXT"
+TITLE="Dataviewtypes as Linear Datatypes"
+HREF="c3811.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3702.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 14. Dataviews as Linear Dataprops</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c3811.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="view-changes"
+>Proof Functions for View-Changes</A
+></H1
+><P
+>&#13;By the phrase <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>view-change</I
+></SPAN
+>, I mean applying a function to
+proofs of a set of views to turn them into proofs of another set of views.
+As this function itself is a proof function, there is no run-time cost
+associated with each view-change. For instance, a proof of the at-view
+int32@L for any address L can be turned into a proof of a tuple of 4
+at-views: int8@L, int8@L+1, int8@L+2 and int8@L+3, where int32 and int8 are
+types for 32-bit and 8-bit integers, respectively. Often more interesting
+view-changes involve recursively defined proof functions, and I present
+several of such cases in the rest of this section.
+
+</P
+><P
+>&#13;When implementing an array subscripting operation of O(1)-time, we need a
+proof function to change the view of one array into the views of two
+adjacently located arrays and another proof function to do precisely the
+opposite. Formally speaking, we need to construct the following two proof
+functions <FONT
+COLOR="RED"
+>array_v_split</FONT
+> and <FONT
+COLOR="RED"
+>array_v_unsplit</FONT
+>:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3763"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+array_v_split
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">,</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i &lt;= n<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  pfarr<span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">-</span><span class="staexp">i</span><span class="keyword">,</span> <span class="staexp">l</span><span class="staexp">+</span><span class="staexp">i</span><span class="staexp">*</span><span class="staexp">sizeof</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+array_v_unsplit
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  pf1arr<span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="keyword">)</span><span class="keyword">,</span> pf2arr<span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="staexp">+</span><span class="staexp">n1</span><span class="staexp">*</span><span class="staexp">sizeof</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n2</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="staexp">+</span><span class="staexp">n2</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;An implementation of <FONT
+COLOR="RED"
+>array_v_split</FONT
+> is given as follows:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3767"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">primplmnt</span>
+array_v_split
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">,</span>i<span class="keyword">}</span></span><span class="keyword">(</span>pfarr<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prfun</span> split
+    <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">,</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i &lt;= n<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">i</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>
+    pfarr<span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="keyword">(</span>
+    <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span>
+  <span class="keyword">,</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="staexp">+</span><span class="staexp">i</span><span class="staexp">*</span><span class="staexp">sizeof</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">-</span><span class="staexp">i</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="keyword">=</span>
+    <span class="keyword">sif</span> <span class="staexp">i</span> <span class="staexp"><span class="keyword">&gt;</span></span> <span class="staexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span> array_v_cons <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2arr<span class="keyword">)</span> <span class="keyword">=</span> pfarr</span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span>pf1res1<span class="keyword">,</span> pf1res2<span class="keyword">)</span> <span class="keyword">=</span> split<span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n-1<span class="keyword">,</span>i-1<span class="keyword">}</span></span> <span class="keyword">(</span>pf2arr<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">(</span>array_v_cons <span class="keyword">(</span>pf1<span class="keyword">,</span> pf1res1<span class="keyword">)</span><span class="keyword">,</span> pf1res2<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span> EQINT <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> eqint_make<span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>0<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">(</span>array_v_nil <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> pfarr<span class="keyword">)</span>
+    <span class="keyword">end</span></span> <span class="comment">// end of [sif]</span>
+<span class="keyword">in</span>
+  split <span class="keyword">(</span>pfarr<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [array_v_split]</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;Note that the keyword <FONT
+COLOR="RED"
+>primplmnt</FONT
+> (instead of
+<FONT
+COLOR="RED"
+>implement</FONT
+>) should be used for implementing proof functions.
+One can also choose to use the keyword <FONT
+COLOR="RED"
+>primplement</FONT
+> in place of
+<FONT
+COLOR="RED"
+>primplmnt</FONT
+>. Clearly, the proof function <FONT
+COLOR="RED"
+>split</FONT
+>
+directly encodes a proof based on mathematical induction. Following is an
+implementation of <FONT
+COLOR="RED"
+>array_v_unsplit</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3776"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">primplmnt</span>
+array_v_unsplit
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">}</span></span>
+  <span class="keyword">(</span>pf1arr<span class="keyword">,</span> pf2arr<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prfun</span> unsplit
+    <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n1</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>
+    pf1arr<span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="keyword">)</span>
+  <span class="keyword">,</span> pf2arr<span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="staexp">+</span><span class="staexp">n1</span><span class="staexp">*</span><span class="staexp">sizeof</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n2</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="staexp">+</span><span class="staexp">n2</span><span class="keyword">)</span> <span class="keyword">=</span>
+    <span class="keyword">sif</span> <span class="staexp">n1</span> <span class="staexp"><span class="keyword">&gt;</span></span> <span class="staexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span>
+      array_v_cons <span class="keyword">(</span>pf1<span class="keyword">,</span> pf1arr<span class="keyword">)</span> <span class="keyword">=</span> pf1arr</span>
+      <span class="prfexp"><span class="keyword">prval</span> pfres <span class="keyword">=</span> unsplit <span class="keyword">(</span>pf1arr<span class="keyword">,</span> pf2arr<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      array_v_cons <span class="keyword">(</span>pf1<span class="keyword">,</span> pfres<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span> array_v_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf1arr</span> <span class="keyword">in</span> pf2arr
+    <span class="keyword">end</span></span> <span class="comment">// end of [sif]</span>
+<span class="keyword">in</span>
+  unsplit <span class="keyword">(</span>pf1arr<span class="keyword">,</span> pf2arr<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [array_v_unsplit]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The proof function <FONT
+COLOR="RED"
+>unsplit</FONT
+> also directly encodes a proof based on
+mathematical induction.
+
+</P
+><P
+>&#13;Let us now see an even more interesting proof function for performing
+view-change.  The interface of the proof function <FONT
+COLOR="RED"
+>array_v_takeout</FONT
+>
+is given as follows:
+
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3781"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+array_v_takeout
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">,</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i <span class="keyword">&lt;</span> n<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  pfarr<span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="staexp">+</span><span class="staexp">i</span><span class="staexp">*</span><span class="staexp">sizeof</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="staexp">+</span><span class="staexp">i</span><span class="staexp">*</span><span class="staexp">sizeof</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">lin</span><span class="keyword">,</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;Note that the following type is for a linear proof function that takes a
+proof of an at-view to return a proof of an array-view:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3784"
+></A
+><PRE
+CLASS="programlisting"
+>a @ l+i*sizeof(a) -&#60;lin,prf&#62; array_v (a, l, n)
+</PRE
+><P
+></P
+></DIV
+>
+
+
+As such a function essentially represents an array with one missing cell,
+we may simply say that <FONT
+COLOR="RED"
+>array_v_takeout</FONT
+> turns the view of an
+array into an at-view (for one cell) and a view for the rest of the array.
+By making use of <FONT
+COLOR="RED"
+>array_v_takeout</FONT
+>, we can give another
+implementation of <FONT
+COLOR="RED"
+>arrget</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3789"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+arrget<span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">,</span>i<span class="keyword">}</span></span>
+  <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> p<span class="keyword">,</span> i<span class="keyword">)</span> <span class="keyword">=</span> x <span class="keyword">where</span> <span class="keyword">{</span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span>pf1<span class="keyword">,</span> fpf2<span class="keyword">)</span> <span class="keyword">=</span>
+  array_v_takeout<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">,</span>i<span class="keyword">}</span></span> <span class="keyword">(</span>pf<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> x <span class="keyword">=</span> ptr_get1&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="prfexp">pf1</span> <span class="keyword">|</span> ptr_add&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>p<span class="keyword">,</span> i<span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf := fpf2 <span class="keyword">(</span>pf1<span class="keyword">)</span></span> <span class="comment">// putting the cell and the rest together</span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [arrget] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The proof function <FONT
+COLOR="RED"
+>array_v_takeout</FONT
+> can be implemented as follows:
+</P
+><DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3793"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">primplmnt</span>
+array_v_takeout
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">,</span>i<span class="keyword">}</span></span><span class="keyword">(</span>pfarr<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prfun</span> takeout
+    <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">,</span>i<span class="keyword">:</span>nat <span class="keyword">|</span> i <span class="keyword">&lt;</span> n<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">i</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>
+    pfarr<span class="keyword">:</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="keyword">(</span>
+    <span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="staexp">+</span><span class="staexp">i</span><span class="staexp">*</span><span class="staexp">sizeof</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+  <span class="keyword">,</span> <span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="staexp">+</span><span class="staexp">i</span><span class="staexp">*</span><span class="staexp">sizeof</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">lin</span><span class="keyword">,</span><span class="staexp">prf</span><span class="keyword">&gt;</span> <span class="staexp">array_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+    <span class="prfexp"><span class="keyword">prval</span> array_v_cons <span class="keyword">(</span>pf1at<span class="keyword">,</span> pf1arr<span class="keyword">)</span> <span class="keyword">=</span> pfarr</span>
+  <span class="keyword">in</span>
+    <span class="keyword">sif</span> <span class="staexp">i</span> <span class="staexp"><span class="keyword">&gt;</span></span> <span class="staexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span>pfres<span class="keyword">,</span> fpfres<span class="keyword">)</span> <span class="keyword">=</span> takeout<span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n-1<span class="keyword">,</span>i-1<span class="keyword">}</span></span><span class="keyword">(</span>pf1arr<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">(</span>pfres<span class="keyword">,</span> <span class="keyword">llam</span> <span class="keyword">(</span>pfres<span class="keyword">)</span> <span class="keyword">=&gt;</span> array_v_cons <span class="keyword">(</span>pf1at<span class="keyword">,</span> fpfres <span class="keyword">(</span>pfres<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span> EQINT <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> eqint_make<span class="staexp"><span class="keyword">{</span>i<span class="keyword">,</span>0<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">(</span>pf1at<span class="keyword">,</span> <span class="keyword">llam</span> <span class="keyword">(</span>pf1at<span class="keyword">)</span> <span class="keyword">=&gt;</span> array_v_cons <span class="keyword">(</span>pf1at<span class="keyword">,</span> pf1arr<span class="keyword">)</span><span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [sif]</span>
+  <span class="keyword">end</span></span> <span class="comment">// end of [takeout]</span>
+<span class="keyword">in</span>
+  takeout<span class="staexp"><span class="keyword">{</span>l<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">,</span>i<span class="keyword">}</span></span><span class="keyword">(</span>pfarr<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [array_v_takeout]</span>
+</p></PRE
+><P
+></P
+></DIV
+><P
+>&#13;Note that <FONT
+COLOR="RED"
+>llam</FONT
+> is a keyword for forming linear functons.  Once
+a linear function is applied, it is consumed and the resource in it, if not
+reclaimed, moves into the result it returns.
+
+</P
+><P
+>&#13;The proof functions presented so far for view-changes are all manipulating
+array-views. The following one is different in this regard as it combines
+two views for singly-linked list segments into one:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3798"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+slseg_v_unsplit
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>l1<span class="keyword">,</span>l2<span class="keyword">,</span>l3<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  pf1lst<span class="keyword">:</span> <span class="staexp">slseg_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l1</span><span class="keyword">,</span> <span class="staexp">l2</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="keyword">)</span><span class="keyword">,</span> pf2lst<span class="keyword">:</span> <span class="staexp">slseg_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l2</span><span class="keyword">,</span> <span class="staexp">l3</span><span class="keyword">,</span> <span class="staexp">n2</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">slseg_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l1</span><span class="keyword">,</span> <span class="staexp">l3</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="staexp">+</span><span class="staexp">n2</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The type of <FONT
+COLOR="RED"
+>slseg_v_unsplit</FONT
+> essentially states that a list
+segment from L1 to L2 that is of length N1 and another list segment from L2
+to L3 that is of length N2 can be thought of as a list segment from L1 to
+L3 that is of length N1+N2. The following implementation of
+<FONT
+COLOR="RED"
+>slseg_v_unsplit</FONT
+> is largely parallel to that of
+<FONT
+COLOR="RED"
+>array_v_unsplit</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3803"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">primplmnt</span>
+slseg_v_unsplit
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>pf1lst<span class="keyword">,</span> pf2lst<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prfun</span> unsplit
+    <span class="staexp"><span class="keyword">{</span>l1<span class="keyword">,</span>l2<span class="keyword">,</span>l3<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n1</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>
+    pf1lst<span class="keyword">:</span> <span class="staexp">slseg_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l1</span><span class="keyword">,</span> <span class="staexp">l2</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="keyword">)</span><span class="keyword">,</span> pf2lst<span class="keyword">:</span> <span class="staexp">slseg_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l2</span><span class="keyword">,</span> <span class="staexp">l3</span><span class="keyword">,</span> <span class="staexp">n2</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">slseg_v</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">l1</span><span class="keyword">,</span> <span class="staexp">l3</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="staexp">+</span><span class="staexp">n2</span><span class="keyword">)</span> <span class="keyword">=</span>
+    <span class="keyword">sif</span> <span class="staexp">n1</span> <span class="staexp"><span class="keyword">&gt;</span></span> <span class="staexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span> slseg_v_cons <span class="keyword">(</span>pf1at<span class="keyword">,</span> pf1lst<span class="keyword">)</span> <span class="keyword">=</span> pf1lst</span>
+    <span class="keyword">in</span>
+      slseg_v_cons <span class="keyword">(</span>pf1at<span class="keyword">,</span> unsplit <span class="keyword">(</span>pf1lst<span class="keyword">,</span> pf2lst<span class="keyword">)</span><span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span> slseg_v_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf1lst</span> <span class="keyword">in</span> pf2lst
+    <span class="keyword">end</span></span> <span class="comment">// end of [sif]</span>
+<span class="keyword">in</span>
+  unsplit <span class="keyword">(</span>pf1lst<span class="keyword">,</span> pf2lst<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [slseg_v_unsplit]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The reader may find it interesting to give an implementation of
+<FONT
+COLOR="RED"
+>slist_ptr_append</FONT
+> by making use of <FONT
+COLOR="RED"
+>slseg_v_unsplit</FONT
+>.
+
+</P
+><P
+>&#13;Please find on-line the files <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_DATAVIEW/array.dats"
+TARGET="_top"
+>array.dats</A
+> and <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_DATAVIEW/slist.dats"
+TARGET="_top"
+>slist.dats</A
+>,
+which contains the code employed for illustration in this section.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3702.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c3811.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Dataview for Singly-Linked Lists</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3554.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Dataviewtypes as Linear Datatypes</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

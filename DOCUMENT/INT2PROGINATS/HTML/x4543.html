@@ -1,0 +1,443 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Generic Operations on Numbers</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="From Genericity to Late-Binding"
+HREF="c4479.html"><LINK
+REL="PREVIOUS"
+TITLE="From Genericity to Late-Binding"
+HREF="c4479.html"><LINK
+REL="NEXT"
+TITLE="Templates as a Special Form of Functors"
+HREF="x4576.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c4479.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 17. From Genericity to Late-Binding</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x4576.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="generic-operations-on-numbers"
+>Example: Generic Operations on Numbers</A
+></H1
+><P
+>&#13;There are many types of numbers in ATS. With function templates, we can
+greatly enhance code sharing in numerical computation. For example, we can
+give a generic implementation of matrix multiplication of the following
+interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4546"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+matrix_mul
+  <span class="staexp"><span class="keyword">{</span>p<span class="keyword">,</span>q<span class="keyword">,</span>r<span class="keyword">:</span>int<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  p<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">p</span><span class="keyword">)</span>
+<span class="keyword">,</span> q<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">q</span><span class="keyword">)</span>
+<span class="keyword">,</span> r<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">r</span><span class="keyword">)</span>
+<span class="keyword">,</span> A<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">matrix</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">,</span> <span class="staexp">q</span><span class="keyword">)</span>
+<span class="keyword">,</span> B<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">matrix</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">q</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span>
+<span class="keyword">,</span> C<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">matrix</span><span class="keyword">(</span><span class="staexp">a</span><span class="staexp">?</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">matrix</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">,</span> <span class="staexp">r</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span></span> <span class="comment">// end of [matrix_mul]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+and then use it to immediately obtain implementations of matrix
+multiplication for matrices of integers, matrices of floating point
+numbers, matrices of floating point complex numbers, etc. This approach is
+clearly far superior to relying on error-prone macros in C.
+
+</P
+><P
+>&#13;Let us take a look at a concrete example involving generic operations on
+numbers. The following code gives a standard implementation of the
+factorial function:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4549"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span> fact<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+fact<span class="keyword">(</span>n<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> n * fact<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1</span></span>
+<span class="comment">// end of [fact]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+When applied to 100, <FONT
+COLOR="RED"
+>fact</FONT
+> is likely to return 0. This can be
+easily understood as the true value of the factorial of 100 is a multiple
+of 2<SUP
+>32</SUP
+> and the multiplication operation on integers of the type
+<FONT
+COLOR="RED"
+>int</FONT
+> is probably modulo 2<SUP
+>32</SUP
+>. Suppose that we want to
+replace this multiplication operation with the one on floating point
+numbers of double precision. This can be done by implementing a slight variant
+of <FONT
+COLOR="RED"
+>fact</FONT
+> as follows
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4556"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span> factd<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">double</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+factd<span class="keyword">(</span>n<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> n * factd<span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="dynexp">1.0</span></span>
+<span class="comment">// end of [factd]</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+When applied to 100, <FONT
+COLOR="RED"
+>factd</FONT
+> should return a large floating point
+number. Obviously, there is a great deal of code duplication between the
+implementations of <FONT
+COLOR="RED"
+>fact</FONT
+> and <FONT
+COLOR="RED"
+>factd</FONT
+>. We can readily
+eliminate this duplication by introducing a generic implementation of the
+factorial function as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4561"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span> gfact<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">a</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+gfact<span class="keyword">(</span>n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span>
+<span class="keyword">then</span> gmul_int_val&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>n<span class="keyword">,</span> gfact&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span><span class="keyword">)</span>
+<span class="keyword">else</span> gnumber_int&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [gfact] *)</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+With a bit of help from the support for
+overloading in ATS, we can rewrite <FONT
+COLOR="RED"
+>gfact</FONT
+> as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4564"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+gfact<span class="keyword">(</span>n<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">overload</span> * <span class="keyword">with</span> gmul_int_val</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> n <span class="keyword">&gt;</span> <span class="dynexp">0</span>
+<span class="keyword">then</span> n * gfact&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>n-<span class="dynexp">1</span><span class="keyword">)</span> <span class="keyword">else</span> gnumber_int&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">1</span><span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">(* end of [gfact] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+We can now implement <FONT
+COLOR="RED"
+>fact</FONT
+> and <FONT
+COLOR="RED"
+>factd</FONT
+>
+as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4568"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span> fact<span class="keyword">(</span>n<span class="keyword">)</span> <span class="keyword">=</span> gfact&lt;<span class="staexp">int</span><span class="keyword">&gt;</span><span class="keyword">(</span>n<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">implement</span> factd<span class="keyword">(</span>n<span class="keyword">)</span> <span class="keyword">=</span> gfact&lt;<span class="staexp">double</span><span class="keyword">&gt;</span><span class="keyword">(</span>n<span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+There is support in ATS based on the GNU multiple precision arithmetic
+library (GMPLIB) for integers of unlimited precision. The following code
+presents a way to compute the true value of the factorial of 100:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4570"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span>
+HX_INTINF_targetloc
+"$PATSHOME/contrib/atscntrb-hx-intinf"</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">staload</span> _<span class="comment">(*T*)</span> <span class="keyword">=</span>
+"{$HX_INTINF}/DATS/intinf_t.dats"</span>
+<span class="neuexp"><span class="keyword">staload</span> _<span class="comment">(*VT*)</span> <span class="keyword">=</span>
+"{$HX_INTINF}/DATS/intinf_vt.dats"</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">staload</span>
+GINTINF <span class="keyword">=</span>
+"{$HX_INTINF}/DATS/gintinf_t.dats"</span>
+<span class="comment">//</span>
+<span class="comment">(* ****** ****** *)</span>
+<span class="comment">//</span>
+<span class="keyword">typedef</span> <span class="staexp">intinf <span class="keyword">=</span> <span class="staexp">$GINTINF<span class="keyword">.</span>intinf</span></span>
+<span class="dynexp"><span class="keyword">overload</span> print <span class="keyword">with</span> $GINTINF<span class="keyword">.</span>print_intinf</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="dynexp">println!</span> <span class="keyword">(</span><span class="dynstr">"gfact&lt;intinf&gt;(100) = "</span><span class="keyword">,</span> gfact&lt;<span class="staexp">intinf</span><span class="keyword">&gt;</span><span class="keyword">(</span><span class="dynexp">100</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+I only list some leading digits of the result:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4572"
+></A
+><PRE
+CLASS="programlisting"
+>gfact&#60;intinf&#62;(100) = 933262154439441526816992388562667[...omitted...]
+</PRE
+><P
+></P
+></DIV
+>
+
+</P
+><P
+>&#13;Please find on-line the file
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_FNTMPINT/gnumber.dats"
+TARGET="_top"
+>gnumber.dats</A
+> containing the
+entirety of the code presented in this section plus some testing code.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c4479.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x4576.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>From Genericity to Late-Binding</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c4479.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Templates as a Special Form of Functors</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

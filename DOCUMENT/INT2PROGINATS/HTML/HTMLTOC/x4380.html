@@ -1,0 +1,804 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Linear Channels for Asynchronous IPC</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Abstract Views and Viewtypes"
+HREF="c4179.html"><LINK
+REL="PREVIOUS"
+TITLE="Locking and Unlocking"
+HREF="x4332.html"><LINK
+REL="NEXT"
+TITLE="Programming with Function Templates"
+HREF="p4470.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x4332.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 16. Abstract Views and Viewtypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="p4470.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="linear-channels-for-async-ipc"
+>Linear Channels for Asynchronous IPC</A
+></H1
+><P
+>&#13;In this section, I will present an implementation of
+linear channels to support asynchronous communication between threads. This
+is also a very fitting occasion for me to advocate what I often refer to as
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>programmer-centric</I
+></SPAN
+> program verification.
+</P
+><P
+>&#13;A communication channel between threads is essentially
+a queue wrapped in some kind of protection mechanism needed for guarding
+against race conditions.  Assume that a queue is of a fixed capacity, that
+is, the capacity of the queue is fixed after its creation. If the queue is
+full, then inserting an element into it results in a failure.  If the queue
+is empty, then removing an element from it results in a failure. In order
+to prevent inserting into a full queue or removing from an empty queue, I
+could first introduce a linear abstract type for queues as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4385"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="staexp"><span class="keyword">absvtype</span>
+queue_vtype<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype+</span><span class="keyword">,</span> int<span class="comment">(*m*)</span><span class="keyword">,</span> int<span class="comment">(*n*)</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">queue<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">vt@ype</span></span><span class="keyword">,</span><span class="staexp">m<span class="keyword">:</span>int</span><span class="keyword">,</span><span class="staexp">n<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">queue_vtype</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span><span class="staexp">m</span><span class="keyword">,</span><span class="staexp">n</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the type <FONT
+COLOR="RED"
+>queue(VT,M,N)</FONT
+> is for a queue of capacity M that
+currently contains N elements of type VT. Then the functions for inserting
+into and removing from a queue are expected to be given the following
+interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4388"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+queue_insert
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat <span class="keyword">|</span> m <span class="keyword">&gt;</span> n<span class="keyword">}</span></span>
+  <span class="keyword">(</span><span class="staexp"><span class="keyword">!</span></span><span class="staexp">queue</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">queue</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+queue_remove
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>nat <span class="keyword">|</span> n <span class="keyword">&gt;</span> 0<span class="keyword">}</span></span><span class="keyword">(</span><span class="staexp"><span class="keyword">!</span></span><span class="staexp">queue</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">queue</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">-</span><span class="staexp">1</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The presented abstract type <FONT
+COLOR="RED"
+>queue</FONT
+> can indeed work very well for
+the task of implementing linear channels. However, I will not continue with
+this version of <FONT
+COLOR="RED"
+>queue</FONT
+> further for I intend to present a style of
+program verification that is less rigorous but far more flexible.
+
+</P
+><P
+>&#13;Following is another version of abstract type <FONT
+COLOR="RED"
+>queue</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4394"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="staexp"><span class="keyword">absvtype</span>
+queue_vtype<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype+</span><span class="keyword">,</span> int<span class="comment">(*id*)</span><span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="comment">//</span>
+<span class="keyword">vtypedef</span>
+<span class="staexp">queue<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">,</span> <span class="staexp">id<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">queue_vtype</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">id</span><span class="keyword">)</span></span>
+<span class="keyword">vtypedef</span> <span class="staexp">queue<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp"><span class="keyword">[</span>id<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">queue</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">id</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a viewtype VT and an integer ID, <FONT
+COLOR="RED"
+>queue(VT,ID)</FONT
+> is for a
+queue containing elements of the type VT that can be uniquely identified
+with the integer ID. So one may think of ID as some form of stamp. The
+following declared function <FONT
+COLOR="RED"
+>queue_isnil</FONT
+> is for testing whether
+a given queue is empty:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4398"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="staexp"><span class="keyword">absprop</span> ISNIL<span class="keyword">(</span>id<span class="keyword">:</span>int<span class="keyword">,</span> b<span class="keyword">:</span>bool<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+queue_isnil<span class="staexp"><span class="keyword">{</span>id<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="keyword">(</span><span class="staexp"><span class="keyword">!</span></span><span class="staexp">queue</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">id</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>b<span class="keyword">:</span>bool<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">ISNIL</span><span class="keyword">(</span><span class="staexp">id</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">bool</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given an integer ID, a proof of the prop <FONT
+COLOR="RED"
+>ISNIL(ID,true)</FONT
+>
+(<FONT
+COLOR="RED"
+>ISNIL(ID,false)</FONT
+>) means that the queue uniquely identified by
+ID is (not) empty. Similarly, the following declared function
+<FONT
+COLOR="RED"
+>queue_isful</FONT
+> is for testing whether a given queue is full:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4403"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="staexp"><span class="keyword">absprop</span> ISFUL<span class="keyword">(</span>id<span class="keyword">:</span>int<span class="keyword">,</span> b<span class="keyword">:</span>bool<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+queue_isful<span class="staexp"><span class="keyword">{</span>id<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="keyword">(</span><span class="staexp"><span class="keyword">!</span></span><span class="staexp">queue</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">id</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>b<span class="keyword">:</span>bool<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">ISFUL</span><span class="keyword">(</span><span class="staexp">id</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">bool</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given an integer ID, a proof of the prop <FONT
+COLOR="RED"
+>ISFUL(ID,true)</FONT
+>
+(<FONT
+COLOR="RED"
+>ISFUL(ID,false)</FONT
+>) means that the queue uniquely identified by
+ID is (not) full.
+
+</P
+><P
+>&#13;The functions <FONT
+COLOR="RED"
+>queue_insert</FONT
+> and <FONT
+COLOR="RED"
+>queue_remove</FONT
+>
+for inserting into and removing from a given queue can now be given the
+following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4410"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+queue_insert
+  <span class="staexp"><span class="keyword">{</span>id<span class="keyword">:</span>int<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="prfexp"><span class="staexp">ISFUL</span><span class="keyword">(</span><span class="staexp">id</span><span class="keyword">,</span> <span class="staexp">false</span><span class="keyword">)</span></span>
+<span class="keyword">|</span> xs<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">queue</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">id</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">queue</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">id2</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">#[</span>id2<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+queue_remove
+  <span class="staexp"><span class="keyword">{</span>id<span class="keyword">:</span>int<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="prfexp"><span class="staexp">ISNIL</span><span class="keyword">(</span><span class="staexp">id</span><span class="keyword">,</span> <span class="staexp">false</span><span class="keyword">)</span></span> <span class="keyword">|</span> xs<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">queue</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">id</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">queue</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">id2</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">#[</span>id2<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="staexp">a</span></span> <span class="comment">// end-of-fun</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that either inserting an element into a queue or removing an element
+from a queue assigns a new stamp to the queue.  This is essential for
+interpreting <FONT
+COLOR="RED"
+>ISNIL</FONT
+> and <FONT
+COLOR="RED"
+>ISFUL</FONT
+> in the manner presented
+above.
+
+</P
+><P
+>&#13;In order to call <FONT
+COLOR="RED"
+>queue_insert</FONT
+> on a given queue, one needs to
+have a proof attesting to the queue being not full. Such a proof is
+obtained if calling <FONT
+COLOR="RED"
+>queue_isful</FONT
+> on the queue returns false.
+Similarly, in order to call <FONT
+COLOR="RED"
+>queue_remove</FONT
+> on a given queue,
+one can first call <FONT
+COLOR="RED"
+>queue_isnil</FONT
+> on the queue to obtain a proof
+attesting to the queue being not empty.
+</P
+><P
+>&#13;What is really of concern here is not to actually verify that
+<FONT
+COLOR="RED"
+>queue_isnil</FONT
+> and <FONT
+COLOR="RED"
+>queue_isful</FONT
+> have the interface
+assigned to them. Instead, the focus is on ensuring that
+<FONT
+COLOR="RED"
+>queue_insert</FONT
+> is never applied to a full queue and
+<FONT
+COLOR="RED"
+>queue_remove</FONT
+> is never applied to an empty queue under the
+assumption that <FONT
+COLOR="RED"
+>queue_isnil</FONT
+> and <FONT
+COLOR="RED"
+>queue_isful</FONT
+> have
+the assigned interface. I refer to this form of program verification as
+being <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>programmer-centric</I
+></SPAN
+> because its correctness is not
+formally established in an objective manner. I myself find that
+programmer-centric program verification is very flexible and effective in
+practice.  If we believe that constructing informal mathematical proofs can
+help one check whether the proven statements are valid, then it is only
+natural to believe that programmer-centric program verification can also
+help one check whether verified programs are correct.
+</P
+><P
+>&#13;Let us now start to implement linear channels for asynchronous
+communication between threads. First, let us declare a linear abstract
+type <FONT
+COLOR="RED"
+>channel</FONT
+> as follows:
+
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4429"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="staexp"><span class="keyword">absvtype</span> channel_vtype<span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype+</span><span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+<span class="keyword">vtypedef</span> <span class="staexp">channel<span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span>vt0p</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">channel_vtype</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The function for inserting an element into a channel is given the following
+interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4431"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> channel_insert <span class="keyword">(</span><span class="staexp"><span class="keyword">!</span></span><span class="staexp">channel</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The caller of <FONT
+COLOR="RED"
+>channel_insert</FONT
+> is blocked if the channel is full.
+Similarly, the function for removing an element from a channel is given the following
+interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4434"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span> channel_remove <span class="keyword">(</span>chan<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">channel</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The caller of <FONT
+COLOR="RED"
+>channel_remove</FONT
+> is blocked if the channel is empty.
+
+</P
+><P
+>&#13;Let a channel be represented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4438"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="keyword">datavtype</span>
+<span class="staexp">channel_ <span class="keyword">=</span>
+<span class="dynexp"><span class="staexp"><span class="keyword">{</span>
+l0<span class="keyword">,</span>l1<span class="keyword">,</span>l2<span class="keyword">,</span>l3<span class="keyword">:</span>agz
+<span class="keyword">}</span></span> CHANNEL <span class="keyword">of</span>
+<span class="keyword">@{</span>
+  <span class="stalab">cap</span><span class="keyword">=</span><span class="staexp">intGt</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span>
+<span class="keyword">,</span> <span class="stalab">spin</span><span class="keyword">=</span><span class="staexp">spin_vt</span><span class="keyword">(</span><span class="staexp">l0</span><span class="keyword">)</span>
+<span class="keyword">,</span> <span class="stalab">rfcnt</span><span class="keyword">=</span><span class="staexp">intGt</span><span class="keyword">(</span><span class="staexp">0</span><span class="keyword">)</span>
+<span class="keyword">,</span> <span class="stalab">mutex</span><span class="keyword">=</span><span class="staexp">mutex_vt</span><span class="keyword">(</span><span class="staexp">l1</span><span class="keyword">)</span>
+<span class="keyword">,</span> <span class="stalab">CVisnil</span><span class="keyword">=</span><span class="staexp">condvar_vt</span><span class="keyword">(</span><span class="staexp">l2</span><span class="keyword">)</span>
+<span class="keyword">,</span> <span class="stalab">CVisful</span><span class="keyword">=</span><span class="staexp">condvar_vt</span><span class="keyword">(</span><span class="staexp">l3</span><span class="keyword">)</span>
+<span class="keyword">,</span> <span class="stalab">queue</span><span class="keyword">=</span><span class="staexp">ptr</span> <span class="comment">// deqarray</span>
+<span class="keyword">}</span></span></span> <span class="comment">(* end of [channel] *)</span>
+<span class="comment">//</span>
+<span class="staexp"><span class="keyword">assume</span> channel_vtype<span class="keyword">(</span>a<span class="keyword">:</span>vt0p<span class="keyword">)</span> <span class="keyword">=</span> channel_</span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+There are 7 fields in the record representing a channel; the
+<FONT
+COLOR="RED"
+>cap</FONT
+> field stores an integer indicating the (fixed) capacity of
+the channel; the <FONT
+COLOR="RED"
+>spin</FONT
+> field stores a spin-lock for protecting
+the reference count in the field of the name <FONT
+COLOR="RED"
+>rfcnt</FONT
+>; the
+<FONT
+COLOR="RED"
+>mutex</FONT
+> field stores a mutex for protecting the queue in the
+field of the name <FONT
+COLOR="RED"
+>queue</FONT
+>; the field <FONT
+COLOR="RED"
+>CVisnil</FONT
+> stores a
+conditional variable for the situation where a caller (holding the mutex)
+wants to wait for the condition that the queue becomes not empty; the
+field <FONT
+COLOR="RED"
+>CVisful</FONT
+> stores a conditional variable for the situation
+where a caller (holding the mutex) wants to wait for the condition that the
+queue becomes not full.
+
+</P
+><P
+>&#13;The function
+<FONT
+COLOR="RED"
+>channel_insert</FONT
+> is given the following implementation:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4449"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+channel_insert
+  <span class="keyword">(</span>chan<span class="keyword">,</span> x0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val+</span>CHANNEL
+  <span class="staexp"><span class="keyword">{</span>l0<span class="keyword">,</span>l1<span class="keyword">,</span>l2<span class="keyword">,</span>l3<span class="keyword">}</span></span><span class="keyword">(</span>ch<span class="keyword">)</span> <span class="keyword">=</span> chan</span>
+<span class="dynexp"><span class="keyword">val</span> mutex <span class="keyword">=</span> unsafe_mutex_vt2t<span class="keyword">(</span>ch<span class="dynexp"><span class="keyword">.</span>mutex</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pfmut</span> <span class="keyword">|</span> <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=</span> mutex_lock <span class="keyword">(</span>mutex<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> xs <span class="keyword">=</span>
+  $UN<span class="keyword">.</span>castvwtp0<span class="staexp"><span class="keyword">{</span>queue<span class="keyword">(</span>a<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span><span class="keyword">(</span><span class="prfexp">pfmut</span> <span class="keyword">|</span> ch<span class="dynexp"><span class="keyword">.</span>queue</span><span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> channel_insert2&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>chan<span class="keyword">,</span> xs<span class="keyword">,</span> x0<span class="keyword">)</span></span>
+<span class="prfexp"><span class="keyword">prval</span> pfmut <span class="keyword">=</span> $UN<span class="keyword">.</span>castview0<span class="staexp"><span class="keyword">{</span>locked_v<span class="keyword">(</span>l1<span class="keyword">)</span><span class="keyword">}</span></span><span class="keyword">(</span>xs<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> mutex_unlock <span class="keyword">(</span><span class="prfexp">pfmut</span> <span class="keyword">|</span> mutex<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span></span> <span class="comment">// end of [channel_insert]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where
+the auxiliary function <FONT
+COLOR="RED"
+>channel_insert2</FONT
+> is given
+the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4452"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+channel_insert2
+  <span class="keyword">(</span><span class="staexp"><span class="keyword">!</span></span><span class="staexp">channel</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">queue</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Please note that <FONT
+COLOR="RED"
+>channel_insert2</FONT
+> is called when
+the caller is holding the mutex inside the channel. Following
+is an implementation for <FONT
+COLOR="RED"
+>channel_insert2</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4456"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+<span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span><span class="comment">(*tmp*)</span>
+channel_insert2
+  <span class="keyword">(</span>chan<span class="keyword">,</span> xs<span class="keyword">,</span> x0<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val+</span>CHANNEL
+  <span class="staexp"><span class="keyword">{</span>l0<span class="keyword">,</span>l1<span class="keyword">,</span>l2<span class="keyword">,</span>l3<span class="keyword">}</span></span><span class="keyword">(</span>ch<span class="keyword">)</span> <span class="keyword">=</span> chan</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> isful<span class="keyword">)</span> <span class="keyword">=</span> queue_isful <span class="keyword">(</span>xs<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span>
+isful
+<span class="keyword">then</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prval</span>
+  <span class="keyword">(</span>pfmut<span class="keyword">,</span> fpf<span class="keyword">)</span> <span class="keyword">=</span>
+  __assert <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">where</span>
+  <span class="keyword">{</span>
+    <span class="keyword">extern</span>
+    <span class="prfexp"><span class="keyword">praxi</span> __assert <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">vtakeout0</span><span class="keyword">(</span><span class="staexp">locked_v</span><span class="keyword">(</span><span class="staexp">l1</span><span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="keyword">}</span></span>
+  <span class="dynexp"><span class="keyword">val</span> mutex <span class="keyword">=</span> unsafe_mutex_vt2t<span class="keyword">(</span>ch<span class="dynexp"><span class="keyword">.</span>mutex</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> CVisful <span class="keyword">=</span> unsafe_condvar_vt2t<span class="keyword">(</span>ch<span class="dynexp"><span class="keyword">.</span>CVisful</span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> condvar_wait <span class="keyword">(</span><span class="prfexp">pfmut</span> <span class="keyword">|</span> CVisful<span class="keyword">,</span> mutex<span class="keyword">)</span></span>
+  <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> fpf <span class="keyword">(</span>pfmut<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  channel_insert2 <span class="keyword">(</span>chan<span class="keyword">,</span> xs<span class="keyword">,</span> x0<span class="keyword">)</span>
+<span class="keyword">end</span> <span class="comment">// end of [then]</span>
+<span class="keyword">else</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> isnil <span class="keyword">=</span> queue_isnil <span class="keyword">(</span>xs<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> queue_insert <span class="keyword">(</span><span class="prfexp">pf</span> <span class="keyword">|</span> xs<span class="keyword">,</span> x0<span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">if</span> isnil<span class="dynexp"><span class="keyword">.1</span></span>
+    <span class="keyword">then</span> condvar_broadcast<span class="keyword">(</span>unsafe_condvar_vt2t<span class="keyword">(</span>ch<span class="dynexp"><span class="keyword">.</span>CVisnil</span><span class="keyword">)</span><span class="keyword">)</span></span>
+  <span class="comment">// end of [if]</span>
+<span class="dynexp"><span class="keyword">in</span>
+  <span class="comment">// nothing</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [else]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [channel_insert2]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The logic behind <FONT
+COLOR="RED"
+>channel_insert2</FONT
+> can be explained as follows.
+If the queue in the given channel is full, the caller calls
+<FONT
+COLOR="RED"
+>condvar_wait</FONT
+> to release the mutex it holds and then wait on the
+conditional variable stored in the field <FONT
+COLOR="RED"
+>CVisful</FONT
+> of the
+channel; after the caller regains the mutex after being awoken by a signal
+sent to the conditioanl variable, it calls <FONT
+COLOR="RED"
+>channel_insert2</FONT
+>
+recursively. If the queue in the given channel is not full, then the caller
+insert a given element into the queue stored in the field <FONT
+COLOR="RED"
+>queue</FONT
+>
+and then returns. Note that <FONT
+COLOR="RED"
+>channel_insert2</FONT
+> is a tail-recursive
+function that essentially corresponds to a standard while-loop often
+appearing in C code for handling the wait on a conditional variable.
+</P
+><P
+>&#13;By following the above implementation for <FONT
+COLOR="RED"
+>channel_insert</FONT
+> (and
+<FONT
+COLOR="RED"
+>channel_insert2</FONT
+>), it should be pretty straightforward for one
+to figure out an implementation for <FONT
+COLOR="RED"
+>channel_remove</FONT
+>. I leave it
+as an exercise.
+
+</P
+><P
+>&#13;Please find on-line the file
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_ABSVTYPE/channel_vt.dats"
+TARGET="_top"
+>channel_vt.dats</A
+>
+containing the entirety of the code presented in this section plus some
+code for testing.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x4332.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="p4470.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Locking and Unlocking</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c4179.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Programming with Function Templates</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

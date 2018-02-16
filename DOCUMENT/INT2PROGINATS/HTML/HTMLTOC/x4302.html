@@ -1,0 +1,440 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Array-Based Circular Buffers</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Abstract Views and Viewtypes"
+HREF="c4186.html"><LINK
+REL="PREVIOUS"
+TITLE="Memory Allocation and Deallocation"
+HREF="x4238.html"><LINK
+REL="NEXT"
+TITLE="Locking and Unlocking"
+HREF="x4339.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x4238.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 16. Abstract Views and Viewtypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x4339.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="array-based-circular-buffers"
+>Example: Array-Based Circular Buffers</A
+></H1
+><P
+>&#13;Array-based circular buffers are of common use in practice. For instance,
+in a typical client/server model, a circular buffer can be employed to hold
+requests issued by multiple clients that are then processed by the server
+according to the first-in-first-out (FIFO) policy. In a case where each
+request needs to be given a priority (chosen from a fixed set), a circular
+buffer can be created for each priority to hold requests of that particular
+priority.
+</P
+><P
+>&#13;Let us declare a linear abstract type (that is, abstract viewtype) as
+follows for values representing circular buffers:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4306"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="staexp"><span class="keyword">absvtype</span>
+cbufObj <span class="keyword">(</span>a<span class="keyword">:</span><span class="keyword">vt@ype+</span><span class="keyword">,</span> m<span class="keyword">:</span>int<span class="keyword">,</span> n<span class="keyword">:</span> int<span class="keyword">)</span> <span class="keyword">=</span> ptr</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Such values are considered simple linear objects (as inheritance is not an
+issue to be dealt with in this setting). Given a viewtype VT and two
+integers M and N, the viewtype <FONT
+COLOR="RED"
+>cbufObj(VT, M, N)</FONT
+> is for a given
+buffer of maximal capacity M that currently holds N elements of the type
+VT.
+
+</P
+><P
+>&#13;Some properties on the parameters of <FONT
+COLOR="RED"
+>cbufObj</FONT
+> can be captured
+by introducing the following proof function:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4311"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+lemma_cbufObj_param
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>buf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">cbufObj</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>m&gt;=n<span class="keyword">;</span> n&gt;=0<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The interface for the following two function templates indicates that they
+can be called to compute the capacity and current size of a buffer:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4313"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+cbufObj_get_cap
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> <span class="keyword">(</span>buf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">cbufObj</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">(</span><span class="staexp">m</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+cbufObj_get_size
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="keyword">(</span>buf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">cbufObj</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;While it is straightforward to use <FONT
+COLOR="RED"
+>cbufObj_get_cap</FONT
+> and
+<FONT
+COLOR="RED"
+>cbufObj_get_size</FONT
+> to tell whether a buffer is currently empty or
+full, a direct approach is likely to be more efficient. The following two
+function templates check for the emptiness and fullness of a given circular
+buffer:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4318"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+cbufObj_is_empty
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="keyword">(</span>buf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">cbufObj</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span><span class="keyword">(</span><span class="staexp">n</span><span class="staexp">==</span><span class="staexp">0</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+cbufObj_is_full
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="keyword">(</span>buf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">cbufObj</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span><span class="keyword">(</span><span class="staexp">m</span><span class="staexp">==</span><span class="staexp">n</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The functions for creating and destroying circular buffers are named
+<FONT
+COLOR="RED"
+>cbufObj_new</FONT
+> and <FONT
+COLOR="RED"
+>cbufObj_free</FONT
+>, respectively:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4323"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+cbufObj_new
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">:</span>pos<span class="keyword">}</span></span><span class="keyword">(</span>m<span class="keyword">:</span> <span class="staexp">size_t</span><span class="keyword">(</span><span class="staexp">m</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">cbufObj</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> cbufObj_free
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>m<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="keyword">(</span>buf<span class="keyword">:</span> <span class="staexp">cbufObj</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that a buffer can be freed only if it contains no elements as
+an element (of some viewtype) may contain resources. If elements in
+a buffer are of some (non-linear) type, then the following function
+can be called to clear out all the elements stored in the buffer:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4325"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+cbufObj_clear
+  <span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>buf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">cbufObj</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">cbufObj</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="comment">// end of [cbufObj_clear]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;The next two functions are for inserting/removing an element into/from a
+given buffer, which are probably the most frequently used operations on
+buffers:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4328"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+cbufObj_insert
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n <span class="keyword">&lt;</span> m<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  buf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">cbufObj</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">cbufObj</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span></span> <span class="comment">// end of [cbufObj_insert]</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span>vt0p<span class="keyword">}</span></span>
+cbufObj_remove
+  <span class="staexp"><span class="keyword">{</span>m<span class="keyword">,</span>n<span class="keyword">:</span>int <span class="keyword">|</span> n <span class="keyword">&gt;</span> 0<span class="keyword">}</span></span>
+  <span class="keyword">(</span>buf<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">cbufObj</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">cbufObj</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="staexp">-</span><span class="staexp">1</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;Please find on-line the file
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_ABSVTYPE/circbuf.sats"
+TARGET="_top"
+>circbuf.sats</A
+>
+containing the entirety of the interface for functions creating, destroying
+and manipulating circular buffers.
+</P
+><P
+>&#13;There are many simple and practical ways to implement the abstract type
+<FONT
+COLOR="RED"
+>cbufObj</FONT
+> and the functions declared in
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_ABSVTYPE/circbuf.sats"
+TARGET="_top"
+>circbuf.sats</A
+>.  In the file
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_ABSVTYPE/circbuf.dats"
+TARGET="_top"
+>circbuf.dats</A
+>, I give an
+implementation that employs four pointers p_beg, p_end, p_frst and p_last
+to represent a circular buffer: p_beg and p_end are the starting and
+finishing addresses of the underline array, respectively, and p_frst and
+p_last are the starting addresses of the occupied and unoccupied segments
+(in the array), respectively. What is special about this implementation is
+its employing a style of programming that deliberately eschews the need for
+proof construction. While code written in this style is not guaranteed to
+be type-safe, the style can nonetheless be of great practical value in a
+setting where constructing formal proofs is deemed too costly a requirement
+to be fully fulfilled. Anyone who tries to give a type-safe implementation
+for the functions declared in <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_ABSVTYPE/circbuf.sats"
+TARGET="_top"
+>circbuf.sats</A
+> should likely find some genuine appreciation for this
+point.
+
+</P
+><P
+>&#13;In the file <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_ABSVTYPE/circbuf2.dats"
+TARGET="_top"
+>circbuf2.dats</A
+>, I
+give another implementation in which a circular buffer is represented as a
+pointer p_beg plus three integers m, n and f: p_beg points to the starting
+location of the underline array, m is the size of the array (that is, the
+capacity of the buffer), n is the number of elements currently stored in
+the buffer and f is the total number of elements that have so far been
+removed from the buffer. Again, proof construction is delibrately eschewed
+in this implementation.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x4238.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x4339.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Memory Allocation and Deallocation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c4186.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Locking and Unlocking</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

@@ -1,0 +1,539 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Templates for Loop Construction</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="From Genericity to Late-Binding"
+HREF="c4479.html"><LINK
+REL="PREVIOUS"
+TITLE="Templates as a Special Form of Functors"
+HREF="x4576.html"><LINK
+REL="NEXT"
+TITLE="Template-Based Support for Late-Binding"
+HREF="x4666.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x4576.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 17. From Genericity to Late-Binding</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x4666.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="template-for-loop-construction"
+>Example: Templates for Loop Construction</A
+></H1
+><P
+>&#13;Beginners in functional programming (FP) who have already acquired some
+knowledge of imperative programming often ask about ways to construct
+for-loops and while-loops in FP. A commonly given answer is that loop
+constructs are unnecessary in FP as they can be readily replaced with
+higher-order functions. Let us first see some thorny issues with this
+answer.
+</P
+><P
+>&#13;The following code in C implements a function that returns the sum
+of the first n natural numbers when applied to a natural number n:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4617"
+></A
+><PRE
+CLASS="programlisting"
+>int
+tally (int n) {
+  int i, res;
+  for (i = 0, res = 0; i &#60; n; i += 1) res += i;
+  return res;
+}
+</PRE
+><P
+></P
+></DIV
+>
+
+
+This function <FONT
+COLOR="RED"
+>tally</FONT
+> can be given the following
+equivalent implementation in ATS:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4620"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+tally
+<span class="keyword">(</span>
+  n<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> loop <span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span> <span class="keyword">where</span>
+<span class="keyword">{</span>
+  <span class="dynexp"><span class="keyword">fun</span> loop <span class="keyword">(</span>i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+    <span class="keyword">if</span> i <span class="keyword">&lt;</span> n <span class="keyword">then</span> loop <span class="keyword">(</span>i + <span class="dynexp">1</span><span class="keyword">,</span> res + i<span class="keyword">)</span> <span class="keyword">else</span> res</span>
+<span class="keyword">}</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the tail-recursive function <FONT
+COLOR="RED"
+>loop</FONT
+> is just a translation
+of the for-loop in C.
+
+</P
+><P
+>&#13;When someone claims that loop constructs can be replaced with higher-order
+functions, he or she probably means to construct loops with a function like
+the following one:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4624"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+for_loop
+<span class="keyword">(</span>
+  count<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> limit<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">void</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> count <span class="keyword">&lt;</span> limit
+  <span class="keyword">then</span> <span class="keyword">(</span>fwork<span class="keyword">(</span>count<span class="keyword">)</span><span class="keyword">;</span> for_loop<span class="keyword">(</span>count+<span class="dynexp">1</span><span class="keyword">,</span> limit<span class="keyword">,</span> fwork<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="comment">// end of [if]</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [for_loop] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+For example, the following function <FONT
+COLOR="RED"
+>tally2</FONT
+> is directly based
+on <FONT
+COLOR="RED"
+>for_loop</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4628"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+tally2
+<span class="keyword">(</span>
+  n<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> ref&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+  for_loop <span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> n<span class="keyword">,</span> <span class="keyword">lam</span> <span class="keyword">(</span>i<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">!</span>res := <span class="keyword">!</span>res + i<span class="keyword">)</span><span class="keyword">;</span> <span class="keyword">!</span>res
+<span class="keyword">end</span></span> <span class="comment">// end of [tally2]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+While both <FONT
+COLOR="RED"
+>tally</FONT
+> and <FONT
+COLOR="RED"
+>tally2</FONT
+> return the same result
+when applied to a given natural number, they behave very differently at
+run-time. In particular, each call to <FONT
+COLOR="RED"
+>tally2</FONT
+> creates a
+(persistent) reference on heap for temporary use; the reference becomes
+garbage immediately after the call returns. Compared to <FONT
+COLOR="RED"
+>tally</FONT
+>,
+<FONT
+COLOR="RED"
+>tally2</FONT
+> is inefficient both time-wise and memory-wise.
+</P
+><P
+>&#13;To eliminate the need for reference creation in <FONT
+COLOR="RED"
+>tally2</FONT
+>, we
+turn <FONT
+COLOR="RED"
+>for_loop</FONT
+> into the following function template
+<FONT
+COLOR="RED"
+>for_loop2</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4639"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+env<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> for_loop2
+<span class="keyword">(</span>
+  count<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> limit<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">,</span> env<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">env</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">,</span> fwork<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">&amp;</span><span class="staexp">env</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">void</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">if</span>
+count <span class="keyword">&lt;</span> limit
+<span class="keyword">then</span> <span class="keyword">(</span>
+  fwork<span class="keyword">(</span>count<span class="keyword">,</span> env<span class="keyword">)</span><span class="keyword">;</span> for_loop2&lt;<span class="staexp">env</span><span class="keyword">&gt;</span> <span class="keyword">(</span>count+<span class="dynexp">1</span><span class="keyword">,</span> limit<span class="keyword">,</span> env<span class="keyword">,</span> fwork<span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [for_loop2] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+We can further turn <FONT
+COLOR="RED"
+>tally2</FONT
+> into the following <FONT
+COLOR="RED"
+>tally3</FONT
+>
+based on <FONT
+COLOR="RED"
+>for_loop2</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4644"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+tally3
+<span class="keyword">(</span>
+  n<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">var</span> res<span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="dynexp">0</span>
+<span class="keyword">in</span>
+  for_loop2&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> n<span class="keyword">,</span> res<span class="keyword">,</span> <span class="keyword">lam</span> <span class="keyword">(</span>i<span class="keyword">,</span> res<span class="keyword">)</span> <span class="keyword">=&gt;</span> res := res + i<span class="keyword">)</span><span class="keyword">;</span> res
+<span class="keyword">end</span></span> <span class="comment">// end of [tally3]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+While <FONT
+COLOR="RED"
+>tally3</FONT
+> improves upon <FONT
+COLOR="RED"
+>tally2</FONT
+>, it is still
+a bit unsatisfactory. Clearly, the closure function formed before
+<FONT
+COLOR="RED"
+>tally3</FONT
+> calls <FONT
+COLOR="RED"
+>for_loop2</FONT
+> becomes garbage
+immediately after the call returns. It is plausible to expect that an
+optimizing C compiler (e.g., gcc and clang) can eliminate the need for
+actual closure formation when it compiles the C code generated from
+ATS source, but there is no guarantee. In order to have such a
+guarantee, we can evolve <FONT
+COLOR="RED"
+>for_loop2</FONT
+> into the following
+function template <FONT
+COLOR="RED"
+>for_loop3:</FONT
+>
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4652"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+env<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> for_loop3
+<span class="keyword">(</span>
+  count<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> limit<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> env<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">env</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">(</span>
+<span class="comment">//</span>
+<span class="keyword">if</span>
+count <span class="keyword">&lt;</span> limit
+<span class="keyword">then</span> <span class="keyword">(</span>
+  for_loop3$fwork&lt;<span class="staexp">env</span><span class="keyword">&gt;</span><span class="keyword">(</span>count<span class="keyword">,</span> env<span class="keyword">)</span><span class="keyword">;</span> for_loop3&lt;<span class="staexp">env</span><span class="keyword">&gt;</span><span class="keyword">(</span>count+<span class="dynexp">1</span><span class="keyword">,</span> limit<span class="keyword">,</span> env<span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">)</span>
+<span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [for_loop3] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>for_loop3$fwork</FONT
+> is given the interface below:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4655"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+env<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> for_loop3$fwork<span class="keyword">(</span>count<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> env<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">env</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">_</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Finally, we can turn <FONT
+COLOR="RED"
+>tally3</FONT
+> into <FONT
+COLOR="RED"
+>tally4</FONT
+>
+as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4659"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+tally4
+<span class="keyword">(</span>
+  n<span class="keyword">:</span> <span class="staexp">int</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="keyword">var</span> res<span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span> <span class="dynexp">0</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">implement</span>
+for_loop3$fwork&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span>i<span class="keyword">,</span> res<span class="keyword">)</span> <span class="keyword">=</span> res := res + i</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  for_loop3&lt;<span class="staexp">int</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="dynexp">0</span><span class="keyword">,</span> n<span class="keyword">,</span> res<span class="keyword">)</span><span class="keyword">;</span> res
+<span class="keyword">end</span></span> <span class="comment">// end of [tally4]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+By inspecting the C code generated by <B
+CLASS="command"
+>atsopt</B
+> from compiling
+<FONT
+COLOR="RED"
+>tally4</FONT
+>, we can see that the C code is essentially equivalent to
+the implementation of <FONT
+COLOR="RED"
+>tally</FONT
+> in C (given at the beginning of
+this section).
+
+</P
+><P
+>&#13;By now, the reader probably agrees with me if I say the statement should at
+least be considered grossly inaccurate that claims loop constructs in FP
+can be readily replaced with higher-order functions.  Please find on-line
+the file <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_FNTMPINT/loopcons.dats"
+TARGET="_top"
+>loopcons.dats</A
+>
+containing the entirety of the code presented in this section plus some
+testing code.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x4576.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x4666.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Templates as a Special Form of Functors</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c4479.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Template-Based Support for Late-Binding</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

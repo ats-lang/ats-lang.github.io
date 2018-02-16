@@ -1,0 +1,401 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>&#13;Abstract Types
+</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Modularity"
+HREF="c1708.html"><LINK
+REL="PREVIOUS"
+TITLE="
+Specific Template Implementation
+"
+HREF="x1865.html"><LINK
+REL="NEXT"
+TITLE="
+Example: A Package for Rationals
+"
+HREF="x1942.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x1865.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. Modularity</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x1942.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="abstract_types"
+>Abstract Types</A
+></H1
+><P
+>&#13;The name <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>abstract type</I
+></SPAN
+> refers to a type such
+that values of the type are represented in a way that is completely hidden
+from users of the type. This form of information-hiding attempts to ensure
+that changes to the implementation of an abstract type cannot introduce
+type-errors into well-typed code that makes use of the abstract type. In
+ATS as well as in many other programming languages, abstract types play a
+pivotal role in support of modular programming. I will present as follows a
+concrete example to illustrate a typical use of abstract types in
+practice.
+</P
+><P
+>&#13;Suppose that we are to implement a package to provide various
+funtionalities on finite sets of integers. We first declare an abstract
+type <FONT
+COLOR="RED"
+>intset</FONT
+> as follows for values representing finite sets of
+integers:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1914"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="staexp"><span class="keyword">abstype</span> intset</span> <span class="comment">// a boxed abstract type</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The keyword <FONT
+COLOR="RED"
+>abstype</FONT
+> indicates that the declared abstract type
+<FONT
+COLOR="RED"
+>intset</FONT
+> is boxed, that is, the size of <FONT
+COLOR="RED"
+>intset</FONT
+> is the
+same as that of a pointer.  There is a related keyword <FONT
+COLOR="RED"
+>abst@ype</FONT
+>
+for introducing unboxed abstract types, which will be explained elsewhere.
+We next present an interface for each function or value that we want to
+implement in the package:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1920"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="comment">// empty set</span>
+<span class="dynexp"><span class="keyword">val</span> intset_empty <span class="keyword">:</span> <span class="staexp">intset</span></span>
+
+<span class="comment">// singleton set of [x]</span>
+<span class="dynexp"><span class="keyword">fun</span> intset_make_sing <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">intset</span></span>
+
+<span class="comment">// turning a list into a set</span>
+<span class="dynexp"><span class="keyword">fun</span> intset_make_list <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">intset</span></span>
+
+<span class="comment">// turning a set into a list</span>
+<span class="dynexp"><span class="keyword">fun</span> intset_listize <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">intset</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">)</span></span>
+
+<span class="comment">// membership test</span>
+<span class="dynexp"><span class="keyword">fun</span> intset_ismem <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">intset</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">bool</span></span>
+
+<span class="comment">// computing the size of [xs]</span>
+<span class="dynexp"><span class="keyword">fun</span> intset_size <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">intset</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">size_t</span></span>
+
+<span class="comment">// adding [x] into [xs]</span>
+<span class="dynexp"><span class="keyword">fun</span> intset_add <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">intset</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">intset</span></span>
+
+<span class="comment">// deleting [x] from [xs]</span>
+<span class="dynexp"><span class="keyword">fun</span> intset_del <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">intset</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">intset</span></span>
+
+<span class="comment">// union of [xs1] and [xs2]</span>
+<span class="dynexp"><span class="keyword">fun</span> intset_union <span class="keyword">(</span>xs1<span class="keyword">:</span> <span class="staexp">intset</span><span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">intset</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">intset</span></span>
+
+<span class="comment">// intersection of [xs1] and [xs2]</span>
+<span class="dynexp"><span class="keyword">fun</span> intset_inter <span class="keyword">(</span>xs1<span class="keyword">:</span> <span class="staexp">intset</span><span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">intset</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">intset</span></span>
+
+<span class="comment">// difference between [xs1] and [xs2]</span>
+<span class="dynexp"><span class="keyword">fun</span> intset_differ <span class="keyword">(</span>xs1<span class="keyword">:</span> <span class="staexp">intset</span><span class="keyword">,</span> xs2<span class="keyword">:</span> <span class="staexp">intset</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">intset</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Let us now suppose that the declaration for <FONT
+COLOR="RED"
+>intset</FONT
+> and the
+above interfaces are all stored in a file named <TT
+CLASS="filename"
+>intset.sats</TT
+>
+(or any other legal name for a static file).
+</P
+><P
+>&#13;Usually, a realistic implementation for finite sets is based on some kind
+of balanced trees (e.g., AVL trees, red-black trees). For the purpose of
+illustration, I hereby give an implementation in which finite sets of
+integers are represented as ordered lists of integers. This implementation
+is contained in a file named <TT
+CLASS="filename"
+>intset.dats</TT
+>, which is available
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_MODULARITY/intset.dats"
+TARGET="_top"
+>on-line</A
+>.  In order to
+construct values of an abstract type, we need to concretize it temporarily
+by using the following form of declaration:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1927"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="staexp"><span class="keyword">assume</span> intset <span class="keyword">=</span> list0 <span class="keyword">(</span>int<span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>assume</FONT
+> is a keyword. This assume-declaration equates
+<FONT
+COLOR="RED"
+>intset</FONT
+> with the type <FONT
+COLOR="RED"
+>list0 (int)</FONT
+> and this equation is
+valid until the end of the scope in which it is introduced. As the
+assume-declaration is at the toplevel in <TT
+CLASS="filename"
+>intset.dats</TT
+>,
+the assumption that <FONT
+COLOR="RED"
+>intset</FONT
+> equals <FONT
+COLOR="RED"
+>list0 (int)</FONT
+> is valid
+until the end of the file. There is a global restriction in ATS that allows
+each abstract type to be concretized by an assume-declaration at most
+once. More specifically, if an abstract type is concretized in two files
+<TT
+CLASS="filename"
+>foo1.dats</TT
+> and <TT
+CLASS="filename"
+>foo2.dats</TT
+>, then
+these two files cannot be used together to generate an executable.
+
+The rest of implementation in <FONT
+COLOR="RED"
+>intset</FONT
+> is all standard.  For
+instance, the union operation on two given sets of integers is implemented
+as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN1938"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">implement</span>
+intset_union
+  <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span>
+<span class="keyword">case+</span> <span class="keyword">(</span>xs1<span class="keyword">,</span> xs2<span class="keyword">)</span> <span class="keyword">of</span>
+<span class="keyword">|</span> <span class="keyword">(</span>list0_cons <span class="keyword">(</span>x1<span class="keyword">,</span> xs11<span class="keyword">)</span><span class="keyword">,</span>
+   list0_cons <span class="keyword">(</span>x2<span class="keyword">,</span> xs21<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  <span class="keyword">let</span>
+    <span class="dynexp"><span class="keyword">val</span> sgn <span class="keyword">=</span> compare <span class="keyword">(</span>x1<span class="keyword">,</span> x2<span class="keyword">)</span></span>
+  <span class="keyword">in</span>
+    <span class="keyword">case+</span> <span class="dynexp">0</span> <span class="keyword">of</span>
+    <span class="keyword">|</span> _ <span class="keyword">when</span> sgn <span class="keyword">&lt;</span> <span class="dynexp">0</span> <span class="keyword">=&gt;</span>
+        list0_cons<span class="staexp"><span class="keyword">{</span>int<span class="keyword">}</span></span><span class="keyword">(</span>x1<span class="keyword">,</span> intset_union <span class="keyword">(</span>xs11<span class="keyword">,</span> xs2<span class="keyword">)</span><span class="keyword">)</span>
+    <span class="keyword">|</span> _ <span class="keyword">when</span> sgn <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">=&gt;</span>
+        list0_cons<span class="staexp"><span class="keyword">{</span>int<span class="keyword">}</span></span><span class="keyword">(</span>x2<span class="keyword">,</span> intset_union <span class="keyword">(</span>xs1<span class="keyword">,</span> xs21<span class="keyword">)</span><span class="keyword">)</span>
+    <span class="keyword">|</span> _ <span class="comment">(* sgn = 0 *)</span> <span class="keyword">=&gt;</span>
+        list0_cons<span class="staexp"><span class="keyword">{</span>int<span class="keyword">}</span></span><span class="keyword">(</span>x1<span class="keyword">,</span> intset_union <span class="keyword">(</span>xs11<span class="keyword">,</span> xs21<span class="keyword">)</span><span class="keyword">)</span>
+    <span class="comment">// end of [case]</span>
+  <span class="keyword">end</span> <span class="comment">// end of [(cons, cons)]</span>
+<span class="keyword">|</span> <span class="keyword">(</span>list0_nil <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=&gt;</span> xs2
+<span class="keyword">|</span> <span class="keyword">(</span>_<span class="keyword">,</span> list0_nil <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> xs1
+<span class="keyword">)</span></span> <span class="comment">(* end of [intset_union] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+There is also some testing code available
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_MODULARITY/test_intset.dats"
+TARGET="_top"
+>on-line</A
+>
+that makes use of some functions declared in
+<TT
+CLASS="filename"
+>intset.sats</TT
+>.  Often testing code as such is
+constructed immediately after the interfaces for various functions and
+values in a package are declared. This allows these interfaces to be tried
+before they are actually implemented so that potential flaws can be exposed
+in a timely fashion.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x1865.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x1942.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Specific Template Implementation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c1708.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Example: A Package for Rationals</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,380 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Disjunctive Views</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Dataviews as Linear Dataprops"
+HREF="c3554.html"><LINK
+REL="PREVIOUS"
+TITLE="Dataviews as Linear Dataprops"
+HREF="c3554.html"><LINK
+REL="NEXT"
+TITLE="Dataview for Linear Arrays"
+HREF="x3618.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c3554.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 14. Dataviews as Linear Dataprops</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3618.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="disjunctive_views"
+>Disjunctive Views</A
+></H1
+><P
+>&#13;The dataview <FONT
+COLOR="RED"
+>VOR</FONT
+> is declared as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3581"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">dataview</span> <span class="staexp">VOR <span class="keyword">(</span>v0<span class="keyword">:</span><span class="keyword">view+</span><span class="keyword">,</span> v1<span class="keyword">:</span><span class="keyword">view+</span><span class="keyword">,</span> int<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="prfexp">VORleft <span class="keyword">(</span><span class="staexp">v0</span><span class="keyword">,</span> <span class="staexp">v1</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">v0</span><span class="keyword">)</span></span> <span class="keyword">|</span> <span class="prfexp">VORright <span class="keyword">(</span><span class="staexp">v0</span><span class="keyword">,</span> <span class="staexp">v1</span><span class="keyword">,</span> <span class="staexp">1</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">v1</span><span class="keyword">)</span></span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+This declaration indicates that the dataview <FONT
+COLOR="RED"
+>VOR</FONT
+> is covariant
+in its first and second arguments and there are two proof constructors
+associated with it: <FONT
+COLOR="RED"
+>VORleft</FONT
+> and <FONT
+COLOR="RED"
+>VORright</FONT
+>. Given
+views V<SUB
+>0</SUB
+> and V<SUB
+>1</SUB
+>, a proof of <FONT
+COLOR="RED"
+>VOR(V<SUB
+>0</SUB
+>,
+V<SUB
+>1</SUB
+>, 0)</FONT
+> can be turned into a proof of V<SUB
+>0</SUB
+> and a proof of
+<FONT
+COLOR="RED"
+>VOR(V<SUB
+>0</SUB
+>, V<SUB
+>1</SUB
+>, 1)</FONT
+> can be turned into a proof of
+V<SUB
+>1</SUB
+>.
+
+</P
+><P
+>&#13;Let T be some type. The following function interface states that
+<FONT
+COLOR="RED"
+>getopt</FONT
+> takes an unintialized pointer and returns an integers
+indicating whether the pointer is initialized:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3598"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> getopt<span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span>
+  <span class="keyword">(</span><span class="prfexp">pf<span class="keyword">:</span> <span class="staexp">T</span><span class="staexp">?</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span></span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>i<span class="keyword">:</span>int<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">VOR</span> <span class="keyword">(</span><span class="staexp">T</span><span class="staexp">?</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">T</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">i</span><span class="keyword">)</span> <span class="keyword">|</span> <span class="staexp">int</span> <span class="keyword">(</span><span class="staexp">i</span><span class="keyword">)</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The following code shows a typical use of <FONT
+COLOR="RED"
+>getopt</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3601"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> foo <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">var</span> x<span class="keyword">:</span> <span class="staexp">T</span><span class="staexp">?</span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="prfexp">pfor</span> <span class="keyword">|</span> i<span class="keyword">)</span> <span class="keyword">=</span> getopt <span class="keyword">(</span><span class="prfexp"><span class="dynexp"><span class="keyword">view@</span></span><span class="keyword">(</span>x<span class="keyword">)</span></span> <span class="keyword">|</span> <span class="dynexp"><span class="keyword">addr@</span></span><span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> i <span class="keyword">=</span> <span class="dynexp">0</span>
+  <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="prfexp"><span class="keyword">prval</span> VORleft <span class="keyword">(</span>pf0<span class="keyword">)</span> <span class="keyword">=</span> pfor</span> <span class="keyword">in</span> <span class="dynexp"><span class="keyword">view@</span></span><span class="keyword">(</span>x<span class="keyword">)</span> := pf0 <span class="comment">// uninitialized</span>
+  <span class="keyword">end</span> <span class="comment">// end of [then]</span>
+  <span class="keyword">else</span> <span class="keyword">let</span>
+    <span class="prfexp"><span class="keyword">prval</span> VORright <span class="keyword">(</span>pf1<span class="keyword">)</span> <span class="keyword">=</span> pfor</span> <span class="keyword">in</span> <span class="dynexp"><span class="keyword">view@</span></span><span class="keyword">(</span>x<span class="keyword">)</span> := pf1 <span class="comment">// initialized</span>
+  <span class="keyword">end</span> <span class="comment">// end of [else]</span>
+<span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [foo]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;In ATS, there is a type constructor <FONT
+COLOR="RED"
+>opt</FONT
+> that takes a type T and
+a boolean B to form an opt-type <FONT
+COLOR="RED"
+>opt(T, B)</FONT
+> such that
+<FONT
+COLOR="RED"
+>opt(T, B)</FONT
+> equals T if B is true and it equals T? if B is false.
+The function <FONT
+COLOR="RED"
+>getopt</FONT
+> can be given the following interface
+that makes use of an opt-type:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3608"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> getopt <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">T</span><span class="staexp">?</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">opt</span> <span class="keyword">(</span><span class="staexp">T</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">#[</span>b<span class="keyword">:</span>bool<span class="keyword">]</span></span> <span class="staexp">bool</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The code that calls <FONT
+COLOR="RED"
+>getopt</FONT
+> can now be implemented as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3611"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> foo <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="keyword">var</span> x<span class="keyword">:</span> <span class="staexp">T</span><span class="staexp">?</span>
+  <span class="dynexp"><span class="keyword">val</span> ans <span class="keyword">=</span> getopt <span class="keyword">(</span>x<span class="keyword">)</span></span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">if</span> <span class="keyword">(</span>ans<span class="keyword">)</span>
+  <span class="keyword">then</span> <span class="keyword">let</span>
+    <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> opt_unsome<span class="keyword">(</span>x<span class="keyword">)</span></span> <span class="dynexp"><span class="keyword">in</span> <span class="comment">(*initialized*)</span>
+  <span class="keyword">end</span></span> <span class="comment">// end of [then]</span>
+  <span class="keyword">else</span> <span class="keyword">let</span>
+    <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> opt_unnone<span class="keyword">(</span>x<span class="keyword">)</span></span> <span class="dynexp"><span class="keyword">in</span> <span class="comment">(*uninitialized*)</span>
+  <span class="keyword">end</span></span> <span class="comment">// end of [else]</span>
+<span class="comment">// end of [if]</span>
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [foo]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the proof functions <FONT
+COLOR="RED"
+>opt_unsome</FONT
+> and <FONT
+COLOR="RED"
+>opt_unnone</FONT
+>
+are assgined the following types:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3615"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">prfun</span> opt_unsome<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">opt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">true</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+<span class="prfexp"><span class="keyword">prfun</span> opt_unnone<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span> <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">opt</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">false</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">a</span><span class="staexp">?</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">void</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Compared to the version that uses <FONT
+COLOR="RED"
+>VOR</FONT
+>, this version based on
+opt-type is considerably less verbose.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c3554.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3618.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Dataviews as Linear Dataprops</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3554.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Dataview for Linear Arrays</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

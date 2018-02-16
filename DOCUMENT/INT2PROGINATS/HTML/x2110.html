@@ -1,0 +1,223 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Calling External Functions in ATS</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Interaction with C"
+HREF="c2010.html"><LINK
+REL="PREVIOUS"
+TITLE="Inclusion of External Code in ATS"
+HREF="x2089.html"><LINK
+REL="NEXT"
+TITLE="Unsafe C-style Programming in ATS"
+HREF="x2122.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2089.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Interaction with C</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2122.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="calling_external_functions"
+>Calling External Functions in ATS</A
+></H1
+><P
+>&#13;It is straightforward to make calls to external functions in ATS.
+For instance, the following code demonstrates a typical way to do so:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2113"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">local</span>
+<span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span> __fprintf
+  <span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">FILEref</span><span class="keyword">,</span> <span class="staexp">string</span><span class="comment">(*fmt*)</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">,</span> <span class="staexp">int</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">int</span> <span class="keyword">=</span> "mac#fprintf"</span>
+<span class="keyword">in</span> <span class="comment">(* in of [local] *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> N <span class="keyword">=</span> <span class="dynexp">12</span></span>
+<span class="dynexp"><span class="keyword">val</span> _ <span class="keyword">=</span> __fprintf <span class="keyword">(</span>stdout_ref<span class="keyword">,</span> <span class="dynstr">"fact(%i) = %in"</span><span class="keyword">,</span> N<span class="keyword">,</span> fact<span class="keyword">(</span>N<span class="keyword">)</span><span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">end</span> <span class="comment">// end of [local]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where the function <FONT
+COLOR="RED"
+>fprintf</FONT
+> (declared in <TT
+CLASS="filename"
+>stdio.h</TT
+>)
+is given a (local) name <FONT
+COLOR="RED"
+>__fprintf</FONT
+> and an interface appropriate
+for the call to be made.
+
+</P
+><P
+>&#13;There is also built-in support for calling external functions in ATS directly.
+For instance, the following code does essentially the same as the code
+presented above:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2119"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">val</span> N <span class="keyword">=</span> <span class="dynexp">12</span></span>
+<span class="dynexp"><span class="keyword">val</span> _ <span class="keyword">=</span> <span class="dynexp"><span class="keyword">$extfcall</span><span class="keyword">(</span>int<span class="keyword">,</span> "fprintf"<span class="keyword">,</span> stdout_ref<span class="keyword">,</span> "fact(%i) = %in"<span class="keyword">,</span> N<span class="keyword">,</span> fact<span class="keyword">(</span>N<span class="keyword">)</span><span class="keyword">)</span></span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+When <FONT
+COLOR="RED"
+>$extfcall</FONT
+> is employed to make an external function call,
+its first argument is the return type of the call, and its second argument
+is the name of the called function (represented as a string), and its rest
+of arguments are the arguments of the called function.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2089.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2122.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Inclusion of External Code in ATS</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2010.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Unsafe C-style Programming in ATS</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

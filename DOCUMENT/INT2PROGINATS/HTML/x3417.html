@@ -1,0 +1,357 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Viewtypes as a Combination of Views and Types</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Introduction to Views and Viewtypes"
+HREF="c3320.html"><LINK
+REL="PREVIOUS"
+TITLE="Introduction to Views and Viewtypes"
+HREF="c3320.html"><LINK
+REL="NEXT"
+TITLE="Left-Values and Call-by-Reference"
+HREF="x3447.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="c3320.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 13. Introduction to Views and Viewtypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3447.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="viewtypes_as_combination"
+>Viewtypes as a Combination of Views and Types</A
+></H1
+><P
+>&#13;A linear type in ATS is given the name <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>viewtype</I
+></SPAN
+>, which is
+chosen to indicate that a linear type consists of two parts: one part for
+views and the other for types. For instance, given a view V and a type T,
+then the tuple (V | T) is a viewtype, where the bar symbol (|) is a
+separator (just like a comma) to separate views from types. What seems a
+bit surprising is the opposite: For each viewtype VT, we may assume the
+existence of a view V and a type T such that VT is equivalent to (V |
+T). Formally, this T can be referred as VT?! in ATS.  This somewhat
+unexpected interpretation of linear types is a striking novelty of ATS,
+which stresses that the linearity of a viewtype comes <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>entirely</I
+></SPAN
+>
+from the view part residing within it.
+
+</P
+><P
+>&#13;The built-in sorts <FONT
+COLOR="RED"
+>viewtype</FONT
+> and <FONT
+COLOR="RED"
+>viewt@ype</FONT
+> are for static
+terms representing viewtypes whose type parts are of the sorts
+<FONT
+COLOR="RED"
+>type</FONT
+> and <FONT
+COLOR="RED"
+>t@ype</FONT
+>, respectively. In other words, the former
+is assigned to viewtypes for linear values of the size equal to that of a
+pointer and the latter to viewtypes for linear values of unspecified size.
+For example, <FONT
+COLOR="RED"
+>tptr</FONT
+> is defined as follows that takes a type and an
+address to form a viewtype (of the sort <FONT
+COLOR="RED"
+>viewtype</FONT
+>):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3429"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">vtypedef</span> <span class="staexp">tptr <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">,</span> <span class="staexp">l<span class="keyword">:</span>addr</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">(</span><span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given a type T and an address L, the viewtype <FONT
+COLOR="RED"
+>tptr(T, L)</FONT
+> is for
+a pointer to L paired with a linear proof stating that a value of the type
+T is stored at L. If we think of a counter as a pointer paired with a proof
+stating that the pointer points to an integer (representing the count),
+then the following defined function <FONT
+COLOR="RED"
+>getinc</FONT
+> returns the current
+count of a given counter after increasing it by 1:
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3433"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span> getinc
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  cnt<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">tptr</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">)</span> <span class="staexp">&gt;&gt;</span> <span class="staexp">tptr</span> <span class="keyword">(</span><span class="staexp">int</span><span class="keyword">(</span><span class="staexp">n</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">=</span> n <span class="keyword">where</span> <span class="keyword">{</span>
+  <span class="dynexp"><span class="keyword">val</span> n <span class="keyword">=</span> ptr_get1&lt;<span class="staexp">int</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="prfexp">cnt<span class="dynexp"><span class="keyword">.0</span></span></span> <span class="keyword">|</span> cnt<span class="dynexp"><span class="keyword">.1</span></span><span class="keyword">)</span></span>
+  <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> ptr_set1&lt;<span class="staexp">int</span><span class="keyword">(</span><span class="staexp">n</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span><span class="keyword">&gt;</span> <span class="keyword">(</span><span class="prfexp">cnt<span class="dynexp"><span class="keyword">.0</span></span></span> <span class="keyword">|</span> cnt<span class="dynexp"><span class="keyword">.1</span></span><span class="keyword">,</span> n+<span class="dynexp">1</span><span class="keyword">)</span></span>
+<span class="keyword">}</span></span> <span class="comment">(* end of [getinc] *)</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+</P
+><P
+>&#13;A particularly interesting example of a viewtype is the following one:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3436"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">vtypedef</span> <span class="staexp">cloptr
+  <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">,</span> <span class="staexp">b<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">,</span> <span class="staexp">l<span class="keyword">:</span>addr</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="staexp"><span class="keyword">[</span>env<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">]</span></span> <span class="keyword">(</span><span class="keyword">(</span><span class="keyword">(</span><span class="staexp">&amp;</span><span class="staexp">env</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">b</span><span class="keyword">,</span> <span class="staexp">env</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l</span> <span class="keyword">|</span> <span class="staexp">ptr</span> <span class="staexp">l</span><span class="keyword">)</span></span>
+<span class="comment">// end of [cloptr_app]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given two types A and B, a pointer to some address L where a closure
+function is stored that takes a value of the type A to return a value of
+the type B can be given the viewtype <FONT
+COLOR="RED"
+>cloptr(A, B, L)</FONT
+>. Note that
+a closure function is just an envless function paired with an environment
+containing bindings for variables in the body of the closure function that
+are introduced from outside. In the function type <FONT
+COLOR="RED"
+>(&#38;env, a)
+-&#62; b</FONT
+>, the symbol <FONT
+COLOR="RED"
+>&#38;</FONT
+> indicates that the corresponding
+function argument is passed by reference, that is, the argument is required
+to be a left-value and what is actually passed at run-time is the address
+of the left-value.  I will cover the issue of call-by-reference elsewhere
+in more details.  The following piece of code demonstrates a pointer to a
+closure function being called on a given argument:
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3441"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> cloptr_app <span class="staexp"><span class="keyword">{</span>l<span class="keyword">:</span>addr<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  pclo<span class="keyword">:</span> <span class="staexp"><span class="keyword">!</span></span><span class="staexp">cloptr</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">,</span> <span class="staexp">l</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">:</span> <span class="staexp">a</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">b</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="dynexp"><span class="keyword">val</span> p <span class="keyword">=</span> pclo<span class="dynexp"><span class="keyword">.1</span></span></span>
+<span class="comment">(*
+//
+// taking out pf: ((&amp;env, a) -&gt; b, env) @ l
+//
+  prval pf = pclo.0
+//
+*)</span>
+  <span class="dynexp"><span class="keyword">val</span> res <span class="keyword">=</span> <span class="keyword">!</span>p<span class="dynexp"><span class="keyword">.0</span></span> <span class="keyword">(</span><span class="keyword">!</span>p<span class="dynexp"><span class="keyword">.1</span></span><span class="keyword">,</span> x<span class="keyword">)</span></span>
+<span class="comment">(*
+  prval () = pclo.0 := pf // putting the proof pf back
+*)</span>
+<span class="keyword">in</span>
+  res
+<span class="keyword">end</span></span> <span class="comment">// end of [cloptr]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the linear proof in <FONT
+COLOR="RED"
+>pclo</FONT
+> is first taken out so that
+the code for dereferencing p (denoted by the syntax <FONT
+COLOR="RED"
+>!p</FONT
+>) can
+pass typechecking, and it is then returned so that the type of
+<FONT
+COLOR="RED"
+>pclo</FONT
+> is restored to its original one. This process of taking
+out a linear proof from a record and then putting it back into the record
+can be automatically performed by the typechecker of ATS.
+
+</P
+><P
+>&#13;The very ability to explain within ATS programming features such as closure
+function is a convincing indication of the expressiveness of the type
+system of ATS.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="c3320.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3447.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Introduction to Views and Viewtypes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3320.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Left-Values and Call-by-Reference</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

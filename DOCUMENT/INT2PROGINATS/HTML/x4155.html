@@ -1,0 +1,506 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Transition from Datatypes to Dataviewtypes</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Dataviewtypes as Linear Datatypes"
+HREF="c3812.html"><LINK
+REL="PREVIOUS"
+TITLE="Linear Binary Search Trees"
+HREF="x4101.html"><LINK
+REL="NEXT"
+TITLE="Abstract Views and Viewtypes"
+HREF="c4187.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x4101.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 15. Dataviewtypes as Linear Datatypes</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="c4187.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="transition_from_datatypes_to_dataviewtypes"
+>Transition from Datatypes to Dataviewtypes</A
+></H1
+><P
+>&#13;Many programmers are likely to find it a rather involved task to write code
+manipulating values of dataviewtypes. When handling a complex data
+structure, I myself often try to first use a datatype to model the data
+structure and implement some functionalities of the data structure based
+the datatype. I then change the datatype into a corresponding dataviewtype
+and modify the implementation accordingly to make it work with the
+dataviewtype. I now present as follows an implementation of linear
+red-black trees that is directly based on a previous
+<A
+HREF="x2825.html"
+>implementation of functional red-black trees</A
+>,
+illustrating concretely a kind of gradual transition from datatypes to
+dataviewtypes that can greatly reduce the level of difficulty one may
+otherwise encounter in an attempt to program with dataviewtypes directly.
+
+</P
+><P
+>&#13;The following declaration of dataviewtype <FONT
+COLOR="RED"
+>rbtree</FONT
+> is identical
+to the previous declaration of datatype <FONT
+COLOR="RED"
+>rbtree</FONT
+> except the
+keyword <FONT
+COLOR="RED"
+>datavtype</FONT
+> being now used instead of the keyword
+<FONT
+COLOR="RED"
+>datatype</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4164"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="neuexp"><span class="keyword">#define</span> BLK 0</span><span class="keyword">;</span> <span class="neuexp"><span class="keyword">#define</span> RED 1</span>
+<span class="staexp"><span class="keyword">sortdef</span> clr <span class="keyword">=</span> <span class="keyword">{</span>c<span class="keyword">:</span>int <span class="keyword">|</span> 0 &lt;= c<span class="keyword">;</span> c &lt;= 1<span class="keyword">}</span></span>
+
+<span class="keyword">datavtype</span> <span class="staexp">rbtree
+<span class="keyword">(</span>
+  a<span class="keyword">:</span> <span class="keyword">t@ype+</span><span class="keyword">,</span> int<span class="comment">(*c*)</span><span class="keyword">,</span> int<span class="comment">(*bh*)</span><span class="keyword">,</span> int<span class="comment">(*v*)</span>
+<span class="keyword">)</span> <span class="keyword">=</span> <span class="comment">// element type, color, black height, violations</span>
+  <span class="keyword">|</span> <span class="dynexp">rbtree_nil <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">BLK</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="dynexp"><span class="staexp"><span class="keyword">{</span>c<span class="keyword">,</span>cl<span class="keyword">,</span>cr<span class="keyword">:</span>clr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>bh<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>v<span class="keyword">:</span>int<span class="keyword">}</span></span>
+    <span class="staexp"><span class="keyword">{</span>c==BLK &amp;&amp; v==0 || c == RED &amp;&amp; v==cl+cr<span class="keyword">}</span></span>
+    rbtree_cons <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="staexp">+</span><span class="staexp">1</span><span class="staexp">-</span><span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">v</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">int</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">rbtree0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cl</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">rbtree0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cr</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [rbtree]</span>
+
+<span class="keyword">where</span> <span class="staexp">rbtree0 <span class="keyword">(</span><span class="staexp">a<span class="keyword">:</span><span class="keyword">t@ype</span></span><span class="keyword">,</span> <span class="staexp">c<span class="keyword">:</span>int</span><span class="keyword">,</span> <span class="staexp">bh<span class="keyword">:</span>int</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="staexp">rbtree</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;At the first sight, the following function template <FONT
+COLOR="RED"
+>insfix_l</FONT
+> is
+greatly more involved that a previous version of the same name (for
+manipulating functional red-black trees):
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4168"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> insfix_l <span class="comment">// right rotation</span>
+  <span class="staexp"><span class="keyword">{</span>cl<span class="keyword">,</span>cr<span class="keyword">:</span>clr<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>bh<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>v<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">,</span>l_c<span class="keyword">,</span>l_tl<span class="keyword">,</span>l_x<span class="keyword">,</span>l_tr<span class="keyword">:</span>addr<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  <span class="prfexp">pf_c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">BLK</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_c</span></span>
+<span class="keyword">,</span> <span class="prfexp">pf_tl<span class="keyword">:</span> <span class="staexp">rbtree</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cl</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">,</span> <span class="staexp">v</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_tl</span></span>
+<span class="keyword">,</span> <span class="prfexp">pf_x<span class="keyword">:</span> <span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_x</span></span>
+<span class="keyword">,</span> <span class="prfexp">pf_tr<span class="keyword">:</span> <span class="staexp">rbtree</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cr</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_tr</span></span>
+<span class="keyword">|</span> t<span class="keyword">:</span> <span class="staexp">rbtree_cons_unfold</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">l_c</span><span class="keyword">,</span> <span class="staexp">l_tl</span><span class="keyword">,</span> <span class="staexp">l_x</span><span class="keyword">,</span> <span class="staexp">l_tr</span><span class="keyword">)</span>
+<span class="keyword">,</span> p_tl<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="keyword">(</span><span class="staexp">l_tl</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>c<span class="keyword">:</span>clr<span class="keyword">]</span></span> <span class="staexp">rbtree0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="neuexp"><span class="keyword">#define</span> B BLK</span>
+  <span class="neuexp"><span class="keyword">#define</span> R RED</span>
+  <span class="neuexp"><span class="keyword">#define</span> nil rbtree_nil</span>
+  <span class="neuexp"><span class="keyword">#define</span> cons rbtree_cons</span>
+<span class="keyword">in</span>
+  <span class="keyword">case+</span> <span class="keyword">!</span>p_tl <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>cons <span class="keyword">(</span><span class="staexp">cl</span> <span class="keyword">as</span> R<span class="keyword">,</span> <span class="staexp">tll</span> <span class="keyword">as</span> <span class="keyword">@</span>cons <span class="keyword">(</span><span class="staexp">cll</span> <span class="keyword">as</span> R<span class="keyword">,</span> _<span class="keyword">,</span> _<span class="keyword">,</span> _<span class="keyword">)</span><span class="keyword">,</span> _<span class="keyword">,</span> tlr<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> cll := B</span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>tll<span class="keyword">)</span></span>
+<span class="comment">//</span>
+      <span class="dynexp"><span class="keyword">val</span> tl <span class="keyword">=</span> <span class="keyword">!</span>p_tl</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p_tl := tlr</span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span></span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tlr := t</span>
+<span class="comment">//</span>
+    <span class="keyword">in</span>
+      <span class="keyword">fold@</span> <span class="keyword">(</span>tl<span class="keyword">)</span><span class="keyword">;</span> tl
+    <span class="keyword">end</span> <span class="comment">// end of [cons (R, cons (R, ...), ...)]</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>cons <span class="keyword">(</span><span class="staexp">cl</span> <span class="keyword">as</span> R<span class="keyword">,</span> tll<span class="keyword">,</span> _<span class="keyword">,</span> <span class="staexp">tlr</span> <span class="keyword">as</span> <span class="keyword">@</span>cons <span class="keyword">(</span><span class="staexp">clr</span> <span class="keyword">as</span> R<span class="keyword">,</span> tlrl<span class="keyword">,</span> _<span class="keyword">,</span> tlrr<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+      <span class="dynexp"><span class="keyword">val</span> tl <span class="keyword">=</span> <span class="keyword">!</span>p_tl</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p_tl := tlrr</span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span></span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tlrr := t</span>
+<span class="comment">//</span>
+      <span class="dynexp"><span class="keyword">val</span> tlr_ <span class="keyword">=</span> tlr</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tlr := tlrl</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> cl := B</span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>tl<span class="keyword">)</span></span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tlrl := tl</span>
+<span class="comment">//</span>
+    <span class="keyword">in</span>
+      <span class="keyword">fold@</span> <span class="keyword">(</span>tlr_<span class="keyword">)</span><span class="keyword">;</span> tlr_
+    <span class="keyword">end</span> <span class="comment">// end of [cons (R, ..., cons (R, ...))]</span>
+  <span class="keyword">|</span> _ <span class="comment">(*rest-of-cases*)</span> <span class="keyword">=&gt;&gt;</span> <span class="keyword">(</span><span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span><span class="keyword">;</span> t<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [insfix_l]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+However, I would like to point out that the interface for the above
+<FONT
+COLOR="RED"
+>insfix_l</FONT
+> is a <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>direct</I
+></SPAN
+> translation of the interface for
+the previous <FONT
+COLOR="RED"
+>insfix_l</FONT
+>. In other words, the previously captured
+relation between a tree being rotated and the one obtained from applying
+<FONT
+COLOR="RED"
+>insfix_l</FONT
+> to it also holds in the setting of linear red-black trees.
+The very same statement can be made about the following function template
+<FONT
+COLOR="RED"
+>insfix_r</FONT
+>, which is precisely a mirror image of <FONT
+COLOR="RED"
+>insfix_l</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4176"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fn</span><span class="staexp"><span class="keyword">{</span>
+a<span class="keyword">:</span><span class="keyword">t@ype</span>
+<span class="keyword">}</span></span> insfix_r <span class="comment">// left rotation</span>
+  <span class="staexp"><span class="keyword">{</span>cl<span class="keyword">,</span>cr<span class="keyword">:</span>clr<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>bh<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>v<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+  <span class="staexp"><span class="keyword">{</span>l<span class="keyword">,</span>l_c<span class="keyword">,</span>l_tl<span class="keyword">,</span>l_x<span class="keyword">,</span>l_tr<span class="keyword">:</span>addr<span class="keyword">}</span></span> <span class="keyword">(</span>
+  <span class="prfexp">pf_c<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">(</span><span class="staexp">BLK</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_c</span></span>
+<span class="keyword">,</span> <span class="prfexp">pf_tl<span class="keyword">:</span> <span class="staexp">rbtree</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cl</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_tl</span></span>
+<span class="keyword">,</span> <span class="prfexp">pf_x<span class="keyword">:</span> <span class="staexp">a</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_x</span></span>
+<span class="keyword">,</span> <span class="prfexp">pf_tr<span class="keyword">:</span> <span class="staexp">rbtree</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cr</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">,</span> <span class="staexp">v</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">@</span></span> <span class="staexp">l_tr</span></span>
+<span class="keyword">|</span> t<span class="keyword">:</span> <span class="staexp">rbtree_cons_unfold</span> <span class="keyword">(</span><span class="staexp">l</span><span class="keyword">,</span> <span class="staexp">l_c</span><span class="keyword">,</span> <span class="staexp">l_tl</span><span class="keyword">,</span> <span class="staexp">l_x</span><span class="keyword">,</span> <span class="staexp">l_tr</span><span class="keyword">)</span>
+<span class="keyword">,</span> p_tr<span class="keyword">:</span> <span class="staexp">ptr</span> <span class="keyword">(</span><span class="staexp">l_tr</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>c<span class="keyword">:</span>clr<span class="keyword">]</span></span> <span class="staexp">rbtree0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="neuexp"><span class="keyword">#define</span> B BLK</span>
+  <span class="neuexp"><span class="keyword">#define</span> R RED</span>
+  <span class="neuexp"><span class="keyword">#define</span> nil rbtree_nil</span>
+  <span class="neuexp"><span class="keyword">#define</span> cons rbtree_cons</span>
+<span class="keyword">in</span>
+  <span class="keyword">case+</span> <span class="keyword">!</span>p_tr <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>cons <span class="keyword">(</span><span class="staexp">cr</span> <span class="keyword">as</span> R<span class="keyword">,</span> trl<span class="keyword">,</span> _<span class="keyword">,</span> <span class="staexp">trr</span> <span class="keyword">as</span> <span class="keyword">@</span>cons <span class="keyword">(</span><span class="staexp">crr</span> <span class="keyword">as</span> R<span class="keyword">,</span> _<span class="keyword">,</span> _<span class="keyword">,</span> _<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> crr := B</span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>trr<span class="keyword">)</span></span>
+<span class="comment">//</span>
+      <span class="dynexp"><span class="keyword">val</span> tr <span class="keyword">=</span> <span class="keyword">!</span>p_tr</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p_tr := trl</span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span></span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> trl := t</span>
+<span class="comment">//</span>
+    <span class="keyword">in</span>
+      <span class="keyword">fold@</span> <span class="keyword">(</span>tr<span class="keyword">)</span><span class="keyword">;</span> tr
+    <span class="keyword">end</span> <span class="comment">// end of [cons (R, ..., cons (R, ...))]</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>cons <span class="keyword">(</span><span class="staexp">cr</span> <span class="keyword">as</span> R<span class="keyword">,</span> <span class="staexp">trl</span> <span class="keyword">as</span> <span class="keyword">@</span>cons <span class="keyword">(</span><span class="staexp">crr</span> <span class="keyword">as</span> R<span class="keyword">,</span> trll<span class="keyword">,</span> _<span class="keyword">,</span> trlr<span class="keyword">)</span><span class="keyword">,</span> _<span class="keyword">,</span> trr<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+      <span class="dynexp"><span class="keyword">val</span> tr <span class="keyword">=</span> <span class="keyword">!</span>p_tr</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">!</span>p_tr := trll</span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span></span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> trll := t</span>
+<span class="comment">//</span>
+      <span class="dynexp"><span class="keyword">val</span> trl_ <span class="keyword">=</span> trl</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> trl := trlr</span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> cr := B</span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">fold@</span> <span class="keyword">(</span>tr<span class="keyword">)</span></span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> trlr := tr</span>
+<span class="comment">//</span>
+    <span class="keyword">in</span>
+      <span class="keyword">fold@</span> <span class="keyword">(</span>trl_<span class="keyword">)</span><span class="keyword">;</span> trl_
+    <span class="keyword">end</span> <span class="comment">// end of [cons (R, cons (R, ...), ...)]</span>
+  <span class="keyword">|</span> _ <span class="comment">(*rest-of-cases*)</span> <span class="keyword">=&gt;&gt;</span> <span class="keyword">(</span><span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span><span class="keyword">;</span> t<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [insfix_r]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;As can be expected, the following function template
+<FONT
+COLOR="RED"
+>rbtree_insert</FONT
+> is essentially a direct translation of the one of
+the same name for inserting an element into a functional red-black tree:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN4180"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">extern</span>
+<span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+rbtree_insert
+  <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>clr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>bh<span class="keyword">:</span>nat<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  t<span class="keyword">:</span> <span class="staexp">rbtree0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">)</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">a</span><span class="keyword">,</span> cmp<span class="keyword">:</span> <span class="staexp">cmp</span> <span class="staexp">a</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>bh1<span class="keyword">:</span>nat<span class="keyword">]</span></span> <span class="staexp">rbtree0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">BLK</span><span class="keyword">,</span> <span class="staexp">bh1</span><span class="keyword">)</span></span>
+
+<span class="dynexp"><span class="keyword">implement</span><span class="keyword">{</span><span class="staexp">a</span><span class="keyword">}</span>
+rbtree_insert
+  <span class="keyword">(</span>t<span class="keyword">,</span> x0<span class="keyword">,</span> cmp<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="neuexp"><span class="keyword">#define</span> B BLK</span>
+<span class="neuexp"><span class="keyword">#define</span> R RED</span>
+<span class="neuexp"><span class="keyword">#define</span> nil rbtree_nil</span>
+<span class="neuexp"><span class="keyword">#define</span> cons rbtree_cons</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span> ins
+  <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span>clr<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>bh<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">bh</span><span class="keyword">,</span><span class="staexp">c</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  t<span class="keyword">:</span> <span class="staexp">rbtree0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">c</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">)</span><span class="keyword">,</span> x0<span class="keyword">:</span> <span class="staexp">&amp;</span><span class="staexp">a</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>cl<span class="keyword">:</span>clr<span class="keyword">;</span> v<span class="keyword">:</span>nat <span class="keyword">|</span> v &lt;= c<span class="keyword">]</span></span> <span class="staexp">rbtree</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">cl</span><span class="keyword">,</span> <span class="staexp">bh</span><span class="keyword">,</span> <span class="staexp">v</span><span class="keyword">)</span> <span class="keyword">=</span>
+<span class="keyword">(</span>
+  <span class="keyword">case+</span> t <span class="keyword">of</span>
+  <span class="keyword">|</span> <span class="keyword">@</span>cons <span class="keyword">(</span>
+      c<span class="keyword">,</span> tl<span class="keyword">,</span> x<span class="keyword">,</span> tr
+    <span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+      <span class="prfexp"><span class="keyword">prval</span> pf_c <span class="keyword">=</span> <span class="dynexp"><span class="keyword">view@</span></span>c</span>
+      <span class="prfexp"><span class="keyword">prval</span> pf_tl <span class="keyword">=</span> <span class="dynexp"><span class="keyword">view@</span></span>tl</span>
+      <span class="prfexp"><span class="keyword">prval</span> pf_x <span class="keyword">=</span> <span class="dynexp"><span class="keyword">view@</span></span>x</span>
+      <span class="prfexp"><span class="keyword">prval</span> pf_tr <span class="keyword">=</span> <span class="dynexp"><span class="keyword">view@</span></span>tr</span>
+      <span class="dynexp"><span class="keyword">val</span> sgn <span class="keyword">=</span> compare&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>x0<span class="keyword">,</span> x<span class="keyword">,</span> cmp<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">if</span> sgn <span class="keyword">&lt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">[</span><span class="staexp">cl<span class="keyword">:</span>int</span><span class="keyword">,</span><span class="staexp">v<span class="keyword">:</span>int</span><span class="keyword">]</span> tl_ <span class="keyword">=</span> ins <span class="keyword">(</span>tl<span class="keyword">,</span> x0<span class="keyword">)</span></span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tl := tl_</span>
+      <span class="keyword">in</span>
+        <span class="keyword">if</span> <span class="keyword">(</span>c <span class="keyword">=</span> B<span class="keyword">)</span>
+        <span class="keyword">then</span> <span class="keyword">(</span>
+          insfix_l&lt;<span class="staexp">a</span><span class="keyword">&gt;</span>
+            <span class="keyword">(</span><span class="prfexp">pf_c</span><span class="keyword">,</span> <span class="prfexp">pf_tl</span><span class="keyword">,</span> <span class="prfexp">pf_x</span><span class="keyword">,</span> <span class="prfexp">pf_tr</span> <span class="keyword">|</span> t<span class="keyword">,</span> <span class="dynexp"><span class="keyword">addr@</span></span>tl<span class="keyword">)</span>
+          <span class="comment">// end of [insfix_l]</span>
+        <span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">let</span>
+          <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> c := R</span> <span class="keyword">in</span> <span class="keyword">fold@</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>cl<span class="keyword">}</span></span><span class="keyword">(</span>t<span class="keyword">)</span><span class="keyword">;</span> t
+        <span class="keyword">end</span> <span class="comment">// end of [if]</span>
+      <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">if</span> sgn <span class="keyword">&gt;</span> <span class="dynexp">0</span> <span class="keyword">then</span> <span class="keyword">let</span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">[</span><span class="staexp">cr<span class="keyword">:</span>int</span><span class="keyword">,</span><span class="staexp">v<span class="keyword">:</span>int</span><span class="keyword">]</span> tr_ <span class="keyword">=</span> ins <span class="keyword">(</span>tr<span class="keyword">,</span> x0<span class="keyword">)</span></span>
+        <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> tr := tr_</span>
+      <span class="keyword">in</span>
+        <span class="keyword">if</span> <span class="keyword">(</span>c <span class="keyword">=</span> B<span class="keyword">)</span>
+        <span class="keyword">then</span> <span class="keyword">(</span>
+          insfix_r&lt;<span class="staexp">a</span><span class="keyword">&gt;</span>
+            <span class="keyword">(</span><span class="prfexp">pf_c</span><span class="keyword">,</span> <span class="prfexp">pf_tl</span><span class="keyword">,</span> <span class="prfexp">pf_x</span><span class="keyword">,</span> <span class="prfexp">pf_tr</span> <span class="keyword">|</span> t<span class="keyword">,</span> <span class="dynexp"><span class="keyword">addr@</span></span>tr<span class="keyword">)</span>
+          <span class="comment">// end of [insfix_r]</span>
+        <span class="keyword">)</span> <span class="keyword">else</span> <span class="keyword">let</span>
+          <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> c := R</span> <span class="keyword">in</span> <span class="keyword">fold@</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>cr<span class="keyword">}</span></span><span class="keyword">(</span>t<span class="keyword">)</span><span class="keyword">;</span> t
+        <span class="keyword">end</span> <span class="comment">// end of [if]</span>
+      <span class="keyword">end</span> <span class="keyword">else</span> <span class="keyword">(</span><span class="keyword">fold@</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>0<span class="keyword">}</span></span> <span class="keyword">(</span>t<span class="keyword">)</span><span class="keyword">;</span> t<span class="keyword">)</span>
+    <span class="keyword">end</span> <span class="comment">// end of [cons]</span>
+  <span class="keyword">|</span> <span class="keyword">~</span>nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> cons<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span><span class="keyword">..</span><span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>0<span class="keyword">}</span></span><span class="keyword">(</span>R<span class="keyword">,</span> nil<span class="keyword">,</span> x0<span class="keyword">,</span> nil<span class="keyword">)</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [ins] *)</span>
+<span class="comment">//</span>
+<span class="dynexp"><span class="keyword">val</span> t <span class="keyword">=</span> ins <span class="keyword">(</span>t<span class="keyword">,</span> x0<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> t <span class="keyword">of</span> <span class="keyword">@</span>cons<span class="keyword">(</span><span class="staexp">c</span> <span class="keyword">as</span> R<span class="keyword">,</span> _<span class="keyword">,</span> _<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">(</span>c := B<span class="keyword">;</span> <span class="keyword">fold@</span> <span class="keyword">(</span>t<span class="keyword">)</span><span class="keyword">;</span> t<span class="keyword">)</span> <span class="keyword">|</span> _ <span class="keyword">=&gt;&gt;</span> t
+<span class="comment">//</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [rbtree_insert]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+</P
+><P
+>&#13;I literally implemented the above <FONT
+COLOR="RED"
+>rbtree_insert</FONT
+> by making a
+copy of the previous implementation of <FONT
+COLOR="RED"
+>rbtree_insert</FONT
+> for
+functional red-black trees and then properly modifying it to make it pass
+typechecking. Although this process of copying-and-modifying is difficult
+to be described formally, it is fairly straightforward to follow in
+practice as it is almost entirely guided by the error messages issued
+during typechecking.
+
+</P
+><P
+>&#13;Please find the entire code in this section plus some additional
+code for testing <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_DATAVTYPE/rbtree.dats"
+TARGET="_top"
+>on-line</A
+>.
+A challenging as well as rewarding exercise is for the reader to implement
+an operation that deletes an element from a given linear red-black tree.
+
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x4101.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="c4187.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Linear Binary Search Trees</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c3812.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Abstract Views and Viewtypes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

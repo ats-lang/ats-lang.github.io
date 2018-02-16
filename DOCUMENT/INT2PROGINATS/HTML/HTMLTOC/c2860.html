@@ -1,0 +1,463 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Theorem-Proving in ATS/LF</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Programming with Dependent Types"
+HREF="p2235.html"><LINK
+REL="PREVIOUS"
+TITLE="Example: Functional Red-Black Trees"
+HREF="x2817.html"><LINK
+REL="NEXT"
+TITLE="Constructing Proofs as Total Functions"
+HREF="x2922.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="chapter"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x2817.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x2922.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="chapter"
+><H1
+><A
+NAME="theorem-proving_in_ats_lf"
+></A
+>Chapter 11. Theorem-Proving in ATS/LF</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+><A
+HREF="c2860.html#encoding_relations_as_dataprops"
+>Encoding Relations as Dataprops</A
+></DT
+><DT
+><A
+HREF="x2922.html"
+>Constructing Proofs as Total Functions</A
+></DT
+><DT
+><A
+HREF="x2976.html"
+>Example: Distributivity of Multiplication</A
+></DT
+><DT
+><A
+HREF="x2991.html"
+>Example: Commutativity of Multiplication</A
+></DT
+><DT
+><A
+HREF="x3008.html"
+>Algebraic Datasorts</A
+></DT
+><DT
+><A
+HREF="x3051.html"
+>Example: Establishing Properties on Braun Trees</A
+></DT
+><DT
+><A
+HREF="x3091.html"
+>Programmer-Centric Theorem-Proving</A
+></DT
+></DL
+></DIV
+><P
+>&#13;Within the ATS programming language system, there is a component named
+ATS/LF for supporting (interactive) therorem-proving. In ATS/LF,
+theorem-proving is done by constructing proofs as total functional
+programs. It will soon become clear that this style of theorem-proving can
+be combined cohesively with functional programming to yield a programming
+paradigm that is considered the signature of ATS: <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>programming
+with theorem-proving</I
+></SPAN
+>. Moreover, ATS/LF can be employed to encode various
+deduction systems and their meta-properties.
+</P
+><P
+>&#13;Please find <A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_THMPRVING/"
+TARGET="_top"
+>on-line</A
+>
+the code employed for illustration in this chapter plus some additional
+code for testing.
+</P
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="encoding_relations_as_dataprops"
+>Encoding Relations as Dataprops</A
+></H1
+><P
+>&#13;In the statics of ATS, there is a built-in sort <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>prop</I
+></SPAN
+> for
+static terms that represent types for proofs. A static term of the sort
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>prop</I
+></SPAN
+> can also be referred to as a type or more accurately, a
+prop-type or just a prop. A dataprop can be declared in a manner that is
+mostly similar to the declaration of a datatype. For instance, a prop
+construct <FONT
+COLOR="RED"
+>FIB</FONT
+> is introduced in the following dataprop declaration:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2872"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">dataprop</span>
+<span class="staexp">FIB<span class="keyword">(</span>int<span class="keyword">,</span> int<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="prfexp">FIB0<span class="keyword">(</span><span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="comment">// [of ()] can be dropped</span>
+  <span class="keyword">|</span> <span class="prfexp">FIB1<span class="keyword">(</span><span class="staexp">1</span><span class="keyword">,</span> <span class="staexp">1</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span> <span class="comment">// [of ()] can be dropped</span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>r0<span class="keyword">,</span>r1<span class="keyword">:</span>int<span class="keyword">}</span></span>
+    FIB2<span class="keyword">(</span><span class="staexp">n</span><span class="staexp">+</span><span class="staexp">2</span><span class="keyword">,</span> <span class="staexp">r0</span><span class="staexp">+</span><span class="staexp">r1</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">FIB</span><span class="keyword">(</span><span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">r0</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">FIB</span><span class="keyword">(</span><span class="staexp">n</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">,</span> <span class="staexp">r1</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [FIB]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+The sort assigned to <FONT
+COLOR="RED"
+>FIB</FONT
+> is <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>(int, int) -&#62; prop</I
+></SPAN
+>,
+indicating that <FONT
+COLOR="RED"
+>FIB</FONT
+> takes two static integers to form a
+prop-type. There are three data (or proof) constructors associated with
+<FONT
+COLOR="RED"
+>FIB</FONT
+>: <FONT
+COLOR="RED"
+>FIB0</FONT
+>, <FONT
+COLOR="RED"
+>FIB1</FONT
+> and <FONT
+COLOR="RED"
+>FIB2</FONT
+>, which are
+assigned the following function types (or more accurately, prop-types):
+
+<P
+></P
+><UL
+><LI
+><P
+><FONT
+COLOR="RED"
+>FIB0</FONT
+>: <FONT
+COLOR="RED"
+>() -&#62; FIB(0, 0)</FONT
+>
+</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>FIB1</FONT
+>: <FONT
+COLOR="RED"
+>() -&#62; FIB(1, 1)</FONT
+>
+</P
+></LI
+><LI
+><P
+><FONT
+COLOR="RED"
+>FIB2</FONT
+>:
+ <FONT
+COLOR="RED"
+>{n:nat}{r0,r1:int} (FIB(n, r0), FIB(n+1, r1)) -&#62; FIB(n+2, r0+r1)</FONT
+>
+</P
+></LI
+></UL
+>
+
+Given a natural number n and an integer r, it should be clear that
+<FONT
+COLOR="RED"
+>FIB(n, r)</FONT
+> encodes the relation fib(n) = r, where fib is defined
+by the following three equations:
+
+<P
+></P
+><UL
+><LI
+><P
+>fib(0) = 0, and
+</P
+></LI
+><LI
+><P
+>&#13;fib(1) = 1, and
+</P
+></LI
+><LI
+><P
+>fib(n+2) = fib(n) + fib(n+1) for n &#62;= 2.
+</P
+></LI
+></UL
+>
+
+A proof value of the prop <FONT
+COLOR="RED"
+>FIB(n, r)</FONT
+> can be constructed if and
+only if fib(n) equals r. For instance, the proof value
+<FONT
+COLOR="RED"
+>FIB2(FIB0(), FIB1())</FONT
+> is assigned the prop <FONT
+COLOR="RED"
+>FIB(2,
+1)</FONT
+>, attesting to fib(2) equaling 1.
+</P
+><P
+>&#13;As another example of dataprop, the following declaration introduces a prop
+constructor <FONT
+COLOR="RED"
+>MUL</FONT
+> together with three associated proof constructors:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN2907"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">dataprop</span>
+<span class="staexp">MUL<span class="keyword">(</span>int<span class="keyword">,</span> int<span class="keyword">,</span> int<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span> MULbas<span class="keyword">(</span><span class="staexp">0</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">0</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>m<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>p<span class="keyword">:</span>int<span class="keyword">}</span></span>
+    MULind<span class="keyword">(</span><span class="staexp">m</span><span class="staexp">+</span><span class="staexp">1</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">p</span><span class="staexp">+</span><span class="staexp">n</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>m<span class="keyword">:</span>pos<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>int<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>p<span class="keyword">:</span>int<span class="keyword">}</span></span>
+    MULneg<span class="keyword">(</span><span class="staexp"><span class="keyword">~</span></span><span class="keyword">(</span><span class="staexp">m</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="staexp"><span class="keyword">~</span></span><span class="keyword">(</span><span class="staexp">p</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="staexp">MUL</span><span class="keyword">(</span><span class="staexp">m</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">,</span> <span class="staexp">p</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [MUL]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Given three integers m, n and p, the prop <FONT
+COLOR="RED"
+>MUL(m, n, p)</FONT
+>
+encodes the relation m*n = p. As for <FONT
+COLOR="RED"
+>MULbas</FONT
+>, <FONT
+COLOR="RED"
+>MULind</FONT
+>
+and <FONT
+COLOR="RED"
+>MULneg</FONT
+>, they correspond to the following three equations,
+respectively:
+
+<P
+></P
+><UL
+><LI
+><P
+>0*n = 0 for every integer n, and
+</P
+></LI
+><LI
+><P
+>(m+1)*n = m*n + n for each pair of integers m and n, and
+</P
+></LI
+><LI
+><P
+>(~m)*n = ~(m*n) for each pair of integers m and n.
+</P
+></LI
+></UL
+>
+
+In other words, the dataprop declaration for <FONT
+COLOR="RED"
+>MUL</FONT
+> encodes the
+relation that represents the standard multiplication function on integers.
+</P
+><P
+>&#13;It can be readily noticed that the process of encoding a functional
+relation (i.e., a relation representing a function) as a dataprop is
+analogous to implementing a function in a logic programming language such
+as Prolog.
+</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x2817.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x2922.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Example: Functional Red-Black Trees</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="p2235.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Constructing Proofs as Total Functions</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>

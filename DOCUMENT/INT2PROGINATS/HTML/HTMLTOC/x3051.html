@@ -1,0 +1,515 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Example: Establishing Properties on Braun Trees</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Introduction to Programming in ATS"
+HREF="book1.html"><LINK
+REL="UP"
+TITLE="Theorem-Proving in ATS/LF"
+HREF="c2860.html"><LINK
+REL="PREVIOUS"
+TITLE="Algebraic Datasorts"
+HREF="x3008.html"><LINK
+REL="NEXT"
+TITLE="Programmer-Centric Theorem-Proving"
+HREF="x3091.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
+><BODY
+CLASS="sect1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Introduction to Programming in ATS: </TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="x3008.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 11. Theorem-Proving in ATS/LF</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="x3091.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="sect1"
+><H1
+CLASS="sect1"
+><A
+NAME="example_establishing_properties_on_braun_trees"
+>Example: Establishing Properties on Braun Trees</A
+></H1
+><P
+>&#13;As stated previously in this book, a binary tree is a Braun tree if it is
+empty or if its left and right subtrees are Braun trees and the size of the
+left one minus the size of the right one is either 0 or 1.  Formally, we
+can declare the following dataprop <FONT
+COLOR="RED"
+>isBraun</FONT
+> to capture the notion
+of Braun trees:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3055"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">dataprop</span>
+<span class="staexp">isBraun <span class="keyword">(</span>tree<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="prfexp">isBraunE <span class="keyword">(</span><span class="staexp">E</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>tl<span class="keyword">,</span>tr<span class="keyword">:</span>tree<span class="keyword">}</span></span>
+    <span class="staexp"><span class="keyword">{</span>sl<span class="keyword">,</span>sr<span class="keyword">:</span>nat <span class="keyword">|</span> sr &lt;= sl<span class="keyword">;</span> sl &lt;= sr + 1<span class="keyword">}</span></span>
+    isBraunB <span class="keyword">(</span>
+      <span class="staexp">B</span><span class="keyword">(</span><span class="staexp">tl</span><span class="keyword">,</span> <span class="staexp">tr</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">isBraun</span> <span class="staexp">tl</span><span class="keyword">,</span> <span class="staexp">isBraun</span> <span class="staexp">tr</span><span class="keyword">,</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">tl</span><span class="keyword">,</span> <span class="staexp">sl</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">tr</span><span class="keyword">,</span> <span class="staexp">sr</span><span class="keyword">)</span>
+    <span class="keyword">)</span></span></span> <span class="comment">// end of [isBraunB]</span>
+<span class="comment">// end of [isBraun]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+</P
+><P
+>We first prove that there exists a Braun tree of any given size.
+This property can be encoded as follows in ATS:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3058"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">prfun</span>
+lemma_existence<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="keyword">(</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>t<span class="keyword">:</span>tree<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">isBraun</span> <span class="keyword">(</span><span class="staexp">t</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">t</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Literally, the type assigned to <FONT
+COLOR="RED"
+>lemma_existence</FONT
+> means that there
+exists a tree t for any given natural number n such that t is a Braun tree
+and the size of t is n. The following code gives an implementation of
+<FONT
+COLOR="RED"
+>lemma_existence</FONT
+>:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3062"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">primplement</span>
+lemma_existence
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+lemma<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  <span class="comment">// argless</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>t<span class="keyword">:</span>tree<span class="keyword">]</span></span> <span class="keyword">(</span><span class="staexp">isBraun</span> <span class="keyword">(</span><span class="staexp">t</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">t</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">sif</span> <span class="staexp">n</span><span class="staexp">==</span><span class="staexp">0</span>
+    <span class="keyword">then</span> <span class="keyword">(</span>isBraunE <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> SZE <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span>
+    <span class="keyword">else</span> <span class="keyword">let</span>
+      <span class="keyword">stadef</span> <span class="staexp">nl <span class="keyword">=</span> <span class="staexp">n</span> <span class="staexp">/</span> <span class="staexp">2</span></span>
+      <span class="keyword">stadef</span> <span class="staexp">nr <span class="keyword">=</span> <span class="staexp">n</span> <span class="staexp">-</span> <span class="staexp">1</span> <span class="staexp">-</span> <span class="staexp">nl</span></span>
+      <span class="dynexp"><span class="keyword">val</span> <span class="keyword">(</span>pfl1<span class="keyword">,</span> pfl2<span class="keyword">)</span> <span class="keyword">=</span> lemma<span class="staexp"><span class="keyword">{</span>nl<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span>
+      <span class="keyword">and</span> <span class="keyword">(</span>pfr1<span class="keyword">,</span> pfr2<span class="keyword">)</span> <span class="keyword">=</span> lemma<span class="staexp"><span class="keyword">{</span>nr<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      <span class="keyword">(</span>isBraunB <span class="keyword">(</span>pfl1<span class="keyword">,</span> pfr1<span class="keyword">,</span> pfl2<span class="keyword">,</span> pfr2<span class="keyword">)</span><span class="keyword">,</span> SZB <span class="keyword">(</span>pfl2<span class="keyword">,</span> pfr2<span class="keyword">)</span><span class="keyword">)</span>
+    <span class="keyword">end</span></span> <span class="comment">// end of [else]</span>
+  <span class="comment">// end of [sif]</span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  lemma<span class="staexp"><span class="keyword">{</span>n<span class="keyword">}</span></span><span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [lemma_existence]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that <FONT
+COLOR="RED"
+>stadef</FONT
+> is a keyword in ATS for introducting a static
+binding between a name and a static term (of any sort). If one prefers,
+this keyword can be chosen to replace the keyword <FONT
+COLOR="RED"
+>typedef</FONT
+> (for
+introducing a name and a static term of the sort <FONT
+COLOR="RED"
+>t@ype</FONT
+>).
+
+</P
+><P
+>Next we show that two Braun trees of the same size are identical. This
+property can be encoded as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3068"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">prfun</span>
+lemma_unicity
+  <span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>t1<span class="keyword">,</span>t2<span class="keyword">:</span>tree<span class="keyword">}</span></span>
+<span class="keyword">(</span>
+  pf1<span class="keyword">:</span> <span class="staexp">isBraun</span> <span class="staexp">t1</span><span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">isBraun</span> <span class="staexp">t2</span><span class="keyword">,</span> pf3<span class="keyword">:</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">t1</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> pf4<span class="keyword">:</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">t2</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">EQ</span> <span class="keyword">(</span><span class="staexp">t1</span><span class="keyword">,</span> <span class="staexp">t2</span><span class="keyword">)</span></span> <span class="comment">// end of [lemma_unicity]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+where <FONT
+COLOR="RED"
+>EQ</FONT
+> is a prop-constructor introduced by the following
+dataprop declaration:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3071"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="keyword">dataprop</span> <span class="staexp">EQ <span class="keyword">(</span>tree<span class="keyword">,</span> tree<span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">|</span> <span class="prfexp">EQE <span class="keyword">(</span><span class="staexp">E</span><span class="keyword">,</span> <span class="staexp">E</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="keyword">)</span></span>
+  <span class="keyword">|</span> <span class="prfexp"><span class="staexp"><span class="keyword">{</span>t1l<span class="keyword">,</span>t1r<span class="keyword">:</span>tree<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>t2l<span class="keyword">,</span>t2r<span class="keyword">:</span>tree<span class="keyword">}</span></span>
+    EQB <span class="keyword">(</span><span class="staexp">B</span> <span class="keyword">(</span><span class="staexp">t1l</span><span class="keyword">,</span> <span class="staexp">t1r</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">B</span> <span class="keyword">(</span><span class="staexp">t2l</span><span class="keyword">,</span> <span class="staexp">t2r</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">of</span> <span class="keyword">(</span><span class="staexp">EQ</span> <span class="keyword">(</span><span class="staexp">t1l</span><span class="keyword">,</span> <span class="staexp">t2l</span><span class="keyword">)</span><span class="keyword">,</span> <span class="staexp">EQ</span> <span class="keyword">(</span><span class="staexp">t1r</span><span class="keyword">,</span> <span class="staexp">t2r</span><span class="keyword">)</span><span class="keyword">)</span></span></span>
+<span class="comment">// end of [EQ]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Clearly, <FONT
+COLOR="RED"
+>EQ</FONT
+> is the inductively defined equality on trees.
+An implementation of the proof function <FONT
+COLOR="RED"
+>lemma_unicity</FONT
+> is presented
+as follows:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3075"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">primplement</span>
+lemma_unicity
+  <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2<span class="keyword">,</span> pf3<span class="keyword">,</span> pf4<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+  <span class="prfexp"><span class="keyword">prfun</span> lemma<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>t1<span class="keyword">,</span>t2<span class="keyword">:</span>tree<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">n</span><span class="keyword">&gt;.</span>
+  <span class="keyword">(</span>
+    pf1<span class="keyword">:</span> <span class="staexp">isBraun</span> <span class="staexp">t1</span><span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">isBraun</span> <span class="staexp">t2</span><span class="keyword">,</span> pf3<span class="keyword">:</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">t1</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> pf4<span class="keyword">:</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">t2</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">EQ</span> <span class="keyword">(</span><span class="staexp">t1</span><span class="keyword">,</span> <span class="staexp">t2</span><span class="keyword">)</span> <span class="keyword">=</span>
+    <span class="keyword">sif</span> <span class="staexp">n</span><span class="staexp">==</span><span class="staexp">0</span>
+      <span class="keyword">then</span> <span class="keyword">let</span>
+        <span class="prfexp"><span class="keyword">prval</span> SZE <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf3 <span class="keyword">and</span> SZE <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf4</span>
+        <span class="prfexp"><span class="keyword">prval</span> isBraunE <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf1 <span class="keyword">and</span> isBraunE <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> pf2</span>
+      <span class="keyword">in</span>
+        EQE <span class="keyword">(</span><span class="keyword">)</span>
+      <span class="keyword">end</span> <span class="comment">// end of [then]</span>
+      <span class="keyword">else</span> <span class="keyword">let</span>
+        <span class="prfexp"><span class="keyword">prval</span> SZB <span class="keyword">(</span>pf3l<span class="keyword">,</span> pf3r<span class="keyword">)</span> <span class="keyword">=</span> pf3</span>
+        <span class="prfexp"><span class="keyword">prval</span> SZB <span class="keyword">(</span>pf4l<span class="keyword">,</span> pf4r<span class="keyword">)</span> <span class="keyword">=</span> pf4</span>
+        <span class="prfexp"><span class="keyword">prval</span> isBraunB <span class="keyword">(</span>pf1l<span class="keyword">,</span> pf1r<span class="keyword">,</span> pf1lsz<span class="keyword">,</span> pf1rsz<span class="keyword">)</span> <span class="keyword">=</span> pf1</span>
+        <span class="prfexp"><span class="keyword">prval</span> isBraunB <span class="keyword">(</span>pf2l<span class="keyword">,</span> pf2r<span class="keyword">,</span> pf2lsz<span class="keyword">,</span> pf2rsz<span class="keyword">)</span> <span class="keyword">=</span> pf2</span>
+        <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> SZ_istot <span class="keyword">(</span>pf1lsz<span class="keyword">,</span> pf3l<span class="keyword">)</span> <span class="keyword">and</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> SZ_istot <span class="keyword">(</span>pf1rsz<span class="keyword">,</span> pf3r<span class="keyword">)</span></span>
+        <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> SZ_istot <span class="keyword">(</span>pf2lsz<span class="keyword">,</span> pf4l<span class="keyword">)</span> <span class="keyword">and</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> SZ_istot <span class="keyword">(</span>pf2rsz<span class="keyword">,</span> pf4r<span class="keyword">)</span></span>
+        <span class="prfexp"><span class="keyword">prval</span> pfeql <span class="keyword">=</span> lemma <span class="keyword">(</span>pf1l<span class="keyword">,</span> pf2l<span class="keyword">,</span> pf3l<span class="keyword">,</span> pf4l<span class="keyword">)</span></span>
+        <span class="prfexp"><span class="keyword">prval</span> pfeqr <span class="keyword">=</span> lemma <span class="keyword">(</span>pf1r<span class="keyword">,</span> pf2r<span class="keyword">,</span> pf3r<span class="keyword">,</span> pf4r<span class="keyword">)</span></span>
+      <span class="keyword">in</span>
+        EQB <span class="keyword">(</span>pfeql<span class="keyword">,</span> pfeqr<span class="keyword">)</span>
+      <span class="keyword">end</span></span> <span class="comment">// end of [else]</span>
+    <span class="comment">// end of [sif]</span>
+<span class="keyword">in</span>
+  lemma <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2<span class="keyword">,</span> pf3<span class="keyword">,</span> pf4<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [lemma_unicity]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+Note that the proof function <FONT
+COLOR="RED"
+>SZ_istot</FONT
+> in this implementation of
+<FONT
+COLOR="RED"
+>lemma_unicity</FONT
+> is given the following interface:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3079"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">prfun</span>
+SZ_istot<span class="staexp"><span class="keyword">{</span>t<span class="keyword">:</span>tree<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>n1<span class="keyword">,</span>n2<span class="keyword">:</span>int<span class="keyword">}</span></span>
+  <span class="keyword">(</span>pf1<span class="keyword">:</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">t</span><span class="keyword">,</span> <span class="staexp">n1</span><span class="keyword">)</span><span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">t</span><span class="keyword">,</span> <span class="staexp">n2</span><span class="keyword">)</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp"><span class="keyword">[</span>n1==n2<span class="keyword">]</span></span> <span class="staexp">void</span></span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+which simply states that <FONT
+COLOR="RED"
+>SZ</FONT
+> is a functional relation with
+respect to its first parameter, that is, there is at most one n for every
+given t such that t and n are related according to <FONT
+COLOR="RED"
+>SZ</FONT
+>.
+
+Clearly, the mathematical proof corresponding to this implementation is of
+induction on the size n of the two given trees t1 and t2. In the base case
+where n is 0, t1 and t2 are equal as they both are the empty tree. In the
+inductive case where n &#62; 0, it is proven that n1l and n2l are of the same
+value where n1l and n2l are the sizes of the left subtrees of t1 and t2,
+respecitvely; similarly, it is also proven that n1r and n2r are of the same
+value where n1r and n2r are the sizes of the right subtrees of t1 and t2,
+respectively; by induction hypothesis on n1l, the left substrees of t1 and
+t2 are the same; by induction hypothesis on n1r, the right substrees of t1
+and t2 are the same; by the definition of tree equality (encoded by
+<FONT
+COLOR="RED"
+>EQ</FONT
+>), t1 and t2 are the same.
+</P
+><P
+>&#13;As a comparison, the following code gives another implementation of
+<FONT
+COLOR="RED"
+>lemma_unicity</FONT
+> that is of a different (and rather unusual) style:
+
+<DIV
+CLASS="informalexample"
+><P
+></P
+><A
+NAME="AEN3086"
+></A
+><PRE
+CLASS="programlisting"
+><p class="patsyntax"><span class="prfexp"><span class="keyword">primplement</span>
+lemma_unicity
+  <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2<span class="keyword">,</span> pf3<span class="keyword">,</span> pf4<span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+<span class="prfexp"><span class="keyword">prfun</span>
+lemma<span class="staexp"><span class="keyword">{</span>n<span class="keyword">:</span>nat<span class="keyword">}</span></span><span class="staexp"><span class="keyword">{</span>t1<span class="keyword">,</span>t2<span class="keyword">:</span>tree<span class="keyword">}</span></span> <span class="keyword">.&lt;</span><span class="staexp">t1</span><span class="keyword">&gt;.</span>
+<span class="keyword">(</span>
+  pf1<span class="keyword">:</span> <span class="staexp">isBraun</span> <span class="staexp">t1</span><span class="keyword">,</span> pf2<span class="keyword">:</span> <span class="staexp">isBraun</span> <span class="staexp">t2</span><span class="keyword">,</span> pf3<span class="keyword">:</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">t1</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span><span class="keyword">,</span> pf4<span class="keyword">:</span> <span class="staexp">SZ</span> <span class="keyword">(</span><span class="staexp">t2</span><span class="keyword">,</span> <span class="staexp">n</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">EQ</span> <span class="keyword">(</span><span class="staexp">t1</span><span class="keyword">,</span> <span class="staexp">t2</span><span class="keyword">)</span> <span class="keyword">=</span>
+  <span class="keyword">case+</span> <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2<span class="keyword">)</span> <span class="keyword">of</span>
+<span class="comment">//</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>isBraunE <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">,</span> isBraunE <span class="keyword">(</span><span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> EQE <span class="keyword">(</span><span class="keyword">)</span>
+<span class="comment">//</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>isBraunB <span class="keyword">(</span>pf11<span class="keyword">,</span> pf12<span class="keyword">,</span> pf13<span class="keyword">,</span> pf14<span class="keyword">)</span><span class="keyword">,</span>
+     isBraunB <span class="keyword">(</span>pf21<span class="keyword">,</span> pf22<span class="keyword">,</span> pf23<span class="keyword">,</span> pf24<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+      <span class="prfexp"><span class="keyword">prval</span> SZB <span class="keyword">(</span>pf31<span class="keyword">,</span> pf32<span class="keyword">)</span> <span class="keyword">=</span> pf3</span>
+      <span class="prfexp"><span class="keyword">prval</span> SZB <span class="keyword">(</span>pf41<span class="keyword">,</span> pf42<span class="keyword">)</span> <span class="keyword">=</span> pf4</span>
+<span class="comment">//</span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> SZ_istot <span class="keyword">(</span>pf13<span class="keyword">,</span> pf31<span class="keyword">)</span></span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> SZ_istot <span class="keyword">(</span>pf23<span class="keyword">,</span> pf41<span class="keyword">)</span></span>
+<span class="comment">//</span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> SZ_istot <span class="keyword">(</span>pf14<span class="keyword">,</span> pf32<span class="keyword">)</span></span>
+      <span class="prfexp"><span class="keyword">prval</span> <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=</span> SZ_istot <span class="keyword">(</span>pf24<span class="keyword">,</span> pf42<span class="keyword">)</span></span>
+<span class="comment">//</span>
+      <span class="prfexp"><span class="keyword">prval</span> pfeq1 <span class="keyword">=</span> lemma <span class="keyword">(</span>pf11<span class="keyword">,</span> pf21<span class="keyword">,</span> pf31<span class="keyword">,</span> pf41<span class="keyword">)</span></span>
+      <span class="prfexp"><span class="keyword">prval</span> pfeq2 <span class="keyword">=</span> lemma <span class="keyword">(</span>pf12<span class="keyword">,</span> pf22<span class="keyword">,</span> pf32<span class="keyword">,</span> pf42<span class="keyword">)</span></span>
+    <span class="keyword">in</span>
+      EQB <span class="keyword">(</span>pfeq1<span class="keyword">,</span> pfeq2<span class="keyword">)</span>
+    <span class="keyword">end</span>
+<span class="comment">//</span>
+  <span class="keyword">|</span> <span class="keyword">(</span>isBraunE _<span class="keyword">,</span> isBraunB _<span class="keyword">)</span> <span class="keyword">=/=&gt;</span>
+    <span class="keyword">let</span> <span class="prfexp"><span class="keyword">prval</span> SZE _ <span class="keyword">=</span> pf3 <span class="keyword">and</span> SZB _ <span class="keyword">=</span> pf4</span> <span class="dynexp"><span class="keyword">in</span> <span class="comment">(*none*)</span> <span class="keyword">end</span></span>
+  <span class="keyword">|</span> <span class="keyword">(</span>isBraunB _<span class="keyword">,</span> isBraunE _<span class="keyword">)</span> <span class="keyword">=/=&gt;</span>
+    <span class="keyword">let</span> <span class="prfexp"><span class="keyword">prval</span> SZB _ <span class="keyword">=</span> pf3 <span class="keyword">and</span> SZE _ <span class="keyword">=</span> pf4</span> <span class="dynexp"><span class="keyword">in</span> <span class="comment">(*none*)</span> <span class="keyword">end</span></span></span>
+<span class="comment">//</span>
+<span class="keyword">in</span>
+  lemma <span class="keyword">(</span>pf1<span class="keyword">,</span> pf2<span class="keyword">,</span> pf3<span class="keyword">,</span> pf4<span class="keyword">)</span>
+<span class="keyword">end</span></span> <span class="comment">// end of [lemma_unicity]</span>
+</p></PRE
+><P
+></P
+></DIV
+>
+
+
+This implementation corresponds to a proof by induction on the structure of
+the given tree t1. Note that the use of the special symbol <FONT
+COLOR="RED"
+>=/=&#62;</FONT
+>,
+which is a keyword in ATS, is to indicate to the typechecker of ATS that
+the involved clause of pattern matching is <SPAN
+CLASS="emphasis"
+><I
+CLASS="emphasis"
+>unreachable</I
+></SPAN
+>: It is the
+responsibility of the programmer to establish the falsehood on the
+right-hand side of the clause. Please find the entirety of the above code
+<A
+HREF="https://github.com/ats-lang/ats-lang.github.io/blob/master/DOCUMENT/INT2PROGINATS/CODE/CHAP_THMPRVING/brauntree.dats"
+TARGET="_top"
+>on-line</A
+>.
+</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="x3008.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="book1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="x3091.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Algebraic Datasorts</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="c2860.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Programmer-Centric Theorem-Proving</TD
+></TR
+></TABLE
+></DIV
+><SCRIPT SRC="./assets/INT2PROGINATS-BOOK.js"></SCRIPT></BODY
+></HTML
+>
