@@ -17,7 +17,7 @@ TITLE="Polymorphic Datatypes"
 HREF="x1224.html"><LINK
 REL="NEXT"
 TITLE="Example: Mergesort on Lists"
-HREF="x1342.html"><LINK
+HREF="x1343.html"><LINK
 REL="STYLESHEET"
 TYPE="text/css"
 HREF="./assets/INT2PROGINATS-BOOK.css"></HEAD
@@ -62,7 +62,7 @@ WIDTH="10%"
 ALIGN="right"
 VALIGN="bottom"
 ><A
-HREF="x1342.html"
+HREF="x1343.html"
 ACCESSKEY="N"
 >Next</A
 ></TD
@@ -126,18 +126,18 @@ NAME="AEN1270"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
-a<span class="keyword">:</span><span class="keyword">t@ype</span>
-<span class="keyword">}</span></span> list0_append
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_append
 <span class="keyword">(</span>
-  xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span>
-<span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span>
+xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span>
 <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
 <span class="keyword">case+</span> xs <span class="keyword">of</span>
-<span class="keyword">|</span> list0_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
-    list0_cons<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">,</span> list0_append&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span>
-<span class="keyword">|</span> list0_nil <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> ys
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> ys
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+    list0_cons<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">,</span> list0_append&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span>
+  <span class="comment">// end of [list0_cons]</span>
 <span class="keyword">)</span></span> <span class="comment">(* end of [list0_append] *)</span>
 </p></PRE
 ><P
@@ -184,17 +184,18 @@ NAME="AEN1279"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>
-a<span class="keyword">:</span><span class="keyword">t@ype</span>
-<span class="keyword">}</span></span> list0_reverse_append
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+list0_reverse_append
 <span class="keyword">(</span>
-  xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span>
+xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span><span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span>
 <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
 <span class="keyword">case+</span> xs <span class="keyword">of</span>
-<span class="keyword">|</span> list0_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> ys
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
     list0_reverse_append&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> list0_cons<span class="staexp"><span class="keyword">{</span>a<span class="keyword">}</span></span><span class="keyword">(</span>x<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span>
-<span class="keyword">|</span> list0_nil <span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> ys
+  <span class="comment">// end of [list0_cons]</span>
 <span class="keyword">)</span></span> <span class="comment">(* end of [list0_reverse_append] *)</span>
 </p></PRE
 ><P
@@ -237,9 +238,10 @@ NAME="AEN1287"
 ></A
 ><PRE
 CLASS="programlisting"
-><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span><span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
 list0_reverse
-  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span> <span class="keyword">=</span> list0_reverse_append&lt;<span class="staexp">a</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> list0_nil<span class="keyword">)</span></span>
+  <span class="keyword">(</span>xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span> <span class="keyword">=</span> list0_reverse_append&lt;<span class="staexp">a</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> list0_nil<span class="keyword">)</span></span>
 <span class="comment">// end of [list0_reverse]</span>
 </p></PRE
 ><P
@@ -265,10 +267,13 @@ COLOR="RED"
 COLOR="RED"
 >list0(T1)</FONT
 > for some type T1 and a
-closure function f of the type T1 -&#60;cloref1&#62; T2 for some type T2,
+closure function <FONT
+COLOR="RED"
+>f0</FONT
+> of the type T1 -&#60;cloref1&#62; T2 for some type T2,
 <FONT
 COLOR="RED"
->list0_map(xs, f)</FONT
+>list0_map(xs, f0)</FONT
 > returns a list ys of the type <FONT
 COLOR="RED"
 >list0(T2)</FONT
@@ -279,7 +284,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1296"
+NAME="AEN1297"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -288,13 +293,14 @@ CLASS="programlisting"
 <span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
 list0_map
 <span class="keyword">(</span>
-  xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span><span class="keyword">,</span> f<span class="keyword">:</span> <span class="staexp">a</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">b</span>
+  xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span><span class="keyword">,</span> f0<span class="keyword">:</span> <span class="staexp">a</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">b</span>
 <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">b</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
 <span class="keyword">case+</span> xs <span class="keyword">of</span>
-<span class="keyword">|</span> list0_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
-    list0_cons<span class="staexp"><span class="keyword">{</span>b<span class="keyword">}</span></span><span class="keyword">(</span>f x<span class="keyword">,</span> list0_map&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> f<span class="keyword">)</span><span class="keyword">)</span>
-<span class="keyword">|</span> list0_nil <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_nil <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  list0_nil<span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  list0_cons<span class="staexp"><span class="keyword">{</span>b<span class="keyword">}</span></span><span class="keyword">(</span>f0<span class="keyword">(</span>x<span class="keyword">)</span><span class="keyword">,</span> list0_map&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> f0<span class="keyword">)</span><span class="keyword">)</span>
 <span class="keyword">)</span></span> <span class="comment">(* end of [list0_map] *)</span>
 </p></PRE
 ><P
@@ -303,7 +309,7 @@ list0_map
 >
 
 
-The length of ys equals that of xs and each element y in ys equals f(x),
+The length of ys equals that of xs and each element y in ys equals f0(x),
 where x is the corresponding element in xs.  Clearly, this implementation
 of <FONT
 COLOR="RED"
@@ -323,11 +329,11 @@ COLOR="RED"
 ></A
 ></H2
 ><P
->&#13;Given xs, ini and f, <FONT
+>&#13;Given xs, ini and f0, <FONT
 COLOR="RED"
->list0_foldleft(ini, xs, f)</FONT
+>list0_foldleft(ini, xs, f0)</FONT
 > computes the
-value of the expression f(... f(f(ini, xs[0]), xs[1]) ..., xs[n-1]), where
+value of the expression f0(... f0(f0(ini, xs[0]), xs[1]) ..., xs[n-1]), where
 n is the length of xs and xs[i] refers to element i in xs for each i &#60; n.
 The following implementation of <FONT
 COLOR="RED"
@@ -339,7 +345,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1305"
+NAME="AEN1306"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -348,14 +354,17 @@ CLASS="programlisting"
 <span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
 list0_foldleft
 <span class="keyword">(</span>
-  ini<span class="keyword">:</span> <span class="staexp">a</span><span class="keyword">,</span> xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span><span class="keyword">,</span> f<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">a</span>
+  ini<span class="keyword">:</span> <span class="staexp">a</span>
+<span class="keyword">,</span> xs0<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span><span class="keyword">,</span> f0<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref</span><span class="keyword">&gt;</span> <span class="staexp">a</span>
 <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">a</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
-  <span class="keyword">case+</span> xs <span class="keyword">of</span>
-  <span class="keyword">|</span> list0_cons
-      <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_foldleft&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>f <span class="keyword">(</span>ini<span class="keyword">,</span> x<span class="keyword">)</span><span class="keyword">,</span> xs<span class="keyword">,</span> f<span class="keyword">)</span>
-  <span class="keyword">|</span> list0_nil <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> ini
-<span class="keyword">)</span></span>
+<span class="comment">//</span>
+<span class="keyword">case+</span> xs0 <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> ini
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  list0_foldleft&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>f0<span class="keyword">(</span>ini<span class="keyword">,</span> x<span class="keyword">)</span><span class="keyword">,</span> xs<span class="keyword">,</span> f0<span class="keyword">)</span>
+<span class="comment">//</span>
+<span class="keyword">)</span></span> <span class="comment">(* end of [list0_foldleft] *)</span>
 </p></PRE
 ><P
 ></P
@@ -377,11 +386,11 @@ COLOR="RED"
 ></A
 ></H2
 ><P
->&#13;Given xs, res and f, <FONT
+>&#13;Given xs, res and f0, <FONT
 COLOR="RED"
->list0_foldright(xs, res, f)</FONT
+>list0_foldright(xs, res, f0)</FONT
 > computes the
-value of the expression f(xs[0], f(xs[1], f(... f(xs[n-1], res) ...))), where
+value of the expression f0(xs[0], f0(xs[1], f0(... f0(xs[n-1], res) ...))), where
 n is the length of xs and xs[i] refers to element i in xs for each i &#60; n.
 The following implementation of <FONT
 COLOR="RED"
@@ -393,7 +402,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1313"
+NAME="AEN1314"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -402,13 +411,16 @@ CLASS="programlisting"
 <span class="staexp"><span class="keyword">{</span>b<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
 list0_foldright
 <span class="keyword">(</span>
-  xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span><span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">b</span><span class="keyword">,</span> f<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span> <span class="staexp"><span class="keyword">-&gt;</span></span> <span class="staexp">b</span>
+  xs0<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">,</span> res<span class="keyword">:</span> <span class="staexp">b</span><span class="keyword">,</span> f0<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">b</span>
 <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">b</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
-  <span class="keyword">case+</span> xs <span class="keyword">of</span>
-  <span class="keyword">|</span> list0_cons
-      <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span> f <span class="keyword">(</span>x<span class="keyword">,</span> list0_foldright&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> res<span class="keyword">,</span> f<span class="keyword">)</span><span class="keyword">)</span>
-  <span class="keyword">|</span> list0_nil <span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> res
+<span class="comment">//</span>
+<span class="keyword">case+</span> xs0 <span class="keyword">of</span>
+<span class="keyword">|</span> list0_nil<span class="keyword">(</span><span class="keyword">)</span> <span class="keyword">=&gt;</span> res
+<span class="keyword">|</span> list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span> <span class="keyword">=&gt;</span>
+  f0<span class="keyword">(</span>x<span class="keyword">,</span> list0_foldright&lt;<span class="staexp">a</span><span class="keyword">&gt;&lt;</span><span class="staexp">b</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> res<span class="keyword">,</span> f0<span class="keyword">)</span><span class="keyword">)</span>
+<span class="comment">//</span>
 <span class="keyword">)</span></span>
 </p></PRE
 ><P
@@ -453,7 +465,7 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1323"
+NAME="AEN1324"
 ></A
 ><PRE
 CLASS="programlisting"
@@ -461,19 +473,23 @@ CLASS="programlisting"
 a<span class="keyword">,</span>b<span class="keyword">:</span><span class="keyword">t@ype</span>
 <span class="keyword">}</span></span> list0_zip
 <span class="keyword">(</span>
-  xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span>
-<span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">b</span>
-<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list0</span> <span class="keyword">@(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
-  <span class="keyword">typedef</span> <span class="staexp">ab <span class="keyword">=</span> <span class="keyword">@(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span></span>
+xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">,</span>
+ys<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">@(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">=</span> <span class="keyword">let</span>
+<span class="comment">//</span>
+  <span class="keyword">typedef</span> <span class="staexp">ab <span class="keyword">=</span> <span class="keyword">@(</span> <span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span> <span class="keyword">)</span></span>
+<span class="comment">//</span>
 <span class="keyword">in</span>
 <span class="comment">//</span>
 <span class="keyword">case+</span> <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span> <span class="keyword">of</span>
-<span class="keyword">|</span> <span class="keyword">(</span>list0_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span><span class="keyword">,</span>
-   list0_cons <span class="keyword">(</span>y<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+<span class="keyword">|</span> <span class="keyword">(</span>list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span><span class="keyword">,</span>
+   list0_cons<span class="keyword">(</span>y<span class="keyword">,</span> ys<span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="keyword">=&gt;</span>
   <span class="keyword">(</span>
-    list0_cons<span class="staexp"><span class="keyword">{</span>ab<span class="keyword">}</span></span><span class="keyword">(</span><span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span><span class="keyword">,</span> list0_zip&lt;<span class="staexp">a</span><span class="keyword">,</span><span class="staexp">b</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span>
-  <span class="keyword">)</span>
-<span class="keyword">|</span> <span class="keyword">(</span>_<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_nil <span class="keyword">(</span><span class="keyword">)</span>
+    list0_cons<span class="staexp"><span class="keyword">{</span>ab<span class="keyword">}</span></span><span class="keyword">(</span><span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span><span class="keyword">,</span> list0_zip&lt;<span class="staexp">a</span><span class="keyword">,</span><span class="staexp">b</span><span class="keyword">&gt;</span><span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span>
+  <span class="keyword">)</span> <span class="comment">(* (cons,cons) *)</span>
+<span class="keyword">|</span> <span class="keyword">(</span>_<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_nil<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span>
 <span class="comment">//</span>
 <span class="keyword">end</span></span> <span class="comment">// end of [list0_zip]</span>
 </p></PRE
@@ -515,7 +531,7 @@ COLOR="RED"
 function f of the type (T1, T2) -&#60;cloref1&#62; T3 for some type T3,
 <FONT
 COLOR="RED"
->list0_zipwith(xs, ys, f)</FONT
+>list0_zipwith(xs, ys, f0)</FONT
 > returns a list zs of the type
 <FONT
 COLOR="RED"
@@ -527,27 +543,28 @@ CLASS="informalexample"
 ><P
 ></P
 ><A
-NAME="AEN1334"
+NAME="AEN1335"
 ></A
 ><PRE
 CLASS="programlisting"
 ><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span>
-<span class="staexp"><span class="keyword">{</span>a<span class="keyword">,</span>b<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
+<span class="staexp"><span class="keyword">{</span>a<span class="keyword">,</span>
+ b<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
 <span class="staexp"><span class="keyword">{</span>c<span class="keyword">:</span><span class="keyword">t@ype</span><span class="keyword">}</span></span>
 list0_zipwith
 <span class="keyword">(</span>
-  xs<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">a</span>
-<span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">b</span>
-<span class="keyword">,</span> f<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">c</span>
-<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list0</span> <span class="staexp">c</span> <span class="keyword">=</span>
+  xs<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">a</span><span class="keyword">)</span>
+<span class="keyword">,</span> ys<span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">b</span><span class="keyword">)</span>
+<span class="keyword">,</span> f0<span class="keyword">:</span> <span class="keyword">(</span><span class="staexp">a</span><span class="keyword">,</span> <span class="staexp">b</span><span class="keyword">)</span> <span class="keyword">-&lt;</span><span class="staexp">cloref1</span><span class="keyword">&gt;</span> <span class="staexp">c</span>
+<span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">list0</span><span class="keyword">(</span><span class="staexp">c</span><span class="keyword">)</span> <span class="keyword">=</span>
 <span class="keyword">(</span>
 <span class="keyword">case+</span> <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">)</span> <span class="keyword">of</span>
-<span class="keyword">|</span> <span class="keyword">(</span>list0_cons <span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span><span class="keyword">,</span>
-   list0_cons <span class="keyword">(</span>y<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
+<span class="keyword">|</span> <span class="keyword">(</span>list0_cons<span class="keyword">(</span>x<span class="keyword">,</span> xs<span class="keyword">)</span><span class="keyword">,</span>
+   list0_cons<span class="keyword">(</span>y<span class="keyword">,</span> ys<span class="keyword">)</span><span class="keyword">)</span> <span class="keyword">=&gt;</span>
   <span class="keyword">(</span>
-    list0_cons<span class="staexp"><span class="keyword">{</span>c<span class="keyword">}</span></span><span class="keyword">(</span>f <span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span><span class="keyword">,</span> list0_zipwith&lt;<span class="staexp">a</span><span class="keyword">,</span><span class="staexp">b</span><span class="keyword">&gt;&lt;</span><span class="staexp">c</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">,</span> f<span class="keyword">)</span><span class="keyword">)</span>
+    list0_cons<span class="staexp"><span class="keyword">{</span>c<span class="keyword">}</span></span><span class="keyword">(</span>f0<span class="keyword">(</span>x<span class="keyword">,</span> y<span class="keyword">)</span><span class="keyword">,</span> list0_zipwith&lt;<span class="staexp">a</span><span class="keyword">,</span><span class="staexp">b</span><span class="keyword">&gt;&lt;</span><span class="staexp">c</span><span class="keyword">&gt;</span> <span class="keyword">(</span>xs<span class="keyword">,</span> ys<span class="keyword">,</span> f0<span class="keyword">)</span><span class="keyword">)</span>
   <span class="keyword">)</span>
-<span class="keyword">|</span> <span class="keyword">(</span>_<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_nil <span class="keyword">(</span><span class="keyword">)</span>
+<span class="keyword">|</span> <span class="keyword">(</span>_<span class="keyword">,</span> _<span class="keyword">)</span> <span class="keyword">=&gt;</span> list0_nil<span class="keyword">(</span><span class="comment">(*void*)</span><span class="keyword">)</span>
 <span class="keyword">)</span></span> <span class="comment">(* end of [list0_zipwith] *)</span>
 </p></PRE
 ><P
@@ -557,8 +574,8 @@ list0_zipwith
 
 
 The length of zs is the minimum of the lengths of xs and ys and each
-element z in zs is f(x, y), where x and y are the corresponding elements in
-xs and ys, respectively.  Clearly, this implementation of
+element z in zs is f0(x, y), where x and y are the corresponding
+elements in xs and ys, respectively.  Clearly, this implementation of
 <FONT
 COLOR="RED"
 >list0_zipwith</FONT
@@ -569,19 +586,19 @@ COLOR="RED"
 > behaves exactly like <FONT
 COLOR="RED"
 >list0_zip</FONT
-> if its
-third argument <FONT
+>
+if its third argument <FONT
 COLOR="RED"
->f</FONT
+>f0</FONT
 > is replaced with <FONT
 COLOR="RED"
->lam (x, y) =&#62; @(x, y)</FONT
->.
-This function template is also named <FONT
+>lam
+(x, y) =&#62; @(x, y)</FONT
+>.  This function template is also given the name
+<FONT
 COLOR="RED"
 >list0_map2</FONT
-> for the obvious
-reason.
+> for the obvious reason.
 </P
 ></DIV
 ></DIV
@@ -619,7 +636,7 @@ WIDTH="33%"
 ALIGN="right"
 VALIGN="top"
 ><A
-HREF="x1342.html"
+HREF="x1343.html"
 ACCESSKEY="N"
 >Next</A
 ></TD

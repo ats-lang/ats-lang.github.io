@@ -313,8 +313,9 @@ ifold2
 <span class="comment">// end of [ifold2]</span>
 <span class="comment">//</span>
 <span class="dynexp"><span class="keyword">fun</span>
-sqrmodsum <span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> d<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
-  ifold2 <span class="keyword">(</span>n<span class="keyword">,</span> <span class="keyword">lam</span> <span class="keyword">(</span>res<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">if</span> x mod d <span class="keyword">then</span> res + x * x <span class="keyword">else</span> res<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
+sqrmodsum
+<span class="keyword">(</span>n<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> d<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
+  ifold2<span class="keyword">(</span>n<span class="keyword">,</span> <span class="keyword">lam</span> <span class="keyword">(</span>res<span class="keyword">,</span> x<span class="keyword">)</span> <span class="keyword">=&gt;</span> <span class="keyword">if</span> x mod d <span class="keyword">=</span> <span class="dynexp">0</span> <span class="keyword">then</span> res + x * x <span class="keyword">else</span> res<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">)</span></span>
 <span class="comment">// end of [sqrmodsum]</span>
 <span class="comment">//</span>
 </p></PRE

@@ -11,10 +11,10 @@ TITLE="Introduction to Programming in ATS"
 HREF="book1.html"><LINK
 REL="UP"
 TITLE="From Genericity to Late-Binding"
-HREF="c4471.html"><LINK
+HREF="c4472.html"><LINK
 REL="PREVIOUS"
 TITLE="Templates as a Special Form of Functors"
-HREF="x4568.html"><LINK
+HREF="x4569.html"><LINK
 REL="NEXT"
 TITLE="Template-Based Support for Late-Binding"
 HREF="x4659.html"><LINK
@@ -48,7 +48,7 @@ WIDTH="10%"
 ALIGN="left"
 VALIGN="bottom"
 ><A
-HREF="x4568.html"
+HREF="x4569.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -328,24 +328,24 @@ COLOR="RED"
 > improves upon <FONT
 COLOR="RED"
 >tally2</FONT
->, it is still a
-bit unsatisfactory. Clearly, the closure function formed before
+>, it is still
+a bit unsatisfactory. Clearly, the closure function formed before
 <FONT
 COLOR="RED"
 >tally3</FONT
 > calls <FONT
 COLOR="RED"
 >for_loop2</FONT
-> becomes garbage immediately
-after the call returns. It is plausible to expect that an optimizing C
-compiler (e.g., gcc and clang) can eliminate the need for actual closure
-formation when it compiles on the C code generated from ATS source, but
-there is no guarantee. In order to have such a guarantee, we can evolve
-<FONT
+> becomes garbage
+immediately after the call returns. It is plausible to expect that an
+optimizing C compiler (e.g., gcc and clang) can eliminate the need for
+actual closure formation when it compiles the C code generated from
+ATS source, but there is no guarantee. In order to have such a
+guarantee, we can evolve <FONT
 COLOR="RED"
 >for_loop2</FONT
-> into the following function template
-<FONT
+> into the following
+function template <FONT
 COLOR="RED"
 >for_loop3:</FONT
 >
@@ -488,7 +488,7 @@ WIDTH="33%"
 ALIGN="left"
 VALIGN="top"
 ><A
-HREF="x4568.html"
+HREF="x4569.html"
 ACCESSKEY="P"
 >Prev</A
 ></TD
@@ -522,7 +522,7 @@ WIDTH="34%"
 ALIGN="center"
 VALIGN="top"
 ><A
-HREF="c4471.html"
+HREF="c4472.html"
 ACCESSKEY="U"
 >Up</A
 ></TD

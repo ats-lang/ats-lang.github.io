@@ -150,9 +150,12 @@ CLASS="programlisting"
 <span class="dynexp"><span class="keyword">val</span>
 ISQRT_MAX <span class="keyword">=</span> <span class="keyword">(</span><span class="dynexp">1</span> &lt;&lt; <span class="dynexp">16</span><span class="keyword">)</span> - <span class="dynexp">1</span></span> <span class="comment">// = 65535</span>
 <span class="comment">//</span>
+<span class="dynexp"><span class="keyword">fun</span>
+square<span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">uint</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">uint</span> <span class="keyword">=</span> x * x</span>
+<span class="comment">//</span>
 <span class="dynexp"><span class="keyword">fun</span> isqrt
   <span class="keyword">(</span>x<span class="keyword">:</span> <span class="staexp">uint</span><span class="keyword">)</span><span class="keyword">:</span> <span class="staexp">int</span> <span class="keyword">=</span>
-  bsearch_fun <span class="keyword">(</span><span class="keyword">lam</span> i <span class="keyword">=&gt;</span> square<span class="keyword">(</span>g0i2u<span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">,</span> ISQRT_MAX<span class="keyword">)</span></span>
+  bsearch_fun<span class="keyword">(</span><span class="keyword">lam</span> i <span class="keyword">=&gt;</span> square<span class="keyword">(</span>g0i2u<span class="keyword">(</span>i<span class="keyword">)</span><span class="keyword">)</span><span class="keyword">,</span> x<span class="keyword">,</span> <span class="dynexp">0</span><span class="keyword">,</span> ISQRT_MAX<span class="keyword">)</span></span>
 <span class="comment">// end of [isqrt]</span>
 </p></PRE
 ><P
