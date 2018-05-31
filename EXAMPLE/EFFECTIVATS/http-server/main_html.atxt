@@ -6,6 +6,7 @@
 ##patsyntax()
 ##thePage_style()
 
+
 <!--php-->
 </head>
 
@@ -141,7 +142,7 @@ myserver_init <span class="keyword">(</span><span class="keyword">)</span> <span
 <span class="keyword">{</span>
 <span class="comment">//</span>
 <span class="dynexp"><span class="keyword">val</span> inport <span class="keyword">=</span> in_port_nbo<span class="keyword">(</span>MYPORT<span class="keyword">)</span></span>
-<span class="dynexp"><span class="keyword">val</span> inaddr <span class="keyword">=</span> in_addr_hbo2nbo <span class="keyword">(</span>INADDR_ANY<span class="keyword">)</span></span>
+<span class="dynexp"><span class="keyword">val</span> inaddr <span class="keyword">=</span> in_addr_hbo2nbo<span class="keyword">(</span>INADDR_ANY<span class="keyword">)</span></span>
 <span class="comment">//</span>
 <span class="keyword">var</span> servaddr
   <span class="keyword">:</span> <span class="staexp">sockaddr_in_struct</span>
