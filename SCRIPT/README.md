@@ -11,7 +11,8 @@ distrbution of Linux. It is primarily used in an Ubuntu box
 provided by [Cloud-9](http://c9.io).
 
 Also, an improvement of this script by Yannick Duchêne is available as
-[install-ats2-on-debian-ubuntu.sh](https://github.com/Hibou57/PostiATS-Utilities/blob/master/install-ats2-on-debian-ubuntu.sh).
+[install-ats2-on-debian-ubuntu.sh](https://github.com/Hibou57/PostiATS-Utilities/blob/master/install-ats2-on-debian-ubuntu.sh),
+which should really be used in place of C9-ATS2-install.sh.
 
 ## [C9-ATS2-install-cs320.sh](http://ats-lang.github.io/SCRIPT/C9-ATS2-install-cs320.sh)
 
