@@ -84,6 +84,14 @@ clean:: ; $(RMF) matrixops_dats.c
 cleanall:: ; $(RMF) matrixops matrixops.exe
 
 #
+all:: absreimpl
+absreimpl: absreimpl.exe
+absreimpl.exe: absreimpl_dats.c ;   $(CCOPT) -D_GNU_SOURCE -O2     -I$(PATSHOMEQ) -I$(PATSHOMEQ)/ccomp/runtime -DATS_MEMALLOC_LIBC -o $@ $< 
+absreimpl_dats.c: absreimpl.dats ;   $(PATSOPT) -IATS$(PATSHOMEQ)/contrib --output absreimpl_dats.c --dynamic absreimpl.dats
+clean:: ; $(RMF) absreimpl_dats.o
+clean:: ; $(RMF) absreimpl_dats.c
+cleanall:: ; $(RMF) absreimpl absreimpl.exe
+
 all:: autodiff
 autodiff: autodiff.exe
 autodiff.exe: autodiff_dats.c ;   $(CCOPT) -D_GNU_SOURCE -O2     -I$(PATSHOMEQ) -I$(PATSHOMEQ)/ccomp/runtime -DATS_MEMALLOC_GCBDW -O2 -o $@ $< -lm -lgc
@@ -107,6 +115,14 @@ fourslot_dats.c: fourslot.dats ;   $(PATSOPT) -IATS$(PATSHOMEQ)/contrib --output
 clean:: ; $(RMF) fourslot_dats.o
 clean:: ; $(RMF) fourslot_dats.c
 cleanall:: ; $(RMF) fourslot fourslot.exe
+
+all:: foreach_getline
+foreach_getline: foreach_getline.exe
+foreach_getline.exe: foreach_getline_dats.c ;   $(CCOPT) -D_GNU_SOURCE -O2     -I$(PATSHOMEQ) -I$(PATSHOMEQ)/ccomp/runtime -DATS_MEMALLOC_LIBC -o $@ $< 
+foreach_getline_dats.c: foreach_getline.dats ;   $(PATSOPT) -IATS$(PATSHOMEQ)/contrib --output foreach_getline_dats.c --dynamic foreach_getline.dats
+clean:: ; $(RMF) foreach_getline_dats.o
+clean:: ; $(RMF) foreach_getline_dats.c
+cleanall:: ; $(RMF) foreach_getline foreach_getline.exe
 
 all:: hanoi
 hanoi: hanoi.exe
@@ -283,6 +299,22 @@ tempfunctor_dats.c: tempfunctor.dats ;   $(PATSOPT) -IATS$(PATSHOMEQ)/contrib --
 clean:: ; $(RMF) tempfunctor_dats.o
 clean:: ; $(RMF) tempfunctor_dats.c
 cleanall:: ; $(RMF) tempfunctor tempfunctor.exe
+
+all:: totient
+totient: totient.exe
+totient.exe: totient_dats.c ;   $(CCOPT) -D_GNU_SOURCE -O2     -I$(PATSHOMEQ) -I$(PATSHOMEQ)/ccomp/runtime -DATS_MEMALLOC_LIBC -o $@ $< -lm
+totient_dats.c: totient.dats ;   $(PATSOPT) -IATS$(PATSHOMEQ)/contrib --output totient_dats.c --dynamic totient.dats
+clean:: ; $(RMF) totient_dats.o
+clean:: ; $(RMF) totient_dats.c
+cleanall:: ; $(RMF) totient totient.exe
+
+all:: treap_man
+treap_man: treap_man.exe
+treap_man.exe: treap_man_dats.c ;   $(CCOPT) -D_GNU_SOURCE -O2     -I$(PATSHOMEQ) -I$(PATSHOMEQ)/ccomp/runtime -DATS_MEMALLOC_LIBC -o $@ $< 
+treap_man_dats.c: treap_man.dats ;   $(PATSOPT) -IATS$(PATSHOMEQ)/contrib --output treap_man_dats.c --dynamic treap_man.dats
+clean:: ; $(RMF) treap_man_dats.o
+clean:: ; $(RMF) treap_man_dats.c
+cleanall:: ; $(RMF) treap_man treap_man.exe
 
 all:: wclines
 wclines: wclines.exe

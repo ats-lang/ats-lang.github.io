@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/basics.atxt
-** Time of generation: Thu Apr  6 07:33:31 2017
+** Time of generation: Wed Oct 10 21:08:50 2018
 *)
 
 (* ****** ****** *)
@@ -276,25 +276,27 @@ end // end of [tostring_ref]
 
 implement
 (a:t@ype)
-tostrptr_ref<a> (x) = tostrptr_val<a> (x)
+tostrptr_ref<a>(x) = tostrptr_val<a>(x)
 
 (* ****** ****** *)
 
 implement
 {a}(*tmp*)
-fprint_val (out, x) = let
-  val str = tostrptr_val<a> (x)
-  val ((*void*)) = fprint_strptr (out, str)
-  val ((*void*)) = strptr_free (str)
+fprint_val(out, x) = let
+//
+val rep = tostrptr_val<a>(x)
+val ((*void*)) = fprint_strptr(out, rep)
+val ((*freed*)) = strptr_free(rep)
+//
 in
   // nothing
-end // end of [fprint_val]
+end (* end of [fprint_val] *)
 
 (* ****** ****** *)
 
 implement
 (a:t@ype)
-fprint_ref<a> (out, x) = fprint_val<a> (out, x)
+fprint_ref<a>(out, x) = fprint_val<a>(out, x)
 
 (* ****** ****** *)
 
@@ -312,6 +314,19 @@ implement{a}
 prerr_ref (x) = fprint_ref<a> (stderr_ref, x)
 *)
 
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+print_stamped_t(x) = fprint_stamped_t<a>(stdout_ref, x)
+implement
+{a}(*tmp*)
+prerr_stamped_t(x) = fprint_stamped_t<a>(stderr_ref, x)
+//
+implement
+{a}(*tmp*)
+fprint_stamped_t(out, x) = fprint_val<a>(out, unstamp_t(x))
+//
 (* ****** ****** *)
 
 (* end of [basics.dats] *)

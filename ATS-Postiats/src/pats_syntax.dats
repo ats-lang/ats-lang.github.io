@@ -2137,21 +2137,23 @@ d0exp_lst_quote
 (* ****** ****** *)
 
 implement
-d0exp_tup (
+d0exp_tup
+(
   knd, t_beg, npf, xs, t_end
 ) = let
   val loc = t_beg.token_loc + t_end.token_loc
 in '{
-  d0exp_loc= loc, d0exp_node= D0Etup (knd, npf, xs)
+  d0exp_loc= loc, d0exp_node= D0Etup(knd, npf, xs)
 } end // end of [d0exp_tup]
 
 implement
-d0exp_rec (
+d0exp_rec
+(
   knd, t_beg, npf, xs, t_end
 ) = let
   val loc = t_beg.token_loc + t_end.token_loc
 in '{
-  d0exp_loc= loc, d0exp_node= D0Erec (knd, npf, xs)
+  d0exp_loc= loc, d0exp_node= D0Erec(knd, npf, xs)
 } end // end of [d0exp_rec]
 
 (* ****** ****** *)
@@ -2271,12 +2273,14 @@ in '{
 (* ****** ****** *)
 
 implement
-d0exp_showtype
-  (tok, ent2) = let
-  val loc = tok.token_loc + ent2.d0exp_loc
+d0exp_vararg
+  (t_beg, d0es, t_end) = let
+//
+val loc = t_beg.token_loc + t_end.token_loc
+//
 in '{
-  d0exp_loc= loc, d0exp_node= D0Eshowtype (ent2)
-} end // end of [d0exp_showtype]
+  d0exp_loc= loc, d0exp_node= D0Evararg(d0es)
+} end // end of [d0exp_vararg]
 
 (* ****** ****** *)
 
@@ -2287,6 +2291,16 @@ d0exp_vcopyenv
 in '{
   d0exp_loc= loc, d0exp_node= D0Evcopyenv (knd, ent2)
 } end // end of [d0exp_vcopyenv]
+
+(* ****** ****** *)
+
+implement
+d0exp_showtype
+  (tok, ent2) = let
+  val loc = tok.token_loc + ent2.d0exp_loc
+in '{
+  d0exp_loc= loc, d0exp_node= D0Eshowtype (ent2)
+} end // end of [d0exp_showtype]
 
 (* ****** ****** *)
 
@@ -3473,13 +3487,80 @@ in '{
 (* ****** ****** *)
 
 implement
-d0ecl_local (
+d0ecl_local
+(
   t_local, d0cs1, d0cs2, t_end
 ) = let
   val loc = t_local.token_loc + t_end.token_loc
 in '{
   d0ecl_loc= loc, d0ecl_node= D0Clocal (d0cs1, d0cs2)
 } end // end of [d0ec_local]
+
+(* ****** ****** *)
+
+local
+
+fun
+loop
+(
+  d0c0: d0ecl
+, d0c1: d0ecl
+, d0cs: d0eclist
+) : location =
+(
+case+ d0cs of
+| list_nil() =>
+  $LOC.location_combine
+    (d0c0.d0ecl_loc, d0c1.d0ecl_loc)
+  // list_nil
+| list_cons
+    (d0c1, d0cs) => loop(d0c0, d0c1, d0cs)
+  // end of [list_cons]
+)
+
+in (* in-of-local *)
+
+implement
+d0ecl_list
+(
+  fil, d0cs
+) = let
+//
+val loc01 =
+(
+case+ d0cs of
+| list_nil() =>
+  $LOC.location_filename_origin(fil)
+| list_cons
+    (d0c0, d0cs) => loop(d0c0, d0c0, d0cs)
+  // end of [list_cons]
+) : location // end of [val]
+//
+in '{ 
+  d0ecl_loc= loc01, d0ecl_node= D0Clocal(list_nil(), d0cs)
+} end // end of [d0ecl_list]
+
+implement
+d0ecl_toplocal
+(
+  fil, d0cs
+) = let
+//
+val loc01 =
+(
+case+ d0cs of
+| list_nil() =>
+  $LOC.location_filename_origin(fil)
+| list_cons
+    (d0c0, d0cs) => loop(d0c0, d0c0, d0cs)
+  // end of [list_cons]
+) : location // end of [val]
+//
+in '{ 
+  d0ecl_loc= loc01, d0ecl_node= D0Clocal(d0cs, list_nil())
+} end // end of [d0ecl_toplocal]
+
+end // end of [local]
 
 (* ****** ****** *)
 

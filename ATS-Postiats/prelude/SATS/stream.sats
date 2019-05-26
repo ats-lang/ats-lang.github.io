@@ -27,10 +27,16 @@
 
 (* ****** ****** *)
 
+(* Author: Hongwei Xi *)
+(* Start time: February, 2012 *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
+
+(* ****** ****** *)
+
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/stream.atxt
-** Time of generation: Sat Apr 22 15:55:46 2017
+** Time of generation: Fri Feb 15 23:45:47 2019
 *)
 
 (* ****** ****** *)
@@ -128,12 +134,14 @@ stream_get_at_exn
 // end of [stream_get_at_exn]
 
 (* ****** ****** *)
-
+//
+// HX: this one returns a linear stream!!!
+//
 fun{a:t0p}
 stream_takeLte
   (xs: stream(INV(a)), n: intGte(0)): stream_vt(a)
 // end of [stream_takeLte]
-
+//
 (* ****** ****** *)
 
 fun{a:t0p}
@@ -193,17 +201,17 @@ a:t0p}{b:t0p
 fun{
 a:t0p}{b:t0p
 } stream_map_fun
-  (xs: stream(INV(a)), f: (a) -<fun> b):<!laz> stream(b)
+  (xs: stream(INV(a)), fopr: (a) -<fun> b):<!laz> stream(b)
 fun{
 a:t0p}{b:t0p
 } stream_map_cloref
-  (xs: stream(INV(a)), f: (a) -<cloref> b):<!laz> stream(b)
+  (xs: stream(INV(a)), fopr: (a) -<cloref> b):<!laz> stream(b)
 //
 (* ****** ****** *)
 //
 fun{
 a:t0p}{b:t0p
-} stream_imap{n:int}
+} stream_imap
   (xs: stream(INV(a))):<!laz> stream(b)
 //
 fun{
@@ -214,13 +222,13 @@ fun{
 a:t0p}{b:t0p
 } stream_imap_fun
 (
-  xs: stream(INV(a)), f: (intGte(0), a) -<fun> b
+  xs: stream(INV(a)), fopr: (intGte(0), a) -<fun> b
 ) :<!laz> stream(b) // end-of-fun
 fun{
 a:t0p}{b:t0p
 } stream_imap_cloref
 (
-  xs: stream(INV(a)), f: (intGte(0), a) -<cloref> b
+  xs: stream(INV(a)), fopr: (intGte(0), a) -<cloref> b
 ) :<!laz> stream(b) // end-of-fun
 //
 (* ****** ****** *)
@@ -241,14 +249,14 @@ a1,a2:t0p}{b:t0p
 } stream_map2_fun
 (
   xs1: stream(INV(a1))
-, xs2: stream(INV(a2)), f: (a1, a2) -<fun> b
+, xs2: stream(INV(a2)), fopr: (a1, a2) -<fun> b
 ) :<!laz> stream(b) // end-of-fun
 fun{
 a1,a2:t0p}{b:t0p
 } stream_map2_cloref
 (
   xs1: stream(INV(a1))
-, xs2: stream(INV(a2)), f: (a1, a2) -<cloref> b
+, xs2: stream(INV(a2)), fopr: (a1, a2) -<cloref> b
 ) :<!laz> stream(b) // end-of-fun
 //
 (* ****** ****** *)
@@ -277,45 +285,101 @@ res:t0p}{x:t0p
 ) :<!laz> stream(res) // end-of-function
 //
 (* ****** ****** *)
+
+fun
+{a,b:t0p}
+stream_zip
+(
+  stream(INV(a)), stream(INV(b))
+) : stream(@(a, b)) // end-of-fun
+fun
+{a,b:t0p}
+stream_cross
+(
+  stream(INV(a)), stream(INV(b))
+) : stream(@(a, b)) // end-of-fun
+
+(* ****** ****** *)
+//
+// HX: duplicates are kept
 //
 fun
 {a:t0p}
 stream_merge
-  (stream(INV(a)), stream(a)) :<!laz> stream(a)
+(
+  xs1: stream(INV(a)), xs2: stream(a)
+) :<!laz> stream(a) // end-of-function
 //
-fun{a:t0p} stream_merge$cmp (x1: a, x2: a):<> int
+fun{a:t0p}
+stream_merge$cmp (x1: a, x2: a):<> int
 //
 fun
 {a:t0p}
 stream_merge_fun
 (
-  xs1: stream(INV(a)), xs2: stream(a), (a, a) -<fun> int
+  xs1: stream(INV(a))
+, xs2: stream(a), cmp: (a, a) -<fun> int
 ) :<!laz> stream(a) // end of [stream_merge_fun]
 fun
 {a:t0p}
 stream_merge_cloref
 (
-  xs1: stream(INV(a)), xs2: stream(a), (a, a) -<cloref> int
+  xs1: stream(INV(a))
+, xs2: stream(a), cmp: (a, a) -<cloref> int
 ) :<!laz> stream(a) // end of [stream_merge_cloref]
 
 (* ****** ****** *)
 //
+// HX: duplicates are dropped
+//
 fun{a:t0p}
 stream_mergeq
-  (stream(INV(a)), stream(a)):<!laz> stream(a)
+(
+  xs1: stream(INV(a)), xs2: stream(a)
+) :<!laz> stream(a)
 //
-fun{a:t0p} stream_mergeq$cmp (x1: a, x2: a):<> int
+fun{a:t0p}
+stream_mergeq$cmp(x1: a, x2: a):<> int
 //
 fun{a:t0p}
 stream_mergeq_fun
 (
-  xs1: stream(INV(a)), xs2: stream(a), (a, a) -<fun> int
-) :<!laz> stream(a) // end of [stream_mergeq_fun]
+  xs1: stream(INV(a))
+, xs2: stream(a), cmp: (a, a) -<fun> int
+) :<!laz> stream(a) // end-of-function
 fun{a:t0p}
 stream_mergeq_cloref
 (
-  xs1: stream(INV(a)), xs2: stream(a), (a, a) -<cloref> int
-) :<!laz> stream(a) // end of [stream_mergeq_cloref]
+  xs1: stream(INV(a))
+, xs2: stream(a), cmp: (a, a) -<cloref> int
+) :<!laz> stream(a) // end-of-function
+//
+(* ****** ****** *)
+//
+// HX-2017-06-13:
+// The streams are assumed to be ordered!!!
+//
+fun{a:t0p}
+stream_union$cmp(x1: a, x2: a):<> int
+fun{a:t0p}
+stream_inter$cmp(x1: a, x2: a):<> int
+fun{a:t0p}
+stream_differ$cmp(x1: a, x2: a):<> int
+fun{a:t0p}
+stream_symdiff$cmp(x1: a, x2: a):<> int
+//
+fun{a:t0p}
+stream_union
+  (stream(INV(a)), stream(a)):<!laz> stream(a)
+fun{a:t0p}
+stream_inter
+  (stream(INV(a)), stream(a)):<!laz> stream(a)
+fun{a:t0p}
+stream_differ
+  (stream(INV(a)), stream(a)):<!laz> stream(a)
+fun{a:t0p}
+stream_symdiff
+  (stream(INV(a)), stream(a)):<!laz> stream(a)
 //
 (* ****** ****** *)
 //
@@ -346,7 +410,7 @@ stream_labelize
 //
 fun
 {a:t0p}
-stream_foreach (xs: stream(a)): void
+stream_foreach(xs: stream(a)): void
 fun
 {a:t0p}
 {env:vt0p}
@@ -367,6 +431,17 @@ stream_foreach_fun
 fun{a:t0p}
 stream_foreach_cloref
   (xs: stream(a), fwork: (a) -<cloref1> void): void
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+stream_iforeach_fun
+( xs: stream(a)
+, fwork: (intGte(0), a) -<fun1> void): void
+fun{a:t0p}
+stream_iforeach_cloref
+( xs: stream(a)
+, fwork: (intGte(0), a) -<cloref1> void): void
 //
 (* ****** ****** *)
 //
@@ -421,6 +496,10 @@ overload length with stream_length
 //
 overload .head with stream_head_exn
 overload .tail with stream_tail_exn
+//
+(* ****** ****** *)
+//
+overload .takeLte with stream_takeLte
 //
 (* ****** ****** *)
 

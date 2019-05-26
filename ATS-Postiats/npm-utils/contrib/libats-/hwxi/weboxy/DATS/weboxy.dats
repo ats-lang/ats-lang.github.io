@@ -49,6 +49,7 @@ UN = "prelude/SATS/unsafe.sats"
 #define CHILDREN "children"
 //
 #define CONTENT "content"
+#define FCONTENT "fcontent"
 //
 #define PCENTLST "pcentlst"
 #define TABSTYLE "tabstyle"
@@ -95,11 +96,21 @@ overload .isvbox with tabstyle_isvbox
 (* ****** ****** *)
 //
 datatype gval =
+//
   | GVnil of ()
+//
   | GVint of (int)
   | GVfloat of (double)
   | GVstring of (string)
+//
+  | GVthunk of (() -<cloref1> void)
+//
   | {a:type} GVboxed of (a)
+//
+(* ****** ****** *)
+//
+typedef
+gvthunk = () -<cloref1> void
 //
 typedef gvalopt = Option(gval)
 vtypedef gvalopt_vt = Option_vt(gval)
@@ -351,6 +362,18 @@ webox_set_content (webox, content: string): void
 //
 overload .content with webox_get_content
 overload .content with webox_set_content
+//
+(* ****** ****** *)
+//
+extern
+fun
+webox_get_fcontent (webox): gvthunk
+extern
+fun
+webox_set_fcontent (webox, fcontent: gvthunk): void
+//
+overload .fcontent with webox_get_fcontent
+overload .fcontent with webox_set_fcontent
 //
 (* ****** ****** *)
 
@@ -835,6 +858,33 @@ webox_insert_any(wbx, CONTENT, GVstring(c0))
 //
 (* ****** ****** *)
 
+implement
+webox_get_fcontent
+  (wbx) = let
+//
+val
+opt = webox_search(wbx, FCONTENT)
+//
+in
+//
+case+ opt of
+| ~Some_vt(gv) =>
+  let val-GVthunk(f0) = gv in f0 end
+| ~None_vt((*void*)) => (lam() => ())
+//
+end // end of [webox_get_fcontent]
+
+(* ****** ****** *)
+//
+implement
+webox_set_fcontent
+  (wbx, f0) =
+(
+webox_insert_any(wbx, FCONTENT, GVthunk(f0))
+)
+//
+(* ****** ****** *)
+
 local
 //
 val theUID = ref(0): ref(int)
@@ -1172,19 +1222,43 @@ val () = (
 if
 isneqz(wbxs)
 then let
-  val ts = wbx0.tabstyle()
-  val pcs = webox_get_pcentlst(wbx0)
+//
+  val
+  ts = wbx0.tabstyle()
+  val
+  pcs = webox_get_pcentlst(wbx0)
+//
+  val () = gprint(wbx0.content())
+//
 in
-  gprint (wbx0.content());
-  gprint_weboxlst_html (ts, pcs, wbxs)
+  gprint_weboxlst_html(ts, pcs, wbxs)
 end // end of [then]
 else let
-  val msg = wbx0.content()
+//
+  val msg =
+    wbx0.content((*void*))
+//
+  val opt =
+    webox_search(wbx0, FCONTENT)
+//
+  val isnil = iseqz(msg)
+  val ((*void*)) =
+    (if isnil then () else gprint(msg))
+  // end of [val]
+//
 in
-  if isneqz(msg)
-    then gprint (msg)
-    else gprint! ("[", name , "]\n")
-  // end of [if]
+  case+ opt of
+  | ~None_vt() =>
+    (
+      if isnil
+        then gprint! ("[", name , "]\n")
+      // end of [val]
+    )
+  | ~Some_vt(gv) =>
+    (
+      let val-GVthunk(f0) = gv in f0() end
+    )
+  // end of [case]
 end // end of [else]
 //
 ) : void // end of [val]

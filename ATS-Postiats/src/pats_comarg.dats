@@ -74,6 +74,20 @@ extern char* patsopt_PATSRELOCROOT_get () ;
 %} // end of [%{^]
 
 (* ****** ****** *)
+//
+implement
+print_comarg(x) =
+fprint_comarg(stdout_ref, x)
+//
+implement
+fprint_comarg(out, x) =
+(
+case+ x of
+| COMARG(i, k) =>
+  fprint!(out, "COMARG(", i, ", ", k, ")")
+)
+//
+(* ****** ****** *)
 
 implement
 comarg_parse
@@ -89,19 +103,31 @@ loop
   if i < n
     then (
     if (str[i] <> '-')
-      then COMARGkey (i, str) else loop (str, n, i+1)
-    ) else COMARGkey (n, str)
+      then COMARG (i, str) else loop (str, n, i+1)
+    ) else COMARG (n, str)
 ) (* end of [if] *)  
 // end of [loop]
 //
+in
+//
+if
+(str="-")
+then
+(
+  COMARG(0, str)
+)
+else
+(
+  loop(str, len, 0)
+) where
+{
 val str =
   string1_of_string str
 //
 val len = string_length (str)
 val len = int1_of_size1 (len)
+}
 //
-in
-  loop(str, len, 0)
 end // end of [comarg_parse]
 
 (* ****** ****** *)

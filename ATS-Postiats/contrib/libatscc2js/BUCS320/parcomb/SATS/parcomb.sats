@@ -1,26 +1,31 @@
+(* ****** ****** *)
 (*
 ** For writing ATS code
 ** that translates into JavaScript
 *)
-
 (* ****** ****** *)
 //
 // HX-2016-11:
-// prefix for external names
 //
 #define
-ATS_EXTERN_PREFIX "ats2jspre_BUCS320_"
+ATS_EXTERN_PREFIX
+"ats2js_bucs320_" //
+// prefix for external names
 //
 (* ****** ****** *)
 //
 #define
 LIBATSCC_targetloc
 "$PATSHOME/contrib/libatscc"
+#define
+LIBATSCC2JS_targetloc
+"$PATSHOME/contrib/libatscc2js"
 //
 (* ****** ****** *)
-
-staload "./../../../basics_js.sats"
-
+//
+#staload
+"{$LIBATSCC2JS}/basics_js.sats"
+//
 (* ****** ****** *)
 //
 #include

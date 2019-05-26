@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/array.atxt
-** Time of generation: Mon Feb 20 12:15:44 2017
+** Time of generation: Fri Nov 30 08:45:23 2018
 *)
 
 (* ****** ****** *)
@@ -417,11 +417,9 @@ array_foreach_funenv
   {n:int}
   {fe:eff}
 (
-  pfv: !v
-| A: &(@[INV(a)][n]) >> @[a][n]
-, asz: size_t n
-, f: (!v | &a >> _, !vt) -<fun,fe> void
-, env: !vt
+  pf: !v
+| A0: &(@[INV(a)][n]) >> @[a][n], asz: size_t(n)
+, f0: (!v | &a >> _, !vt) -<fun,fe> void, env: !vt
 ) :<fe> void
 // end of [array_foreach_funenv]
 //
@@ -433,69 +431,12 @@ array_foreach_funenv_tsz
   {n:int}
   {fe:eff}
 (
-  pfv: !v
-| A: &(@[INV(a)][n]) >> @[a][n]
+  pf: !v
+| A0: &(@[INV(a)][n]) >> @[a][n]
 , asz: size_t(n), tsz: sizeof_t(a)
-, f: (!v | &a >> _, !vt) -<fun,fe> void
-, env: !vt
+, f0: (!v | &a >> _, !vt) -<fun,fe> void, env: !vt
 ) :<fe> void = "ext#%"
 // end of [array_foreach_funenv_tsz]
-//
-(* ****** ****** *)
-//
-fun
-{a:vt0p}
-array_foreach_fun
-  {n:int}{fe:eff}
-(
-  &(@[INV(a)][n]) >> @[a][n]
-, size_t (n), (&a >> _) -<fun,fe> void
-) :<fe> void // end of [array_foreach_fun]
-fun
-{a:vt0p}
-array_foreach_clo
-  {n:int}{fe:eff}
-(
-  A: &(@[INV(a)][n]) >> @[a][n]
-, asz: size_t (n), f: &(&a >> _) -<clo,fe> void
-) :<fe> void // end of [array_foreach_clo]
-fun
-{a:vt0p}
-array_foreach_cloptr
-  {n:int}{fe:eff}
-(
-  A: &(@[INV(a)][n]) >> @[a][n]
-, asz: size_t n, f: (&a >> _) -<cloptr,fe> void
-) :<fe> void // end of [array_foreach_cloptr]
-fun
-{a:vt0p}
-array_foreach_cloref
-  {n:int}{fe:eff}
-(
-  A: &(@[INV(a)][n]) >> @[a][n]
-, asz: size_t(n), f: (&a >> _) -<cloref,fe> void
-) :<fe> void // end of [array_foreach_cloref]
-//
-(* ****** ****** *)
-//
-fun
-{a:vt0p}
-array_foreach_vclo
-  {v:view}{n:int}{fe:eff}
-(
-  pfv: !v
-| A: &(@[INV(a)][n]) >> @[a][n]
-, asz: size_t n, f: &(!v | &a >> _) -<clo,fe> void
-) :<fe> void // end of [array_foreach_vclo]
-fun
-{a:vt0p}
-array_foreach_vcloptr
-  {v:view}{n:int}{fe:eff}
-(
-  pfv: !v
-| A: &(@[INV(a)][n]) >> @[a][n]
-, asz: size_t(n), f: !(!v | &a >> _) -<cloptr,fe> void
-) :<fe> void // end of [array_foreach_vcloptr]
 //
 (* ****** ****** *)
 
@@ -531,12 +472,12 @@ a1,a2:vt0p}{env:vt0p
 //
 (* ****** ****** *)
 
-fun{
-a:vt0p
-} array_iforeach
+fun
+{a:vt0p}
+array_iforeach
   {n:int}
 (
-  A: &(@[INV(a)][n]) >> @[a][n], asz: size_t n
+A0: &(@[INV(a)][n]) >> @[a][n], asz: size_t(n)
 ) : sizeLte(n) // end of [array_iforeach]
 //
 fun{
@@ -544,7 +485,7 @@ a:vt0p}{env:vt0p
 } array_iforeach_env
   {n:int}
 (
-  A: &(@[INV(a)][n]) >> @[a][n], asz: size_t n, env: &(env) >> _
+A0: &(@[INV(a)][n]) >> @[a][n], asz: size_t(n), env: &(env) >> _
 ) : sizeLte(n) // end of [array_iforeach_env]
 //
 fun{
@@ -552,13 +493,13 @@ a:vt0p}{env:vt0p
 } array_iforeach$cont(i: size_t, x: &a, env: &env): bool
 fun{
 a:vt0p}{env:vt0p
-} array_iforeach$fwork(i: size_t, x: &a >> _, env: &(env) >> _): void
+} array_iforeach$fwork(i: size_t, x: &(a) >> _, env: &(env) >> _): void
 //
 (* ****** ****** *)
 
-fun{
-a:vt0p
-} array_rforeach{n:int}
+fun
+{a:vt0p}
+array_rforeach{n:int}
 (
   A: &(@[INV(a)][n]) >> @[a][n], asz: size_t(n)
 ) : sizeLte(n) // end of [array_rforeach]
@@ -567,7 +508,7 @@ fun{
 a:vt0p}{env:vt0p
 } array_rforeach_env{n:int}
 (
-  A: &(@[INV(a)][n]) >> @[a][n], asz: size_t(n), env: &(env) >> _
+A0: &(@[INV(a)][n]) >> @[a][n], asz: size_t(n), env: &(env) >> _
 ) : sizeLte(n) // end of [array_rforeach_env]
 //
 fun{
@@ -629,7 +570,7 @@ fun
 array_uninitize
   {n:int}
 (
-  A: &(@[INV(a)][n]) >> @[a?][n], asz: size_t n
+A0: &(@[INV(a)][n]) >> @[a?][n], asz: size_t(n)
 ) : void // end of [array_uninitize]
 //
 fun{a:vt0p}
@@ -652,7 +593,7 @@ array_bsearch_fun
   {n:int}
 (
 //
-  A: &RD(@[a][n]), asz: size_t(n), key: &RD(a), cmp: cmpref(a)
+A0: &RD(@[a][n]), asz: size_t(n), key: &RD(a), cmp: cmpref(a)
 //
 ) :<> sizeLte(n) // end of [array_bsearch_fun]
 //
@@ -666,7 +607,7 @@ fun
 array_bsearch_stdlib
   {n:int}
 (
-  A: &RD(@[a][n]), asz: size_t (n), key: &RD(a), cmp: cmpref(a)
+A0: &RD(@[a][n]), asz: size_t(n), key: &RD(a), cmp: cmpref(a)
 ) :<> Ptr0 (* found/~found : ~null/null *)
 //
 (* ****** ****** *)

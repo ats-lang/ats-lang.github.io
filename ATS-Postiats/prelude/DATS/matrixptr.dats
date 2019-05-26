@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/matrixptr.atxt
-** Time of generation: Sun Nov 20 21:18:29 2016
+** Time of generation: Wed Oct 10 21:08:53 2018
 *)
 
 (* ****** ****** *)
@@ -229,20 +229,6 @@ matrixptr_tabulate
 (
   matrixptr_encode2(matrix_ptr_tabulate<a> (nrow, ncol))
 ) (* end of [matrixptr_tabulate] *)
-
-(* ****** ****** *)
-
-implement{a}
-matrixptr_tabulate_cloref
-  {m,n} (nrow, ncol, f) = let
-//
-implement(a2)
-matrix_tabulate$fopr<a2> (i, j) =
-  $UN.castvwtp0{a2}(f($UN.cast{sizeLt(m)}(i), $UN.cast{sizeLt(n)}(j)))
-//
-in
-  matrixptr_tabulate<a> (nrow, ncol)
-end // end of [matrixptr_tabulate_cloref]
 
 (* ****** ****** *)
 

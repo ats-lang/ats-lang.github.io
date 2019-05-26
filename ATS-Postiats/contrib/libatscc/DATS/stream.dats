@@ -146,7 +146,27 @@ case+ !xs of
 //
 implement
 stream_takeLte
-  (xs, n) = $ldelay
+{a}(xs, n) = $delay
+(
+//
+if
+(n > 0)
+then (
+case+ !xs of
+| stream_nil() =>
+    stream_nil(*void*)
+  // end of [stream_nil]
+| stream_cons(x, xs) =>
+    stream_cons(x, stream_takeLte{a}(xs, n-1))
+  // end of [stream_cons]
+) (* end of [then] *)
+else stream_nil(*void*) // else
+//
+) (* end of [stream_takeLte] *)
+//
+implement
+stream_takeLte_vt
+{a}(xs, n) = $ldelay
 (
 //
 if
@@ -157,12 +177,12 @@ case+ !xs of
     stream_vt_nil(*void*)
   // end of [stream_nil]
 | stream_cons(x, xs) =>
-    stream_vt_cons(x, stream_takeLte(xs, n-1))
+    stream_vt_cons(x, stream_takeLte_vt{a}(xs, n-1))
   // end of [stream_cons]
 ) (* end of [then] *)
-else stream_vt_nil() // else
+else stream_vt_nil(*void*) // else
 //
-) (* end of [stream_takeLte] *)
+) (* end of [stream_takeLte_vt] *)
 //
 (* ****** ****** *)
 
@@ -273,6 +293,36 @@ stream_map_method
 (
   lam(fopr) => stream_map_cloref{a}(xs, fopr)
 )
+//
+(* ****** ****** *)
+//
+implement
+stream_scan_cloref
+{res}{a}
+(xs, r0, fopr) = $delay
+(
+//
+case+ !xs of
+| stream_nil() =>
+  stream_nil()
+| stream_cons(x, xs) =>
+  stream_cons
+  ( r0
+  , stream_scan_cloref
+      {res}{a}(xs, fopr(r0, x), fopr)
+    // stream_scan_cloref
+  ) (* end of [stream_cons] *)
+//
+) (* end of [stream_scan_cloref] *)
+//
+implement
+stream_scan_method
+{res}{a}(xs, _) =
+(
+lam(r0, fopr) =>
+  stream_scan_cloref{res}{a}(xs, r0, fopr)
+// end of [lam]
+) (* stream_scan_method *)
 //
 (* ****** ****** *)
 //
@@ -539,6 +589,11 @@ cross_stream_list0
 //
 (* ****** ****** *)
 
+#if
+defined
+(ATSCC_REFERENCE)
+#then
+//
 implement
 stream2cloref_exn
   {a}(xs) = let
@@ -558,9 +613,16 @@ in
 end // end of [lam]
 //
 end // end of [stream2cloref_exn]
+//
+#endif // if-defined(ATSCC_REFERENCE)
 
 (* ****** ****** *)
 
+#if
+defined
+(ATSCC_REFERENCE)
+#then
+//
 implement
 stream2cloref_opt
   {a}(xs) = let
@@ -579,9 +641,16 @@ in
 end // end of [lam]
 //
 end // end of [stream2cloref_opt]
+//
+#endif // if-defined(ATSCC_REFERENCE)
 
 (* ****** ****** *)
 
+#if
+defined
+(ATSCC_REFERENCE)
+#then
+//
 implement
 stream2cloref_last
   {a}(xs, x0) = let
@@ -606,6 +675,8 @@ in
 end // end of [lam]
 //
 end // end of [stream2cloref]
+//
+#endif // if-defined(ATSCC_REFERENCE)
 
 (* ****** ****** *)
 

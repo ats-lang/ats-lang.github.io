@@ -1022,12 +1022,12 @@ d0: s1aspdec, s2t1: s2rt, s2t2: s2rt
   filprerr_ifdebug("s1aspdec_tr_res")
 //
   val () =
-  prerr ": the static assumption is given the sort ["
-  val () = prerr_s2rt (s2t1)
+  prerr(": the static assumption is given the sort [")
+  val () = prerr_s2rt(s2t1)
   val () = prerr "] but it is expected to be of the sort ["
-  val () = prerr_s2rt (s2t2)
+  val () = prerr_s2rt(s2t2)
   val () = prerr "]."
-  val () = prerr_newline ((*void*))
+  val () = prerr_newline((*void*))
 //
   val () = the_trans2errlst_add(T2E_s1aspdec_tr_res(d0, s2t1, s2t2))
 } // end of [auxerr]
@@ -1439,67 +1439,77 @@ val d1cs2cs2vsslst = let
     d1c: d1atdec, res: &List (T)
   ) :<cloref1> void = let
     val argvar =
-    list_of_list_vt (
-      list_map_fun (d1c.d1atdec_arg, a1msrt_tr_symsrt)
+    list_of_list_vt
+    (
+    list_map_fun
+      (d1c.d1atdec_arg, a1msrt_tr_symsrt)
+    // list_map_fun
     ) : List (syms2rtlst)
     val s2vss = let
       fun f (
         xs: syms2rtlst
       ) : s2varlst =
         case+ xs of
-        | list_cons (x, xs) => let
-            val isnamed = (x.0 != $SYM.symbol_empty)
+        | list_nil() =>
+          list_nil()
+        | list_cons
+            (x, xs) => let
+            val isnamed =
+            (x.0 != $SYM.symbol_empty)
           in
             if isnamed then let
-              val s2v = s2var_make_id_srt (x.0, x.1) in list_cons (s2v, f (xs))
+              val s2v =
+              s2var_make_id_srt(x.0, x.1) in list_cons(s2v, f(xs))
             end else f (xs) // end of [if]
           end // end of [list_cons]
-        | list_nil () => list_nil ()
       // end of [f]
       fun ff (
         xss: List (syms2rtlst)
       ) : s2varlstlst =
         case+ xss of
-        | list_cons (xs, xss) => let
-             val s2vs = f (xs) and s2vss = ff (xss)
+        | list_nil() => list_nil()
+        | list_cons(xs, xss) => let
+             val s2vs = f(xs) and s2vss = ff(xss)
            in
-             if list_is_cons (s2vs) then list_cons (s2vs, s2vss) else s2vss
+             if list_is_cons(s2vs) then list_cons(s2vs, s2vss) else s2vss
            end // end of [list_vt_cons]
-        | list_nil () => list_nil ()
       // end of [ff]
     in
       ff (argvar)
     end : s2varlstlst
 //
     val s2tss_arg = let
-      fun f
+      fun fopr
         (xs: syms2rtlst): s2rtlst =
         case+ xs of
-        | list_cons (x, xs) => list_cons (x.1, f (xs))
-        | list_nil () => list_nil ()
+        | list_nil() => list_nil()
+        | list_cons(x, xs) => list_cons(x.1, fopr(xs))
       // end of []
     in
-      l2l (list_map_fun (argvar, f))
+      l2l(list_map_fun(argvar, fopr))
     end : s2rtlstlst
 //
     val s2c =
-    s2cst_make_dat (
+    s2cst_make_dat
+    (
       d1c.d1atdec_sym, d1c.d1atdec_loc, s2tss_arg, s2t_res, argvar
-    ) // end of [val]
+    ) (* end of [val] *)
     val () = the_s2expenv_add_scst (s2c)
 //
   in
-    res := list_cons ((d1c, s2c, s2vss), res)
+    res := list_cons((d1c, s2c, s2vss), res)
   end // end of [val]
 //
   fun auxlst (
     d1cs: d1atdeclst, res: &List(T)
-  ) :<cloref1> void = case+ d1cs of
+  ) :<cloref1> void =
+  (
+    case+ d1cs of
+    | list_nil () => ()
     | list_cons (d1c, d1cs) => let
         val () = aux (d1c, res) in auxlst (d1cs, res)
       end // end of [list_cons]
-    | list_nil () => ()
-  // end of [auxlst]
+  ) (* end of [auxlst] *)
 //
 in
   auxlst (d1cs_dat, res); res
@@ -2314,10 +2324,10 @@ val () = begin
 end // end of [val]
 *)
 //
-val fsymb =
+val fsym =
   $FIL.filename_get_fullname(fil)
 val (pflev | ()) = the_staload_level_push()
-val ans = the_filenvmap_find(fsymb)
+val ans = the_filenvmap_find(fsym)
 //
 val
 fenv = (
@@ -2343,7 +2353,7 @@ loaded: int
     val (m0, m1, m2) =
       the_trans2_env_restore(pfsave | (*none*))
     val fenv = filenv_make(fil, m0, m1, m2, d2cs)
-    val ((*void*)) = the_filenvmap_add (fsymb, fenv)
+    val ((*void*)) = the_filenvmap_add (fsym, fenv)
   in
     fenv
   end // end of [None_vt]
@@ -2759,43 +2769,43 @@ of // case+
     list_map_fun
       (decarg, q1marg_tr_dec)
     // end of [val]
-    val s2qs = list_of_list_vt (s2qs)
+    val s2qs = list_of_list_vt(s2qs)
     val ((*void*)) =
-      s2qualstlst_set_tmplev (s2qs, tmplev)
+      s2qualstlst_set_tmplev(s2qs, tmplev)
     // end of [val]
 //
     val f2ds =
-      f1undeclst_tr (fk0, s2qs, f1ds)
+      f1undeclst_tr(fk0, s2qs, f1ds)
     // end of [val]
 //
-    val () = if istmp then the_tmplev_dec ()
+    val () = if istmp then the_tmplev_dec()
 //
-    val () = the_trans2_env_pop (pfenv | (*none*))
+    val () = the_trans2_env_pop(pfenv | (*none*))
 //
-    val () = the_d2expenv_add_fundeclst (fk0, f2ds)
+    val () = the_d2expenv_add_fundeclst(fk0, f2ds)
 //
   in
-    d2ecl_fundecs (loc0, fk0, s2qs, f2ds)
+    d2ecl_fundecs(loc0, fk0, s2qs, f2ds)
   end // end of [D1Cfundecs]
 //
 | D1Cvaldecs
   (
     knd, isrec, v1ds
   ) => let
-    val v2ds = v1aldeclst_tr (isrec, v1ds)
+    val v2ds = v1aldeclst_tr(isrec, v1ds)
   in
     if not(isrec)
-      then d2ecl_valdecs (loc0, knd, v2ds)
-      else d2ecl_valdecs_rec (loc0, knd, v2ds)
+      then d2ecl_valdecs(loc0, knd, v2ds)
+      else d2ecl_valdecs_rec(loc0, knd, v2ds)
     // end of [if]
   end // end of [D1Cvaldecs]
 //
 | D1Cvardecs
     (knd, v1ds) => (
     if knd = 0 then let
-      val v2ds = v1ardeclst_tr (v1ds) in d2ecl_vardecs (loc0, v2ds)
+      val v2ds = v1ardeclst_tr (v1ds) in d2ecl_vardecs(loc0, v2ds)
     end else let // knd = 1
-      val v2ds = prv1ardeclst_tr (v1ds) in d2ecl_prvardecs (loc0, v2ds)
+      val v2ds = prv1ardeclst_tr (v1ds) in d2ecl_prvardecs(loc0, v2ds)
     end // end of [if]
   ) // end of [D1Cvardecs]
 //
@@ -2858,7 +2868,7 @@ of // case+
     d2ecl_staloadloc (loc0, pfil, nspace, fenv)
   end // end of [D1Cstaloadloc]
 //
-| D1Cdynload (fil) => d2ecl_dynload (loc0, fil)
+| D1Cdynload(fil) => d2ecl_dynload(loc0, fil)
 //
 | D1Clocal
   (
@@ -2887,8 +2897,14 @@ end // end of [d1ecl_tr]
 (* ****** ****** *)
 
 implement
-d1eclist_tr (d1cs) = let
-  val d2cs = list_map_fun (d1cs, d1ecl_tr) in list_of_list_vt (d2cs)
+d1eclist_tr(d1cs) = let
+//
+val
+d2cs =
+list_map_fun(d1cs, d1ecl_tr)
+//
+in
+  list_of_list_vt{d2ecl}(d2cs)
 end // end of [d1eclist_tr]
 
 (* ****** ****** *)
@@ -2897,8 +2913,11 @@ implement
 d1eclist_tr_errck
   (d1cs) = d2cs where
 {
-  val d2cs = d1eclist_tr (d1cs)
-  val () = the_trans2errlst_finalize ()
+//
+  val d2cs = d1eclist_tr(d1cs)
+//
+  val ((*void*)) = the_trans2errlst_finalize()
+//
 } // end of [d1eclist_tr_errck]
 
 (* ****** ****** *)

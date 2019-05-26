@@ -1,7 +1,7 @@
+(* ****** ****** *)
 (*
 ** libatscc-common
 *)
-
 (* ****** ****** *)
 
 (*
@@ -329,7 +329,7 @@ case+ xs of
 implement
 list0_exists
   (xs, pred) =
-  list_exists($UN.cast(xs), pred)
+  list_exists(g1ofg0(xs), pred)
 //
 implement
 list0_exists_method
@@ -341,7 +341,7 @@ list0_exists_method
 implement
 list0_iexists
   (xs, pred) =
-  list_iexists($UN.cast(xs), pred)
+  list_iexists(g1ofg0(xs), pred)
 //
 implement
 list0_iexists_method
@@ -353,7 +353,7 @@ list0_iexists_method
 implement
 list0_forall
   (xs, pred) =
-  list_forall($UN.cast(xs), pred)
+  list_forall(g1ofg0(xs), pred)
 //
 implement
 list0_forall_method
@@ -365,7 +365,7 @@ list0_forall_method
 implement
 list0_iforall
   (xs, pred) =
-  list_iforall($UN.cast(xs), pred)
+  list_iforall(g1ofg0(xs), pred)
 //
 implement
 list0_iforall_method
@@ -381,7 +381,7 @@ list0_app{a}
 implement
 list0_foreach{a}
   (xs, fwork) =
-  list_foreach{a}($UN.cast(xs), fwork)
+  list_foreach{a}(g1ofg0(xs), fwork)
 //
 implement
 list0_foreach_method
@@ -393,7 +393,7 @@ list0_foreach_method
 implement
 list0_iforeach{a}
   (xs, fwork) =
-  list_iforeach{a}($UN.cast(xs), fwork)
+  list_iforeach{a}(g1ofg0(xs), fwork)
 //
 implement
 list0_iforeach_method
@@ -405,7 +405,7 @@ list0_iforeach_method
 implement
 list0_rforeach{a}
   (xs, fwork) =
-  list_rforeach{a}($UN.cast(xs), fwork)
+  list_rforeach{a}(g1ofg0(xs), fwork)
 //
 implement
 list0_rforeach_method
@@ -417,11 +417,7 @@ list0_rforeach_method
 implement
 list0_filter
   {a}(xs, pred) =
-  $UN.cast
-  (
-    list_filter($UN.cast(xs), pred)
-  ) (* $UN.cast *)
-//
+  g0ofg1(list_filter(g1ofg0(xs), pred))
 implement
 list0_filter_method
   {a}(xs) =
@@ -430,15 +426,45 @@ list0_filter_method
 (* ****** ****** *)
 //
 implement
+list0_labelize
+  {x}(xs) =
+  g0ofg1(list_labelize(g1ofg0(xs)))
+//
+(* ****** ****** *)
+//
+implement
 list0_map
   {a}{b}
   (xs, fopr) =
-  $UN.cast(list_map($UN.cast(xs), fopr))
+  g0ofg1(list_map(g1ofg0(xs), fopr))
 //
 implement
 list0_map_method
   {a}{b}(xs, _) =
   lam(fopr) => list0_map{a}{b}(xs, fopr)
+//
+(* ****** ****** *)
+//
+implement
+list0_imap
+  {a}{b}
+  (xs, fopr) =
+  g0ofg1(list_imap(g1ofg0(xs), fopr))
+//
+implement
+list0_imap_method
+  {a}{b}(xs, _) =
+  lam(fopr) => list0_imap{a}{b}(xs, fopr)
+//
+(* ****** ****** *)
+//
+implement
+list0_map2
+  {a1,a2}{b}
+  (xs1, xs2, fopr) =
+  g0ofg1 (
+    list_map2(g1ofg0(xs1), g1ofg0(xs2), fopr)
+  ) (*g0ofg1*)
 //
 (* ****** ****** *)
 //
@@ -450,9 +476,31 @@ case+ xss of
 | list0_nil() =>
   list0_nil()
 | list0_cons(xs, xss) =>
-  list0_cons(list0_cons(x0, xs), list0_mapcons(x0, xss))
+  list0_cons
+  (list0_cons(x0, xs), list0_mapcons(x0, xss))
 )
 //
+(* ****** ****** *)
+
+implement
+list0_tabulate
+  {a}(n0, fopr) =
+  auxmain(0) where
+{
+//
+fun
+auxmain
+(i: int): list0(a) =
+(
+if
+(i < n0)
+then
+list0_cons
+(fopr(i), auxmain(i+1)) else list0_nil((*void*))
+)
+//
+} (* end of [list0_tabulate] *)
+
 (* ****** ****** *)
 
 implement
@@ -474,7 +522,30 @@ list0_find_opt_method
   {a}(xs) =
 (
   lam(pred) => list0_find_opt{a}(xs, pred)
-) (* end of [list0_zipwith_method] *)
+) (* end of [list0_find_opt_method] *)
+
+(* ****** ****** *)
+
+implement
+list0_find_suffix
+  (xs, pred) =
+(
+case+ xs of
+| list0_nil() =>
+  list0_nil()
+| list0_cons(x0, xs1) =>
+  if pred(xs)
+    then (xs)
+    else list0_find_suffix(xs1, pred)
+  // end of [if]
+) (* end of [list0_find_suffix] *)
+
+implement
+list0_find_suffix_method
+  {a}(xs) =
+(
+  lam(pred) => list0_find_suffix{a}(xs, pred)
+) (* end of [list0_find_suffix_method] *)
 
 (* ****** ****** *)
 
@@ -562,7 +633,10 @@ implement
 list0_foldleft_method
   {res}{a}(xs, init) =
 (
-  lam(fopr) => list0_foldleft{res}{a}(xs, init, fopr)
+//
+lam(fopr) =>
+  list0_foldleft{res}{a}(xs, init, fopr)
+//
 ) (* end of [list0_foldleft_method] *)
 
 (* ****** ****** *)
@@ -591,26 +665,49 @@ implement
 list0_foldright_method
   {res}{a}(xs, sink) =
 (
-  lam(fopr) => list0_foldright{res}{a}(xs, fopr, sink)
+//
+lam(fopr) =>
+  list0_foldright{res}{a}(xs, fopr, sink)
+//
 ) (* end of [list0_foldright_method] *)
+
+(* ****** ****** *)
+
+implement
+list0_foldleft_suffix
+  {res}{a}
+  (xs, init, fopr) = let
+//
+fun
+aux
+(
+  res: res, xs: list0(a)
+) : res =
+  case+ xs of
+  | list0_nil() => res
+  | list0_cons(_, xs1) => aux(fopr(res, xs), xs1)
+//
+in
+  aux(init, xs)
+end // end of [list0_foldleft_suffix]
 
 (* ****** ****** *)
 //
 implement
 {a}(*tmp*)
-list0_sort_1(xs) = let
-//
-val ys = list_sort_1<a>(g1ofg0(xs)) in g0ofg1(ys)
-//
-end // end of [list0_sort_1]
+list0_sort_1(xs) =
+  g0ofg1(list_sort_1<a>(g1ofg0(xs)))
 //
 implement
-list0_sort_2(xs, cmp) = let
+list0_sort_2(xs, cmp) =
+  g0ofg1(list_sort_2(g1ofg0(xs), cmp))
 //
-val ys =
-  list_sort_2(g1ofg0(xs), $UN.cast(cmp)) in g0ofg1(ys)
+(* ****** ****** *)
 //
-end // end of [list0_sort_2]
+implement
+list0_mergesort
+  {a}(xs, cmp) =
+  g0ofg1(list_mergesort(g1ofg0(xs), cmp))
 //
 (* ****** ****** *)
 //

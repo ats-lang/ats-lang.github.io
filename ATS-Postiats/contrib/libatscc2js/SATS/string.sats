@@ -16,13 +16,9 @@ ATS_EXTERN_PREFIX "ats2jspre_"
 #staload "./../basics_js.sats"
 //
 (* ****** ****** *)
-
-typedef char = int
-
-(* ****** ****** *)
 //
-typedef
-strchr = string(1)
+typedef char = int
+typedef strchr = string(1)
 //
 (* ****** ****** *)
 //
@@ -256,21 +252,15 @@ string_concat with string_concat_3 of 100
 (* ****** ****** *)
 //
 fun
-streamize_string_code
-  (str0: string): stream_vt(int) = "mac#%"
-//
-(* ****** ****** *)
-//
-fun
 string_exists_cloref
 (
   string, pred: cfun(strchr, bool)
-) : bool = "mac#" // string_exists_cloref
+) : bool = "mac#%" // string_exists_cloref
 fun
 string_exists_method
 (
   string)(pred: cfun(strchr, bool)
-) : bool = "mac#" // string_exists_method
+) : bool = "mac#%" // string_exists_method
 //
 overload .exists with string_exists_method
 //
@@ -280,12 +270,12 @@ fun
 string_forall_cloref
 (
   string, pred: cfun(strchr, bool)
-) : bool = "mac#" // string_forall_cloref
+) : bool = "mac#%" // string_forall_cloref
 fun
 string_forall_method
 (
   string)(pred: cfun(strchr, bool)
-) : bool = "mac#" // string_forall_method
+) : bool = "mac#%" // string_forall_method
 //
 overload .forall with string_forall_method
 //
@@ -295,12 +285,12 @@ fun
 string_foreach_cloref
 (
   string, fwork: cfun(strchr, void)
-) : void = "mac#" // string_foreach_cloref
+) : void = "mac#%" // string_foreach_cloref
 fun
 string_foreach_method
 (
   string)(fwork: cfun(strchr, void)
-) : void = "mac#" // string_foreach_method
+) : void = "mac#%" // string_foreach_method
 //
 overload .foreach with string_foreach_method
 //
@@ -311,7 +301,19 @@ string_tabulate_cloref
   {n:nat}
 (
 n0: int(n), fopr: cfun(natLt(n), charNZ)
-) : string(n) = "mac#" // string_tabulate_cloref
+) : string(n) = "mac#%" // string_tabulate_cloref
+//
+(* ****** ****** *)
+//
+fun
+streamize_string_code
+  (str0: string): stream_vt(int) = "mac#%"
+//
+(* ****** ****** *)
+//
+fun
+streamize_string_line
+  (inp: string): stream_vt(string) = "mac#%"
 //
 (* ****** ****** *)
 

@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/string.atxt
-** Time of generation: Wed Mar  8 20:38:45 2017
+** Time of generation: Wed Oct 10 21:08:46 2018
 *)
 
 (* ****** ****** *)
@@ -219,13 +219,13 @@ strcmp(x1, x2) = let
 //
 extern
 fun
-__strcmp
+__strcmp__
 (
   x1: string, x2: string
 ) :<> int = "mac#atspre_strcmp"
 //
 in
-  __strcmp(x1, x2)
+  __strcmp__(x1, x2)
 end // end of [let] // end of [strcmp]
 
 (* ****** ****** *)
@@ -290,9 +290,10 @@ if
 c1 != CNUL
 then let
   prval () =
-  __assert () where
+  __assert() where
   {
-      extern praxi __assert (): [n1 > 0] void
+    extern
+    praxi __assert(): [n1 > 0] void
   } (* end of [prval] *)
 in
   if c2 != CNUL
@@ -344,7 +345,7 @@ val n1 = n + 1
 val (pf, pfgc | p0) =
   $effmask_wrt (malloc_gc(i2sz(n1)))
 //
-val p1 = $effmask_wrt (loop (cs, n, p0))
+val p1 = $effmask_wrt(loop(cs, n, p0))
 //
 val () =
   $effmask_wrt ($UN.ptr0_set<char>(p1, CNUL))
@@ -464,12 +465,12 @@ string_make_substring
   (str, st, ln) = $effmask_wrt let
 //
 val ln1 = succ(ln)
-val (pf, pfgc | p_dst) = malloc_gc (ln1)
+val (pf, pfgc | p_dst) = malloc_gc(ln1)
 //
 val
 p_src = string2ptr(str)
 val
-p_dst = memcpy (p_dst, p_src + st, ln)
+p_dst = memcpy(p_dst, p_src + st, ln)
 //
 val () = $UN.ptr0_set<char>(p_dst + ln, CNUL)
 //
@@ -477,11 +478,6 @@ in
   castvwtp_trans{strnptr(ln)}((pf, pfgc | p_dst))
 end // end of [string_make_substring]
 
-(* ****** ****** *)
-//
-implement
-string_make_stream$bufsize<> ((*void*)) = 16
-//
 (* ****** ****** *)
 
 implement
@@ -493,10 +489,12 @@ fun
 loop
 {l:addr}
 {n:int}
-{i:nat | i <= n}
+{i:nat|i <= n}
 (
-  pf: b0ytes(n)@l, fpf: mfree_gc_v(l)
-| cs: stream(charNZ), p0: ptr(l), pi: ptr, n: size_t(n), i: size_t(i)
+  pf: b0ytes(n)@l
+, fpf: mfree_gc_v(l)
+| cs: stream(charNZ)
+, p0: ptr(l), pi: ptr, n: size_t(n), i: size_t(i)
 ) : Strptr1 = (
 if
 (i < n)
@@ -512,7 +510,9 @@ case+ !cs of
 | stream_cons(c, cs) => let
     val () = $UN.ptr0_set<char>(pi, c)
   in
-    loop(pf, fpf | cs, p0, ptr_succ<char>(pi), n, succ(i))
+    loop
+    ( pf, fpf
+    | cs, p0, ptr_succ<char>(pi), n, succ(i))
   end // end of [stream_cons]
 )
 else let
@@ -524,7 +524,8 @@ else let
   val ((*freed*)) = mfree_gc(pf, fpf | p0)
 //
 in
-  loop(pf2, fpf2 | cs, p02, ptr_add<char>(p02, i), n2, i)
+  loop
+  (pf2, fpf2 | cs, p02, ptr_add<char>(p02, i), n2, i)
 end // end of [
 ) (* end of [loop] *)
 //
@@ -535,7 +536,9 @@ val n0 = i2sz(n0)
 val (pf, fpf | p0) = malloc_gc(n0)
 //
 in
+//
   $effmask_all(loop(pf, fpf | cs, p0, p0, n0, i2sz(0)))
+//
 end // end of [string_make_stream]
 
 (* ****** ****** *)
@@ -549,10 +552,12 @@ fun
 loop
 {l:addr}
 {n:int}
-{i:nat | i <= n}
+{i:nat|i <= n}
 (
-  pf: b0ytes(n)@l, fpf: mfree_gc_v(l)
-| cs: stream_vt(charNZ), p0: ptr(l), pi: ptr, n: size_t(n), i: size_t(i)
+  pf: b0ytes(n)@l
+, fpf: mfree_gc_v(l)
+| cs: stream_vt(charNZ)
+, p0: ptr(l), pi: ptr, n: size_t(n), i: size_t(i)
 ) : Strptr1 = (
 if
 (i < n)
@@ -580,7 +585,11 @@ else let
   val ((*freed*)) = mfree_gc(pf, fpf | p0)
 //
 in
-  loop(pf2, fpf2 | cs, p02, ptr_add<char>(p02, i), n2, i)
+//
+  loop
+  ( pf2, fpf2
+  | cs, p02, ptr_add<char>(p02, i), n2, i)
+//
 end // end of [
 ) (* end of [loop] *)
 //
@@ -597,16 +606,23 @@ end // end of [string_make_stream_vt]
 (* ****** ****** *)
 //
 implement
+string_make_stream$bufsize<> ((*void*)) = 16
+//
+(* ****** ****** *)
+//
+implement
 {}(*tmp*)
 string_head
-  (str) = $UN.ptr0_get<charNZ>(string2ptr(str))
+  (str) =
+  $UN.ptr0_get<charNZ>(string2ptr(str))
+//
 implement
 {}(*tmp*)
 string_tail
   {n}(str) =
 (
   $UN.cast{string(n-1)}(ptr_succ<char>(string2ptr(str)))
-)
+) (* end of [string_tail] *)
 //
 (* ****** ****** *)
 
@@ -620,11 +636,11 @@ implement
 {}(*tmp*)
 string1_length
   {n}(str) =
-  __strlen (str) where
+  __strlen__(str) where
 {
   extern
   fun
-  __strlen (string(n)):<> size_t(n) = "mac#atspre_strlen"
+  __strlen__(string(n)):<> size_t(n) = "mac#atspre_strlen"
 } // end of [where] // end of [string1_length]
 
 (* ****** ****** *)
@@ -677,11 +693,12 @@ string0_copy
   (str) = let
 //
 val str = g1ofg0(str)
-val str2 = string1_copy (str)
-prval () = lemma_strnptr_param (str2)
+val str2 = string1_copy(str)
+//
+prval () = lemma_strnptr_param(str2)
 //
 in
-  strnptr2strptr (str2)
+  strnptr2strptr(str2)
 end // end of [string0_copy]
 
 implement
@@ -689,10 +706,13 @@ implement
 string1_copy
   {n}(str) = let
 //
-val n = string1_length (str)
-val n1 = succ(n)
-val (pf, pfgc | p) = malloc_gc (n1)
-val _(*p*) = $effmask_wrt (memcpy (p, string2ptr(str), n1))
+val n =
+string1_length(str)
+val n1 = g1uint_succ(n)
+val (pf, pfgc | p) = malloc_gc(n1)
+//
+val _(*p*) =
+$effmask_wrt(memcpy(p, string2ptr(str), n1))
 //
 in
   castvwtp_trans{strnptr(n)}((pf, pfgc | p))
@@ -717,14 +737,17 @@ implement
 {}(*tmp*)
 strchr{n}(str, c0) = let
 //
-prval () = lemma_string_param (str)
-extern fun __strchr (string, int):<> ptr = "mac#atspre_strchr"
-extern fun __sub (ptr, ptr):<> ssizeBtw (0, n) = "mac#atspre_sub_ptr_ptr"
+prval () = lemma_string_param(str)
+extern
+fun __strchr__(string, int):<> ptr = "mac#atspre_strchr"
+extern
+fun sub_ptr_ptr(ptr, ptr):<> ssizeBtw(0, n) = "mac#atspre_sub_ptr_ptr"
+//
 val p0 = string2ptr(str)
-val p1 = __strchr (str, (char2int0)c0)
+val p1 = __strchr__(str, (char2int0)c0)
 //
 in
-  if p1 > the_null_ptr then __sub (p1, p0) else i2ssz(~1)
+  if p1 > the_null_ptr then sub_ptr_ptr(p1, p0) else i2ssz(~1)
 end // end of [strchr]
 
 implement
@@ -732,13 +755,16 @@ implement
 strrchr{n}(str, c0) = let
 //
 prval () = lemma_string_param (str)
-extern fun __strrchr (string, int):<> ptr = "mac#atspre_strrchr"
-extern fun __sub (ptr, ptr):<> ssizeBtw (0, n) = "mac#atspre_sub_ptr_ptr"
+extern
+fun __strrchr__(string, int):<> ptr = "mac#atspre_strrchr"
+extern
+fun sub_ptr_ptr(ptr, ptr):<> ssizeBtw(0, n) = "mac#atspre_sub_ptr_ptr"
+//
 val p0 = string2ptr(str)
-val p1 = __strrchr (str, (char2int0)c0)
+val p1 = __strrchr__(str, (char2int0)c0)
 //
 in
-  if p1 > the_null_ptr then __sub (p1, p0) else i2ssz(~1)
+  if p1 > the_null_ptr then sub_ptr_ptr(p1, p0) else i2ssz(~1)
 end // end of [strrchr]
 
 (* ****** ****** *)
@@ -749,13 +775,17 @@ strstr{n}
   (haystack, needle) = let
 //
 prval () = lemma_string_param (haystack)
-extern fun __strstr (string, string):<> ptr = "mac#atspre_strstr"
-extern fun __sub (ptr, ptr):<> ssizeBtw (0, n) = "mac#atspre_sub_ptr_ptr"
+//
+extern
+fun __strstr__(string, string):<> ptr = "mac#atspre_strstr"
+extern
+fun sub_ptr_ptr(ptr, ptr):<> ssizeBtw(0, n) = "mac#atspre_sub_ptr_ptr"
+//
 val p0 = string2ptr(haystack)
-val p1 = __strstr (haystack, needle)
+val p1 = __strstr__(haystack, needle)
 //
 in
-  if p1 > the_null_ptr then __sub (p1, p0) else i2ssz(~1)
+  if p1 > the_null_ptr then sub_ptr_ptr(p1, p0) else i2ssz(~1)
 end // end of [strstr]
 
 (* ****** ****** *)
@@ -763,31 +793,31 @@ end // end of [strstr]
 implement
 {}(*tmp*)
 strspn{n}
-  (str, accept) = let
+(subject, accept) = let
 //
-prval() = lemma_string_param (str)
+prval () = lemma_string_param(subject)
 //
 extern
 fun
-__strspn (string, string):<> sizeLte (n) = "mac#atspre_strspn"
+__strspn__(string, string):<> sizeLte(n) = "mac#atspre_strspn"
 //
 in
-  __strspn (str, accept)
+  __strspn__(subject, accept)
 end // end of [strspn]
 
 implement
 {}(*tmp*)
 strcspn{n}
-  (str, reject) = let
+(subject, reject) = let
 //
-prval() = lemma_string_param (str)
+prval() = lemma_string_param(subject)
 //
 extern
 fun
-__strcspn (string, string):<> sizeLte (n) = "mac#atspre_strcspn"
+__strcspn__(string, string):<> sizeLte(n) = "mac#atspre_strcspn"
 //
 in
-  __strcspn (str, reject)
+  __strcspn__(subject, reject)
 end // end of [strcspn]
 
 (* ****** ****** *)
@@ -795,13 +825,13 @@ end // end of [strcspn]
 implement
 {}(*tmp*)
 string_index
-  {n}(str, c) = $UN.cast{ssizeBtw(~1,n)}(strchr (str, c))
+  {n}(str, c) = $UN.cast{ssizeBtw(~1,n)}(strchr(str, c))
 // end of [string_index]
 
 implement
 {}(*tmp*)
 string_rindex
-  {n}(str, c) = $UN.cast{ssizeBtw(~1,n)}(strrchr (str, c))
+  {n}(str, c) = $UN.cast{ssizeBtw(~1,n)}(strrchr(str, c))
 // end of [string_rindex]
 
 (* ****** ****** *)
@@ -813,8 +843,8 @@ string0_append
 //
 val x1 = g1ofg0(x1)
 val x2 = g1ofg0(x2)
-val x12 = string1_append (x1, x2)
-prval () = lemma_strnptr_param (x12)
+val x12 = string1_append(x1, x2)
+prval () = lemma_strnptr_param(x12)
 //
 in
   strnptr2strptr (x12)
@@ -1031,10 +1061,10 @@ if
 (c != CNUL)
 then let
   prval() =
-  __assert () where
+  __assert() where
   {
     extern
-    praxi __assert (): [n > 0] void
+    praxi __assert(): [n > 0] void
   } (* prval *)
   val () =
     res :=
@@ -1042,7 +1072,8 @@ then let
   // end of [val]
   val+list_vt_cons (_, res1) = res
   val x1 =
-    $UN.cast{string(n-1)}(ptr1_succ<char>(p))
+  $UN.cast
+    {string(n-1)}(ptr1_succ<char>(p))
   // end of [val]
   val ((*void*)) = loop (x1, res1)
 in
@@ -1050,13 +1081,13 @@ in
 end // end of [then]
 else let
   prval() =
-  __assert () where
+  __assert() where
   {
     extern
-    praxi __assert (): [n == 0] void
+    praxi __assert(): [n == 0] void
   } (* [prval] *)
 in
-  res := list_vt_nil((*void*))
+  res := list_vt_nil{charNZ}((*void*))
 end // end of [else]
 //
 end // end of [loop]
@@ -1074,45 +1105,38 @@ implement
 {}(*tmp*)
 string_tabulate{n}(n) = let
 //
-prval () = lemma_g1uint_param (n)
+prval () =
+lemma_g1uint_param(n)
 //
-fun loop (
-  p: ptr, n: size_t, i: size_t
+fun
+loop
+(
+ p: ptr, n: size_t, i: size_t
 ) : void = let
 in
 //
-if i < n then let
-  val c = string_tabulate$fopr (i)
-  val () = $UN.ptr0_set<char> (p, c)
+if
+(i < n)
+then let
+  val c =
+  string_tabulate$fopr(i)
+  val () =
+  $UN.ptr0_set<char>(p, c)
 in
-  loop (ptr_succ<char> (p), n, succ (i))
+  loop(ptr_succ<char>(p), n, succ(i))
 end else
-  $UN.ptr0_set<char> (p, CNUL)
+  $UN.ptr0_set<char>(p, CNUL)
 // end of [if]
 //
 end // end of [loop]
 //
 val n1 = succ(n)
-val (pf, fpf | p0) = malloc_gc (n1)
-val () = loop (p0, n, g1int2uint (0))
+val (pf, fpf | p0) = malloc_gc(n1)
+val () = loop(p0, n, g1int2uint(0))
 //
 in
   castvwtp_trans{strnptr(n)}((pf, fpf | p0))
 end // end of [string_tabulate]
-
-(* ****** ****** *)
-
-implement
-{}(*tmp*)
-string_tabulate_cloref
-  {n}(n, fopr) = let
-//
-implement
-string_tabulate$fopr<>(i) = fopr($UN.cast{sizeLt(n)}(i))
-//
-in
-  string_tabulate<>(n)
-end // end of [string_tabulate_cloref]
 
 (* ****** ****** *)
 
@@ -1133,7 +1157,9 @@ if
 c0 = CNUL
 then true else
 (
-  if string_forall$pred(c0) then loop(ptr0_succ<char>(p)) else false
+if
+string_forall$pred<>(c0)
+then loop(ptr0_succ<char>(p)) else false
 ) (* end of [if] *)
 //
 end // end of [loop]
@@ -1173,15 +1199,12 @@ end // end of [string_iforall]
 (* ****** ****** *)
 
 implement
-{env}
-string_foreach$cont(c, env) = true
-implement{env}
-string_foreach$fwork(c, env) = ((*void*))
-
-implement
 {}(*tmp*)
-string_foreach(str) = let
-  var env: void = () in string_foreach_env(str, env)
+string_foreach
+  (str) = let
+  var env: void = ()
+in
+  string_foreach_env<void>(str, env)
 end // end of [string_foreach]
 
 implement
@@ -1192,16 +1215,16 @@ string_foreach_env
 fun loop (
   p: ptr, env: &env
 ) : ptr = let
-  val c = $UN.ptr0_get<char> (p)
+  val c = $UN.ptr0_get<char>(p)
   val cont = (
     if c != CNUL
-      then string_foreach$cont<env> (c, env) else false
+      then string_foreach$cont<env>(c, env) else false
     // end of [if]
   ) : bool // end of [val]
 in
   if cont then let
     val () =
-      string_foreach$fwork<env> (c, env) in loop(ptr_succ<char> (p), env)
+      string_foreach$fwork<env>(c, env) in loop(ptr_succ<char> (p), env)
     // end of [val]
   end else (p) // end of [if]
 end // end of [fun]
@@ -1218,15 +1241,19 @@ end // end of [string_foreach_env]
 
 implement
 {env}
-string_rforeach$cont (c, env) = true
-implement
-{env}
-string_rforeach$fwork (c, env) = ((*void*))
+string_foreach$cont(c, env) = true
+implement{env}
+string_foreach$fwork(c, env) = ((*void*))
+
+(* ****** ****** *)
 
 implement
 {}(*tmp*)
-string_rforeach(str) = let
-  var env: void = () in string_rforeach_env(str, env)
+string_rforeach
+  (str) = let
+  var env: void = ()
+in
+  string_rforeach_env<void>(str, env)
 end // end of [string_rforeach]
 
 implement
@@ -1243,18 +1270,18 @@ in
 if
 (p1 > p0)
 then let
-  val p2 = ptr_pred<char> (p1)
-  val c2 = $UN.ptr0_get<charNZ> (p2)
+  val p2 = ptr_pred<char>(p1)
+  val c2 = $UN.ptr0_get<charNZ>(p2)
   val cont =
-    string_rforeach$cont<env> (c2, env)
+    string_rforeach$cont<env>(c2, env)
   // end of [val]
 in
   if cont
     then let
       val () =
-      string_rforeach$fwork<env> (c2, env)
+      string_rforeach$fwork<env>(c2, env)
     in
-      loop (p0, p2, env)
+      loop(p0, p2, env)
     end // end of [then]
     else (p1) // end of [else]    
 end // end of [then]
@@ -1263,11 +1290,20 @@ else (p1) // end of [else]
 end // end of [loop]
 //
 val p0 = ptrcast(str)
-val p1 = ptr_add<char> (p0, length(str))
+val p1 = ptr_add<char>(p0, length(str))
 //
 in
-  $UN.cast{sizeLte(n)}(p1 - loop (p0, p1, env))
+  $UN.cast{sizeLte(n)}(p1 - loop(p0, p1, env))
 end // end of [string_rforeach_env]
+
+(* ****** ****** *)
+
+implement
+{env}
+string_rforeach$cont(c, env) = true
+implement
+{env}
+string_rforeach$fwork(c, env) = ((*void*))
 
 (* ****** ****** *)
 
@@ -1281,8 +1317,9 @@ typedef elt = charNZ
 fun
 auxmain
 (
-  p: ptr
-) : stream_vt(elt) = $ldelay(
+ p: ptr
+) : stream_vt(elt) = $ldelay
+(
 //
 let
 //
@@ -1293,7 +1330,10 @@ in
 if
 isneqz(c0)
 then (
-  stream_vt_cons(c0, auxmain(ptr0_succ<Char>(p)))
+stream_vt_cons
+( c0
+, auxmain(ptr0_succ<Char>(p))
+) (* stream_vt_cons *)
 ) else stream_vt_nil((*void*))
 //
 end : stream_vt_con(elt) // end of [let]
@@ -1303,6 +1343,25 @@ in
   auxmain(string2ptr(str))
 end // end of [streamize_string_char]
 
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+un_streamize_string_char
+  (cs) =
+  strnptr2strptr(cs) where
+{
+//
+  val cs = stream2list_vt(cs)
+//
+prval () = lemma_list_vt_param(cs)
+//
+  val cs = string_make_list_vt(cs)
+//
+prval () = lemma_strnptr_param(cs)
+//
+} (* un_streamize_string_char *)
+//
 (* ****** ****** *)
 
 (*

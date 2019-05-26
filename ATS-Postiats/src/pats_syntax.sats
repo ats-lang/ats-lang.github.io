@@ -428,12 +428,15 @@ fun fprint_e0xp : fprint_type (e0xp)
 fun fprint_e0xplst : fprint_type (e0xplst)
 
 (* ****** ****** *)
-
+//
 datatype
-datsdef = DATSDEF of (symbol, e0xpopt)
-
-fun datsdef_make (id: i0de, opt: e0xpopt): datsdef
-
+datsdef =
+DATSDEF of (symbol, e0xpopt)
+//
+fun
+datsdef_make
+  (id: i0de, opt: e0xpopt): datsdef
+//
 (* ****** ****** *)
 
 typedef l0ab = '{
@@ -839,18 +842,19 @@ fun fprint_q0marg : fprint_type (q0marg)
 fun fprint_q0marglst : fprint_type (q0marglst)
 
 (* ****** ****** *)
-
+//
 typedef
 a0typ = '{
   a0typ_loc= location
 , a0typ_sym= symbolopt
 , a0typ_typ= s0exp
-} // end of [a0typ]
+} (* end of [a0typ] *)
+//
 typedef a0typlst = List (a0typ)
-
+//
 fun a0typ_make_none (_: s0exp): a0typ
 fun a0typ_make_some (id: i0de, _: s0exp): a0typ
-
+//
 (* ****** ****** *)
 
 datatype
@@ -1424,6 +1428,10 @@ loopi0nv_make
 datatype
 d0ecl_node =
 //
+(*
+  | D0Clist of d0eclist
+*)
+//
   | D0Cfixity of
       (f0xty, i0delst) // prefix, infix, postfix
     // D0Cfixity
@@ -1610,9 +1618,11 @@ and d0exp_node =
   | D0Eeffmask of (e0fftaglst, d0exp)
   | D0Eeffmask_arg of (int(*knd*), d0exp)
 //
-  | D0Eshowtype of (d0exp) // $showtype for static debugging
+  | D0Evararg of (d0explst) // $vararg for variadicity
 //
   | D0Evcopyenv of (int(*knd*), d0exp) // $vcopyenv_v/$vcopyenv_vt
+//
+  | D0Eshowtype of (d0exp) // $showtype for static debugging
 //
   | D0Etempenver of (d0exp) // $tempenver for adding environvar
 //
@@ -1962,8 +1972,8 @@ d0exp_scasehead
 (* ****** ****** *)
 
 fun
-d0exp_lst (
-  lin: int
+d0exp_lst
+( lin: int
 , t_beg: token
 , elt: s0expopt
 , t_lp: token
@@ -1971,19 +1981,25 @@ d0exp_lst (
 , t_rp: token
 ) : d0exp // end of [d0exp_lst]
 
-fun d0exp_lst_quote
+fun
+d0exp_lst_quote
   (t_beg: token, elts: d0explst, t_end: token): d0exp
 // end of [d0exp_lst_quote]
 
 (* ****** ****** *)
-
-fun d0exp_tup (
+//
+fun
+d0exp_tup
+(
   knd: int, t_beg: token, npf: int, xs: d0explst, t_end: token
 ) : d0exp // end of [d0exp_tup]
-fun d0exp_rec (
+//
+fun
+d0exp_rec
+(
   knd: int, t_beg: token, npf: int, xs: labd0explst, t_end: token
 ) : d0exp // end of [d0exp_rec]
-
+//
 (* ****** ****** *)
 
 fun d0exp_seq
@@ -1992,13 +2008,18 @@ fun d0exp_seq
 
 (* ****** ****** *)
 
-fun d0exp_arrsub (qid: dqi0de, ind: d0arrind): d0exp
+fun
+d0exp_arrsub(qid: dqi0de, ind: d0arrind): d0exp
 
-fun d0exp_arrinit (
+fun
+d0exp_arrinit
+(
   t_beg: token, elt: s0exp, dim: d0expopt, ini: d0explst, t_end: token
 ) : d0exp // end of [d0exp_arrinit]
 
-fun d0exp_arrpsz (
+fun
+d0exp_arrpsz
+(
   t_beg: token, elt: s0expopt, t_lp: token, elts: d0explst, t_rp: token
 ) : d0exp // end of [d0exp_arrpsz]
 
@@ -2009,26 +2030,37 @@ fun d0exp_viewat (t_viewat: token): d0exp // view@
 
 (* ****** ****** *)
 //
-fun d0exp_sel_lab (sel: s0elop, lab: l0ab): d0exp
-fun d0exp_sel_ind (sel: s0elop, ind: d0arrind): d0exp
+fun
+d0exp_sel_lab (sel: s0elop, lab: l0ab): d0exp
+fun
+d0exp_sel_ind (sel: s0elop, ind: d0arrind): d0exp
 //
-fun d0exp_sel_int (tok: token): d0exp // tok=T_DOTINT(...)
+fun
+d0exp_sel_int (tok: token): d0exp // tok=T_DOTINT(...)
 //
 (* ****** ****** *)
 //
-fun d0exp_raise (tok: token, d0e: d0exp): d0exp
+fun
+d0exp_raise(tok: token, d0e: d0exp): d0exp
+//
+(* ****** ****** *)
 //
 fun
 d0exp_effmask
   (tok: token, eff: e0fftaglst, d0e: d0exp): d0exp
 //
 fun
-d0exp_effmask_arg(knd: int, tok: token, d0e: d0exp): d0exp
+d0exp_effmask_arg
+  (knd: int, tok: token, d0e: d0exp): d0exp
 //
 (* ****** ****** *)
-
-fun d0exp_showtype (tok: token, d0e: d0exp): d0exp
-
+//
+fun
+d0exp_vararg
+(
+  t_beg: token, d0es: d0explst, t_end: token
+) : d0exp // end of [d0exp_vararg]
+//
 (* ****** ****** *)
 //
 fun
@@ -2037,7 +2069,11 @@ d0exp_vcopyenv
 //
 (* ****** ****** *)
 
-fun d0exp_tempenver (tok: token, d0e: d0exp): d0exp
+fun d0exp_showtype(tok: token, d0e: d0exp): d0exp
+
+(* ****** ****** *)
+
+fun d0exp_tempenver(tok: token, d0e: d0exp): d0exp
 
 (* ****** ****** *)
 
@@ -2101,8 +2137,11 @@ fun d0exp_loopexn
 
 (* ****** ****** *)
 
-fun d0exp_trywith_seq (
-  hd: tryhead, d0es: d0explst, t_with: token, c0ls: c0laulst
+fun
+d0exp_trywith_seq
+(
+  hd: tryhead
+, d0es: d0explst, t_with: token, c0ls: c0laulst
 ) : d0exp // end of [d0exp_trywith_seq]
 
 (* ****** ****** *)
@@ -2112,21 +2151,25 @@ fun d0exp_solverify (tok: token, s0e: s0exp): d0exp
 //
 (* ****** ****** *)
 
-fun d0exp_macsyn_decode
+fun
+d0exp_macsyn_decode
   (t_beg: token, _: d0exp, t_end: token): d0exp
 // end of [d0exp_macsyn_decode]
 
-fun d0exp_macsyn_encode_seq
+fun
+d0exp_macsyn_encode_seq
   (t_beg: token, _: d0explst, t_end: token): d0exp
 // end of [d0exp_macsyn_encode_seq]
 
-fun d0exp_macsyn_cross
+fun
+d0exp_macsyn_cross
   (t_beg: token, _: d0exp, t_end: token): d0exp
 // end of [d0exp_macsyn_cross]
 
 (* ****** ****** *)
 
-fun labd0exp_make (ent1: l0ab, ent2: d0exp): labd0exp
+fun
+labd0exp_make (ent1: l0ab, ent2: d0exp): labd0exp
 
 (* ****** ****** *)
 //
@@ -2142,13 +2185,15 @@ overload fprint with fprint_d0explst
 fun fprint_labd0exp : fprint_type (labd0exp)
 
 (* ****** ****** *)
-
+//
 (*
 ** HX: d0arrind_sing: tok is RBRACKET
 *)
-fun d0arrind_sing (d0es: d0explst, tok: token): d0arrind
-fun d0arrind_cons (d0es: d0explst, ind: d0arrind): d0arrind
-
+fun
+d0arrind_sing (d0es: d0explst, tok: token): d0arrind
+fun
+d0arrind_cons (d0es: d0explst, ind: d0arrind): d0arrind
+//
 (* ****** ****** *)
 
 fun
@@ -2164,58 +2209,85 @@ initestpost_make
 ) : initestpost // end of [initestpost_make]
 
 (* ****** ****** *)
-
-fun gm0at_make (d0e: d0exp, pat: p0atopt): gm0at
-fun guap0at_make (p0t: p0at, mat: Option (gm0atlst)): guap0at
-
+//
+fun
+gm0at_make
+  (d0e: d0exp, pat: p0atopt): gm0at
+fun
+guap0at_make
+  (p0t: p0at, mat: Option (gm0atlst)): guap0at
+//
+(* ****** ****** *)
+//
+fun
+ifhead_make
+  (t_if: token, invopt: Option(i0nvresstate)): ifhead
+fun
+sifhead_make
+  (t_sif: token, invopt: Option(i0nvresstate)): sifhead
+//
 (* ****** ****** *)
 
-fun ifhead_make
-  (t_if: token, invopt: Option (i0nvresstate)): ifhead
-fun sifhead_make
-  (t_sif: token, invopt: Option (i0nvresstate)): sifhead
+fun
+casehead_make
+  (t_case: token, invopt: Option(i0nvresstate)): casehead
+fun
+scasehead_make
+  (t_scase: token, invopt: Option(i0nvresstate)): scasehead
 
-fun casehead_make
-  (t_case: token, invopt: Option (i0nvresstate)): casehead
-fun scasehead_make
-  (t_scase: token, invopt: Option (i0nvresstate)): scasehead
+(* ****** ****** *)
+//
+fun
+loophead_make_none
+  (t_head: token): loophead
+fun
+loophead_make_some
+(
+  t_head: token, inv: loopi0nv, t_eqgt: token
+) : loophead // end of [loophead_make_some]
+//
+(* ****** ****** *)
 
-fun loophead_make_none (t_head: token): loophead
-fun loophead_make_some
-  (t_head: token, inv: loopi0nv, t_eqgt: token): loophead
-// end of [loophead_make_some]
-
-fun tryhead_make
-  (t_try: token, invopt: Option (i0nvresstate)): tryhead
+fun
+tryhead_make
+  (t_try: token, invopt: Option(i0nvresstate)): tryhead
 // end of [tryhead_make]
 
 (* ****** ****** *)
 
-fun i0fcl_make (test: d0exp, body: d0exp): i0fcl
+fun
+i0fcl_make (test: d0exp, body: d0exp): i0fcl
 
 (* ****** ****** *)
 
-fun c0lau_make (
+fun
+c0lau_make
+(
   gp0t: guap0at, seq: int, neg: int, body: d0exp
 ) : c0lau // end of [c0lau_make]
 
-fun sc0lau_make (sp0t: sp0at, body: d0exp): sc0lau
+fun
+sc0lau_make (sp0t: sp0at, body: d0exp): sc0lau
 
 (* ****** ****** *)
 
-fun m0acdef_make
+fun
+m0acdef_make
   (id: i0de, arg: m0acarglst, def: d0exp): m0acdef
 // end of [m0acdef_make]
 
 (* ****** ****** *)
 
-fun v0aldec_make
+fun
+v0aldec_make
   (p0t: p0at, def: d0exp, ann: witht0ype): v0aldec
 // end of [v0aldec_make]
 
 (* ****** ****** *)
 
-fun f0undec_make (
+fun
+f0undec_make
+(
   fid: i0de
 , arg: f0arglst
 , eff: e0fftaglstopt, res: s0expopt
@@ -2225,7 +2297,8 @@ fun f0undec_make (
   
 (* ****** ****** *)
 
-fun v0ardec_make
+fun
+v0ardec_make
 (
   opt: tokenopt // optional BANG
 , pid: i0de
@@ -2236,8 +2309,11 @@ fun v0ardec_make
 
 (* ****** ****** *)
 
-fun i0mpdec_make (
-  qid: impqi0de, arg: f0arglst, res: s0expopt, def: d0exp
+fun
+i0mpdec_make
+(
+  qid: impqi0de
+, arg: f0arglst, res: s0expopt, def: d0exp
 ) : i0mpdec // end of [i0mpdec_make]
 
 (* ****** ****** *)
@@ -2386,21 +2462,37 @@ fun d0ecl_impdec
   (t_implement: token, imparg: i0mparg, d: i0mpdec): d0ecl
 // end of [d0ecl_impdec]
 //
-fun d0ecl_fundecs (
+(* ****** ****** *)
+//
+fun
+d0ecl_fundecs
+(
   knd: funkind, tok: token, arg: q0marglst, ds: f0undeclst
 ) : d0ecl // end of [d0ecl_fundecs]
-fun d0ecl_valdecs (
+fun
+d0ecl_valdecs
+(
   knd: valkind, isrec: bool, tok: token, ds: v0aldeclst
 ) : d0ecl // end of [d0ecl_valdecs]
-fun d0ecl_vardecs (knd: int, tok: token, ds: v0ardeclst): d0ecl
+fun
+d0ecl_vardecs(knd: int, tok: token, ds: v0ardeclst): d0ecl
 //
-fun staloadarg_get_loc (arg: staloadarg): location
-fun staloadarg_declist
+(* ****** ****** *)
+//
+fun
+staloadarg_get_loc (arg: staloadarg): location
+fun
+staloadarg_declist
   (t_lbrace: token, ds: d0eclist, t_rbrace: token): staloadarg
 //
-fun d0ecl_staload_fname (tok: token, tok2: token): d0ecl
-fun d0ecl_staload_nspace (tok: token, tok2: token): d0ecl
-fun d0ecl_staload_some_arg (tok: token, ent2: i0de, arg: staloadarg): d0ecl
+fun
+d0ecl_staload_fname (tok: token, tok2: token): d0ecl
+fun
+d0ecl_staload_nspace (tok: token, tok2: token): d0ecl
+fun
+d0ecl_staload_some_arg (tok: token, ent2: i0de, arg: staloadarg): d0ecl
+//
+(* ****** ****** *)
 //
 fun d0ecl_require (tok: token, ent2: token): d0ecl
 //
@@ -2415,11 +2507,28 @@ fun d0ecl_dcstdecs_extern : d0ecl_dcstdecs_type
 // HX: a static const is not exported
 fun d0ecl_dcstdecs_static : d0ecl_dcstdecs_type
 //
-fun d0ecl_local (
-  t_local: token, ds_head: d0eclist, ds_body: d0eclist, t_end: token
+(* ****** ****** *)
+//
+fun
+d0ecl_local
+(
+  t_beg: token
+, ds_head: d0eclist, ds_body: d0eclist
+, t_end: token
 ) : d0ecl // end of [d0ecl_local]
 //
-fun d0ecl_guadecl (knd: token, gdc: guad0ecl): d0ecl
+fun
+d0ecl_guadecl
+  (knd: token, gdc: guad0ecl): d0ecl
+//
+(* ****** ****** *)
+//
+fun
+d0ecl_list
+  (fil: filename, d0cs: d0eclist): d0ecl
+fun
+d0ecl_toplocal
+  (fil: filename, d0cs: d0eclist): d0ecl
 //
 (* ****** ****** *)
 

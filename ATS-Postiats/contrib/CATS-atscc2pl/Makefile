@@ -31,7 +31,6 @@ SOURCES_SATS += $(CATSPARSEMIT)/SATS/catsparse.sats
 
 SOURCES_CATS :=
 SOURCES_CATS += $(CATSPARSEMIT)/CATS/catsparse_all_dats.c
-SOURCES_CATS += $(CATSPARSEMIT)/CATS/catsparse_mylib_dats.c
 
 ######
 #
@@ -41,16 +40,16 @@ $(MAKE) -C CATS-parsemit all
 ######
 #
 all:: \
-atscc2pl
-atscc2pl: \
+bin_atscc2pl
+bin_atscc2pl: \
 $(SOURCES_DATS); \
 $(PATSCC) \
-  -DATS_MEMALLOC_GCBDW -O2 -o $@ \
+  -DATS_MEMALLOC_GCBDW -O2 -o bin/atscc2pl \
   $(SOURCES_DATS) $(SOURCES_SATS) $(SOURCES_CATS) -lgc
 #
 ######
 #
-npm:: atscc2pl
+npm:: bin_atscc2pl
 npm:: ; $(CPF) catsparse_sats.c atscc2pl_*_dats.c npm/CATS/.
 #
 ######
@@ -72,6 +71,8 @@ clean:: ; $(RMF) *_?ats.c
 ######
 
 cleanall:: clean
-cleanall:: ; $(RMF) ./atscc2pl
+cleanall:: ; $(RMF) ./bin/atscc2pl
+cleanall:: ; $(RMF) ./npm/CATS/catsparse_sats.c
+cleanall:: ; $(RMF) ./npm/CATS/atscc2pl_*_dats.c 
 
 ###### end of [Makefile] ######

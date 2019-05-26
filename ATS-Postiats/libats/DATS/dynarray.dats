@@ -87,7 +87,7 @@ val A = __cast (A) where
 } (* end of [val] *)
 //
 in
-  DYNARRAY (A, cap, g1i2u(0))
+  DYNARRAY(A, cap, g1i2u(0))
 end (* end of [dynarray_make_nil] *)
 
 (* ****** ****** *)
@@ -129,13 +129,15 @@ end (* end of [dynarray_get_array] *)
 
 implement
 {}(*tmp*)
-dynarray_get_size (DA) = let
-  val+DYNARRAY (_, _, n) = DA in (n)
+dynarray_get_size
+  (DA) = let
+  val+DYNARRAY(_, _, n) = DA in (n)
 end // end of [dynarray_get_size]
 implement
 {}(*tmp*)
-dynarray_get_capacity (DA) = let
-  val+DYNARRAY (_, m, _) = DA in (m)
+dynarray_get_capacity
+  (DA) = let
+  val+DYNARRAY(_, m, _) = DA in (m)
 end // end of [dynarray_get_capacity]
 
 (* ****** ****** *)
@@ -143,13 +145,15 @@ end // end of [dynarray_get_capacity]
 implement
 {a}(*tmp*)
 dynarray_getref_at
-  (DA, i) = let
+  (DA, i0) = let
 //
-val i = g1ofg0_uint (i)
-val+DYNARRAY (A, m, n) = DA
+val
+i0 = g1ofg0_uint(i0)
+val+
+DYNARRAY(A, m, n) = DA
 val pi =
 (
-  if i < n then ptr_add<a> (arrayptr2ptr(A), i) else the_null_ptr
+  if i0 < n then ptr_add<a> (arrayptr2ptr(A), i0) else the_null_ptr
 ) : ptr // end of [val]
 //
 in
@@ -163,9 +167,9 @@ implement
 dynarray_insert_at
   (DA, i, x, res) = let
 //
-val i = g1ofg0_uint (i)
+val i = g1ofg0_uint(i)
 //
-val+@DYNARRAY (A, m, n) = DA
+val+@DYNARRAY(A, m, n) = DA
 //
 in
 //
@@ -177,20 +181,28 @@ in
 //
 if m > n then let
   val p1 =
-    ptr_add<a> (arrayptr2ptr(A), i)
-  val p2 = ptr_succ<a> (p1)
+    ptr_add<a>
+    (arrayptr2ptr(A), i)
+  // end of [val]
+  val p2 = ptr_succ<a>(p1)
   val ptr =
-    memmove (p2, p1, (n-i)*sizeof<a>)
+    memmove
+    (p2, p1, (n-i)*sizeof<a>)
+  // end of [val]
   val () = $UN.ptr0_set<a> (p1, x)
   val () = n := succ(n)
-  prval () = fold@ (DA)
-  prval () = opt_none{a}(res)
+//
+prval () = fold@(DA)
+prval () = opt_none{a}(res)
+//
 in
   false
 end else let
   val m = m
-  prval () = fold@ (DA)
-  val recap = dynarray$recapacitize ()
+//
+prval () = fold@(DA)
+//
+  val recap = dynarray$recapacitize<>()
 in
 //
 if
@@ -203,7 +215,9 @@ in
 end // end of [then]
 else let
   val () = res := x
-  prval () = opt_some{a}(res)
+//
+prval () = opt_some{a}(res)
+//
 in
   true
 end // end of [else]
@@ -211,9 +225,12 @@ end // end of [else]
 end // end of [if]
 //
 end else let
-  prval () = fold@ (DA)
+//
   val () = res := x
-  prval () = opt_some{a}(res)
+//
+prval () = fold@(DA)
+prval () = opt_some{a}(res)
+//
 in
   true
 end // end of [if]
@@ -244,7 +261,7 @@ implement
 dynarray_insert_atend_exn
   (DA, x) = let
 //
-val+DYNARRAY (_, _, n) = DA
+val+DYNARRAY(_, _, n) = DA
 //
 in
   dynarray_insert_at_exn<a>(DA, n, x)
@@ -255,7 +272,7 @@ implement
 dynarray_insert_atend_opt
   (DA, x) = let
 //
-val+DYNARRAY (_, _, n) = DA
+val+DYNARRAY(_, _, n) = DA
 //
 in
   dynarray_insert_at_opt<a>(DA, n, x)
@@ -276,8 +293,8 @@ fun pow2min
   if s1 >= s2 then s1 else pow2min (s1+s1, s2)
 ) (* end of [pow2min] *)
 //
-val i = g1ofg0_uint (i)
-val+@DYNARRAY (A, m, n) = DA
+val i = g1ofg0_uint(i)
+val+@DYNARRAY(A, m, n) = DA
 //
 in
 //
@@ -340,8 +357,8 @@ implement
 dynarray_takeout_at
   (DA, i, res) = let
 //
-val i = g1ofg0_uint (i)
-val+@DYNARRAY (A, m, n) = DA
+val i = g1ofg0_uint(i)
+val+@DYNARRAY(A, m, n) = DA
 //
 in
 //
@@ -391,7 +408,7 @@ implement
 dynarray_takeout_atend_exn
   (DA) = let
 //
-val+DYNARRAY (_, _, n) = DA
+val+DYNARRAY(_, _, n) = DA
 //
 in
 //
@@ -414,7 +431,7 @@ implement
 dynarray_takeout_atend_opt
   (DA) = let
 //
-val+DYNARRAY (_, _, n) = DA
+val+DYNARRAY(_, _, n) = DA
 //
 in
 //
@@ -430,7 +447,7 @@ implement
 dynarray_removeseq_at
   (DA, st, ln) = let
 //
-val+DYNARRAY (A, m, n) = DA
+val+DYNARRAY(A, m, n) = DA
 //
 in
 //
@@ -447,7 +464,7 @@ val p2 = ptr_add<a> (p1, ln2)
 val p1 =
 memmove (p1, p2, (ln1-ln2)*sizeof<a>)
 //
-val+@DYNARRAY (A, m, n) = DA
+val+@DYNARRAY(A, m, n) = DA
 val ((*void*)) = n := n - ln2
 //
 prval () = $UN.castview0{void}(view@A)
@@ -512,7 +529,7 @@ implement
 dynarray_reset_capacity
   (DA, m2) = let
 //
-val+@DYNARRAY (A, m, n) = DA
+val+@DYNARRAY(A, m, n) = DA
 //
 in
 //

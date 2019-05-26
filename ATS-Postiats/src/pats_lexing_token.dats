@@ -114,13 +114,36 @@ REFAT = T_REFAT // HX: flattened ref
 *)
 
 (* ****** ****** *)
-
-implement TKINDEF = T_TKINDEF () // for introducing tkinds
-
+//
+// HX: for introducing tkinds
+//
+implement
+TKINDEF = T_TKINDEF()
+//
+(* ****** ****** *)
+//
+implement PROP = T_IDENT_alp "prop"
+implement VIEW = T_IDENT_alp "view"
+//
+implement TYPE = T_IDENT_alp "type"
+implement TFLT = T_IDENT_alp "tflt"
+implement TBOX = T_IDENT_alp "tbox"
+//
+implement VTYPE = T_IDENT_alp "vtype"
+implement VTBOX = T_IDENT_alp "vtbox"
+implement VTFLT = T_IDENT_alp "vtflt"
+//
+implement VIEWTYPE = T_IDENT_alp "viewtype"
+(*
+implement VIEWTBOX = T_IDENT_alp "viewtbox"
+implement VIEWTFLT = T_IDENT_alp "viewtflt"
+*)
+//
+(* ****** ****** *)
+//
 (*
 implement TYPE = T_TYPE (TYPE_int)
 *)
-implement TYPE = T_IDENT_alp "type"
 implement TYPE_pos = T_TYPE (TYPE_pos_int)
 implement TYPE_neg = T_TYPE (TYPE_neg_int)
 //
@@ -128,25 +151,35 @@ implement T0YPE = T_TYPE (T0YPE_int)
 implement T0YPE_pos = T_TYPE (T0YPE_pos_int)
 implement T0YPE_neg = T_TYPE (T0YPE_neg_int)
 //
+(* ****** ****** *)
+//
+(*
+implement TYPES = T_IDENT_alp "types" 
+implement TYPES_pos = T_TYPE (TYPES_pos_int)
+implement TYPES_neg = T_TYPE (TYPES_neg_int)
+*)
+//
+(* ****** ****** *)
+//
 (*
 implement PROP = T_TYPE (PROP_int)
 *)
-implement PROP = T_IDENT_alp "prop"
 implement PROP_pos = T_TYPE (PROP_pos_int)
 implement PROP_neg = T_TYPE (PROP_neg_int)
+//
+(* ****** ****** *)
 //
 (*
 implement VIEW = T_TYPE (VIEW_int)
 *)
-implement VIEW = T_IDENT_alp "view"
 implement VIEWAT = T_VIEWAT () // view@
 implement VIEW_pos = T_TYPE (VIEW_pos_int)
 implement VIEW_neg = T_TYPE (VIEW_neg_int)
 //
+(* ****** ****** *)
 (*
 implement VIEWTYPE = T_TYPE (VIEWTYPE_int)
 *)
-implement VIEWTYPE = T_IDENT_alp "viewtype"
 implement VIEWTYPE_pos = T_TYPE (VIEWTYPE_pos_int)
 implement VIEWTYPE_neg = T_TYPE (VIEWTYPE_neg_int)
 //
@@ -154,10 +187,15 @@ implement VIEWT0YPE = T_TYPE (VIEWT0YPE_int)
 implement VIEWT0YPE_pos = T_TYPE (VIEWT0YPE_pos_int)
 implement VIEWT0YPE_neg = T_TYPE (VIEWT0YPE_neg_int)
 
-implement TYPEDEF = T_TYPEDEF (T0YPE_int)
+(* ****** ****** *)
+
 implement PROPDEF = T_TYPEDEF (PROP_int)
 implement VIEWDEF = T_TYPEDEF (VIEW_int)
+
+implement TYPEDEF = T_TYPEDEF (T0YPE_int)
 implement VIEWTYPEDEF = T_TYPEDEF (VIEWT0YPE_int)
+
+(* ****** ****** *)
 
 implement VAL = T_VAL (VK_val)
 implement VAL_pos = T_VAL (VK_val_pos)
@@ -252,9 +290,9 @@ implement
 tnode_is_comment
   (x) = case+ x of
   | T_COMMENT_line () => true
-  | T_COMMENT_block () => true
   | T_COMMENT_rest () => true
-  | _ => false
+  | T_COMMENT_block () => true
+  | _ (*non-T_COMMENT_...*)=> false
 // end of [tnode_is_comment]
 
 (* ****** ****** *)
@@ -404,8 +442,18 @@ val () = ins ("absviewtype", ABSVIEWTYPE)
 val () = ins ("absvt0ype", ABSVIEWT0YPE)
 val () = ins ("absviewt0ype", ABSVIEWT0YPE)
 //
+val () = ins ("abstbox", ABSTYPE)
+val () = ins ("abstflt", ABST0YPE)
+val () = ins ("abstflat", ABST0YPE)
+val () = ins ("absvtbox", ABSVIEWTYPE)
+val () = ins ("absvtflt", ABSVIEWT0YPE)
+val () = ins ("absvtflat", ABSVIEWT0YPE)
+//
 val () = ins ("assume", T_ASSUME)
 val () = ins ("reassume", T_REASSUME)
+//
+val () = ins ("absimpl", T_ASSUME)
+val () = ins ("absreimpl", T_REASSUME)
 //
 val () = ins ("as", T_AS)
 //
@@ -486,7 +534,9 @@ val () = ins ("nonfix", T_NONFIX)
 //
 val () = ins ("symelim", T_SYMELIM)
 val () = ins ("symintr", T_SYMINTR)
-val () = ins ("overload", T_OVERLOAD)
+val () = ins ("symload", T_SYMLOAD)
+val () = ins ("overload", T_SYMLOAD) // first-used
+val () = ins ("#symload", T_SYMLOAD) // ATS-Xanadu
 //
 val () = ins ("of", T_OF)
 val () = ins ("op", T_OP)
@@ -511,6 +561,10 @@ val () = ins ("static", T_STATIC)
 (*
 val () = ins ("stavar", T_STAVAR)
 *)
+//
+// HX-2019-01-17:
+//
+val () = ins ("sexpdef", T_STADEF) // ATS-Xanadu
 //
 val () = ins ("try", T_TRY)
 //
@@ -606,10 +660,12 @@ val () = ins ("$continue", T_DLRCONTINUE)
 //
 val () = ins ("$raise", T_DLRRAISE)
 //
-val () = ins ("$showtype", T_DLRSHOWTYPE)
+val () = ins ("$vararg", T_DLRVARARG)
 //
 val () = ins ("$vcopyenv_v", DLRVCOPYENV_V)
 val () = ins ("$vcopyenv_vt", DLRVCOPYENV_VT)
+//
+val () = ins ("$showtype", T_DLRSHOWTYPE)
 //
 val () = ins ("$tempenver", T_DLRTEMPENVER)
 //

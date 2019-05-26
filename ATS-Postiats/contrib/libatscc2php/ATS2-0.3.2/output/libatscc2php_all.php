@@ -1,7 +1,8 @@
+
 <?php
 /*
 ** Time of Generation:
-** Fri Mar 24 01:27:42 EDT 2017
+** Sat Jun 23 17:12:31 EDT 2018
 */
 ?>
 <?php
@@ -37,7 +38,7 @@ function
 ATSCKptriscons($xs) { return ($xs !== NULL) ; }
 
 /* ****** ****** */
-
+//
 function
 ATSCKpat_int($tmp, $given) { return ($tmp === $given) ; }
 function
@@ -46,7 +47,11 @@ function
 ATSCKpat_char($tmp, $given) { return ($tmp === $given) ; }
 function
 ATSCKpat_float($tmp, $given) { return ($tmp === $given) ; }
-
+//
+function
+ATSCKpat_string
+  ($tmp, $given) { return (strcmp($tmp, $given) === 0) ; }
+//
 /* ****** ****** */
 
 function
@@ -126,24 +131,31 @@ ats2phppre_echo_obj($x) { echo($x); return; }
 /*
 //
 function
-ats2phppre_echo0_obj() { return; }
+ats2phppre_echo0_obj
+  () { return; }
 function
-ats2phppre_echo1_obj($x1) { echo($x1); return; }
+ats2phppre_echo1_obj
+  ($x1) { echo $x1; return; }
 function
-ats2phppre_echo2_obj($x1, $x2) { echo $x1, $x2; return; }
+ats2phppre_echo2_obj
+  ($x1, $x2) { echo $x1, $x2; return; }
 //
 function
 ats2phppre_echo3_obj
-  ($x1, $x2, $x3) { echo $x1, $x2, $x3; return; }
+  ($x1, $x2, $x3)
+  { echo $x1, $x2, $x3; return; }
 function
 ats2phppre_echo4_obj
-  ($x1, $x2, $x3, $x4) { echo $x1, $x2, $x3, $x4; return; }
+  ($x1, $x2, $x3, $x4)
+  { echo $x1, $x2, $x3, $x4; return; }
 function
 ats2phppre_echo5_obj
-  ($x1, $x2, $x3, $x4, $x5) { echo $x1, $x2, $x3, $x4, $x5; return; }
+  ($x1, $x2, $x3, $x4, $x5)
+  { echo $x1, $x2, $x3, $x4, $x5; return; }
 function
 ats2phppre_echo6_obj
-  ($x1, $x2, $x3, $x4, $x5, $x6) { echo $x1, $x2, $x3, $x4, $x5, $x6; return; }
+  ($x1, $x2, $x3, $x4, $x5, $x6)
+  { echo $x1, $x2, $x3, $x4, $x5, $x6; return; }
 //
 function
 ats2phppre_echo7_obj
@@ -158,11 +170,21 @@ ats2phppre_echo8_obj
 /* ****** ****** */
 
 function
-ats2phppre_print_newline() { ats2phppre_fprint_newline(STDOUT); }
+ats2phppre_print_newline()
+  { ats2phppre_fprint_newline(STDOUT); }
 function
-ats2phppre_prerr_newline() { ats2phppre_fprint_newline(STDERR); }
+ats2phppre_prerr_newline()
+  { ats2phppre_fprint_newline(STDERR); }
 function
-ats2phppre_fprint_newline($out) { fprintf($out, "\n"); fflush($out); return; }
+ats2phppre_fprint_newline($out)
+  { fprintf($out, "\n"); fflush($out); return; }
+
+/* ****** ****** */
+
+function
+ats2phppre_intval($x) { return intval($x); }
+function
+ats2phppre_floatval($x) { return floatval($x); }
 
 /* ****** ****** */
 
@@ -216,8 +238,13 @@ ats2phppre_assert_errmsg_bool1($tfv, $errmsg)
 
 function
 ats2phppre_abs_int0($x) { return abs($x); }
+
+/* ****** ****** */
+
 function
 ats2phppre_neg_int0($x) { return ( -$x ); }
+function
+ats2phppre_neg_int1($x) { return ( -$x ); }
 
 /* ****** ****** */
 
@@ -225,6 +252,26 @@ function
 ats2phppre_succ_int0($x) { return ($x + 1); }
 function
 ats2phppre_pred_int0($x) { return ($x - 1); }
+
+/* ****** ****** */
+
+function
+ats2phppre_half_int0($x)
+{
+  return ($x >= 0) ? floor($x/2) : ceil($x/2);
+}
+
+/* ****** ****** */
+
+function
+ats2phppre_succ_int1($x) { return ($x + 1); }
+function
+ats2phppre_pred_int1($x) { return ($x - 1); }
+
+/* ****** ****** */
+
+function
+ats2phppre_half_int1($x) { return ats2phppre_half_int0($x); }
 
 /* ****** ****** */
 
@@ -275,6 +322,14 @@ ats2phppre_neq_int0_int0($x, $y) { return ($x !== $y); }
 /* ****** ****** */
 
 function
+ats2phppre_compare_int0_int0($x, $y)
+{
+  return ($x < $y ? -1 : ($x <= $y ? 0 : 1)); // HX: intcmp
+}
+
+/* ****** ****** */
+
+function
 ats2phppre_lt_int1_int1($x, $y) { return ($x < $y); }
 function
 ats2phppre_lte_int1_int1($x, $y) { return ($x <= $y); }
@@ -287,6 +342,18 @@ ats2phppre_eq_int1_int1($x, $y) { return ($x === $y); }
 function
 ats2phppre_neq_int1_int1($x, $y) { return ($x !== $y); }
 
+/* ****** ****** */
+//
+function
+ats2phppre_max_int0_int0($x, $y) { return max($x, $y); }
+function
+ats2phppre_max_int1_int1($x, $y) { return max($x, $y); }
+//
+function
+ats2phppre_min_int0_int0($x, $y) { return min($x, $y); }
+function
+ats2phppre_min_int1_int1($x, $y) { return min($x, $y); }
+//
 /* ****** ****** */
 
 /* end of [integer_cats.php] */
@@ -311,57 +378,64 @@ ats2phppre_neq_int1_int1($x, $y) { return ($x !== $y); }
 */
 
 /* ****** ****** */
-
-function
-ats2phppre_neg_bool0($x) { return !($x); }
-function
-ats2phppre_neg_bool1($x) { return !($x); }
-
-/* ****** ****** */
-
-function
-ats2phppre_add_bool0_bool0($x, $y) { return (x || y); }
-function
-ats2phppre_add_bool0_bool1($x, $y) { return (x || y); }
-function
-ats2phppre_add_bool1_bool0($x, $y) { return (x || y); }
-function
-ats2phppre_add_bool1_bool1($x, $y) { return (x || y); }
-
-/* ****** ****** */
-
-function
-ats2phppre_mul_bool0_bool0($x, $y) { return (x && y); }
-function
-ats2phppre_mul_bool0_bool1($x, $y) { return (x && y); }
-function
-ats2phppre_mul_bool1_bool0($x, $y) { return (x && y); }
-function
-ats2phppre_mul_bool1_bool1($x, $y) { return (x && y); }
-
-/* ****** ****** */
 //
 function
-ats2phppre_eq_bool0_bool0($x, $y) { return (x === y); }
+ats2phppre_boolize($x) { return ($x ? true : false); }
 function
-ats2phppre_eq_bool1_bool1($x, $y) { return (x === y); }
-//
-function
-ats2phppre_neq_bool0_bool0($x, $y) { return (x !== y); }
-function
-ats2phppre_neq_bool1_bool1($x, $y) { return (x !== y); }
+ats2phppre_boolize_vt($x) { return ($x ? true : false); }
 //
 /* ****** ****** */
 
 function
-ats2phppre_bool2int0($x) { return (x ? 1 : 0); }
+ats2phppre_neg_bool0($x) { return ($x ? false : true); }
 function
-ats2phppre_bool2int1($x) { return (x ? 1 : 0); }
+ats2phppre_neg_bool1($x) { return ($x ? false : true); }
 
 /* ****** ****** */
 
 function
-ats2phppre_int2bool20($x) { return (x !== 0 ? true : false); }
+ats2phppre_add_bool0_bool0($x, $y) { return ($x || $y); }
+function
+ats2phppre_add_bool0_bool1($x, $y) { return ($x || $y); }
+function
+ats2phppre_add_bool1_bool0($x, $y) { return ($x || $y); }
+function
+ats2phppre_add_bool1_bool1($x, $y) { return ($x || $y); }
+
+/* ****** ****** */
+
+function
+ats2phppre_mul_bool0_bool0($x, $y) { return ($x && $y); }
+function
+ats2phppre_mul_bool0_bool1($x, $y) { return ($x && $y); }
+function
+ats2phppre_mul_bool1_bool0($x, $y) { return ($x && $y); }
+function
+ats2phppre_mul_bool1_bool1($x, $y) { return ($x && $y); }
+
+/* ****** ****** */
+//
+function
+ats2phppre_eq_bool0_bool0($x, $y) { return ($x === $y); }
+function
+ats2phppre_eq_bool1_bool1($x, $y) { return ($x === $y); }
+//
+function
+ats2phppre_neq_bool0_bool0($x, $y) { return ($x !== $y); }
+function
+ats2phppre_neq_bool1_bool1($x, $y) { return ($x !== $y); }
+//
+/* ****** ****** */
+
+function
+ats2phppre_bool2int0($x) { return ($x ? 1 : 0); }
+function
+ats2phppre_bool2int1($x) { return ($x ? 1 : 0); }
+
+/* ****** ****** */
+
+function
+ats2phppre_int2bool20($x) { return ($x !== 0 ? true : false); }
 
 /* ****** ****** */
 
@@ -417,6 +491,13 @@ ats2phppre_pred_double($x) { return ($x - 1); }
 /* ****** ****** */
 
 function
+ats2phppre_sqrt_double($x) { return sqrt($x); }
+function
+ats2phppre_cbrt_double($x) { return pow($x, 1/3); }
+
+/* ****** ****** */
+
+function
 ats2phppre_add_double_int($x, $y) { return ($x + $y); }
 function
 ats2phppre_sub_double_int($x, $y) { return ($x - $y); }
@@ -463,6 +544,34 @@ function
 ats2phppre_neq_double_double($x, $y) { return ($x !== $y); }
 
 /* ****** ****** */
+//
+function
+ats2phppre_max_double_double($x, $y) { return max($x, $y); }
+function
+ats2phppre_min_double_double($x, $y) { return min($x, $y); }
+//
+/* ****** ****** */
+
+function
+ats2phppre_exp_int($n) { return exp($n); }
+function
+ats2phppre_exp_double($n) { return exp($n); }
+
+/* ****** ****** */
+
+function
+ats2phppre_log_double($p) { return log($p); }
+function
+ats2phppre_log_double_double($p, $base) { return log($p, $base); }
+
+/* ****** ****** */
+
+function
+ats2phppre_pow_double_int($base, $n) { return pow($base, $n); }
+function
+ats2phppre_pow_double_double($base, $n) { return pow($base, $n); }
+
+/* ****** ****** */
 
 /* end of [float_cats.php] */
 
@@ -486,17 +595,110 @@ ats2phppre_neq_double_double($x, $y) { return ($x !== $y); }
 */
 
 /* ****** ****** */
+//
+function
+ats2phppre_strval
+  ($x) { return strval($x); }
+//
+/* ****** ****** */
+//
+function
+ats2phppre_strlen
+  ($x) { return strlen($x); }
+function
+ats2phppre_string_length
+  ($x) { return strlen($x); }
+//
+/* ****** ****** */
 
 function
-ats2phppre_strval($x) { return strval($x); }
+ats2phppre_strcmp
+  ($x1, $x2)
+{
+  return strcmp($x1, $x2);
+}
+function
+ats2phppre_strncmp
+  ($x1, $x2, $n)
+{
+  return strncmp($x1, $x2, $n);
+}
 
 /* ****** ****** */
 
 function
-ats2phppre_strlen($x) { return strlen($x); }
+ats2phppre_lt_string_string
+  ($x1, $x2)
+{
+  return (strcmp($x1, $x2) < 0) ;
+}
 function
-ats2phppre_string_length($x) { return strlen($x); }
+ats2phppre_lte_string_string
+  ($x1, $x2)
+{
+  return (strcmp($x1, $x2) <= 0) ;
+}
 
+/* ****** ****** */
+
+function
+ats2phppre_gt_string_string
+  ($x1, $x2)
+{
+  return (strcmp($x1, $x2) > 0) ;
+}
+function
+ats2phppre_gte_string_string
+  ($x1, $x2)
+{
+  return (strcmp($x1, $x2) >= 0) ;
+}
+
+/* ****** ****** */
+
+function
+ats2phppre_eq_string_string
+  ($x1, $x2)
+{
+  return (strcmp($x1, $x2) === 0) ;
+}
+function
+ats2phppre_neq_string_string
+  ($x1, $x2)
+{
+  return (strcmp($x1, $x2) !== 0) ;
+}
+
+/* ****** ****** */
+//
+function
+ats2phppre_compare_string_string
+  ($x1, $x2)
+{
+  $sgn = strcmp($x1, $x2) ;
+  return (($sgn < 0)? -1 : (($sgn > 0) ? 1 : 0));
+}
+//
+/* ****** ****** */
+
+function
+ats2phppre_string_append
+  ($x1, $x2) { return ($x1.$x2) ; }
+
+/* ****** ****** */
+//
+function
+ats2phppre_string_concat_2
+  ($x1, $x2) { return ($x1.$x2) ; }
+function
+ats2phppre_string_concat_3
+  ($x1, $x2, $x3)
+  { return sprintf("%s%s%s", $x1, $x2, $x3) ; }
+function
+ats2phppre_string_concat_4
+  ($x1, $x2, $x3, $x4)
+  { return sprintf("%s%s%s%s", $x1, $x2, $x3, $x4) ; }
+//
 /* ****** ****** */
 
 /* end of [string_cats.php] */
@@ -619,6 +821,27 @@ $ats2phppre_stderr = STDERR;
 //
 /* ****** ****** */
 
+function
+ats2phppre_fclose_1
+  ($x) { return fclose($x); }
+
+/* ****** ****** */
+
+function
+ats2phppre_unlink_1
+  ($x) { return unlink($x); }
+
+/* ****** ****** */
+
+function
+ats2phppre_fwrite_2
+  ($x1, $x2) { return fwrite($x1, $x2); }
+function
+ats2phppre_fwrite_3
+  ($x1, $x2, $x3) { return fwrite($x1, $x2, $x3); }
+
+/* ****** ****** */
+
 /* end of [filebas_cats.php] */
 
 ?>
@@ -644,26 +867,37 @@ $ats2phppre_stderr = STDERR;
 
 class
 PHPref {
-  public $value ; // this is the payload
+//
+// HX: payload
+//
+   public $value ;
 } /* end of [class] */
 
 /* ****** ****** */
 //
 function
-PHPref_new($x0) {
+ats2phppre_PHPref_new
+  ($x0)
+{
   $res = new PHPref;
   $res->value = $x0; return $res;
 }
 function
-PHPref_make_elt($x0) { return PHPref_new($x0); }
+ats2phppre_PHPref_make_elt
+  ($x0)
+  { return PHPref_new($x0); }
 //
 /* ****** ****** */
 //
 function
-PHPref_get_elt($A) { return $A->value ; }
+ats2phppre_PHPref_get_elt
+  ($A)
+  { return $A->value ; }
 //
 function
-PHPref_set_elt($A, $x) { $A->value = $x; return ; }
+ats2phppre_PHPref_set_elt
+  ($A, $x)
+  { $A->value = $x; return ; }
 //
 /* ****** ****** */
 
@@ -691,12 +925,52 @@ PHPref_set_elt($A, $x) { $A->value = $x; return ; }
 /* ****** ****** */
 //
 function
-PHParray_nil() { return array(); }
+ats2phppre_PHParray_nil
+  () { return array(); }
 function
-PHParray_sing($x) { return array($x); }
+ats2phppre_PHParray_sing
+  ($x) { return array($x); }
 function
-PHParray_pair($x1, $x2) { return array($x1, $x2); }
+ats2phppre_PHParray_pair
+  ($x1, $x2)
+  { return array($x1, $x2); }
 //
+/* ****** ****** */
+
+function
+ats2phppre_PHParray_make_elt
+  ($asz, $x0)
+{
+  return array_fill(0, $asz, $x0);
+}
+  
+/* ****** ****** */
+//
+function
+ats2phppre_PHParray_size
+  ($A) { return count($A) ; }
+//
+/* ****** ****** */
+//
+function
+ats2phppre_PHParray_get_at
+  ($A, $i) { return $A[$i] ; }
+//
+/* ****** ****** */
+//
+function
+ats2phppre_PHParray_of_string
+  ($str) { return (str_split($str)); }
+//
+/* ****** ****** */
+
+function
+ats2phppre_PHParray_join
+  ($A) { return (implode($A)); }
+function
+ats2phppre_PHParray_join_sep
+  ($A, $sep) { return (implode($A, $sep)); }
+
 /* ****** ****** */
 
 /* end of [PHParray_cats.php] */
@@ -724,62 +998,110 @@ PHParray_pair($x1, $x2) { return array($x1, $x2); }
 
 class
 PHParref {
-  public $array ; // this is a PHParray
+//
+// HX: PHParray
+//
+  public $array ;
 } /* end of [class] */
 
 /* ****** ****** */
 //
 function
-PHParref_nil() {
-  $res = new PHParref; $res->array = array(); return $res;
-}
-//
-function
-PHParref_sing($x) {
-  $res = new PHParref; $res->array = array($x); return $res;
-}
-//
-function
-PHParref_pair($x1, $x2) {
-  $res = new PHParref; $res->array = array($x1, x2); return $res;
-}
+ats2phppre_PHParref2array
+  ($A) { return ($A->array); }
 //
 /* ****** ****** */
-
-function
-PHParref_size($A) { return count($A->array) ; }
-function
-PHParref_length($A) { return count($A->array) ; }
-
-/* ****** ****** */
 //
 function
-PHParref_get_at($A, $i)
+ats2phppre_PHParref_nil
+  ()
 {
-  return $A->array[$i] ;
+  $res = new PHParref;
+  $res->array = array();
+  return $res;
 }
 //
 function
-PHParref_set_at($A, $i, $x)
+ats2phppre_PHParref_sing
+  ($x)
 {
-  $A->array[$i] = $x; return ;
+  $res = new PHParref;
+  $res->array = array($x);
+  return $res;
 }
 //
-/* ****** ****** */
-//
 function
-PHParref_unset($A, $k)
-  { unset($A->array[$k]); return; }
-//
-/* ****** ****** */
-//
-function
-PHParref_extend($A, $x) { $A->array[] = $x; return; }
+ats2phppre_PHParref_pair
+  ($x1, $x2)
+{
+  $res = new PHParref;
+  $res->array = array($x1, x2);
+  return $res;
+}
 //
 /* ****** ****** */
 
 function
-PHParref_copy ($A)
+ats2phppre_PHParref_make_elt
+  ($asz, $x0)
+{
+  $res = new PHParref;
+  $res->array = array_fill(0, $asz, $x0);
+  return $res;
+}
+
+/* ****** ****** */
+
+function
+ats2phppre_PHParref_size
+  ($A)
+{
+  return count($A->array) ;
+}
+function
+ats2phppre_PHParref_length
+  ($A)
+{
+  return count($A->array) ;
+}
+//
+/* ****** ****** */
+//
+function
+ats2phppre_PHParref_get_at
+  ($A, $i)
+  { return $A->array[$i] ; }
+//
+function
+ats2phppre_PHParref_set_at
+  ($A, $i, $x)
+{
+  $A->array[$i] = $x; return;
+}
+//
+/* ****** ****** */
+//
+function
+ats2phppre_PHParref_unset
+  ($A, $k)
+{
+  unset($A->array[$k]); return;
+}
+//
+/* ****** ****** */
+//
+function
+ats2phppre_PHParref_extend
+  ($A, $x)
+{
+  $A->array[] = $x; return;
+}
+//
+/* ****** ****** */
+
+function
+ats2phppre_PHParref_copy
+  ($A)
 {
   $A2 = new PHParref;
   $A2->array = $A->array; return $A2;
@@ -788,12 +1110,23 @@ PHParref_copy ($A)
 /* ****** ****** */
 
 function
-PHParref_values($A)
+ats2phppre_PHParref_values
+  ($A)
 {
   $A2 = new PHParref;
-  $A2->array = array_values($A->array); return $A2;
+  $A2->array = array_values($A->array);
+  return $A2; // end-of-body
 }
 
+/* ****** ****** */
+//
+function
+ats2phppre_PHParref_join
+  ($A) { return (implode($A->array)); }
+function
+ats2phppre_PHParref_join_sep
+  ($A, $sep) { return (implode($A->array, $sep)); }
+//
 /* ****** ****** */
 
 /* end of [PHParref_cats.php] */
@@ -803,79 +1136,73 @@ PHParref_values($A)
 /*
 **
 ** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-3-24:  1h:27m
+** The starting compilation time is: 2018-6-23: 17h:12m
 **
 */
 function
-_ats2phppre_list_patsfun_35__closurerize($env0)
+_ats2phppre_list_patsfun_40__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_35($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_40($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_list_patsfun_39__closurerize($env0)
+_ats2phppre_list_patsfun_44__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_39($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_44($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_list_patsfun_42__closurerize($env0)
+_ats2phppre_list_patsfun_47__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_42($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_47($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_list_patsfun_46__closurerize($env0)
+_ats2phppre_list_patsfun_51__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_46($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_51($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_list_patsfun_50__closurerize($env0)
+_ats2phppre_list_patsfun_55__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_50($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_55($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_list_patsfun_54__closurerize($env0)
+_ats2phppre_list_patsfun_59__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_54($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_59($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_list_patsfun_57__closurerize($env0)
+_ats2phppre_list_patsfun_62__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_57($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_62($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_list_patsfun_61__closurerize($env0)
+_ats2phppre_list_patsfun_66__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_61($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_66($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_list_patsfun_65__closurerize($env0)
+_ats2phppre_list_patsfun_68__closurerize()
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_65($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0, $arg1) { return _ats2phppre_list_patsfun_68($arg0, $arg1); });
 }
 
 function
-_ats2phppre_list_patsfun_69__closurerize($env0, $env1)
+_ats2phppre_list_patsfun_72__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_69($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_72($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_list_patsfun_73__closurerize($env0, $env1)
+_ats2phppre_list_patsfun_76__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_73($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-function
-_ats2phppre_list_patsfun_77__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_77($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_76($cenv[1], $arg0); }, $env0);
 }
 
 function
@@ -885,9 +1212,9 @@ _ats2phppre_list_patsfun_81__closurerize($env0, $env1)
 }
 
 function
-_ats2phppre_list_patsfun_86__closurerize($env0)
+_ats2phppre_list_patsfun_85__closurerize($env0, $env1)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_86($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_85($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
 }
 
 function
@@ -897,15 +1224,33 @@ _ats2phppre_list_patsfun_89__closurerize($env0, $env1)
 }
 
 function
-_ats2phppre_list_patsfun_92__closurerize($env0, $env1)
+_ats2phppre_list_patsfun_93__closurerize($env0, $env1)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_92($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_93($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
 }
 
 function
-_ats2phppre_list_patsfun_94__closurerize($env0, $env1)
+_ats2phppre_list_patsfun_101__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_94($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_101($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_list_patsfun_104__closurerize($env0, $env1)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_104($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+}
+
+function
+_ats2phppre_list_patsfun_107__closurerize($env0, $env1)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_107($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+}
+
+function
+_ats2phppre_list_patsfun_109__closurerize($env0, $env1)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_109($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
 }
 
 
@@ -1176,31 +1521,136 @@ _ats2phppre_list_loop_14($arg0, $arg1)
 
 
 function
+ats2phppre_list_length_gte($arg0, $arg1)
+{
+//
+  $tmpret57 = NULL;
+  $tmp58 = NULL;
+//
+  __patsflab_list_length_gte:
+  $tmp58 = ats2phppre_list_length_compare($arg0, $arg1);
+  $tmpret57 = ats2phppre_gte_int1_int1($tmp58, 0);
+  return $tmpret57;
+} // end-of-function
+
+
+function
+ats2phppre_list_length_compare($arg0, $arg1)
+{
+//
+  $tmpret59 = NULL;
+//
+  __patsflab_list_length_compare:
+  $tmpret59 = _ats2phppre_list_loop_17($arg0, $arg1);
+  return $tmpret59;
+} // end-of-function
+
+
+function
+_ats2phppre_list_loop_17($arg0, $arg1)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $tmpret60 = NULL;
+  $tmp61 = NULL;
+  $tmp63 = NULL;
+  $tmp64 = NULL;
+  $tmp65 = NULL;
+//
+  __patsflab__ats2phppre_list_loop_17:
+  $tmp61 = ats2phppre_lt_int1_int1($arg1, 0);
+  if($tmp61) {
+    $tmpret60 = 1;
+  } else {
+    // ATScaseofseq_beg
+    do {
+      // ATSbranchseq_beg
+      __atstmplab17:
+      if(ATSCKptrisnull($arg0)) goto __atstmplab19;
+      __atstmplab18:
+      $tmp63 = $arg0[1];
+      $tmp64 = ats2phppre_sub_int1_int1($arg1, 1);
+      // ATStailcalseq_beg
+      $apy0 = $tmp63;
+      $apy1 = $tmp64;
+      $arg0 = $apy0;
+      $arg1 = $apy1;
+      goto __patsflab__ats2phppre_list_loop_17;
+      // ATStailcalseq_end
+      break;
+      // ATSbranchseq_end
+      // ATSbranchseq_beg
+      __atstmplab19:
+      $tmp65 = ats2phppre_eq_int1_int1($arg1, 0);
+      if($tmp65) {
+        $tmpret60 = 0;
+      } else {
+        $tmpret60 = ats2phppre_neg_int1(1);
+      } // endif
+      break;
+      // ATSbranchseq_end
+    } while(0);
+    // ATScaseofseq_end
+  } // endif
+  return $tmpret60;
+} // end-of-function
+
+
+function
+ats2phppre_list_head($arg0)
+{
+//
+  $tmpret66 = NULL;
+  $tmp67 = NULL;
+//
+  __patsflab_list_head:
+  $tmp67 = $arg0[0];
+  $tmpret66 = $tmp67;
+  return $tmpret66;
+} // end-of-function
+
+
+function
+ats2phppre_list_tail($arg0)
+{
+//
+  $tmpret68 = NULL;
+  $tmp69 = NULL;
+//
+  __patsflab_list_tail:
+  $tmp69 = $arg0[1];
+  $tmpret68 = $tmp69;
+  return $tmpret68;
+} // end-of-function
+
+
+function
 ats2phppre_list_last($arg0)
 {
 //
   $apy0 = NULL;
-  $tmpret57 = NULL;
-  $tmp58 = NULL;
-  $tmp59 = NULL;
+  $tmpret70 = NULL;
+  $tmp71 = NULL;
+  $tmp72 = NULL;
 //
   __patsflab_list_last:
-  $tmp58 = $arg0[0];
-  $tmp59 = $arg0[1];
+  $tmp71 = $arg0[0];
+  $tmp72 = $arg0[1];
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab17:
-    if(ATSCKptriscons($tmp59)) goto __atstmplab20;
-    __atstmplab18:
-    $tmpret57 = $tmp58;
+    __atstmplab20:
+    if(ATSCKptriscons($tmp72)) goto __atstmplab23;
+    __atstmplab21:
+    $tmpret70 = $tmp71;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab19:
-    __atstmplab20:
+    __atstmplab22:
+    __atstmplab23:
     // ATStailcalseq_beg
-    $apy0 = $tmp59;
+    $apy0 = $tmp72;
     $arg0 = $apy0;
     goto __patsflab_list_last;
     // ATStailcalseq_end
@@ -1208,7 +1658,7 @@ ats2phppre_list_last($arg0)
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret57;
+  return $tmpret70;
 } // end-of-function
 
 
@@ -1218,29 +1668,29 @@ ats2phppre_list_get_at($arg0, $arg1)
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret60 = NULL;
-  $tmp61 = NULL;
-  $tmp62 = NULL;
-  $tmp63 = NULL;
-  $tmp64 = NULL;
+  $tmpret73 = NULL;
+  $tmp74 = NULL;
+  $tmp75 = NULL;
+  $tmp76 = NULL;
+  $tmp77 = NULL;
 //
   __patsflab_list_get_at:
-  $tmp61 = ats2phppre_eq_int1_int1($arg1, 0);
-  if($tmp61) {
-    $tmp62 = $arg0[0];
-    $tmpret60 = $tmp62;
+  $tmp74 = ats2phppre_eq_int1_int1($arg1, 0);
+  if($tmp74) {
+    $tmp75 = $arg0[0];
+    $tmpret73 = $tmp75;
   } else {
-    $tmp63 = $arg0[1];
-    $tmp64 = ats2phppre_sub_int1_int1($arg1, 1);
+    $tmp76 = $arg0[1];
+    $tmp77 = ats2phppre_sub_int1_int1($arg1, 1);
     // ATStailcalseq_beg
-    $apy0 = $tmp63;
-    $apy1 = $tmp64;
+    $apy0 = $tmp76;
+    $apy1 = $tmp77;
     $arg0 = $apy0;
     $arg1 = $apy1;
     goto __patsflab_list_get_at;
     // ATStailcalseq_end
   } // endif
-  return $tmpret60;
+  return $tmpret73;
 } // end-of-function
 
 
@@ -1248,15 +1698,15 @@ function
 ats2phppre_list_snoc($arg0, $arg1)
 {
 //
-  $tmpret65 = NULL;
-  $tmp66 = NULL;
-  $tmp67 = NULL;
+  $tmpret78 = NULL;
+  $tmp79 = NULL;
+  $tmp80 = NULL;
 //
   __patsflab_list_snoc:
-  $tmp67 = NULL;
-  $tmp66 = array($arg1, $tmp67);
-  $tmpret65 = ats2phppre_list_append($arg0, $tmp66);
-  return $tmpret65;
+  $tmp80 = NULL;
+  $tmp79 = array($arg1, $tmp80);
+  $tmpret78 = ats2phppre_list_append($arg0, $tmp79);
+  return $tmpret78;
 } // end-of-function
 
 
@@ -1264,15 +1714,15 @@ function
 ats2phppre_list_extend($arg0, $arg1)
 {
 //
-  $tmpret68 = NULL;
-  $tmp69 = NULL;
-  $tmp70 = NULL;
+  $tmpret81 = NULL;
+  $tmp82 = NULL;
+  $tmp83 = NULL;
 //
   __patsflab_list_extend:
-  $tmp70 = NULL;
-  $tmp69 = array($arg1, $tmp70);
-  $tmpret68 = ats2phppre_list_append($arg0, $tmp69);
-  return $tmpret68;
+  $tmp83 = NULL;
+  $tmp82 = array($arg1, $tmp83);
+  $tmpret81 = ats2phppre_list_append($arg0, $tmp82);
+  return $tmpret81;
 } // end-of-function
 
 
@@ -1280,140 +1730,28 @@ function
 ats2phppre_list_append($arg0, $arg1)
 {
 //
-  $tmpret71 = NULL;
-  $tmp72 = NULL;
-  $tmp73 = NULL;
-  $tmp74 = NULL;
-//
-  __patsflab_list_append:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab21:
-    if(ATSCKptriscons($arg0)) goto __atstmplab24;
-    __atstmplab22:
-    $tmpret71 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab23:
-    __atstmplab24:
-    $tmp72 = $arg0[0];
-    $tmp73 = $arg0[1];
-    $tmp74 = ats2phppre_list_append($tmp73, $arg1);
-    $tmpret71 = array($tmp72, $tmp74);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret71;
-} // end-of-function
-
-
-function
-ats2phppre_mul_int_list($arg0, $arg1)
-{
-//
-  $tmpret75 = NULL;
-  $tmp80 = NULL;
-//
-  __patsflab_mul_int_list:
-  $tmp80 = NULL;
-  $tmpret75 = _ats2phppre_list_loop_21($arg1, $arg0, $tmp80);
-  return $tmpret75;
-} // end-of-function
-
-
-function
-_ats2phppre_list_loop_21($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret76 = NULL;
-  $tmp77 = NULL;
-  $tmp78 = NULL;
-  $tmp79 = NULL;
-//
-  __patsflab__ats2phppre_list_loop_21:
-  $tmp77 = ats2phppre_gt_int1_int1($arg0, 0);
-  if($tmp77) {
-    $tmp78 = ats2phppre_sub_int1_int1($arg0, 1);
-    $tmp79 = ats2phppre_list_append($env0, $arg1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp78;
-    $apy1 = $tmp79;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_list_loop_21;
-    // ATStailcalseq_end
-  } else {
-    $tmpret76 = $arg1;
-  } // endif
-  return $tmpret76;
-} // end-of-function
-
-
-function
-ats2phppre_list_reverse($arg0)
-{
-//
-  $tmpret81 = NULL;
-  $tmp82 = NULL;
-//
-  __patsflab_list_reverse:
-  $tmp82 = NULL;
-  $tmpret81 = ats2phppre_list_reverse_append($arg0, $tmp82);
-  return $tmpret81;
-} // end-of-function
-
-
-function
-ats2phppre_list_reverse_append($arg0, $arg1)
-{
-//
-  $tmpret83 = NULL;
-//
-  __patsflab_list_reverse_append:
-  $tmpret83 = _ats2phppre_list_loop_24($arg0, $arg1);
-  return $tmpret83;
-} // end-of-function
-
-
-function
-_ats2phppre_list_loop_24($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
   $tmpret84 = NULL;
   $tmp85 = NULL;
   $tmp86 = NULL;
   $tmp87 = NULL;
 //
-  __patsflab__ats2phppre_list_loop_24:
+  __patsflab_list_append:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
+    __atstmplab24:
+    if(ATSCKptriscons($arg0)) goto __atstmplab27;
     __atstmplab25:
-    if(ATSCKptriscons($arg0)) goto __atstmplab28;
-    __atstmplab26:
     $tmpret84 = $arg1;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
+    __atstmplab26:
     __atstmplab27:
-    __atstmplab28:
     $tmp85 = $arg0[0];
     $tmp86 = $arg0[1];
-    $tmp87 = array($tmp85, $arg1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp86;
-    $apy1 = $tmp87;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_list_loop_24;
-    // ATStailcalseq_end
+    $tmp87 = ats2phppre_list_append($tmp86, $arg1);
+    $tmpret84 = array($tmp85, $tmp87);
     break;
     // ATSbranchseq_end
   } while(0);
@@ -1423,125 +1761,165 @@ _ats2phppre_list_loop_24($arg0, $arg1)
 
 
 function
-ats2phppre_list_concat($arg0)
+ats2phppre_mul_int_list($arg0, $arg1)
 {
 //
   $tmpret88 = NULL;
+  $tmp93 = NULL;
 //
-  __patsflab_list_concat:
-  $tmpret88 = _ats2phppre_list_auxlst_26($arg0);
+  __patsflab_mul_int_list:
+  $tmp93 = NULL;
+  $tmpret88 = _ats2phppre_list_loop_26($arg1, $arg0, $tmp93);
   return $tmpret88;
 } // end-of-function
 
 
 function
-_ats2phppre_list_auxlst_26($arg0)
+_ats2phppre_list_loop_26($env0, $arg0, $arg1)
 {
 //
+  $apy0 = NULL;
+  $apy1 = NULL;
   $tmpret89 = NULL;
   $tmp90 = NULL;
   $tmp91 = NULL;
   $tmp92 = NULL;
 //
-  __patsflab__ats2phppre_list_auxlst_26:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab29:
-    if(ATSCKptriscons($arg0)) goto __atstmplab32;
-    __atstmplab30:
-    $tmpret89 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab31:
-    __atstmplab32:
-    $tmp90 = $arg0[0];
-    $tmp91 = $arg0[1];
-    $tmp92 = _ats2phppre_list_auxlst_26($tmp91);
-    $tmpret89 = ats2phppre_list_append($tmp90, $tmp92);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
+  __patsflab__ats2phppre_list_loop_26:
+  $tmp90 = ats2phppre_gt_int1_int1($arg0, 0);
+  if($tmp90) {
+    $tmp91 = ats2phppre_sub_int1_int1($arg0, 1);
+    $tmp92 = ats2phppre_list_append($env0, $arg1);
+    // ATStailcalseq_beg
+    $apy0 = $tmp91;
+    $apy1 = $tmp92;
+    $arg0 = $apy0;
+    $arg1 = $apy1;
+    goto __patsflab__ats2phppre_list_loop_26;
+    // ATStailcalseq_end
+  } else {
+    $tmpret89 = $arg1;
+  } // endif
   return $tmpret89;
 } // end-of-function
 
 
 function
-ats2phppre_list_take($arg0, $arg1)
+ats2phppre_list_reverse($arg0)
 {
 //
-  $tmpret93 = NULL;
-  $tmp94 = NULL;
+  $tmpret94 = NULL;
   $tmp95 = NULL;
-  $tmp96 = NULL;
-  $tmp97 = NULL;
-  $tmp98 = NULL;
 //
-  __patsflab_list_take:
-  $tmp94 = ats2phppre_gt_int1_int1($arg1, 0);
-  if($tmp94) {
-    $tmp95 = $arg0[0];
-    $tmp96 = $arg0[1];
-    $tmp98 = ats2phppre_sub_int1_int1($arg1, 1);
-    $tmp97 = ats2phppre_list_take($tmp96, $tmp98);
-    $tmpret93 = array($tmp95, $tmp97);
-  } else {
-    $tmpret93 = NULL;
-  } // endif
-  return $tmpret93;
+  __patsflab_list_reverse:
+  $tmp95 = NULL;
+  $tmpret94 = ats2phppre_list_reverse_append($arg0, $tmp95);
+  return $tmpret94;
 } // end-of-function
 
 
 function
-ats2phppre_list_drop($arg0, $arg1)
+ats2phppre_list_reverse_append($arg0, $arg1)
+{
+//
+  $tmpret96 = NULL;
+//
+  __patsflab_list_reverse_append:
+  $tmpret96 = _ats2phppre_list_loop_29($arg0, $arg1);
+  return $tmpret96;
+} // end-of-function
+
+
+function
+_ats2phppre_list_loop_29($arg0, $arg1)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret99 = NULL;
+  $tmpret97 = NULL;
+  $tmp98 = NULL;
+  $tmp99 = NULL;
   $tmp100 = NULL;
-  $tmp101 = NULL;
-  $tmp102 = NULL;
 //
-  __patsflab_list_drop:
-  $tmp100 = ats2phppre_gt_int1_int1($arg1, 0);
-  if($tmp100) {
-    $tmp101 = $arg0[1];
-    $tmp102 = ats2phppre_sub_int1_int1($arg1, 1);
+  __patsflab__ats2phppre_list_loop_29:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab28:
+    if(ATSCKptriscons($arg0)) goto __atstmplab31;
+    __atstmplab29:
+    $tmpret97 = $arg1;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab30:
+    __atstmplab31:
+    $tmp98 = $arg0[0];
+    $tmp99 = $arg0[1];
+    $tmp100 = array($tmp98, $arg1);
     // ATStailcalseq_beg
-    $apy0 = $tmp101;
-    $apy1 = $tmp102;
+    $apy0 = $tmp99;
+    $apy1 = $tmp100;
     $arg0 = $apy0;
     $arg1 = $apy1;
-    goto __patsflab_list_drop;
+    goto __patsflab__ats2phppre_list_loop_29;
     // ATStailcalseq_end
-  } else {
-    $tmpret99 = $arg0;
-  } // endif
-  return $tmpret99;
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret97;
 } // end-of-function
 
 
 function
-ats2phppre_list_split_at($arg0, $arg1)
+ats2phppre_list_concat($arg0)
 {
 //
-  $tmpret103 = NULL;
+  $tmpret101 = NULL;
+//
+  __patsflab_list_concat:
+  $tmpret101 = _ats2phppre_list_auxlst_31($arg0);
+  return $tmpret101;
+} // end-of-function
+
+
+function
+_ats2phppre_list_auxlst_31($arg0)
+{
+//
+  $tmpret102 = NULL;
+  $tmp103 = NULL;
   $tmp104 = NULL;
   $tmp105 = NULL;
 //
-  __patsflab_list_split_at:
-  $tmp104 = ats2phppre_list_take($arg0, $arg1);
-  $tmp105 = ats2phppre_list_drop($arg0, $arg1);
-  $tmpret103 = array($tmp104, $tmp105);
-  return $tmpret103;
+  __patsflab__ats2phppre_list_auxlst_31:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab32:
+    if(ATSCKptriscons($arg0)) goto __atstmplab35;
+    __atstmplab33:
+    $tmpret102 = NULL;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab34:
+    __atstmplab35:
+    $tmp103 = $arg0[0];
+    $tmp104 = $arg0[1];
+    $tmp105 = _ats2phppre_list_auxlst_31($tmp104);
+    $tmpret102 = ats2phppre_list_append($tmp103, $tmp105);
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret102;
 } // end-of-function
 
 
 function
-ats2phppre_list_insert_at($arg0, $arg1, $arg2)
+ats2phppre_list_take($arg0, $arg1)
 {
 //
   $tmpret106 = NULL;
@@ -1551,18 +1929,90 @@ ats2phppre_list_insert_at($arg0, $arg1, $arg2)
   $tmp110 = NULL;
   $tmp111 = NULL;
 //
-  __patsflab_list_insert_at:
+  __patsflab_list_take:
   $tmp107 = ats2phppre_gt_int1_int1($arg1, 0);
   if($tmp107) {
     $tmp108 = $arg0[0];
     $tmp109 = $arg0[1];
     $tmp111 = ats2phppre_sub_int1_int1($arg1, 1);
-    $tmp110 = ats2phppre_list_insert_at($tmp109, $tmp111, $arg2);
+    $tmp110 = ats2phppre_list_take($tmp109, $tmp111);
     $tmpret106 = array($tmp108, $tmp110);
   } else {
-    $tmpret106 = array($arg2, $arg0);
+    $tmpret106 = NULL;
   } // endif
   return $tmpret106;
+} // end-of-function
+
+
+function
+ats2phppre_list_drop($arg0, $arg1)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $tmpret112 = NULL;
+  $tmp113 = NULL;
+  $tmp114 = NULL;
+  $tmp115 = NULL;
+//
+  __patsflab_list_drop:
+  $tmp113 = ats2phppre_gt_int1_int1($arg1, 0);
+  if($tmp113) {
+    $tmp114 = $arg0[1];
+    $tmp115 = ats2phppre_sub_int1_int1($arg1, 1);
+    // ATStailcalseq_beg
+    $apy0 = $tmp114;
+    $apy1 = $tmp115;
+    $arg0 = $apy0;
+    $arg1 = $apy1;
+    goto __patsflab_list_drop;
+    // ATStailcalseq_end
+  } else {
+    $tmpret112 = $arg0;
+  } // endif
+  return $tmpret112;
+} // end-of-function
+
+
+function
+ats2phppre_list_split_at($arg0, $arg1)
+{
+//
+  $tmpret116 = NULL;
+  $tmp117 = NULL;
+  $tmp118 = NULL;
+//
+  __patsflab_list_split_at:
+  $tmp117 = ats2phppre_list_take($arg0, $arg1);
+  $tmp118 = ats2phppre_list_drop($arg0, $arg1);
+  $tmpret116 = array($tmp117, $tmp118);
+  return $tmpret116;
+} // end-of-function
+
+
+function
+ats2phppre_list_insert_at($arg0, $arg1, $arg2)
+{
+//
+  $tmpret119 = NULL;
+  $tmp120 = NULL;
+  $tmp121 = NULL;
+  $tmp122 = NULL;
+  $tmp123 = NULL;
+  $tmp124 = NULL;
+//
+  __patsflab_list_insert_at:
+  $tmp120 = ats2phppre_gt_int1_int1($arg1, 0);
+  if($tmp120) {
+    $tmp121 = $arg0[0];
+    $tmp122 = $arg0[1];
+    $tmp124 = ats2phppre_sub_int1_int1($arg1, 1);
+    $tmp123 = ats2phppre_list_insert_at($tmp122, $tmp124, $arg2);
+    $tmpret119 = array($tmp121, $tmp123);
+  } else {
+    $tmpret119 = array($arg2, $arg0);
+  } // endif
+  return $tmpret119;
 } // end-of-function
 
 
@@ -1570,25 +2020,25 @@ function
 ats2phppre_list_remove_at($arg0, $arg1)
 {
 //
-  $tmpret112 = NULL;
-  $tmp113 = NULL;
-  $tmp114 = NULL;
-  $tmp115 = NULL;
-  $tmp116 = NULL;
-  $tmp117 = NULL;
+  $tmpret125 = NULL;
+  $tmp126 = NULL;
+  $tmp127 = NULL;
+  $tmp128 = NULL;
+  $tmp129 = NULL;
+  $tmp130 = NULL;
 //
   __patsflab_list_remove_at:
-  $tmp113 = $arg0[0];
-  $tmp114 = $arg0[1];
-  $tmp115 = ats2phppre_gt_int1_int1($arg1, 0);
-  if($tmp115) {
-    $tmp117 = ats2phppre_sub_int1_int1($arg1, 1);
-    $tmp116 = ats2phppre_list_remove_at($tmp114, $tmp117);
-    $tmpret112 = array($tmp113, $tmp116);
+  $tmp126 = $arg0[0];
+  $tmp127 = $arg0[1];
+  $tmp128 = ats2phppre_gt_int1_int1($arg1, 0);
+  if($tmp128) {
+    $tmp130 = ats2phppre_sub_int1_int1($arg1, 1);
+    $tmp129 = ats2phppre_list_remove_at($tmp127, $tmp130);
+    $tmpret125 = array($tmp126, $tmp129);
   } else {
-    $tmpret112 = $tmp114;
+    $tmpret125 = $tmp127;
   } // endif
-  return $tmpret112;
+  return $tmpret125;
 } // end-of-function
 
 
@@ -1596,31 +2046,31 @@ function
 ats2phppre_list_takeout_at($arg0, $arg1)
 {
 //
-  $tmpret118 = NULL;
-  $tmp119 = NULL;
-  $tmp120 = NULL;
-  $tmp121 = NULL;
-  $tmp122 = NULL;
-  $tmp123 = NULL;
-  $tmp124 = NULL;
-  $tmp125 = NULL;
-  $tmp126 = NULL;
+  $tmpret131 = NULL;
+  $tmp132 = NULL;
+  $tmp133 = NULL;
+  $tmp134 = NULL;
+  $tmp135 = NULL;
+  $tmp136 = NULL;
+  $tmp137 = NULL;
+  $tmp138 = NULL;
+  $tmp139 = NULL;
 //
   __patsflab_list_takeout_at:
-  $tmp119 = $arg0[0];
-  $tmp120 = $arg0[1];
-  $tmp121 = ats2phppre_gt_int1_int1($arg1, 0);
-  if($tmp121) {
-    $tmp123 = ats2phppre_sub_int1_int1($arg1, 1);
-    $tmp122 = ats2phppre_list_takeout_at($tmp120, $tmp123);
-    $tmp124 = $tmp122[0];
-    $tmp125 = $tmp122[1];
-    $tmp126 = array($tmp119, $tmp125);
-    $tmpret118 = array($tmp124, $tmp126);
+  $tmp132 = $arg0[0];
+  $tmp133 = $arg0[1];
+  $tmp134 = ats2phppre_gt_int1_int1($arg1, 0);
+  if($tmp134) {
+    $tmp136 = ats2phppre_sub_int1_int1($arg1, 1);
+    $tmp135 = ats2phppre_list_takeout_at($tmp133, $tmp136);
+    $tmp137 = $tmp135[0];
+    $tmp138 = $tmp135[1];
+    $tmp139 = array($tmp132, $tmp138);
+    $tmpret131 = array($tmp137, $tmp139);
   } else {
-    $tmpret118 = array($tmp119, $tmp120);
+    $tmpret131 = array($tmp132, $tmp133);
   } // endif
-  return $tmpret118;
+  return $tmpret131;
 } // end-of-function
 
 
@@ -1630,32 +2080,32 @@ ats2phppre_list_exists($arg0, $arg1)
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret127 = NULL;
-  $tmp128 = NULL;
-  $tmp129 = NULL;
-  $tmp130 = NULL;
+  $tmpret140 = NULL;
+  $tmp141 = NULL;
+  $tmp142 = NULL;
+  $tmp143 = NULL;
 //
   __patsflab_list_exists:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab33:
-    if(ATSCKptriscons($arg0)) goto __atstmplab36;
-    __atstmplab34:
-    $tmpret127 = false;
+    __atstmplab36:
+    if(ATSCKptriscons($arg0)) goto __atstmplab39;
+    __atstmplab37:
+    $tmpret140 = false;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab35:
-    __atstmplab36:
-    $tmp128 = $arg0[0];
-    $tmp129 = $arg0[1];
-    $tmp130 = $arg1[0]($arg1, $tmp128);
-    if($tmp130) {
-      $tmpret127 = true;
+    __atstmplab38:
+    __atstmplab39:
+    $tmp141 = $arg0[0];
+    $tmp142 = $arg0[1];
+    $tmp143 = $arg1[0]($arg1, $tmp141);
+    if($tmp143) {
+      $tmpret140 = true;
     } else {
       // ATStailcalseq_beg
-      $apy0 = $tmp129;
+      $apy0 = $tmp142;
       $apy1 = $arg1;
       $arg0 = $apy0;
       $arg1 = $apy1;
@@ -1666,7 +2116,7 @@ ats2phppre_list_exists($arg0, $arg1)
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret127;
+  return $tmpret140;
 } // end-of-function
 
 
@@ -1674,23 +2124,23 @@ function
 ats2phppre_list_exists_method($arg0)
 {
 //
-  $tmpret131 = NULL;
+  $tmpret144 = NULL;
 //
   __patsflab_list_exists_method:
-  $tmpret131 = _ats2phppre_list_patsfun_35__closurerize($arg0);
-  return $tmpret131;
+  $tmpret144 = _ats2phppre_list_patsfun_40__closurerize($arg0);
+  return $tmpret144;
 } // end-of-function
 
 
 function
-_ats2phppre_list_patsfun_35($env0, $arg0)
+_ats2phppre_list_patsfun_40($env0, $arg0)
 {
 //
-  $tmpret132 = NULL;
+  $tmpret145 = NULL;
 //
-  __patsflab__ats2phppre_list_patsfun_35:
-  $tmpret132 = ats2phppre_list_exists($env0, $arg0);
-  return $tmpret132;
+  __patsflab__ats2phppre_list_patsfun_40:
+  $tmpret145 = ats2phppre_list_exists($env0, $arg0);
+  return $tmpret145;
 } // end-of-function
 
 
@@ -1698,59 +2148,59 @@ function
 ats2phppre_list_iexists($arg0, $arg1)
 {
 //
-  $tmpret133 = NULL;
+  $tmpret146 = NULL;
 //
   __patsflab_list_iexists:
-  $tmpret133 = _ats2phppre_list_loop_37($arg1, 0, $arg0);
-  return $tmpret133;
+  $tmpret146 = _ats2phppre_list_loop_42($arg1, 0, $arg0);
+  return $tmpret146;
 } // end-of-function
 
 
 function
-_ats2phppre_list_loop_37($env0, $arg0, $arg1)
+_ats2phppre_list_loop_42($env0, $arg0, $arg1)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret134 = NULL;
-  $tmp135 = NULL;
-  $tmp136 = NULL;
-  $tmp137 = NULL;
-  $tmp138 = NULL;
+  $tmpret147 = NULL;
+  $tmp148 = NULL;
+  $tmp149 = NULL;
+  $tmp150 = NULL;
+  $tmp151 = NULL;
 //
-  __patsflab__ats2phppre_list_loop_37:
+  __patsflab__ats2phppre_list_loop_42:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab37:
-    if(ATSCKptriscons($arg1)) goto __atstmplab40;
-    __atstmplab38:
-    $tmpret134 = false;
+    __atstmplab40:
+    if(ATSCKptriscons($arg1)) goto __atstmplab43;
+    __atstmplab41:
+    $tmpret147 = false;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab39:
-    __atstmplab40:
-    $tmp135 = $arg1[0];
-    $tmp136 = $arg1[1];
-    $tmp137 = $env0[0]($env0, $arg0, $tmp135);
-    if($tmp137) {
-      $tmpret134 = true;
+    __atstmplab42:
+    __atstmplab43:
+    $tmp148 = $arg1[0];
+    $tmp149 = $arg1[1];
+    $tmp150 = $env0[0]($env0, $arg0, $tmp148);
+    if($tmp150) {
+      $tmpret147 = true;
     } else {
-      $tmp138 = ats2phppre_add_int1_int1($arg0, 1);
+      $tmp151 = ats2phppre_add_int1_int1($arg0, 1);
       // ATStailcalseq_beg
-      $apy0 = $tmp138;
-      $apy1 = $tmp136;
+      $apy0 = $tmp151;
+      $apy1 = $tmp149;
       $arg0 = $apy0;
       $arg1 = $apy1;
-      goto __patsflab__ats2phppre_list_loop_37;
+      goto __patsflab__ats2phppre_list_loop_42;
       // ATStailcalseq_end
     } // endif
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret134;
+  return $tmpret147;
 } // end-of-function
 
 
@@ -1758,23 +2208,23 @@ function
 ats2phppre_list_iexists_method($arg0)
 {
 //
-  $tmpret139 = NULL;
+  $tmpret152 = NULL;
 //
   __patsflab_list_iexists_method:
-  $tmpret139 = _ats2phppre_list_patsfun_39__closurerize($arg0);
-  return $tmpret139;
+  $tmpret152 = _ats2phppre_list_patsfun_44__closurerize($arg0);
+  return $tmpret152;
 } // end-of-function
 
 
 function
-_ats2phppre_list_patsfun_39($env0, $arg0)
+_ats2phppre_list_patsfun_44($env0, $arg0)
 {
 //
-  $tmpret140 = NULL;
+  $tmpret153 = NULL;
 //
-  __patsflab__ats2phppre_list_patsfun_39:
-  $tmpret140 = ats2phppre_list_iexists($env0, $arg0);
-  return $tmpret140;
+  __patsflab__ats2phppre_list_patsfun_44:
+  $tmpret153 = ats2phppre_list_iexists($env0, $arg0);
+  return $tmpret153;
 } // end-of-function
 
 
@@ -1784,43 +2234,43 @@ ats2phppre_list_forall($arg0, $arg1)
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret141 = NULL;
-  $tmp142 = NULL;
-  $tmp143 = NULL;
-  $tmp144 = NULL;
+  $tmpret154 = NULL;
+  $tmp155 = NULL;
+  $tmp156 = NULL;
+  $tmp157 = NULL;
 //
   __patsflab_list_forall:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab41:
-    if(ATSCKptriscons($arg0)) goto __atstmplab44;
-    __atstmplab42:
-    $tmpret141 = true;
+    __atstmplab44:
+    if(ATSCKptriscons($arg0)) goto __atstmplab47;
+    __atstmplab45:
+    $tmpret154 = true;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab43:
-    __atstmplab44:
-    $tmp142 = $arg0[0];
-    $tmp143 = $arg0[1];
-    $tmp144 = $arg1[0]($arg1, $tmp142);
-    if($tmp144) {
+    __atstmplab46:
+    __atstmplab47:
+    $tmp155 = $arg0[0];
+    $tmp156 = $arg0[1];
+    $tmp157 = $arg1[0]($arg1, $tmp155);
+    if($tmp157) {
       // ATStailcalseq_beg
-      $apy0 = $tmp143;
+      $apy0 = $tmp156;
       $apy1 = $arg1;
       $arg0 = $apy0;
       $arg1 = $apy1;
       goto __patsflab_list_forall;
       // ATStailcalseq_end
     } else {
-      $tmpret141 = false;
+      $tmpret154 = false;
     } // endif
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret141;
+  return $tmpret154;
 } // end-of-function
 
 
@@ -1828,23 +2278,23 @@ function
 ats2phppre_list_forall_method($arg0)
 {
 //
-  $tmpret145 = NULL;
+  $tmpret158 = NULL;
 //
   __patsflab_list_forall_method:
-  $tmpret145 = _ats2phppre_list_patsfun_42__closurerize($arg0);
-  return $tmpret145;
+  $tmpret158 = _ats2phppre_list_patsfun_47__closurerize($arg0);
+  return $tmpret158;
 } // end-of-function
 
 
 function
-_ats2phppre_list_patsfun_42($env0, $arg0)
+_ats2phppre_list_patsfun_47($env0, $arg0)
 {
 //
-  $tmpret146 = NULL;
+  $tmpret159 = NULL;
 //
-  __patsflab__ats2phppre_list_patsfun_42:
-  $tmpret146 = ats2phppre_list_forall($env0, $arg0);
-  return $tmpret146;
+  __patsflab__ats2phppre_list_patsfun_47:
+  $tmpret159 = ats2phppre_list_forall($env0, $arg0);
+  return $tmpret159;
 } // end-of-function
 
 
@@ -1852,59 +2302,59 @@ function
 ats2phppre_list_iforall($arg0, $arg1)
 {
 //
-  $tmpret147 = NULL;
+  $tmpret160 = NULL;
 //
   __patsflab_list_iforall:
-  $tmpret147 = _ats2phppre_list_loop_44($arg1, 0, $arg0);
-  return $tmpret147;
+  $tmpret160 = _ats2phppre_list_loop_49($arg1, 0, $arg0);
+  return $tmpret160;
 } // end-of-function
 
 
 function
-_ats2phppre_list_loop_44($env0, $arg0, $arg1)
+_ats2phppre_list_loop_49($env0, $arg0, $arg1)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret148 = NULL;
-  $tmp149 = NULL;
-  $tmp150 = NULL;
-  $tmp151 = NULL;
-  $tmp152 = NULL;
+  $tmpret161 = NULL;
+  $tmp162 = NULL;
+  $tmp163 = NULL;
+  $tmp164 = NULL;
+  $tmp165 = NULL;
 //
-  __patsflab__ats2phppre_list_loop_44:
+  __patsflab__ats2phppre_list_loop_49:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab45:
-    if(ATSCKptriscons($arg1)) goto __atstmplab48;
-    __atstmplab46:
-    $tmpret148 = true;
+    __atstmplab48:
+    if(ATSCKptriscons($arg1)) goto __atstmplab51;
+    __atstmplab49:
+    $tmpret161 = true;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab47:
-    __atstmplab48:
-    $tmp149 = $arg1[0];
-    $tmp150 = $arg1[1];
-    $tmp151 = $env0[0]($env0, $arg0, $tmp149);
-    if($tmp151) {
-      $tmp152 = ats2phppre_add_int1_int1($arg0, 1);
+    __atstmplab50:
+    __atstmplab51:
+    $tmp162 = $arg1[0];
+    $tmp163 = $arg1[1];
+    $tmp164 = $env0[0]($env0, $arg0, $tmp162);
+    if($tmp164) {
+      $tmp165 = ats2phppre_add_int1_int1($arg0, 1);
       // ATStailcalseq_beg
-      $apy0 = $tmp152;
-      $apy1 = $tmp150;
+      $apy0 = $tmp165;
+      $apy1 = $tmp163;
       $arg0 = $apy0;
       $arg1 = $apy1;
-      goto __patsflab__ats2phppre_list_loop_44;
+      goto __patsflab__ats2phppre_list_loop_49;
       // ATStailcalseq_end
     } else {
-      $tmpret148 = false;
+      $tmpret161 = false;
     } // endif
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret148;
+  return $tmpret161;
 } // end-of-function
 
 
@@ -1912,23 +2362,23 @@ function
 ats2phppre_list_iforall_method($arg0)
 {
 //
-  $tmpret153 = NULL;
+  $tmpret166 = NULL;
 //
   __patsflab_list_iforall_method:
-  $tmpret153 = _ats2phppre_list_patsfun_46__closurerize($arg0);
-  return $tmpret153;
+  $tmpret166 = _ats2phppre_list_patsfun_51__closurerize($arg0);
+  return $tmpret166;
 } // end-of-function
 
 
 function
-_ats2phppre_list_patsfun_46($env0, $arg0)
+_ats2phppre_list_patsfun_51($env0, $arg0)
 {
 //
-  $tmpret154 = NULL;
+  $tmpret167 = NULL;
 //
-  __patsflab__ats2phppre_list_patsfun_46:
-  $tmpret154 = ats2phppre_list_iforall($env0, $arg0);
-  return $tmpret154;
+  __patsflab__ats2phppre_list_patsfun_51:
+  $tmpret167 = ats2phppre_list_iforall($env0, $arg0);
+  return $tmpret167;
 } // end-of-function
 
 
@@ -1949,27 +2399,27 @@ ats2phppre_list_foreach($arg0, $arg1)
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmp157 = NULL;
-  $tmp158 = NULL;
+  $tmp170 = NULL;
+  $tmp171 = NULL;
 //
   __patsflab_list_foreach:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab49:
-    if(ATSCKptriscons($arg0)) goto __atstmplab52;
-    __atstmplab50:
+    __atstmplab52:
+    if(ATSCKptriscons($arg0)) goto __atstmplab55;
+    __atstmplab53:
     // ATSINSmove_void;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab51:
-    __atstmplab52:
-    $tmp157 = $arg0[0];
-    $tmp158 = $arg0[1];
-    $arg1[0]($arg1, $tmp157);
+    __atstmplab54:
+    __atstmplab55:
+    $tmp170 = $arg0[0];
+    $tmp171 = $arg0[1];
+    $arg1[0]($arg1, $tmp170);
     // ATStailcalseq_beg
-    $apy0 = $tmp158;
+    $apy0 = $tmp171;
     $apy1 = $arg1;
     $arg0 = $apy0;
     $arg1 = $apy1;
@@ -1987,20 +2437,20 @@ function
 ats2phppre_list_foreach_method($arg0)
 {
 //
-  $tmpret160 = NULL;
+  $tmpret173 = NULL;
 //
   __patsflab_list_foreach_method:
-  $tmpret160 = _ats2phppre_list_patsfun_50__closurerize($arg0);
-  return $tmpret160;
+  $tmpret173 = _ats2phppre_list_patsfun_55__closurerize($arg0);
+  return $tmpret173;
 } // end-of-function
 
 
 function
-_ats2phppre_list_patsfun_50($env0, $arg0)
+_ats2phppre_list_patsfun_55($env0, $arg0)
 {
 //
 //
-  __patsflab__ats2phppre_list_patsfun_50:
+  __patsflab__ats2phppre_list_patsfun_55:
   ats2phppre_list_foreach($env0, $arg0);
   return/*_void*/;
 } // end-of-function
@@ -2012,44 +2462,44 @@ ats2phppre_list_iforeach($arg0, $arg1)
 //
 //
   __patsflab_list_iforeach:
-  _ats2phppre_list_aux_52($arg1, 0, $arg0);
+  _ats2phppre_list_aux_57($arg1, 0, $arg0);
   return/*_void*/;
 } // end-of-function
 
 
 function
-_ats2phppre_list_aux_52($env0, $arg0, $arg1)
+_ats2phppre_list_aux_57($env0, $arg0, $arg1)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmp164 = NULL;
-  $tmp165 = NULL;
-  $tmp167 = NULL;
+  $tmp177 = NULL;
+  $tmp178 = NULL;
+  $tmp180 = NULL;
 //
-  __patsflab__ats2phppre_list_aux_52:
+  __patsflab__ats2phppre_list_aux_57:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab53:
-    if(ATSCKptriscons($arg1)) goto __atstmplab56;
-    __atstmplab54:
+    __atstmplab56:
+    if(ATSCKptriscons($arg1)) goto __atstmplab59;
+    __atstmplab57:
     // ATSINSmove_void;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab55:
-    __atstmplab56:
-    $tmp164 = $arg1[0];
-    $tmp165 = $arg1[1];
-    $env0[0]($env0, $arg0, $tmp164);
-    $tmp167 = ats2phppre_add_int1_int1($arg0, 1);
+    __atstmplab58:
+    __atstmplab59:
+    $tmp177 = $arg1[0];
+    $tmp178 = $arg1[1];
+    $env0[0]($env0, $arg0, $tmp177);
+    $tmp180 = ats2phppre_add_int1_int1($arg0, 1);
     // ATStailcalseq_beg
-    $apy0 = $tmp167;
-    $apy1 = $tmp165;
+    $apy0 = $tmp180;
+    $apy1 = $tmp178;
     $arg0 = $apy0;
     $arg1 = $apy1;
-    goto __patsflab__ats2phppre_list_aux_52;
+    goto __patsflab__ats2phppre_list_aux_57;
     // ATStailcalseq_end
     break;
     // ATSbranchseq_end
@@ -2063,20 +2513,20 @@ function
 ats2phppre_list_iforeach_method($arg0)
 {
 //
-  $tmpret168 = NULL;
+  $tmpret181 = NULL;
 //
   __patsflab_list_iforeach_method:
-  $tmpret168 = _ats2phppre_list_patsfun_54__closurerize($arg0);
-  return $tmpret168;
+  $tmpret181 = _ats2phppre_list_patsfun_59__closurerize($arg0);
+  return $tmpret181;
 } // end-of-function
 
 
 function
-_ats2phppre_list_patsfun_54($env0, $arg0)
+_ats2phppre_list_patsfun_59($env0, $arg0)
 {
 //
 //
-  __patsflab__ats2phppre_list_patsfun_54:
+  __patsflab__ats2phppre_list_patsfun_59:
   ats2phppre_list_iforeach($env0, $arg0);
   return/*_void*/;
 } // end-of-function
@@ -2086,26 +2536,26 @@ function
 ats2phppre_list_rforeach($arg0, $arg1)
 {
 //
-  $tmp171 = NULL;
-  $tmp172 = NULL;
+  $tmp184 = NULL;
+  $tmp185 = NULL;
 //
   __patsflab_list_rforeach:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab57:
-    if(ATSCKptriscons($arg0)) goto __atstmplab60;
-    __atstmplab58:
+    __atstmplab60:
+    if(ATSCKptriscons($arg0)) goto __atstmplab63;
+    __atstmplab61:
     // ATSINSmove_void;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab59:
-    __atstmplab60:
-    $tmp171 = $arg0[0];
-    $tmp172 = $arg0[1];
-    ats2phppre_list_rforeach($tmp172, $arg1);
-    $arg1[0]($arg1, $tmp171);
+    __atstmplab62:
+    __atstmplab63:
+    $tmp184 = $arg0[0];
+    $tmp185 = $arg0[1];
+    ats2phppre_list_rforeach($tmp185, $arg1);
+    $arg1[0]($arg1, $tmp184);
     break;
     // ATSbranchseq_end
   } while(0);
@@ -2118,20 +2568,20 @@ function
 ats2phppre_list_rforeach_method($arg0)
 {
 //
-  $tmpret174 = NULL;
+  $tmpret187 = NULL;
 //
   __patsflab_list_rforeach_method:
-  $tmpret174 = _ats2phppre_list_patsfun_57__closurerize($arg0);
-  return $tmpret174;
+  $tmpret187 = _ats2phppre_list_patsfun_62__closurerize($arg0);
+  return $tmpret187;
 } // end-of-function
 
 
 function
-_ats2phppre_list_patsfun_57($env0, $arg0)
+_ats2phppre_list_patsfun_62($env0, $arg0)
 {
 //
 //
-  __patsflab__ats2phppre_list_patsfun_57:
+  __patsflab__ats2phppre_list_patsfun_62:
   ats2phppre_list_rforeach($env0, $arg0);
   return/*_void*/;
 } // end-of-function
@@ -2141,56 +2591,56 @@ function
 ats2phppre_list_filter($arg0, $arg1)
 {
 //
-  $tmpret176 = NULL;
+  $tmpret189 = NULL;
 //
   __patsflab_list_filter:
-  $tmpret176 = _ats2phppre_list_aux_59($arg1, $arg0);
-  return $tmpret176;
+  $tmpret189 = _ats2phppre_list_aux_64($arg1, $arg0);
+  return $tmpret189;
 } // end-of-function
 
 
 function
-_ats2phppre_list_aux_59($env0, $arg0)
+_ats2phppre_list_aux_64($env0, $arg0)
 {
 //
   $apy0 = NULL;
-  $tmpret177 = NULL;
-  $tmp178 = NULL;
-  $tmp179 = NULL;
-  $tmp180 = NULL;
-  $tmp181 = NULL;
+  $tmpret190 = NULL;
+  $tmp191 = NULL;
+  $tmp192 = NULL;
+  $tmp193 = NULL;
+  $tmp194 = NULL;
 //
-  __patsflab__ats2phppre_list_aux_59:
+  __patsflab__ats2phppre_list_aux_64:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab61:
-    if(ATSCKptriscons($arg0)) goto __atstmplab64;
-    __atstmplab62:
-    $tmpret177 = NULL;
+    __atstmplab64:
+    if(ATSCKptriscons($arg0)) goto __atstmplab67;
+    __atstmplab65:
+    $tmpret190 = NULL;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab63:
-    __atstmplab64:
-    $tmp178 = $arg0[0];
-    $tmp179 = $arg0[1];
-    $tmp180 = $env0[0]($env0, $tmp178);
-    if($tmp180) {
-      $tmp181 = _ats2phppre_list_aux_59($env0, $tmp179);
-      $tmpret177 = array($tmp178, $tmp181);
+    __atstmplab66:
+    __atstmplab67:
+    $tmp191 = $arg0[0];
+    $tmp192 = $arg0[1];
+    $tmp193 = $env0[0]($env0, $tmp191);
+    if($tmp193) {
+      $tmp194 = _ats2phppre_list_aux_64($env0, $tmp192);
+      $tmpret190 = array($tmp191, $tmp194);
     } else {
       // ATStailcalseq_beg
-      $apy0 = $tmp179;
+      $apy0 = $tmp192;
       $arg0 = $apy0;
-      goto __patsflab__ats2phppre_list_aux_59;
+      goto __patsflab__ats2phppre_list_aux_64;
       // ATStailcalseq_end
     } // endif
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret177;
+  return $tmpret190;
 } // end-of-function
 
 
@@ -2198,23 +2648,47 @@ function
 ats2phppre_list_filter_method($arg0)
 {
 //
-  $tmpret182 = NULL;
+  $tmpret195 = NULL;
 //
   __patsflab_list_filter_method:
-  $tmpret182 = _ats2phppre_list_patsfun_61__closurerize($arg0);
-  return $tmpret182;
+  $tmpret195 = _ats2phppre_list_patsfun_66__closurerize($arg0);
+  return $tmpret195;
 } // end-of-function
 
 
 function
-_ats2phppre_list_patsfun_61($env0, $arg0)
+_ats2phppre_list_patsfun_66($env0, $arg0)
 {
 //
-  $tmpret183 = NULL;
+  $tmpret196 = NULL;
 //
-  __patsflab__ats2phppre_list_patsfun_61:
-  $tmpret183 = ats2phppre_list_filter($env0, $arg0);
-  return $tmpret183;
+  __patsflab__ats2phppre_list_patsfun_66:
+  $tmpret196 = ats2phppre_list_filter($env0, $arg0);
+  return $tmpret196;
+} // end-of-function
+
+
+function
+ats2phppre_list_labelize($arg0)
+{
+//
+  $tmpret197 = NULL;
+//
+  __patsflab_list_labelize:
+  $tmpret197 = ats2phppre_list_imap($arg0, _ats2phppre_list_patsfun_68__closurerize());
+  return $tmpret197;
+} // end-of-function
+
+
+function
+_ats2phppre_list_patsfun_68($arg0, $arg1)
+{
+//
+  $tmpret198 = NULL;
+//
+  __patsflab__ats2phppre_list_patsfun_68:
+  $tmpret198 = array($arg0, $arg1);
+  return $tmpret198;
 } // end-of-function
 
 
@@ -2222,203 +2696,42 @@ function
 ats2phppre_list_map($arg0, $arg1)
 {
 //
-  $tmpret184 = NULL;
-//
-  __patsflab_list_map:
-  $tmpret184 = _ats2phppre_list_aux_63($arg1, $arg0);
-  return $tmpret184;
-} // end-of-function
-
-
-function
-_ats2phppre_list_aux_63($env0, $arg0)
-{
-//
-  $tmpret185 = NULL;
-  $tmp186 = NULL;
-  $tmp187 = NULL;
-  $tmp188 = NULL;
-  $tmp189 = NULL;
-//
-  __patsflab__ats2phppre_list_aux_63:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab65:
-    if(ATSCKptriscons($arg0)) goto __atstmplab68;
-    __atstmplab66:
-    $tmpret185 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab67:
-    __atstmplab68:
-    $tmp186 = $arg0[0];
-    $tmp187 = $arg0[1];
-    $tmp188 = $env0[0]($env0, $tmp186);
-    $tmp189 = _ats2phppre_list_aux_63($env0, $tmp187);
-    $tmpret185 = array($tmp188, $tmp189);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret185;
-} // end-of-function
-
-
-function
-ats2phppre_list_map_method($arg0, $arg1)
-{
-//
-  $tmpret190 = NULL;
-//
-  __patsflab_list_map_method:
-  $tmpret190 = _ats2phppre_list_patsfun_65__closurerize($arg0);
-  return $tmpret190;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_65($env0, $arg0)
-{
-//
-  $tmpret191 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_65:
-  $tmpret191 = ats2phppre_list_map($env0, $arg0);
-  return $tmpret191;
-} // end-of-function
-
-
-function
-ats2phppre_list_foldleft($arg0, $arg1, $arg2)
-{
-//
-  $tmpret192 = NULL;
-//
-  __patsflab_list_foldleft:
-  $tmpret192 = _ats2phppre_list_loop_67($arg2, $arg1, $arg0);
-  return $tmpret192;
-} // end-of-function
-
-
-function
-_ats2phppre_list_loop_67($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret193 = NULL;
-  $tmp194 = NULL;
-  $tmp195 = NULL;
-  $tmp196 = NULL;
-//
-  __patsflab__ats2phppre_list_loop_67:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab69:
-    if(ATSCKptriscons($arg1)) goto __atstmplab72;
-    __atstmplab70:
-    $tmpret193 = $arg0;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab71:
-    __atstmplab72:
-    $tmp194 = $arg1[0];
-    $tmp195 = $arg1[1];
-    $tmp196 = $env0[0]($env0, $arg0, $tmp194);
-    // ATStailcalseq_beg
-    $apy0 = $tmp196;
-    $apy1 = $tmp195;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_list_loop_67;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret193;
-} // end-of-function
-
-
-function
-ats2phppre_list_foldleft_method($arg0, $arg1)
-{
-//
-  $tmpret197 = NULL;
-//
-  __patsflab_list_foldleft_method:
-  $tmpret197 = _ats2phppre_list_patsfun_69__closurerize($arg0, $arg1);
-  return $tmpret197;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_69($env0, $env1, $arg0)
-{
-//
-  $tmpret198 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_69:
-  $tmpret198 = ats2phppre_list_foldleft($env0, $env1, $arg0);
-  return $tmpret198;
-} // end-of-function
-
-
-function
-ats2phppre_list_ifoldleft($arg0, $arg1, $arg2)
-{
-//
   $tmpret199 = NULL;
 //
-  __patsflab_list_ifoldleft:
-  $tmpret199 = _ats2phppre_list_loop_71($arg2, 0, $arg1, $arg0);
+  __patsflab_list_map:
+  $tmpret199 = _ats2phppre_list_aux_70($arg1, $arg0);
   return $tmpret199;
 } // end-of-function
 
 
 function
-_ats2phppre_list_loop_71($env0, $arg0, $arg1, $arg2)
+_ats2phppre_list_aux_70($env0, $arg0)
 {
 //
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
   $tmpret200 = NULL;
   $tmp201 = NULL;
   $tmp202 = NULL;
   $tmp203 = NULL;
   $tmp204 = NULL;
 //
-  __patsflab__ats2phppre_list_loop_71:
+  __patsflab__ats2phppre_list_aux_70:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab73:
-    if(ATSCKptriscons($arg2)) goto __atstmplab76;
-    __atstmplab74:
-    $tmpret200 = $arg1;
+    __atstmplab68:
+    if(ATSCKptriscons($arg0)) goto __atstmplab71;
+    __atstmplab69:
+    $tmpret200 = NULL;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab75:
-    __atstmplab76:
-    $tmp201 = $arg2[0];
-    $tmp202 = $arg2[1];
-    $tmp203 = ats2phppre_add_int1_int1($arg0, 1);
-    $tmp204 = $env0[0]($env0, $arg0, $arg1, $tmp201);
-    // ATStailcalseq_beg
-    $apy0 = $tmp203;
-    $apy1 = $tmp204;
-    $apy2 = $tmp202;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    $arg2 = $apy2;
-    goto __patsflab__ats2phppre_list_loop_71;
-    // ATStailcalseq_end
+    __atstmplab70:
+    __atstmplab71:
+    $tmp201 = $arg0[0];
+    $tmp202 = $arg0[1];
+    $tmp203 = $env0[0]($env0, $tmp201);
+    $tmp204 = _ats2phppre_list_aux_70($env0, $tmp202);
+    $tmpret200 = array($tmp203, $tmp204);
     break;
     // ATSbranchseq_end
   } while(0);
@@ -2428,67 +2741,71 @@ _ats2phppre_list_loop_71($env0, $arg0, $arg1, $arg2)
 
 
 function
-ats2phppre_list_ifoldleft_method($arg0, $arg1)
+ats2phppre_list_map_method($arg0, $arg1)
 {
 //
   $tmpret205 = NULL;
 //
-  __patsflab_list_ifoldleft_method:
-  $tmpret205 = _ats2phppre_list_patsfun_73__closurerize($arg0, $arg1);
+  __patsflab_list_map_method:
+  $tmpret205 = _ats2phppre_list_patsfun_72__closurerize($arg0);
   return $tmpret205;
 } // end-of-function
 
 
 function
-_ats2phppre_list_patsfun_73($env0, $env1, $arg0)
+_ats2phppre_list_patsfun_72($env0, $arg0)
 {
 //
   $tmpret206 = NULL;
 //
-  __patsflab__ats2phppre_list_patsfun_73:
-  $tmpret206 = ats2phppre_list_ifoldleft($env0, $env1, $arg0);
+  __patsflab__ats2phppre_list_patsfun_72:
+  $tmpret206 = ats2phppre_list_map($env0, $arg0);
   return $tmpret206;
 } // end-of-function
 
 
 function
-ats2phppre_list_foldright($arg0, $arg1, $arg2)
+ats2phppre_list_imap($arg0, $arg1)
 {
 //
   $tmpret207 = NULL;
 //
-  __patsflab_list_foldright:
-  $tmpret207 = _ats2phppre_list_aux_75($arg1, $arg0, $arg2);
+  __patsflab_list_imap:
+  $tmpret207 = _ats2phppre_list_aux_74($arg1, 0, $arg0);
   return $tmpret207;
 } // end-of-function
 
 
 function
-_ats2phppre_list_aux_75($env0, $arg0, $arg1)
+_ats2phppre_list_aux_74($env0, $arg0, $arg1)
 {
 //
   $tmpret208 = NULL;
   $tmp209 = NULL;
   $tmp210 = NULL;
   $tmp211 = NULL;
+  $tmp212 = NULL;
+  $tmp213 = NULL;
 //
-  __patsflab__ats2phppre_list_aux_75:
+  __patsflab__ats2phppre_list_aux_74:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab77:
-    if(ATSCKptriscons($arg0)) goto __atstmplab80;
-    __atstmplab78:
-    $tmpret208 = $arg1;
+    __atstmplab72:
+    if(ATSCKptriscons($arg1)) goto __atstmplab75;
+    __atstmplab73:
+    $tmpret208 = NULL;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab79:
-    __atstmplab80:
-    $tmp209 = $arg0[0];
-    $tmp210 = $arg0[1];
-    $tmp211 = _ats2phppre_list_aux_75($env0, $tmp210, $arg1);
-    $tmpret208 = $env0[0]($env0, $tmp209, $tmp211);
+    __atstmplab74:
+    __atstmplab75:
+    $tmp209 = $arg1[0];
+    $tmp210 = $arg1[1];
+    $tmp211 = $env0[0]($env0, $arg0, $tmp209);
+    $tmp213 = ats2phppre_add_int1_int1($arg0, 1);
+    $tmp212 = _ats2phppre_list_aux_74($env0, $tmp213, $tmp210);
+    $tmpret208 = array($tmp211, $tmp212);
     break;
     // ATSbranchseq_end
   } while(0);
@@ -2498,86 +2815,148 @@ _ats2phppre_list_aux_75($env0, $arg0, $arg1)
 
 
 function
-ats2phppre_list_foldright_method($arg0, $arg1)
-{
-//
-  $tmpret212 = NULL;
-//
-  __patsflab_list_foldright_method:
-  $tmpret212 = _ats2phppre_list_patsfun_77__closurerize($arg0, $arg1);
-  return $tmpret212;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_77($env0, $env1, $arg0)
-{
-//
-  $tmpret213 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_77:
-  $tmpret213 = ats2phppre_list_foldright($env0, $arg0, $env1);
-  return $tmpret213;
-} // end-of-function
-
-
-function
-ats2phppre_list_ifoldright($arg0, $arg1, $arg2)
+ats2phppre_list_imap_method($arg0, $arg1)
 {
 //
   $tmpret214 = NULL;
 //
-  __patsflab_list_ifoldright:
-  $tmpret214 = _ats2phppre_list_aux_79($arg1, 0, $arg0, $arg2);
+  __patsflab_list_imap_method:
+  $tmpret214 = _ats2phppre_list_patsfun_76__closurerize($arg0);
   return $tmpret214;
 } // end-of-function
 
 
 function
-_ats2phppre_list_aux_79($env0, $arg0, $arg1, $arg2)
+_ats2phppre_list_patsfun_76($env0, $arg0)
 {
 //
   $tmpret215 = NULL;
-  $tmp216 = NULL;
-  $tmp217 = NULL;
-  $tmp218 = NULL;
-  $tmp219 = NULL;
 //
-  __patsflab__ats2phppre_list_aux_79:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab81:
-    if(ATSCKptriscons($arg1)) goto __atstmplab84;
-    __atstmplab82:
-    $tmpret215 = $arg2;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab83:
-    __atstmplab84:
-    $tmp216 = $arg1[0];
-    $tmp217 = $arg1[1];
-    $tmp219 = ats2phppre_add_int1_int1($arg0, 1);
-    $tmp218 = _ats2phppre_list_aux_79($env0, $tmp219, $tmp217, $arg2);
-    $tmpret215 = $env0[0]($env0, $arg0, $tmp216, $tmp218);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
+  __patsflab__ats2phppre_list_patsfun_76:
+  $tmpret215 = ats2phppre_list_imap($env0, $arg0);
   return $tmpret215;
 } // end-of-function
 
 
 function
-ats2phppre_list_ifoldright_method($arg0, $arg1)
+ats2phppre_list_map2($arg0, $arg1, $arg2)
 {
 //
-  $tmpret220 = NULL;
+  $tmpret216 = NULL;
+  $tmp217 = NULL;
+  $tmp218 = NULL;
+  $tmp219 = NULL;
+  $tmp220 = NULL;
+  $tmp221 = NULL;
+  $tmp222 = NULL;
 //
-  __patsflab_list_ifoldright_method:
-  $tmpret220 = _ats2phppre_list_patsfun_81__closurerize($arg0, $arg1);
-  return $tmpret220;
+  __patsflab_list_map2:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab76:
+    if(ATSCKptriscons($arg0)) goto __atstmplab79;
+    __atstmplab77:
+    $tmpret216 = NULL;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab78:
+    __atstmplab79:
+    $tmp217 = $arg0[0];
+    $tmp218 = $arg0[1];
+    // ATScaseofseq_beg
+    do {
+      // ATSbranchseq_beg
+      __atstmplab80:
+      if(ATSCKptriscons($arg1)) goto __atstmplab83;
+      __atstmplab81:
+      $tmpret216 = NULL;
+      break;
+      // ATSbranchseq_end
+      // ATSbranchseq_beg
+      __atstmplab82:
+      __atstmplab83:
+      $tmp219 = $arg1[0];
+      $tmp220 = $arg1[1];
+      $tmp221 = $arg2[0]($arg2, $tmp217, $tmp219);
+      $tmp222 = ats2phppre_list_map2($tmp218, $tmp220, $arg2);
+      $tmpret216 = array($tmp221, $tmp222);
+      break;
+      // ATSbranchseq_end
+    } while(0);
+    // ATScaseofseq_end
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret216;
+} // end-of-function
+
+
+function
+ats2phppre_list_foldleft($arg0, $arg1, $arg2)
+{
+//
+  $tmpret223 = NULL;
+//
+  __patsflab_list_foldleft:
+  $tmpret223 = _ats2phppre_list_loop_79($arg2, $arg1, $arg0);
+  return $tmpret223;
+} // end-of-function
+
+
+function
+_ats2phppre_list_loop_79($env0, $arg0, $arg1)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $tmpret224 = NULL;
+  $tmp225 = NULL;
+  $tmp226 = NULL;
+  $tmp227 = NULL;
+//
+  __patsflab__ats2phppre_list_loop_79:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab84:
+    if(ATSCKptriscons($arg1)) goto __atstmplab87;
+    __atstmplab85:
+    $tmpret224 = $arg0;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab86:
+    __atstmplab87:
+    $tmp225 = $arg1[0];
+    $tmp226 = $arg1[1];
+    $tmp227 = $env0[0]($env0, $arg0, $tmp225);
+    // ATStailcalseq_beg
+    $apy0 = $tmp227;
+    $apy1 = $tmp226;
+    $arg0 = $apy0;
+    $arg1 = $apy1;
+    goto __patsflab__ats2phppre_list_loop_79;
+    // ATStailcalseq_end
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret224;
+} // end-of-function
+
+
+function
+ats2phppre_list_foldleft_method($arg0, $arg1)
+{
+//
+  $tmpret228 = NULL;
+//
+  __patsflab_list_foldleft_method:
+  $tmpret228 = _ats2phppre_list_patsfun_81__closurerize($arg0, $arg1);
+  return $tmpret228;
 } // end-of-function
 
 
@@ -2585,96 +2964,152 @@ function
 _ats2phppre_list_patsfun_81($env0, $env1, $arg0)
 {
 //
-  $tmpret221 = NULL;
+  $tmpret229 = NULL;
 //
   __patsflab__ats2phppre_list_patsfun_81:
-  $tmpret221 = ats2phppre_list_ifoldright($env0, $arg0, $env1);
-  return $tmpret221;
+  $tmpret229 = ats2phppre_list_foldleft($env0, $env1, $arg0);
+  return $tmpret229;
 } // end-of-function
 
 
 function
-ats2phppre_streamize_list_elt($arg0)
-{
-//
-  $tmpret224 = NULL;
-//
-  __patsflab_streamize_list_elt:
-  $tmpret224 = _ats2phppre_list_auxmain_85($arg0);
-  return $tmpret224;
-} // end-of-function
-
-
-function
-_ats2phppre_list_auxmain_85($arg0)
-{
-//
-  $tmpret225 = NULL;
-//
-  __patsflab__ats2phppre_list_auxmain_85:
-  $tmpret225 = ATSPMVllazyval(_ats2phppre_list_patsfun_86__closurerize($arg0));
-  return $tmpret225;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_86($env0, $arg0)
-{
-//
-  $tmpret226 = NULL;
-  $tmp227 = NULL;
-  $tmp228 = NULL;
-  $tmp229 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_86:
-  if($arg0) {
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab85:
-      if(ATSCKptriscons($env0)) goto __atstmplab88;
-      __atstmplab86:
-      $tmpret226 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab87:
-      __atstmplab88:
-      $tmp227 = $env0[0];
-      $tmp228 = $env0[1];
-      $tmp229 = _ats2phppre_list_auxmain_85($tmp228);
-      $tmpret226 = array($tmp227, $tmp229);
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-  } else {
-  } // endif
-  return $tmpret226;
-} // end-of-function
-
-
-function
-ats2phppre_streamize_list_zip($arg0, $arg1)
+ats2phppre_list_ifoldleft($arg0, $arg1, $arg2)
 {
 //
   $tmpret230 = NULL;
 //
-  __patsflab_streamize_list_zip:
-  $tmpret230 = _ats2phppre_list_auxmain_88($arg0, $arg1);
+  __patsflab_list_ifoldleft:
+  $tmpret230 = _ats2phppre_list_loop_83($arg2, 0, $arg1, $arg0);
   return $tmpret230;
 } // end-of-function
 
 
 function
-_ats2phppre_list_auxmain_88($arg0, $arg1)
+_ats2phppre_list_loop_83($env0, $arg0, $arg1, $arg2)
 {
 //
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $apy2 = NULL;
   $tmpret231 = NULL;
+  $tmp232 = NULL;
+  $tmp233 = NULL;
+  $tmp234 = NULL;
+  $tmp235 = NULL;
 //
-  __patsflab__ats2phppre_list_auxmain_88:
-  $tmpret231 = ATSPMVllazyval(_ats2phppre_list_patsfun_89__closurerize($arg0, $arg1));
+  __patsflab__ats2phppre_list_loop_83:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab88:
+    if(ATSCKptriscons($arg2)) goto __atstmplab91;
+    __atstmplab89:
+    $tmpret231 = $arg1;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab90:
+    __atstmplab91:
+    $tmp232 = $arg2[0];
+    $tmp233 = $arg2[1];
+    $tmp234 = ats2phppre_add_int1_int1($arg0, 1);
+    $tmp235 = $env0[0]($env0, $arg0, $arg1, $tmp232);
+    // ATStailcalseq_beg
+    $apy0 = $tmp234;
+    $apy1 = $tmp235;
+    $apy2 = $tmp233;
+    $arg0 = $apy0;
+    $arg1 = $apy1;
+    $arg2 = $apy2;
+    goto __patsflab__ats2phppre_list_loop_83;
+    // ATStailcalseq_end
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
   return $tmpret231;
+} // end-of-function
+
+
+function
+ats2phppre_list_ifoldleft_method($arg0, $arg1)
+{
+//
+  $tmpret236 = NULL;
+//
+  __patsflab_list_ifoldleft_method:
+  $tmpret236 = _ats2phppre_list_patsfun_85__closurerize($arg0, $arg1);
+  return $tmpret236;
+} // end-of-function
+
+
+function
+_ats2phppre_list_patsfun_85($env0, $env1, $arg0)
+{
+//
+  $tmpret237 = NULL;
+//
+  __patsflab__ats2phppre_list_patsfun_85:
+  $tmpret237 = ats2phppre_list_ifoldleft($env0, $env1, $arg0);
+  return $tmpret237;
+} // end-of-function
+
+
+function
+ats2phppre_list_foldright($arg0, $arg1, $arg2)
+{
+//
+  $tmpret238 = NULL;
+//
+  __patsflab_list_foldright:
+  $tmpret238 = _ats2phppre_list_aux_87($arg1, $arg0, $arg2);
+  return $tmpret238;
+} // end-of-function
+
+
+function
+_ats2phppre_list_aux_87($env0, $arg0, $arg1)
+{
+//
+  $tmpret239 = NULL;
+  $tmp240 = NULL;
+  $tmp241 = NULL;
+  $tmp242 = NULL;
+//
+  __patsflab__ats2phppre_list_aux_87:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab92:
+    if(ATSCKptriscons($arg0)) goto __atstmplab95;
+    __atstmplab93:
+    $tmpret239 = $arg1;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab94:
+    __atstmplab95:
+    $tmp240 = $arg0[0];
+    $tmp241 = $arg0[1];
+    $tmp242 = _ats2phppre_list_aux_87($env0, $tmp241, $arg1);
+    $tmpret239 = $env0[0]($env0, $tmp240, $tmp242);
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret239;
+} // end-of-function
+
+
+function
+ats2phppre_list_foldright_method($arg0, $arg1)
+{
+//
+  $tmpret243 = NULL;
+//
+  __patsflab_list_foldright_method:
+  $tmpret243 = _ats2phppre_list_patsfun_89__closurerize($arg0, $arg1);
+  return $tmpret243;
 } // end-of-function
 
 
@@ -2682,47 +3117,326 @@ function
 _ats2phppre_list_patsfun_89($env0, $env1, $arg0)
 {
 //
-  $tmpret232 = NULL;
-  $tmp233 = NULL;
-  $tmp234 = NULL;
-  $tmp235 = NULL;
-  $tmp236 = NULL;
-  $tmp237 = NULL;
-  $tmp238 = NULL;
+  $tmpret244 = NULL;
 //
   __patsflab__ats2phppre_list_patsfun_89:
+  $tmpret244 = ats2phppre_list_foldright($env0, $arg0, $env1);
+  return $tmpret244;
+} // end-of-function
+
+
+function
+ats2phppre_list_ifoldright($arg0, $arg1, $arg2)
+{
+//
+  $tmpret245 = NULL;
+//
+  __patsflab_list_ifoldright:
+  $tmpret245 = _ats2phppre_list_aux_91($arg1, 0, $arg0, $arg2);
+  return $tmpret245;
+} // end-of-function
+
+
+function
+_ats2phppre_list_aux_91($env0, $arg0, $arg1, $arg2)
+{
+//
+  $tmpret246 = NULL;
+  $tmp247 = NULL;
+  $tmp248 = NULL;
+  $tmp249 = NULL;
+  $tmp250 = NULL;
+//
+  __patsflab__ats2phppre_list_aux_91:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab96:
+    if(ATSCKptriscons($arg1)) goto __atstmplab99;
+    __atstmplab97:
+    $tmpret246 = $arg2;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab98:
+    __atstmplab99:
+    $tmp247 = $arg1[0];
+    $tmp248 = $arg1[1];
+    $tmp250 = ats2phppre_add_int1_int1($arg0, 1);
+    $tmp249 = _ats2phppre_list_aux_91($env0, $tmp250, $tmp248, $arg2);
+    $tmpret246 = $env0[0]($env0, $arg0, $tmp247, $tmp249);
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret246;
+} // end-of-function
+
+
+function
+ats2phppre_list_ifoldright_method($arg0, $arg1)
+{
+//
+  $tmpret251 = NULL;
+//
+  __patsflab_list_ifoldright_method:
+  $tmpret251 = _ats2phppre_list_patsfun_93__closurerize($arg0, $arg1);
+  return $tmpret251;
+} // end-of-function
+
+
+function
+_ats2phppre_list_patsfun_93($env0, $env1, $arg0)
+{
+//
+  $tmpret252 = NULL;
+//
+  __patsflab__ats2phppre_list_patsfun_93:
+  $tmpret252 = ats2phppre_list_ifoldright($env0, $arg0, $env1);
+  return $tmpret252;
+} // end-of-function
+
+
+function
+ats2phppre_list_mergesort($arg0, $arg1)
+{
+//
+  $tmpret255 = NULL;
+  $tmp274 = NULL;
+//
+  __patsflab_list_mergesort:
+  $tmp274 = ats2phppre_list_length($arg0);
+  $tmpret255 = _ats2phppre_list_msort_97($arg1, $arg0, $tmp274);
+  return $tmpret255;
+} // end-of-function
+
+
+function
+_ats2phppre_list_msort_97($env0, $arg0, $arg1)
+{
+//
+  $tmpret256 = NULL;
+  $tmp257 = NULL;
+  $tmp258 = NULL;
+  $tmp259 = NULL;
+  $tmp260 = NULL;
+  $tmp261 = NULL;
+  $tmp262 = NULL;
+  $tmp263 = NULL;
+  $tmp264 = NULL;
+//
+  __patsflab__ats2phppre_list_msort_97:
+  $tmp257 = ats2phppre_lt_int1_int1($arg1, 2);
+  if($tmp257) {
+    $tmpret256 = $arg0;
+  } else {
+    $tmp258 = ats2phppre_half_int1($arg1);
+    $tmp259 = ats2phppre_list_split_at($arg0, $tmp258);
+    $tmp260 = $tmp259[0];
+    $tmp261 = $tmp259[1];
+    $tmp262 = _ats2phppre_list_msort_97($env0, $tmp260, $tmp258);
+    $tmp264 = ats2phppre_sub_int1_int1($arg1, $tmp258);
+    $tmp263 = _ats2phppre_list_msort_97($env0, $tmp261, $tmp264);
+    $tmpret256 = _ats2phppre_list_merge_98($env0, $tmp262, $tmp263);
+  } // endif
+  return $tmpret256;
+} // end-of-function
+
+
+function
+_ats2phppre_list_merge_98($env0, $arg0, $arg1)
+{
+//
+  $tmpret265 = NULL;
+  $tmp266 = NULL;
+  $tmp267 = NULL;
+  $tmp268 = NULL;
+  $tmp269 = NULL;
+  $tmp270 = NULL;
+  $tmp271 = NULL;
+  $tmp272 = NULL;
+  $tmp273 = NULL;
+//
+  __patsflab__ats2phppre_list_merge_98:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab100:
+    if(ATSCKptriscons($arg0)) goto __atstmplab103;
+    __atstmplab101:
+    $tmpret265 = $arg1;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab102:
+    __atstmplab103:
+    $tmp266 = $arg0[0];
+    $tmp267 = $arg0[1];
+    // ATScaseofseq_beg
+    do {
+      // ATSbranchseq_beg
+      __atstmplab104:
+      if(ATSCKptriscons($arg1)) goto __atstmplab107;
+      __atstmplab105:
+      $tmpret265 = $arg0;
+      break;
+      // ATSbranchseq_end
+      // ATSbranchseq_beg
+      __atstmplab106:
+      __atstmplab107:
+      $tmp268 = $arg1[0];
+      $tmp269 = $arg1[1];
+      $tmp270 = $env0[0]($env0, $tmp266, $tmp268);
+      $tmp271 = ats2phppre_lte_int0_int0($tmp270, 0);
+      if($tmp271) {
+        $tmp272 = _ats2phppre_list_merge_98($env0, $tmp267, $arg1);
+        $tmpret265 = array($tmp266, $tmp272);
+      } else {
+        $tmp273 = _ats2phppre_list_merge_98($env0, $arg0, $tmp269);
+        $tmpret265 = array($tmp268, $tmp273);
+      } // endif
+      break;
+      // ATSbranchseq_end
+    } while(0);
+    // ATScaseofseq_end
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret265;
+} // end-of-function
+
+
+function
+ats2phppre_streamize_list_elt($arg0)
+{
+//
+  $tmpret275 = NULL;
+//
+  __patsflab_streamize_list_elt:
+  $tmpret275 = _ats2phppre_list_auxmain_100($arg0);
+  return $tmpret275;
+} // end-of-function
+
+
+function
+_ats2phppre_list_auxmain_100($arg0)
+{
+//
+  $tmpret276 = NULL;
+//
+  __patsflab__ats2phppre_list_auxmain_100:
+  $tmpret276 = ATSPMVllazyval(_ats2phppre_list_patsfun_101__closurerize($arg0));
+  return $tmpret276;
+} // end-of-function
+
+
+function
+_ats2phppre_list_patsfun_101($env0, $arg0)
+{
+//
+  $tmpret277 = NULL;
+  $tmp278 = NULL;
+  $tmp279 = NULL;
+  $tmp280 = NULL;
+//
+  __patsflab__ats2phppre_list_patsfun_101:
   if($arg0) {
     // ATScaseofseq_beg
     do {
       // ATSbranchseq_beg
-      __atstmplab89:
-      if(ATSCKptriscons($env0)) goto __atstmplab92;
-      __atstmplab90:
-      $tmpret232 = NULL;
+      __atstmplab108:
+      if(ATSCKptriscons($env0)) goto __atstmplab111;
+      __atstmplab109:
+      $tmpret277 = NULL;
       break;
       // ATSbranchseq_end
       // ATSbranchseq_beg
-      __atstmplab91:
-      __atstmplab92:
-      $tmp233 = $env0[0];
-      $tmp234 = $env0[1];
+      __atstmplab110:
+      __atstmplab111:
+      $tmp278 = $env0[0];
+      $tmp279 = $env0[1];
+      $tmp280 = _ats2phppre_list_auxmain_100($tmp279);
+      $tmpret277 = array($tmp278, $tmp280);
+      break;
+      // ATSbranchseq_end
+    } while(0);
+    // ATScaseofseq_end
+  } else {
+  } // endif
+  return $tmpret277;
+} // end-of-function
+
+
+function
+ats2phppre_streamize_list_zip($arg0, $arg1)
+{
+//
+  $tmpret281 = NULL;
+//
+  __patsflab_streamize_list_zip:
+  $tmpret281 = _ats2phppre_list_auxmain_103($arg0, $arg1);
+  return $tmpret281;
+} // end-of-function
+
+
+function
+_ats2phppre_list_auxmain_103($arg0, $arg1)
+{
+//
+  $tmpret282 = NULL;
+//
+  __patsflab__ats2phppre_list_auxmain_103:
+  $tmpret282 = ATSPMVllazyval(_ats2phppre_list_patsfun_104__closurerize($arg0, $arg1));
+  return $tmpret282;
+} // end-of-function
+
+
+function
+_ats2phppre_list_patsfun_104($env0, $env1, $arg0)
+{
+//
+  $tmpret283 = NULL;
+  $tmp284 = NULL;
+  $tmp285 = NULL;
+  $tmp286 = NULL;
+  $tmp287 = NULL;
+  $tmp288 = NULL;
+  $tmp289 = NULL;
+//
+  __patsflab__ats2phppre_list_patsfun_104:
+  if($arg0) {
+    // ATScaseofseq_beg
+    do {
+      // ATSbranchseq_beg
+      __atstmplab112:
+      if(ATSCKptriscons($env0)) goto __atstmplab115;
+      __atstmplab113:
+      $tmpret283 = NULL;
+      break;
+      // ATSbranchseq_end
+      // ATSbranchseq_beg
+      __atstmplab114:
+      __atstmplab115:
+      $tmp284 = $env0[0];
+      $tmp285 = $env0[1];
       // ATScaseofseq_beg
       do {
         // ATSbranchseq_beg
-        __atstmplab93:
-        if(ATSCKptriscons($env1)) goto __atstmplab96;
-        __atstmplab94:
-        $tmpret232 = NULL;
+        __atstmplab116:
+        if(ATSCKptriscons($env1)) goto __atstmplab119;
+        __atstmplab117:
+        $tmpret283 = NULL;
         break;
         // ATSbranchseq_end
         // ATSbranchseq_beg
-        __atstmplab95:
-        __atstmplab96:
-        $tmp235 = $env1[0];
-        $tmp236 = $env1[1];
-        $tmp237 = array($tmp233, $tmp235);
-        $tmp238 = _ats2phppre_list_auxmain_88($tmp234, $tmp236);
-        $tmpret232 = array($tmp237, $tmp238);
+        __atstmplab118:
+        __atstmplab119:
+        $tmp286 = $env1[0];
+        $tmp287 = $env1[1];
+        $tmp288 = array($tmp284, $tmp286);
+        $tmp289 = _ats2phppre_list_auxmain_103($tmp285, $tmp287);
+        $tmpret283 = array($tmp288, $tmp289);
         break;
         // ATSbranchseq_end
       } while(0);
@@ -2733,7 +3447,7 @@ _ats2phppre_list_patsfun_89($env0, $env1, $arg0)
     // ATScaseofseq_end
   } else {
   } // endif
-  return $tmpret232;
+  return $tmpret283;
 } // end-of-function
 
 
@@ -2741,115 +3455,115 @@ function
 ats2phppre_streamize_list_cross($arg0, $arg1)
 {
 //
-  $tmpret239 = NULL;
+  $tmpret290 = NULL;
 //
   __patsflab_streamize_list_cross:
-  $tmpret239 = _ats2phppre_list_auxmain_93($arg0, $arg1);
-  return $tmpret239;
+  $tmpret290 = _ats2phppre_list_auxmain_108($arg0, $arg1);
+  return $tmpret290;
 } // end-of-function
 
 
 function
-_ats2phppre_list_auxone_91($arg0, $arg1)
+_ats2phppre_list_auxone_106($arg0, $arg1)
 {
 //
-  $tmpret240 = NULL;
+  $tmpret291 = NULL;
 //
-  __patsflab__ats2phppre_list_auxone_91:
-  $tmpret240 = ATSPMVllazyval(_ats2phppre_list_patsfun_92__closurerize($arg0, $arg1));
-  return $tmpret240;
+  __patsflab__ats2phppre_list_auxone_106:
+  $tmpret291 = ATSPMVllazyval(_ats2phppre_list_patsfun_107__closurerize($arg0, $arg1));
+  return $tmpret291;
 } // end-of-function
 
 
 function
-_ats2phppre_list_patsfun_92($env0, $env1, $arg0)
+_ats2phppre_list_patsfun_107($env0, $env1, $arg0)
 {
 //
-  $tmpret241 = NULL;
-  $tmp242 = NULL;
-  $tmp243 = NULL;
-  $tmp244 = NULL;
-  $tmp245 = NULL;
+  $tmpret292 = NULL;
+  $tmp293 = NULL;
+  $tmp294 = NULL;
+  $tmp295 = NULL;
+  $tmp296 = NULL;
 //
-  __patsflab__ats2phppre_list_patsfun_92:
+  __patsflab__ats2phppre_list_patsfun_107:
   if($arg0) {
     // ATScaseofseq_beg
     do {
       // ATSbranchseq_beg
-      __atstmplab97:
-      if(ATSCKptriscons($env1)) goto __atstmplab100;
-      __atstmplab98:
-      $tmpret241 = NULL;
+      __atstmplab120:
+      if(ATSCKptriscons($env1)) goto __atstmplab123;
+      __atstmplab121:
+      $tmpret292 = NULL;
       break;
       // ATSbranchseq_end
       // ATSbranchseq_beg
-      __atstmplab99:
-      __atstmplab100:
-      $tmp242 = $env1[0];
-      $tmp243 = $env1[1];
-      $tmp244 = array($env0, $tmp242);
-      $tmp245 = _ats2phppre_list_auxone_91($env0, $tmp243);
-      $tmpret241 = array($tmp244, $tmp245);
+      __atstmplab122:
+      __atstmplab123:
+      $tmp293 = $env1[0];
+      $tmp294 = $env1[1];
+      $tmp295 = array($env0, $tmp293);
+      $tmp296 = _ats2phppre_list_auxone_106($env0, $tmp294);
+      $tmpret292 = array($tmp295, $tmp296);
       break;
       // ATSbranchseq_end
     } while(0);
     // ATScaseofseq_end
   } else {
   } // endif
-  return $tmpret241;
+  return $tmpret292;
 } // end-of-function
 
 
 function
-_ats2phppre_list_auxmain_93($arg0, $arg1)
+_ats2phppre_list_auxmain_108($arg0, $arg1)
 {
 //
-  $tmpret246 = NULL;
+  $tmpret297 = NULL;
 //
-  __patsflab__ats2phppre_list_auxmain_93:
-  $tmpret246 = ATSPMVllazyval(_ats2phppre_list_patsfun_94__closurerize($arg0, $arg1));
-  return $tmpret246;
+  __patsflab__ats2phppre_list_auxmain_108:
+  $tmpret297 = ATSPMVllazyval(_ats2phppre_list_patsfun_109__closurerize($arg0, $arg1));
+  return $tmpret297;
 } // end-of-function
 
 
 function
-_ats2phppre_list_patsfun_94($env0, $env1, $arg0)
+_ats2phppre_list_patsfun_109($env0, $env1, $arg0)
 {
 //
-  $tmpret247 = NULL;
-  $tmp248 = NULL;
-  $tmp249 = NULL;
-  $tmp250 = NULL;
-  $tmp251 = NULL;
-  $tmp252 = NULL;
+  $tmpret298 = NULL;
+  $tmp299 = NULL;
+  $tmp300 = NULL;
+  $tmp301 = NULL;
+  $tmp302 = NULL;
+  $tmp303 = NULL;
 //
-  __patsflab__ats2phppre_list_patsfun_94:
+  __patsflab__ats2phppre_list_patsfun_109:
   if($arg0) {
     // ATScaseofseq_beg
     do {
       // ATSbranchseq_beg
-      __atstmplab101:
-      if(ATSCKptriscons($env0)) goto __atstmplab104;
-      __atstmplab102:
-      $tmpret247 = NULL;
+      __atstmplab124:
+      if(ATSCKptriscons($env0)) goto __atstmplab127;
+      __atstmplab125:
+      $tmpret298 = NULL;
       break;
       // ATSbranchseq_end
       // ATSbranchseq_beg
-      __atstmplab103:
-      __atstmplab104:
-      $tmp248 = $env0[0];
-      $tmp249 = $env0[1];
-      $tmp251 = _ats2phppre_list_auxone_91($tmp248, $env1);
-      $tmp252 = _ats2phppre_list_auxmain_93($tmp249, $env1);
-      $tmp250 = ats2phppre_stream_vt_append($tmp251, $tmp252);
-      $tmpret247 = ATSPMVllazyval_eval($tmp250);
+      __atstmplab126:
+      __atstmplab127:
+      $tmp299 = $env0[0];
+      $tmp300 = $env0[1];
+      $tmp302 = _ats2phppre_list_auxone_106($tmp299, $env1);
+      $tmp303 = _ats2phppre_list_auxmain_108($tmp300, $env1);
+      $tmp301 = ats2phppre_stream_vt_append($tmp302, $tmp303);
+      $tmpret298 = ATSPMVllazyval_eval($tmp301);
       break;
       // ATSbranchseq_end
     } while(0);
     // ATScaseofseq_end
   } else {
   } // endif
-  return $tmpret247;
+  return $tmpret298;
 } // end-of-function
 
 /* ****** ****** */
@@ -2860,7 +3574,7 @@ _ats2phppre_list_patsfun_94($env0, $env1, $arg0)
 /*
 **
 ** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-3-24:  1h:27m
+** The starting compilation time is: 2018-6-23: 17h:12m
 **
 */
 
@@ -3071,7 +3785,7 @@ _ats2phppre_list_vt_loop_10($arg0, $arg1)
 /*
 **
 ** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-3-24:  1h:27m
+** The starting compilation time is: 2018-6-23: 17h:12m
 **
 */
 
@@ -3176,7 +3890,7 @@ ats2phppre_option_is_none($arg0)
 /*
 **
 ** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-3-24:  1h:27m
+** The starting compilation time is: 2018-6-23: 17h:12m
 **
 */
 function
@@ -3186,129 +3900,147 @@ _ats2jspre_stream_patsfun_6__closurerize($env0)
 }
 
 function
-_ats2jspre_stream_patsfun_17__closurerize($env0, $env1)
+_ats2jspre_stream_patsfun_16__closurerize($env0, $env1)
 {
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_17($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_16($cenv[1], $cenv[2]); }, $env0, $env1);
 }
 
 function
-_ats2jspre_stream_patsfun_23__closurerize($env0, $env1)
+_ats2jspre_stream_patsfun_18__closurerize($env0, $env1)
 {
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_23($cenv[1], $cenv[2]); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_18($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
 }
 
 function
-_ats2jspre_stream_patsfun_25__closurerize($env0)
+_ats2jspre_stream_patsfun_24__closurerize($env0, $env1)
 {
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_25($cenv[1]); }, $env0);
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_24($cenv[1], $cenv[2]); }, $env0, $env1);
 }
 
 function
-_ats2jspre_stream_patsfun_27__closurerize($env0, $env1)
+_ats2jspre_stream_patsfun_26__closurerize($env0)
 {
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_27($cenv[1], $cenv[2]); }, $env0, $env1);
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_26($cenv[1]); }, $env0);
 }
 
 function
-_ats2jspre_stream_patsfun_29__closurerize($env0)
+_ats2jspre_stream_patsfun_28__closurerize($env0, $env1)
 {
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_29($cenv[1], $arg0); }, $env0);
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_28($cenv[1], $cenv[2]); }, $env0, $env1);
 }
 
 function
-_ats2jspre_stream_patsfun_31__closurerize($env0, $env1)
+_ats2jspre_stream_patsfun_30__closurerize($env0)
 {
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_31($cenv[1], $cenv[2]); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_30($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2jspre_stream_patsfun_33__closurerize($env0)
+_ats2jspre_stream_patsfun_32__closurerize($env0, $env1, $env2)
 {
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_33($cenv[1], $arg0); }, $env0);
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_32($cenv[1], $cenv[2], $cenv[3]); }, $env0, $env1, $env2);
 }
 
 function
-_ats2jspre_stream_patsfun_36__closurerize($env0)
+_ats2jspre_stream_patsfun_34__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_36($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0, $arg1) { return _ats2jspre_stream_patsfun_34($cenv[1], $arg0, $arg1); }, $env0);
 }
 
 function
-_ats2jspre_stream_patsfun_39__closurerize($env0)
+_ats2jspre_stream_patsfun_36__closurerize($env0, $env1)
 {
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_39($cenv[1], $arg0); }, $env0);
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_36($cenv[1], $cenv[2]); }, $env0, $env1);
 }
 
 function
-_ats2jspre_stream_patsfun_42__closurerize($env0)
+_ats2jspre_stream_patsfun_38__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_42($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_38($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2jspre_stream_patsfun_46__closurerize($env0)
+_ats2jspre_stream_patsfun_41__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_46($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_41($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2jspre_stream_patsfun_49__closurerize($env0, $env1)
+_ats2jspre_stream_patsfun_44__closurerize($env0)
 {
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_49($cenv[1], $cenv[2]); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_44($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2jspre_stream_patsfun_52__closurerize($env0, $env1, $env2, $env3)
+_ats2jspre_stream_patsfun_47__closurerize($env0)
 {
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_52($cenv[1], $cenv[2], $cenv[3], $cenv[4]); }, $env0, $env1, $env2, $env3);
+  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_47($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2jspre_stream_patsfun_53__closurerize($env0, $env1)
+_ats2jspre_stream_patsfun_51__closurerize($env0)
 {
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_53($cenv[1], $cenv[2]); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_51($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2jspre_stream_patsfun_56__closurerize($env0)
+_ats2jspre_stream_patsfun_54__closurerize($env0, $env1)
 {
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_56($cenv[1]); }, $env0);
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_54($cenv[1], $cenv[2]); }, $env0, $env1);
 }
 
 function
-_ats2jspre_stream_patsfun_58__closurerize($env0)
+_ats2jspre_stream_patsfun_57__closurerize($env0, $env1, $env2, $env3)
 {
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_58($cenv[1]); }, $env0);
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_57($cenv[1], $cenv[2], $cenv[3], $cenv[4]); }, $env0, $env1, $env2, $env3);
 }
 
 function
-_ats2jspre_stream_patsfun_60__closurerize($env0, $env1)
+_ats2jspre_stream_patsfun_58__closurerize($env0, $env1)
 {
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_60($cenv[1], $cenv[2]); }, $env0, $env1);
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_58($cenv[1], $cenv[2]); }, $env0, $env1);
 }
 
 function
-_ats2jspre_stream_patsfun_65__closurerize($env0)
+_ats2jspre_stream_patsfun_61__closurerize($env0)
 {
-  return array(function($cenv, $arg0, $arg1) { return _ats2jspre_stream_patsfun_65($cenv[1], $arg0, $arg1); }, $env0);
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_61($cenv[1]); }, $env0);
 }
 
 function
-_ats2jspre_stream_patsfun_67__closurerize($env0)
+_ats2jspre_stream_patsfun_63__closurerize($env0)
 {
-  return array(function($cenv, $arg0, $arg1) { return _ats2jspre_stream_patsfun_67($cenv[1], $arg0, $arg1); }, $env0);
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_63($cenv[1]); }, $env0);
 }
 
 function
-_ats2jspre_stream_patsfun_70__closurerize($env0, $env1)
+_ats2jspre_stream_patsfun_65__closurerize($env0, $env1)
 {
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_70($cenv[1], $cenv[2]); }, $env0, $env1);
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_65($cenv[1], $cenv[2]); }, $env0, $env1);
 }
 
 function
-_ats2jspre_stream_patsfun_72__closurerize($env0, $env1)
+_ats2jspre_stream_patsfun_70__closurerize($env0)
 {
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_72($cenv[1], $cenv[2]); }, $env0, $env1);
+  return array(function($cenv, $arg0, $arg1) { return _ats2jspre_stream_patsfun_70($cenv[1], $arg0, $arg1); }, $env0);
+}
+
+function
+_ats2jspre_stream_patsfun_72__closurerize($env0)
+{
+  return array(function($cenv, $arg0, $arg1) { return _ats2jspre_stream_patsfun_72($cenv[1], $arg0, $arg1); }, $env0);
+}
+
+function
+_ats2jspre_stream_patsfun_75__closurerize($env0, $env1)
+{
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_75($cenv[1], $cenv[2]); }, $env0, $env1);
+}
+
+function
+_ats2jspre_stream_patsfun_77__closurerize($env0, $env1)
+{
+  return array(function($cenv) { return _ats2jspre_stream_patsfun_77($cenv[1], $cenv[2]); }, $env0, $env1);
 }
 
 
@@ -3491,46 +4223,12 @@ ats2phppre_stream2list($arg0)
 {
 //
   $tmpret26 = NULL;
+  $tmp27 = NULL;
 //
   __patsflab_stream2list:
-  $tmpret26 = _ats2jspre_stream_aux_13($arg0);
+  $tmp27 = ats2phppre_stream2list_rev($arg0);
+  $tmpret26 = ats2phppre_list_reverse($tmp27);
   return $tmpret26;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_aux_13($arg0)
-{
-//
-  $tmpret27 = NULL;
-  $tmp28 = NULL;
-  $tmp29 = NULL;
-  $tmp30 = NULL;
-  $tmp31 = NULL;
-//
-  __patsflab__ats2jspre_stream_aux_13:
-  $tmp28 = ATSPMVlazyval_eval($arg0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab12:
-    if(ATSCKptriscons($tmp28)) goto __atstmplab15;
-    __atstmplab13:
-    $tmpret27 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab14:
-    __atstmplab15:
-    $tmp29 = $tmp28[0];
-    $tmp30 = $tmp28[1];
-    $tmp31 = _ats2jspre_stream_aux_13($tmp30);
-    $tmpret27 = array($tmp29, $tmp31);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret27;
 } // end-of-function
 
 
@@ -3538,57 +4236,57 @@ function
 ats2phppre_stream2list_rev($arg0)
 {
 //
-  $tmpret32 = NULL;
-  $tmp38 = NULL;
+  $tmpret28 = NULL;
+  $tmp34 = NULL;
 //
   __patsflab_stream2list_rev:
-  $tmp38 = NULL;
-  $tmpret32 = _ats2jspre_stream_loop_15($arg0, $tmp38);
-  return $tmpret32;
+  $tmp34 = NULL;
+  $tmpret28 = _ats2jspre_stream_loop_14($arg0, $tmp34);
+  return $tmpret28;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_loop_15($arg0, $arg1)
+_ats2jspre_stream_loop_14($arg0, $arg1)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret33 = NULL;
-  $tmp34 = NULL;
-  $tmp35 = NULL;
-  $tmp36 = NULL;
-  $tmp37 = NULL;
+  $tmpret29 = NULL;
+  $tmp30 = NULL;
+  $tmp31 = NULL;
+  $tmp32 = NULL;
+  $tmp33 = NULL;
 //
-  __patsflab__ats2jspre_stream_loop_15:
-  $tmp34 = ATSPMVlazyval_eval($arg0); 
+  __patsflab__ats2jspre_stream_loop_14:
+  $tmp30 = ATSPMVlazyval_eval($arg0); 
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab16:
-    if(ATSCKptriscons($tmp34)) goto __atstmplab19;
-    __atstmplab17:
-    $tmpret33 = $arg1;
+    __atstmplab12:
+    if(ATSCKptriscons($tmp30)) goto __atstmplab15;
+    __atstmplab13:
+    $tmpret29 = $arg1;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab18:
-    __atstmplab19:
-    $tmp35 = $tmp34[0];
-    $tmp36 = $tmp34[1];
-    $tmp37 = array($tmp35, $arg1);
+    __atstmplab14:
+    __atstmplab15:
+    $tmp31 = $tmp30[0];
+    $tmp32 = $tmp30[1];
+    $tmp33 = array($tmp31, $arg1);
     // ATStailcalseq_beg
-    $apy0 = $tmp36;
-    $apy1 = $tmp37;
+    $apy0 = $tmp32;
+    $apy1 = $tmp33;
     $arg0 = $apy0;
     $arg1 = $apy1;
-    goto __patsflab__ats2jspre_stream_loop_15;
+    goto __patsflab__ats2jspre_stream_loop_14;
     // ATStailcalseq_end
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret33;
+  return $tmpret29;
 } // end-of-function
 
 
@@ -3596,58 +4294,114 @@ function
 ats2phppre_stream_takeLte($arg0, $arg1)
 {
 //
-  $tmpret39 = NULL;
+  $tmpret35 = NULL;
 //
   __patsflab_stream_takeLte:
-  $tmpret39 = ATSPMVllazyval(_ats2jspre_stream_patsfun_17__closurerize($arg0, $arg1));
-  return $tmpret39;
+  $tmpret35 = ATSPMVlazyval(_ats2jspre_stream_patsfun_16__closurerize($arg0, $arg1));
+  return $tmpret35;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_17($env0, $env1, $arg0)
+_ats2jspre_stream_patsfun_16($env0, $env1)
 {
 //
-  $tmpret40 = NULL;
+  $tmpret36 = NULL;
+  $tmp37 = NULL;
+  $tmp38 = NULL;
+  $tmp39 = NULL;
+  $tmp40 = NULL;
   $tmp41 = NULL;
   $tmp42 = NULL;
-  $tmp43 = NULL;
-  $tmp44 = NULL;
+//
+  __patsflab__ats2jspre_stream_patsfun_16:
+  $tmp37 = ats2phppre_gt_int1_int1($env1, 0);
+  if($tmp37) {
+    $tmp38 = ATSPMVlazyval_eval($env0); 
+    // ATScaseofseq_beg
+    do {
+      // ATSbranchseq_beg
+      __atstmplab16:
+      if(ATSCKptriscons($tmp38)) goto __atstmplab19;
+      __atstmplab17:
+      $tmpret36 = NULL;
+      break;
+      // ATSbranchseq_end
+      // ATSbranchseq_beg
+      __atstmplab18:
+      __atstmplab19:
+      $tmp39 = $tmp38[0];
+      $tmp40 = $tmp38[1];
+      $tmp42 = ats2phppre_sub_int1_int1($env1, 1);
+      $tmp41 = ats2phppre_stream_takeLte($tmp40, $tmp42);
+      $tmpret36 = array($tmp39, $tmp41);
+      break;
+      // ATSbranchseq_end
+    } while(0);
+    // ATScaseofseq_end
+  } else {
+    $tmpret36 = NULL;
+  } // endif
+  return $tmpret36;
+} // end-of-function
+
+
+function
+ats2phppre_stream_takeLte_vt($arg0, $arg1)
+{
+//
+  $tmpret43 = NULL;
+//
+  __patsflab_stream_takeLte_vt:
+  $tmpret43 = ATSPMVllazyval(_ats2jspre_stream_patsfun_18__closurerize($arg0, $arg1));
+  return $tmpret43;
+} // end-of-function
+
+
+function
+_ats2jspre_stream_patsfun_18($env0, $env1, $arg0)
+{
+//
+  $tmpret44 = NULL;
   $tmp45 = NULL;
   $tmp46 = NULL;
+  $tmp47 = NULL;
+  $tmp48 = NULL;
+  $tmp49 = NULL;
+  $tmp50 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_17:
+  __patsflab__ats2jspre_stream_patsfun_18:
   if($arg0) {
-    $tmp41 = ats2phppre_gt_int1_int1($env1, 0);
-    if($tmp41) {
-      $tmp42 = ATSPMVlazyval_eval($env0); 
+    $tmp45 = ats2phppre_gt_int1_int1($env1, 0);
+    if($tmp45) {
+      $tmp46 = ATSPMVlazyval_eval($env0); 
       // ATScaseofseq_beg
       do {
         // ATSbranchseq_beg
         __atstmplab20:
-        if(ATSCKptriscons($tmp42)) goto __atstmplab23;
+        if(ATSCKptriscons($tmp46)) goto __atstmplab23;
         __atstmplab21:
-        $tmpret40 = NULL;
+        $tmpret44 = NULL;
         break;
         // ATSbranchseq_end
         // ATSbranchseq_beg
         __atstmplab22:
         __atstmplab23:
-        $tmp43 = $tmp42[0];
-        $tmp44 = $tmp42[1];
-        $tmp46 = ats2phppre_sub_int1_int1($env1, 1);
-        $tmp45 = ats2phppre_stream_takeLte($tmp44, $tmp46);
-        $tmpret40 = array($tmp43, $tmp45);
+        $tmp47 = $tmp46[0];
+        $tmp48 = $tmp46[1];
+        $tmp50 = ats2phppre_sub_int1_int1($env1, 1);
+        $tmp49 = ats2phppre_stream_takeLte_vt($tmp48, $tmp50);
+        $tmpret44 = array($tmp47, $tmp49);
         break;
         // ATSbranchseq_end
       } while(0);
       // ATScaseofseq_end
     } else {
-      $tmpret40 = NULL;
+      $tmpret44 = NULL;
     } // endif
   } else {
   } // endif
-  return $tmpret40;
+  return $tmpret44;
 } // end-of-function
 
 
@@ -3655,70 +4409,70 @@ function
 ats2phppre_stream_take_opt($arg0, $arg1)
 {
 //
-  $tmpret47 = NULL;
-  $tmp56 = NULL;
+  $tmpret51 = NULL;
+  $tmp60 = NULL;
 //
   __patsflab_stream_take_opt:
-  $tmp56 = NULL;
-  $tmpret47 = _ats2jspre_stream_auxmain_19($arg1, $arg0, 0, $tmp56);
-  return $tmpret47;
+  $tmp60 = NULL;
+  $tmpret51 = _ats2jspre_stream_auxmain_20($arg1, $arg0, 0, $tmp60);
+  return $tmpret51;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_auxmain_19($env0, $arg0, $arg1, $arg2)
+_ats2jspre_stream_auxmain_20($env0, $arg0, $arg1, $arg2)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
   $apy2 = NULL;
-  $tmpret48 = NULL;
-  $tmp49 = NULL;
-  $tmp50 = NULL;
-  $tmp51 = NULL;
-  $tmp52 = NULL;
+  $tmpret52 = NULL;
   $tmp53 = NULL;
   $tmp54 = NULL;
   $tmp55 = NULL;
+  $tmp56 = NULL;
+  $tmp57 = NULL;
+  $tmp58 = NULL;
+  $tmp59 = NULL;
 //
-  __patsflab__ats2jspre_stream_auxmain_19:
-  $tmp49 = ats2phppre_lt_int1_int1($arg1, $env0);
-  if($tmp49) {
-    $tmp50 = ATSPMVlazyval_eval($arg0); 
+  __patsflab__ats2jspre_stream_auxmain_20:
+  $tmp53 = ats2phppre_lt_int1_int1($arg1, $env0);
+  if($tmp53) {
+    $tmp54 = ATSPMVlazyval_eval($arg0); 
     // ATScaseofseq_beg
     do {
       // ATSbranchseq_beg
       __atstmplab24:
-      if(ATSCKptriscons($tmp50)) goto __atstmplab27;
+      if(ATSCKptriscons($tmp54)) goto __atstmplab27;
       __atstmplab25:
-      $tmpret48 = NULL;
+      $tmpret52 = NULL;
       break;
       // ATSbranchseq_end
       // ATSbranchseq_beg
       __atstmplab26:
       __atstmplab27:
-      $tmp51 = $tmp50[0];
-      $tmp52 = $tmp50[1];
-      $tmp53 = ats2phppre_add_int1_int1($arg1, 1);
-      $tmp54 = array($tmp51, $arg2);
+      $tmp55 = $tmp54[0];
+      $tmp56 = $tmp54[1];
+      $tmp57 = ats2phppre_add_int1_int1($arg1, 1);
+      $tmp58 = array($tmp55, $arg2);
       // ATStailcalseq_beg
-      $apy0 = $tmp52;
-      $apy1 = $tmp53;
-      $apy2 = $tmp54;
+      $apy0 = $tmp56;
+      $apy1 = $tmp57;
+      $apy2 = $tmp58;
       $arg0 = $apy0;
       $arg1 = $apy1;
       $arg2 = $apy2;
-      goto __patsflab__ats2jspre_stream_auxmain_19;
+      goto __patsflab__ats2jspre_stream_auxmain_20;
       // ATStailcalseq_end
       break;
       // ATSbranchseq_end
     } while(0);
     // ATScaseofseq_end
   } else {
-    $tmp55 = ats2phppre_list_reverse($arg2);
-    $tmpret48 = array($tmp55);
+    $tmp59 = ats2phppre_list_reverse($arg2);
+    $tmpret52 = array($tmp59);
   } // endif
-  return $tmpret48;
+  return $tmpret52;
 } // end-of-function
 
 
@@ -3726,59 +4480,59 @@ function
 ats2phppre_stream_drop_opt($arg0, $arg1)
 {
 //
-  $tmpret57 = NULL;
+  $tmpret61 = NULL;
 //
   __patsflab_stream_drop_opt:
-  $tmpret57 = _ats2jspre_stream_auxmain_21($arg1, $arg0, 0);
-  return $tmpret57;
+  $tmpret61 = _ats2jspre_stream_auxmain_22($arg1, $arg0, 0);
+  return $tmpret61;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_auxmain_21($env0, $arg0, $arg1)
+_ats2jspre_stream_auxmain_22($env0, $arg0, $arg1)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret58 = NULL;
-  $tmp59 = NULL;
-  $tmp60 = NULL;
-  $tmp62 = NULL;
+  $tmpret62 = NULL;
   $tmp63 = NULL;
+  $tmp64 = NULL;
+  $tmp66 = NULL;
+  $tmp67 = NULL;
 //
-  __patsflab__ats2jspre_stream_auxmain_21:
-  $tmp59 = ats2phppre_lt_int1_int1($arg1, $env0);
-  if($tmp59) {
-    $tmp60 = ATSPMVlazyval_eval($arg0); 
+  __patsflab__ats2jspre_stream_auxmain_22:
+  $tmp63 = ats2phppre_lt_int1_int1($arg1, $env0);
+  if($tmp63) {
+    $tmp64 = ATSPMVlazyval_eval($arg0); 
     // ATScaseofseq_beg
     do {
       // ATSbranchseq_beg
       __atstmplab28:
-      if(ATSCKptriscons($tmp60)) goto __atstmplab31;
+      if(ATSCKptriscons($tmp64)) goto __atstmplab31;
       __atstmplab29:
-      $tmpret58 = NULL;
+      $tmpret62 = NULL;
       break;
       // ATSbranchseq_end
       // ATSbranchseq_beg
       __atstmplab30:
       __atstmplab31:
-      $tmp62 = $tmp60[1];
-      $tmp63 = ats2phppre_add_int1_int1($arg1, 1);
+      $tmp66 = $tmp64[1];
+      $tmp67 = ats2phppre_add_int1_int1($arg1, 1);
       // ATStailcalseq_beg
-      $apy0 = $tmp62;
-      $apy1 = $tmp63;
+      $apy0 = $tmp66;
+      $apy1 = $tmp67;
       $arg0 = $apy0;
       $arg1 = $apy1;
-      goto __patsflab__ats2jspre_stream_auxmain_21;
+      goto __patsflab__ats2jspre_stream_auxmain_22;
       // ATStailcalseq_end
       break;
       // ATSbranchseq_end
     } while(0);
     // ATScaseofseq_end
   } else {
-    $tmpret58 = array($arg0);
+    $tmpret62 = array($arg0);
   } // endif
-  return $tmpret58;
+  return $tmpret62;
 } // end-of-function
 
 
@@ -3786,47 +4540,47 @@ function
 ats2phppre_stream_append($arg0, $arg1)
 {
 //
-  $tmpret64 = NULL;
+  $tmpret68 = NULL;
 //
   __patsflab_stream_append:
-  $tmpret64 = ATSPMVlazyval(_ats2jspre_stream_patsfun_23__closurerize($arg0, $arg1));
-  return $tmpret64;
+  $tmpret68 = ATSPMVlazyval(_ats2jspre_stream_patsfun_24__closurerize($arg0, $arg1));
+  return $tmpret68;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_23($env0, $env1)
+_ats2jspre_stream_patsfun_24($env0, $env1)
 {
 //
-  $tmpret65 = NULL;
-  $tmp66 = NULL;
-  $tmp67 = NULL;
-  $tmp68 = NULL;
-  $tmp69 = NULL;
+  $tmpret69 = NULL;
+  $tmp70 = NULL;
+  $tmp71 = NULL;
+  $tmp72 = NULL;
+  $tmp73 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_23:
-  $tmp66 = ATSPMVlazyval_eval($env0); 
+  __patsflab__ats2jspre_stream_patsfun_24:
+  $tmp70 = ATSPMVlazyval_eval($env0); 
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
     __atstmplab32:
-    if(ATSCKptriscons($tmp66)) goto __atstmplab35;
+    if(ATSCKptriscons($tmp70)) goto __atstmplab35;
     __atstmplab33:
-    $tmpret65 = ATSPMVlazyval_eval($env1); 
+    $tmpret69 = ATSPMVlazyval_eval($env1); 
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
     __atstmplab34:
     __atstmplab35:
-    $tmp67 = $tmp66[0];
-    $tmp68 = $tmp66[1];
-    $tmp69 = ats2phppre_stream_append($tmp68, $env1);
-    $tmpret65 = array($tmp67, $tmp69);
+    $tmp71 = $tmp70[0];
+    $tmp72 = $tmp70[1];
+    $tmp73 = ats2phppre_stream_append($tmp72, $env1);
+    $tmpret69 = array($tmp71, $tmp73);
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret65;
+  return $tmpret69;
 } // end-of-function
 
 
@@ -3834,49 +4588,49 @@ function
 ats2phppre_stream_concat($arg0)
 {
 //
-  $tmpret70 = NULL;
+  $tmpret74 = NULL;
 //
   __patsflab_stream_concat:
-  $tmpret70 = ATSPMVlazyval(_ats2jspre_stream_patsfun_25__closurerize($arg0));
-  return $tmpret70;
+  $tmpret74 = ATSPMVlazyval(_ats2jspre_stream_patsfun_26__closurerize($arg0));
+  return $tmpret74;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_25($env0)
+_ats2jspre_stream_patsfun_26($env0)
 {
 //
-  $tmpret71 = NULL;
-  $tmp72 = NULL;
-  $tmp73 = NULL;
-  $tmp74 = NULL;
-  $tmp75 = NULL;
+  $tmpret75 = NULL;
   $tmp76 = NULL;
+  $tmp77 = NULL;
+  $tmp78 = NULL;
+  $tmp79 = NULL;
+  $tmp80 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_25:
-  $tmp72 = ATSPMVlazyval_eval($env0); 
+  __patsflab__ats2jspre_stream_patsfun_26:
+  $tmp76 = ATSPMVlazyval_eval($env0); 
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
     __atstmplab36:
-    if(ATSCKptriscons($tmp72)) goto __atstmplab39;
+    if(ATSCKptriscons($tmp76)) goto __atstmplab39;
     __atstmplab37:
-    $tmpret71 = NULL;
+    $tmpret75 = NULL;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
     __atstmplab38:
     __atstmplab39:
-    $tmp73 = $tmp72[0];
-    $tmp74 = $tmp72[1];
-    $tmp76 = ats2phppre_stream_concat($tmp74);
-    $tmp75 = ats2phppre_stream_append($tmp73, $tmp76);
-    $tmpret71 = ATSPMVlazyval_eval($tmp75); 
+    $tmp77 = $tmp76[0];
+    $tmp78 = $tmp76[1];
+    $tmp80 = ats2phppre_stream_concat($tmp78);
+    $tmp79 = ats2phppre_stream_append($tmp77, $tmp80);
+    $tmpret75 = ATSPMVlazyval_eval($tmp79); 
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret71;
+  return $tmpret75;
 } // end-of-function
 
 
@@ -3884,49 +4638,49 @@ function
 ats2phppre_stream_map_cloref($arg0, $arg1)
 {
 //
-  $tmpret77 = NULL;
+  $tmpret81 = NULL;
 //
   __patsflab_stream_map_cloref:
-  $tmpret77 = ATSPMVlazyval(_ats2jspre_stream_patsfun_27__closurerize($arg0, $arg1));
-  return $tmpret77;
+  $tmpret81 = ATSPMVlazyval(_ats2jspre_stream_patsfun_28__closurerize($arg0, $arg1));
+  return $tmpret81;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_27($env0, $env1)
+_ats2jspre_stream_patsfun_28($env0, $env1)
 {
 //
-  $tmpret78 = NULL;
-  $tmp79 = NULL;
-  $tmp80 = NULL;
-  $tmp81 = NULL;
-  $tmp82 = NULL;
+  $tmpret82 = NULL;
   $tmp83 = NULL;
+  $tmp84 = NULL;
+  $tmp85 = NULL;
+  $tmp86 = NULL;
+  $tmp87 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_27:
-  $tmp79 = ATSPMVlazyval_eval($env0); 
+  __patsflab__ats2jspre_stream_patsfun_28:
+  $tmp83 = ATSPMVlazyval_eval($env0); 
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
     __atstmplab40:
-    if(ATSCKptriscons($tmp79)) goto __atstmplab43;
+    if(ATSCKptriscons($tmp83)) goto __atstmplab43;
     __atstmplab41:
-    $tmpret78 = NULL;
+    $tmpret82 = NULL;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
     __atstmplab42:
     __atstmplab43:
-    $tmp80 = $tmp79[0];
-    $tmp81 = $tmp79[1];
-    $tmp82 = $env1[0]($env1, $tmp80);
-    $tmp83 = ats2phppre_stream_map_cloref($tmp81, $env1);
-    $tmpret78 = array($tmp82, $tmp83);
+    $tmp84 = $tmp83[0];
+    $tmp85 = $tmp83[1];
+    $tmp86 = $env1[0]($env1, $tmp84);
+    $tmp87 = ats2phppre_stream_map_cloref($tmp85, $env1);
+    $tmpret82 = array($tmp86, $tmp87);
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret78;
+  return $tmpret82;
 } // end-of-function
 
 
@@ -3934,23 +4688,97 @@ function
 ats2phppre_stream_map_method($arg0, $arg1)
 {
 //
-  $tmpret84 = NULL;
+  $tmpret88 = NULL;
 //
   __patsflab_stream_map_method:
-  $tmpret84 = _ats2jspre_stream_patsfun_29__closurerize($arg0);
-  return $tmpret84;
+  $tmpret88 = _ats2jspre_stream_patsfun_30__closurerize($arg0);
+  return $tmpret88;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_29($env0, $arg0)
+_ats2jspre_stream_patsfun_30($env0, $arg0)
 {
 //
-  $tmpret85 = NULL;
+  $tmpret89 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_29:
-  $tmpret85 = ats2phppre_stream_map_cloref($env0, $arg0);
-  return $tmpret85;
+  __patsflab__ats2jspre_stream_patsfun_30:
+  $tmpret89 = ats2phppre_stream_map_cloref($env0, $arg0);
+  return $tmpret89;
+} // end-of-function
+
+
+function
+ats2phppre_stream_scan_cloref($arg0, $arg1, $arg2)
+{
+//
+  $tmpret90 = NULL;
+//
+  __patsflab_stream_scan_cloref:
+  $tmpret90 = ATSPMVlazyval(_ats2jspre_stream_patsfun_32__closurerize($arg0, $arg1, $arg2));
+  return $tmpret90;
+} // end-of-function
+
+
+function
+_ats2jspre_stream_patsfun_32($env0, $env1, $env2)
+{
+//
+  $tmpret91 = NULL;
+  $tmp92 = NULL;
+  $tmp93 = NULL;
+  $tmp94 = NULL;
+  $tmp95 = NULL;
+  $tmp96 = NULL;
+//
+  __patsflab__ats2jspre_stream_patsfun_32:
+  $tmp92 = ATSPMVlazyval_eval($env0); 
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab44:
+    if(ATSCKptriscons($tmp92)) goto __atstmplab47;
+    __atstmplab45:
+    $tmpret91 = NULL;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab46:
+    __atstmplab47:
+    $tmp93 = $tmp92[0];
+    $tmp94 = $tmp92[1];
+    $tmp96 = $env2[0]($env2, $env1, $tmp93);
+    $tmp95 = ats2phppre_stream_scan_cloref($tmp94, $tmp96, $env2);
+    $tmpret91 = array($env1, $tmp95);
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret91;
+} // end-of-function
+
+
+function
+ats2phppre_stream_scan_method($arg0, $arg1)
+{
+//
+  $tmpret97 = NULL;
+//
+  __patsflab_stream_scan_method:
+  $tmpret97 = _ats2jspre_stream_patsfun_34__closurerize($arg0);
+  return $tmpret97;
+} // end-of-function
+
+
+function
+_ats2jspre_stream_patsfun_34($env0, $arg0, $arg1)
+{
+//
+  $tmpret98 = NULL;
+//
+  __patsflab__ats2jspre_stream_patsfun_34:
+  $tmpret98 = ats2phppre_stream_scan_cloref($env0, $arg0, $arg1);
+  return $tmpret98;
 } // end-of-function
 
 
@@ -3958,55 +4786,55 @@ function
 ats2phppre_stream_filter_cloref($arg0, $arg1)
 {
 //
-  $tmpret86 = NULL;
+  $tmpret99 = NULL;
 //
   __patsflab_stream_filter_cloref:
-  $tmpret86 = ATSPMVlazyval(_ats2jspre_stream_patsfun_31__closurerize($arg0, $arg1));
-  return $tmpret86;
+  $tmpret99 = ATSPMVlazyval(_ats2jspre_stream_patsfun_36__closurerize($arg0, $arg1));
+  return $tmpret99;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_31($env0, $env1)
+_ats2jspre_stream_patsfun_36($env0, $env1)
 {
 //
-  $tmpret87 = NULL;
-  $tmp88 = NULL;
-  $tmp89 = NULL;
-  $tmp90 = NULL;
-  $tmp91 = NULL;
-  $tmp92 = NULL;
-  $tmp93 = NULL;
+  $tmpret100 = NULL;
+  $tmp101 = NULL;
+  $tmp102 = NULL;
+  $tmp103 = NULL;
+  $tmp104 = NULL;
+  $tmp105 = NULL;
+  $tmp106 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_31:
-  $tmp88 = ATSPMVlazyval_eval($env0); 
+  __patsflab__ats2jspre_stream_patsfun_36:
+  $tmp101 = ATSPMVlazyval_eval($env0); 
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab44:
-    if(ATSCKptriscons($tmp88)) goto __atstmplab47;
-    __atstmplab45:
-    $tmpret87 = NULL;
+    __atstmplab48:
+    if(ATSCKptriscons($tmp101)) goto __atstmplab51;
+    __atstmplab49:
+    $tmpret100 = NULL;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab46:
-    __atstmplab47:
-    $tmp89 = $tmp88[0];
-    $tmp90 = $tmp88[1];
-    $tmp91 = $env1[0]($env1, $tmp89);
-    if($tmp91) {
-      $tmp92 = ats2phppre_stream_filter_cloref($tmp90, $env1);
-      $tmpret87 = array($tmp89, $tmp92);
+    __atstmplab50:
+    __atstmplab51:
+    $tmp102 = $tmp101[0];
+    $tmp103 = $tmp101[1];
+    $tmp104 = $env1[0]($env1, $tmp102);
+    if($tmp104) {
+      $tmp105 = ats2phppre_stream_filter_cloref($tmp103, $env1);
+      $tmpret100 = array($tmp102, $tmp105);
     } else {
-      $tmp93 = ats2phppre_stream_filter_cloref($tmp90, $env1);
-      $tmpret87 = ATSPMVlazyval_eval($tmp93); 
+      $tmp106 = ats2phppre_stream_filter_cloref($tmp103, $env1);
+      $tmpret100 = ATSPMVlazyval_eval($tmp106); 
     } // endif
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret87;
+  return $tmpret100;
 } // end-of-function
 
 
@@ -4014,23 +4842,23 @@ function
 ats2phppre_stream_filter_method($arg0)
 {
 //
-  $tmpret94 = NULL;
+  $tmpret107 = NULL;
 //
   __patsflab_stream_filter_method:
-  $tmpret94 = _ats2jspre_stream_patsfun_33__closurerize($arg0);
-  return $tmpret94;
+  $tmpret107 = _ats2jspre_stream_patsfun_38__closurerize($arg0);
+  return $tmpret107;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_33($env0, $arg0)
+_ats2jspre_stream_patsfun_38($env0, $arg0)
 {
 //
-  $tmpret95 = NULL;
+  $tmpret108 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_33:
-  $tmpret95 = ats2phppre_stream_filter_cloref($env0, $arg0);
-  return $tmpret95;
+  __patsflab__ats2jspre_stream_patsfun_38:
+  $tmpret108 = ats2phppre_stream_filter_cloref($env0, $arg0);
+  return $tmpret108;
 } // end-of-function
 
 
@@ -4040,45 +4868,45 @@ ats2phppre_stream_forall_cloref($arg0, $arg1)
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret96 = NULL;
-  $tmp97 = NULL;
-  $tmp98 = NULL;
-  $tmp99 = NULL;
-  $tmp100 = NULL;
+  $tmpret109 = NULL;
+  $tmp110 = NULL;
+  $tmp111 = NULL;
+  $tmp112 = NULL;
+  $tmp113 = NULL;
 //
   __patsflab_stream_forall_cloref:
-  $tmp97 = ATSPMVlazyval_eval($arg0); 
+  $tmp110 = ATSPMVlazyval_eval($arg0); 
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab48:
-    if(ATSCKptriscons($tmp97)) goto __atstmplab51;
-    __atstmplab49:
-    $tmpret96 = true;
+    __atstmplab52:
+    if(ATSCKptriscons($tmp110)) goto __atstmplab55;
+    __atstmplab53:
+    $tmpret109 = true;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab50:
-    __atstmplab51:
-    $tmp98 = $tmp97[0];
-    $tmp99 = $tmp97[1];
-    $tmp100 = $arg1[0]($arg1, $tmp98);
-    if($tmp100) {
+    __atstmplab54:
+    __atstmplab55:
+    $tmp111 = $tmp110[0];
+    $tmp112 = $tmp110[1];
+    $tmp113 = $arg1[0]($arg1, $tmp111);
+    if($tmp113) {
       // ATStailcalseq_beg
-      $apy0 = $tmp99;
+      $apy0 = $tmp112;
       $apy1 = $arg1;
       $arg0 = $apy0;
       $arg1 = $apy1;
       goto __patsflab_stream_forall_cloref;
       // ATStailcalseq_end
     } else {
-      $tmpret96 = false;
+      $tmpret109 = false;
     } // endif
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret96;
+  return $tmpret109;
 } // end-of-function
 
 
@@ -4086,23 +4914,23 @@ function
 ats2phppre_stream_forall_method($arg0)
 {
 //
-  $tmpret101 = NULL;
+  $tmpret114 = NULL;
 //
   __patsflab_stream_forall_method:
-  $tmpret101 = _ats2jspre_stream_patsfun_36__closurerize($arg0);
-  return $tmpret101;
+  $tmpret114 = _ats2jspre_stream_patsfun_41__closurerize($arg0);
+  return $tmpret114;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_36($env0, $arg0)
+_ats2jspre_stream_patsfun_41($env0, $arg0)
 {
 //
-  $tmpret102 = NULL;
+  $tmpret115 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_36:
-  $tmpret102 = ats2phppre_stream_forall_cloref($env0, $arg0);
-  return $tmpret102;
+  __patsflab__ats2jspre_stream_patsfun_41:
+  $tmpret115 = ats2phppre_stream_forall_cloref($env0, $arg0);
+  return $tmpret115;
 } // end-of-function
 
 
@@ -4112,34 +4940,34 @@ ats2phppre_stream_exists_cloref($arg0, $arg1)
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret103 = NULL;
-  $tmp104 = NULL;
-  $tmp105 = NULL;
-  $tmp106 = NULL;
-  $tmp107 = NULL;
+  $tmpret116 = NULL;
+  $tmp117 = NULL;
+  $tmp118 = NULL;
+  $tmp119 = NULL;
+  $tmp120 = NULL;
 //
   __patsflab_stream_exists_cloref:
-  $tmp104 = ATSPMVlazyval_eval($arg0); 
+  $tmp117 = ATSPMVlazyval_eval($arg0); 
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab52:
-    if(ATSCKptriscons($tmp104)) goto __atstmplab55;
-    __atstmplab53:
-    $tmpret103 = false;
+    __atstmplab56:
+    if(ATSCKptriscons($tmp117)) goto __atstmplab59;
+    __atstmplab57:
+    $tmpret116 = false;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab54:
-    __atstmplab55:
-    $tmp105 = $tmp104[0];
-    $tmp106 = $tmp104[1];
-    $tmp107 = $arg1[0]($arg1, $tmp105);
-    if($tmp107) {
-      $tmpret103 = true;
+    __atstmplab58:
+    __atstmplab59:
+    $tmp118 = $tmp117[0];
+    $tmp119 = $tmp117[1];
+    $tmp120 = $arg1[0]($arg1, $tmp118);
+    if($tmp120) {
+      $tmpret116 = true;
     } else {
       // ATStailcalseq_beg
-      $apy0 = $tmp106;
+      $apy0 = $tmp119;
       $apy1 = $arg1;
       $arg0 = $apy0;
       $arg1 = $apy1;
@@ -4150,7 +4978,7 @@ ats2phppre_stream_exists_cloref($arg0, $arg1)
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret103;
+  return $tmpret116;
 } // end-of-function
 
 
@@ -4158,23 +4986,23 @@ function
 ats2phppre_stream_exists_method($arg0)
 {
 //
-  $tmpret108 = NULL;
+  $tmpret121 = NULL;
 //
   __patsflab_stream_exists_method:
-  $tmpret108 = _ats2jspre_stream_patsfun_39__closurerize($arg0);
-  return $tmpret108;
+  $tmpret121 = _ats2jspre_stream_patsfun_44__closurerize($arg0);
+  return $tmpret121;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_39($env0, $arg0)
+_ats2jspre_stream_patsfun_44($env0, $arg0)
 {
 //
-  $tmpret109 = NULL;
+  $tmpret122 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_39:
-  $tmpret109 = ats2phppre_stream_exists_cloref($env0, $arg0);
-  return $tmpret109;
+  __patsflab__ats2jspre_stream_patsfun_44:
+  $tmpret122 = ats2phppre_stream_exists_cloref($env0, $arg0);
+  return $tmpret122;
 } // end-of-function
 
 
@@ -4184,29 +5012,29 @@ ats2phppre_stream_foreach_cloref($arg0, $arg1)
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmp111 = NULL;
-  $tmp112 = NULL;
-  $tmp113 = NULL;
+  $tmp124 = NULL;
+  $tmp125 = NULL;
+  $tmp126 = NULL;
 //
   __patsflab_stream_foreach_cloref:
-  $tmp111 = ATSPMVlazyval_eval($arg0); 
+  $tmp124 = ATSPMVlazyval_eval($arg0); 
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab56:
-    if(ATSCKptriscons($tmp111)) goto __atstmplab59;
-    __atstmplab57:
+    __atstmplab60:
+    if(ATSCKptriscons($tmp124)) goto __atstmplab63;
+    __atstmplab61:
     // ATSINSmove_void;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab58:
-    __atstmplab59:
-    $tmp112 = $tmp111[0];
-    $tmp113 = $tmp111[1];
-    $arg1[0]($arg1, $tmp112);
+    __atstmplab62:
+    __atstmplab63:
+    $tmp125 = $tmp124[0];
+    $tmp126 = $tmp124[1];
+    $arg1[0]($arg1, $tmp125);
     // ATStailcalseq_beg
-    $apy0 = $tmp113;
+    $apy0 = $tmp126;
     $apy1 = $arg1;
     $arg0 = $apy0;
     $arg1 = $apy1;
@@ -4224,20 +5052,20 @@ function
 ats2phppre_stream_foreach_method($arg0)
 {
 //
-  $tmpret115 = NULL;
+  $tmpret128 = NULL;
 //
   __patsflab_stream_foreach_method:
-  $tmpret115 = _ats2jspre_stream_patsfun_42__closurerize($arg0);
-  return $tmpret115;
+  $tmpret128 = _ats2jspre_stream_patsfun_47__closurerize($arg0);
+  return $tmpret128;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_42($env0, $arg0)
+_ats2jspre_stream_patsfun_47($env0, $arg0)
 {
 //
 //
-  __patsflab__ats2jspre_stream_patsfun_42:
+  __patsflab__ats2jspre_stream_patsfun_47:
   ats2phppre_stream_foreach_cloref($env0, $arg0);
   return/*_void*/;
 } // end-of-function
@@ -4249,46 +5077,46 @@ ats2phppre_stream_iforeach_cloref($arg0, $arg1)
 //
 //
   __patsflab_stream_iforeach_cloref:
-  _ats2jspre_stream_loop_44($arg1, 0, $arg0);
+  _ats2jspre_stream_loop_49($arg1, 0, $arg0);
   return/*_void*/;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_loop_44($env0, $arg0, $arg1)
+_ats2jspre_stream_loop_49($env0, $arg0, $arg1)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmp119 = NULL;
-  $tmp120 = NULL;
-  $tmp121 = NULL;
-  $tmp123 = NULL;
+  $tmp132 = NULL;
+  $tmp133 = NULL;
+  $tmp134 = NULL;
+  $tmp136 = NULL;
 //
-  __patsflab__ats2jspre_stream_loop_44:
-  $tmp119 = ATSPMVlazyval_eval($arg1); 
+  __patsflab__ats2jspre_stream_loop_49:
+  $tmp132 = ATSPMVlazyval_eval($arg1); 
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab60:
-    if(ATSCKptriscons($tmp119)) goto __atstmplab63;
-    __atstmplab61:
+    __atstmplab64:
+    if(ATSCKptriscons($tmp132)) goto __atstmplab67;
+    __atstmplab65:
     // ATSINSmove_void;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab62:
-    __atstmplab63:
-    $tmp120 = $tmp119[0];
-    $tmp121 = $tmp119[1];
-    $env0[0]($env0, $arg0, $tmp120);
-    $tmp123 = ats2phppre_add_int1_int1($arg0, 1);
+    __atstmplab66:
+    __atstmplab67:
+    $tmp133 = $tmp132[0];
+    $tmp134 = $tmp132[1];
+    $env0[0]($env0, $arg0, $tmp133);
+    $tmp136 = ats2phppre_add_int1_int1($arg0, 1);
     // ATStailcalseq_beg
-    $apy0 = $tmp123;
-    $apy1 = $tmp121;
+    $apy0 = $tmp136;
+    $apy1 = $tmp134;
     $arg0 = $apy0;
     $arg1 = $apy1;
-    goto __patsflab__ats2jspre_stream_loop_44;
+    goto __patsflab__ats2jspre_stream_loop_49;
     // ATStailcalseq_end
     break;
     // ATSbranchseq_end
@@ -4302,20 +5130,20 @@ function
 ats2phppre_stream_iforeach_method($arg0)
 {
 //
-  $tmpret124 = NULL;
+  $tmpret137 = NULL;
 //
   __patsflab_stream_iforeach_method:
-  $tmpret124 = _ats2jspre_stream_patsfun_46__closurerize($arg0);
-  return $tmpret124;
+  $tmpret137 = _ats2jspre_stream_patsfun_51__closurerize($arg0);
+  return $tmpret137;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_46($env0, $arg0)
+_ats2jspre_stream_patsfun_51($env0, $arg0)
 {
 //
 //
-  __patsflab__ats2jspre_stream_patsfun_46:
+  __patsflab__ats2jspre_stream_patsfun_51:
   ats2phppre_stream_iforeach_cloref($env0, $arg0);
   return/*_void*/;
 } // end-of-function
@@ -4325,41 +5153,41 @@ function
 ats2phppre_stream_tabulate_cloref($arg0)
 {
 //
-  $tmpret126 = NULL;
+  $tmpret139 = NULL;
 //
   __patsflab_stream_tabulate_cloref:
-  $tmpret126 = _ats2jspre_stream_auxmain_48($arg0, 0);
-  return $tmpret126;
+  $tmpret139 = _ats2jspre_stream_auxmain_53($arg0, 0);
+  return $tmpret139;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_auxmain_48($env0, $arg0)
+_ats2jspre_stream_auxmain_53($env0, $arg0)
 {
 //
-  $tmpret127 = NULL;
+  $tmpret140 = NULL;
 //
-  __patsflab__ats2jspre_stream_auxmain_48:
-  $tmpret127 = ATSPMVlazyval(_ats2jspre_stream_patsfun_49__closurerize($env0, $arg0));
-  return $tmpret127;
+  __patsflab__ats2jspre_stream_auxmain_53:
+  $tmpret140 = ATSPMVlazyval(_ats2jspre_stream_patsfun_54__closurerize($env0, $arg0));
+  return $tmpret140;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_49($env0, $env1)
+_ats2jspre_stream_patsfun_54($env0, $env1)
 {
 //
-  $tmpret128 = NULL;
-  $tmp129 = NULL;
-  $tmp130 = NULL;
-  $tmp131 = NULL;
+  $tmpret141 = NULL;
+  $tmp142 = NULL;
+  $tmp143 = NULL;
+  $tmp144 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_49:
-  $tmp129 = $env0[0]($env0, $env1);
-  $tmp131 = ats2phppre_add_int1_int1($env1, 1);
-  $tmp130 = _ats2jspre_stream_auxmain_48($env0, $tmp131);
-  $tmpret128 = array($tmp129, $tmp130);
-  return $tmpret128;
+  __patsflab__ats2jspre_stream_patsfun_54:
+  $tmp142 = $env0[0]($env0, $env1);
+  $tmp144 = ats2phppre_add_int1_int1($env1, 1);
+  $tmp143 = _ats2jspre_stream_auxmain_53($env0, $tmp144);
+  $tmpret141 = array($tmp142, $tmp143);
+  return $tmpret141;
 } // end-of-function
 
 
@@ -4367,98 +5195,98 @@ function
 ats2phppre_cross_stream_list($arg0, $arg1)
 {
 //
-  $tmpret132 = NULL;
+  $tmpret145 = NULL;
 //
   __patsflab_cross_stream_list:
-  $tmpret132 = ATSPMVlazyval(_ats2jspre_stream_patsfun_53__closurerize($arg0, $arg1));
-  return $tmpret132;
+  $tmpret145 = ATSPMVlazyval(_ats2jspre_stream_patsfun_58__closurerize($arg0, $arg1));
+  return $tmpret145;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_auxmain_51($arg0, $arg1, $arg2, $arg3)
+_ats2jspre_stream_auxmain_56($arg0, $arg1, $arg2, $arg3)
 {
 //
-  $tmpret133 = NULL;
+  $tmpret146 = NULL;
 //
-  __patsflab__ats2jspre_stream_auxmain_51:
-  $tmpret133 = ATSPMVlazyval(_ats2jspre_stream_patsfun_52__closurerize($arg0, $arg1, $arg2, $arg3));
-  return $tmpret133;
+  __patsflab__ats2jspre_stream_auxmain_56:
+  $tmpret146 = ATSPMVlazyval(_ats2jspre_stream_patsfun_57__closurerize($arg0, $arg1, $arg2, $arg3));
+  return $tmpret146;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_52($env0, $env1, $env2, $env3)
+_ats2jspre_stream_patsfun_57($env0, $env1, $env2, $env3)
 {
 //
-  $tmpret134 = NULL;
-  $tmp135 = NULL;
-  $tmp136 = NULL;
-  $tmp137 = NULL;
-  $tmp138 = NULL;
-  $tmp139 = NULL;
+  $tmpret147 = NULL;
+  $tmp148 = NULL;
+  $tmp149 = NULL;
+  $tmp150 = NULL;
+  $tmp151 = NULL;
+  $tmp152 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_52:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab64:
-    if(ATSCKptriscons($env3)) goto __atstmplab67;
-    __atstmplab65:
-    $tmp137 = ats2phppre_cross_stream_list($env1, $env2);
-    $tmpret134 = ATSPMVlazyval_eval($tmp137); 
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab66:
-    __atstmplab67:
-    $tmp135 = $env3[0];
-    $tmp136 = $env3[1];
-    $tmp138 = array($env0, $tmp135);
-    $tmp139 = _ats2jspre_stream_auxmain_51($env0, $env1, $env2, $tmp136);
-    $tmpret134 = array($tmp138, $tmp139);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret134;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_53($env0, $env1)
-{
-//
-  $tmpret140 = NULL;
-  $tmp141 = NULL;
-  $tmp142 = NULL;
-  $tmp143 = NULL;
-  $tmp144 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_53:
-  $tmp141 = ATSPMVlazyval_eval($env0); 
+  __patsflab__ats2jspre_stream_patsfun_57:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
     __atstmplab68:
-    if(ATSCKptriscons($tmp141)) goto __atstmplab71;
+    if(ATSCKptriscons($env3)) goto __atstmplab71;
     __atstmplab69:
-    $tmpret140 = NULL;
+    $tmp150 = ats2phppre_cross_stream_list($env1, $env2);
+    $tmpret147 = ATSPMVlazyval_eval($tmp150); 
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
     __atstmplab70:
-    if(ATSCKptrisnull($tmp141)) ATSINScaseof_fail("/home/hwxi/Research/ATS-Postiats/contrib/libatscc/ATS2-0.3.2/DATS/stream.dats: 6907(line=451, offs=1) -- 6999(line=453, offs=50)");
     __atstmplab71:
-    $tmp142 = $tmp141[0];
-    $tmp143 = $tmp141[1];
-    $tmp144 = _ats2jspre_stream_auxmain_51($tmp142, $tmp143, $env1, $env1);
-    $tmpret140 = ATSPMVlazyval_eval($tmp144); 
+    $tmp148 = $env3[0];
+    $tmp149 = $env3[1];
+    $tmp151 = array($env0, $tmp148);
+    $tmp152 = _ats2jspre_stream_auxmain_56($env0, $env1, $env2, $tmp149);
+    $tmpret147 = array($tmp151, $tmp152);
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret140;
+  return $tmpret147;
+} // end-of-function
+
+
+function
+_ats2jspre_stream_patsfun_58($env0, $env1)
+{
+//
+  $tmpret153 = NULL;
+  $tmp154 = NULL;
+  $tmp155 = NULL;
+  $tmp156 = NULL;
+  $tmp157 = NULL;
+//
+  __patsflab__ats2jspre_stream_patsfun_58:
+  $tmp154 = ATSPMVlazyval_eval($env0); 
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab72:
+    if(ATSCKptriscons($tmp154)) goto __atstmplab75;
+    __atstmplab73:
+    $tmpret153 = NULL;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab74:
+    if(ATSCKptrisnull($tmp154)) ATSINScaseof_fail("/home/hwxi/Research/ATS-Postiats/contrib/libatscc/ATS2-0.3.2/DATS/stream.dats: 7890(line=515, offs=1) -- 7982(line=517, offs=50)");
+    __atstmplab75:
+    $tmp155 = $tmp154[0];
+    $tmp156 = $tmp154[1];
+    $tmp157 = _ats2jspre_stream_auxmain_56($tmp155, $tmp156, $env1, $env1);
+    $tmpret153 = ATSPMVlazyval_eval($tmp157); 
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret153;
 } // end-of-function
 
 
@@ -4466,11 +5294,11 @@ function
 ats2phppre_cross_stream_list0($arg0, $arg1)
 {
 //
-  $tmpret145 = NULL;
+  $tmpret158 = NULL;
 //
   __patsflab_cross_stream_list0:
-  $tmpret145 = ats2phppre_cross_stream_list($arg0, $arg1);
-  return $tmpret145;
+  $tmpret158 = ats2phppre_cross_stream_list($arg0, $arg1);
+  return $tmpret158;
 } // end-of-function
 
 
@@ -4478,35 +5306,35 @@ function
 ats2phppre_stream2cloref_exn($arg0)
 {
 //
-  $tmpret146 = NULL;
-  $tmp147 = NULL;
+  $tmpret159 = NULL;
+  $tmp160 = NULL;
 //
   __patsflab_stream2cloref_exn:
-  $tmp147 = ats2phppre_ref($arg0);
-  $tmpret146 = _ats2jspre_stream_patsfun_56__closurerize($tmp147);
-  return $tmpret146;
+  $tmp160 = ats2phppre_ref($arg0);
+  $tmpret159 = _ats2jspre_stream_patsfun_61__closurerize($tmp160);
+  return $tmpret159;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_56($env0)
+_ats2jspre_stream_patsfun_61($env0)
 {
 //
-  $tmpret148 = NULL;
-  $tmp149 = NULL;
-  $tmp150 = NULL;
-  $tmp151 = NULL;
-  $tmp152 = NULL;
+  $tmpret161 = NULL;
+  $tmp162 = NULL;
+  $tmp163 = NULL;
+  $tmp164 = NULL;
+  $tmp165 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_56:
-  $tmp149 = ats2phppre_ref_get_elt($env0);
-  $tmp150 = ATSPMVlazyval_eval($tmp149); 
-  if(ATSCKptrisnull($tmp150)) ATSINScaseof_fail("/home/hwxi/Research/ATS-Postiats/contrib/libatscc/ATS2-0.3.2/DATS/stream.dats: 7300(line=479, offs=5) -- 7324(line=479, offs=29)");
-  $tmp151 = $tmp150[0];
-  $tmp152 = $tmp150[1];
-  ats2phppre_ref_set_elt($env0, $tmp152);
-  $tmpret148 = $tmp151;
-  return $tmpret148;
+  __patsflab__ats2jspre_stream_patsfun_61:
+  $tmp162 = ats2phppre_ref_get_elt($env0);
+  $tmp163 = ATSPMVlazyval_eval($tmp162); 
+  if(ATSCKptrisnull($tmp163)) ATSINScaseof_fail("/home/hwxi/Research/ATS-Postiats/contrib/libatscc/ATS2-0.3.2/DATS/stream.dats: 8283(line=543, offs=5) -- 8307(line=543, offs=29)");
+  $tmp164 = $tmp163[0];
+  $tmp165 = $tmp163[1];
+  ats2phppre_ref_set_elt($env0, $tmp165);
+  $tmpret161 = $tmp164;
+  return $tmpret161;
 } // end-of-function
 
 
@@ -4514,50 +5342,50 @@ function
 ats2phppre_stream2cloref_opt($arg0)
 {
 //
-  $tmpret154 = NULL;
-  $tmp155 = NULL;
+  $tmpret167 = NULL;
+  $tmp168 = NULL;
 //
   __patsflab_stream2cloref_opt:
-  $tmp155 = ats2phppre_ref($arg0);
-  $tmpret154 = _ats2jspre_stream_patsfun_58__closurerize($tmp155);
-  return $tmpret154;
+  $tmp168 = ats2phppre_ref($arg0);
+  $tmpret167 = _ats2jspre_stream_patsfun_63__closurerize($tmp168);
+  return $tmpret167;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_58($env0)
+_ats2jspre_stream_patsfun_63($env0)
 {
 //
-  $tmpret156 = NULL;
-  $tmp157 = NULL;
-  $tmp158 = NULL;
-  $tmp159 = NULL;
-  $tmp160 = NULL;
+  $tmpret169 = NULL;
+  $tmp170 = NULL;
+  $tmp171 = NULL;
+  $tmp172 = NULL;
+  $tmp173 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_58:
-  $tmp157 = ats2phppre_ref_get_elt($env0);
-  $tmp158 = ATSPMVlazyval_eval($tmp157); 
+  __patsflab__ats2jspre_stream_patsfun_63:
+  $tmp170 = ats2phppre_ref_get_elt($env0);
+  $tmp171 = ATSPMVlazyval_eval($tmp170); 
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab72:
-    if(ATSCKptriscons($tmp158)) goto __atstmplab75;
-    __atstmplab73:
-    $tmpret156 = NULL;
+    __atstmplab76:
+    if(ATSCKptriscons($tmp171)) goto __atstmplab79;
+    __atstmplab77:
+    $tmpret169 = NULL;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab74:
-    __atstmplab75:
-    $tmp159 = $tmp158[0];
-    $tmp160 = $tmp158[1];
-    ats2phppre_ref_set_elt($env0, $tmp160);
-    $tmpret156 = array($tmp159);
+    __atstmplab78:
+    __atstmplab79:
+    $tmp172 = $tmp171[0];
+    $tmp173 = $tmp171[1];
+    ats2phppre_ref_set_elt($env0, $tmp173);
+    $tmpret169 = array($tmp172);
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret156;
+  return $tmpret169;
 } // end-of-function
 
 
@@ -4565,137 +5393,48 @@ function
 ats2phppre_stream2cloref_last($arg0, $arg1)
 {
 //
-  $tmpret162 = NULL;
-  $tmp163 = NULL;
-  $tmp164 = NULL;
+  $tmpret175 = NULL;
+  $tmp176 = NULL;
+  $tmp177 = NULL;
 //
   __patsflab_stream2cloref_last:
-  $tmp163 = ats2phppre_ref($arg0);
-  $tmp164 = ats2phppre_ref($arg1);
-  $tmpret162 = _ats2jspre_stream_patsfun_60__closurerize($tmp163, $tmp164);
-  return $tmpret162;
+  $tmp176 = ats2phppre_ref($arg0);
+  $tmp177 = ats2phppre_ref($arg1);
+  $tmpret175 = _ats2jspre_stream_patsfun_65__closurerize($tmp176, $tmp177);
+  return $tmpret175;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_60($env0, $env1)
+_ats2jspre_stream_patsfun_65($env0, $env1)
 {
 //
-  $tmpret165 = NULL;
-  $tmp166 = NULL;
-  $tmp167 = NULL;
-  $tmp168 = NULL;
-  $tmp169 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_60:
-  $tmp166 = ats2phppre_ref_get_elt($env0);
-  $tmp167 = ATSPMVlazyval_eval($tmp166); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab76:
-    if(ATSCKptriscons($tmp167)) goto __atstmplab79;
-    __atstmplab77:
-    $tmpret165 = ats2phppre_ref_get_elt($env1);
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab78:
-    __atstmplab79:
-    $tmp168 = $tmp167[0];
-    $tmp169 = $tmp167[1];
-    ats2phppre_ref_set_elt($env0, $tmp169);
-    ats2phppre_ref_set_elt($env1, $tmp168);
-    $tmpret165 = $tmp168;
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret165;
-} // end-of-function
-
-
-function
-ats2phppre_stream_take_while_cloref($arg0, $arg1)
-{
-//
-  $tmpret172 = NULL;
-  $tmp173 = NULL;
-  $tmp174 = NULL;
-  $tmp175 = NULL;
-  $tmp176 = NULL;
-//
-  __patsflab_stream_take_while_cloref:
-  $tmp173 = ats2phppre_stream_rtake_while_cloref($arg0, $arg1);
-  $tmp174 = $tmp173[0];
-  $tmp175 = $tmp173[1];
-  $tmp176 = ats2phppre_list_reverse($tmp175);
-  $tmpret172 = array($tmp174, $tmp176);
-  return $tmpret172;
-} // end-of-function
-
-
-function
-ats2phppre_stream_rtake_while_cloref($arg0, $arg1)
-{
-//
-  $tmpret177 = NULL;
-  $tmp185 = NULL;
-//
-  __patsflab_stream_rtake_while_cloref:
-  $tmp185 = NULL;
-  $tmpret177 = _ats2jspre_stream_loop_63($arg1, $arg0, 0, $tmp185);
-  return $tmpret177;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_loop_63($env0, $arg0, $arg1, $arg2)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
   $tmpret178 = NULL;
   $tmp179 = NULL;
   $tmp180 = NULL;
   $tmp181 = NULL;
   $tmp182 = NULL;
-  $tmp183 = NULL;
-  $tmp184 = NULL;
 //
-  __patsflab__ats2jspre_stream_loop_63:
-  $tmp179 = ATSPMVlazyval_eval($arg0); 
+  __patsflab__ats2jspre_stream_patsfun_65:
+  $tmp179 = ats2phppre_ref_get_elt($env0);
+  $tmp180 = ATSPMVlazyval_eval($tmp179); 
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
     __atstmplab80:
-    if(ATSCKptriscons($tmp179)) goto __atstmplab83;
+    if(ATSCKptriscons($tmp180)) goto __atstmplab83;
     __atstmplab81:
-    $tmpret178 = array($arg0, $arg2);
+    $tmpret178 = ats2phppre_ref_get_elt($env1);
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
     __atstmplab82:
     __atstmplab83:
-    $tmp180 = $tmp179[0];
-    $tmp181 = $tmp179[1];
-    $tmp182 = $env0[0]($env0, $arg1, $tmp180);
-    if($tmp182) {
-      $tmp183 = ats2phppre_add_int1_int1($arg1, 1);
-      $tmp184 = array($tmp180, $arg2);
-      // ATStailcalseq_beg
-      $apy0 = $tmp181;
-      $apy1 = $tmp183;
-      $apy2 = $tmp184;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      $arg2 = $apy2;
-      goto __patsflab__ats2jspre_stream_loop_63;
-      // ATStailcalseq_end
-    } else {
-      $tmpret178 = array($arg0, $arg2);
-    } // endif
+    $tmp181 = $tmp180[0];
+    $tmp182 = $tmp180[1];
+    ats2phppre_ref_set_elt($env0, $tmp182);
+    ats2phppre_ref_set_elt($env1, $tmp181);
+    $tmpret178 = $tmp181;
     break;
     // ATSbranchseq_end
   } while(0);
@@ -4705,28 +5444,117 @@ _ats2jspre_stream_loop_63($env0, $arg0, $arg1, $arg2)
 
 
 function
-ats2phppre_stream_take_until_cloref($arg0, $arg1)
+ats2phppre_stream_take_while_cloref($arg0, $arg1)
 {
 //
-  $tmpret186 = NULL;
+  $tmpret185 = NULL;
+  $tmp186 = NULL;
+  $tmp187 = NULL;
+  $tmp188 = NULL;
+  $tmp189 = NULL;
 //
-  __patsflab_stream_take_until_cloref:
-  $tmpret186 = ats2phppre_stream_take_while_cloref($arg0, _ats2jspre_stream_patsfun_65__closurerize($arg1));
-  return $tmpret186;
+  __patsflab_stream_take_while_cloref:
+  $tmp186 = ats2phppre_stream_rtake_while_cloref($arg0, $arg1);
+  $tmp187 = $tmp186[0];
+  $tmp188 = $tmp186[1];
+  $tmp189 = ats2phppre_list_reverse($tmp188);
+  $tmpret185 = array($tmp187, $tmp189);
+  return $tmpret185;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_65($env0, $arg0, $arg1)
+ats2phppre_stream_rtake_while_cloref($arg0, $arg1)
 {
 //
-  $tmpret187 = NULL;
-  $tmp188 = NULL;
+  $tmpret190 = NULL;
+  $tmp198 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_65:
-  $tmp188 = $env0[0]($env0, $arg0, $arg1);
-  $tmpret187 = atspre_neg_bool0($tmp188);
-  return $tmpret187;
+  __patsflab_stream_rtake_while_cloref:
+  $tmp198 = NULL;
+  $tmpret190 = _ats2jspre_stream_loop_68($arg1, $arg0, 0, $tmp198);
+  return $tmpret190;
+} // end-of-function
+
+
+function
+_ats2jspre_stream_loop_68($env0, $arg0, $arg1, $arg2)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $apy2 = NULL;
+  $tmpret191 = NULL;
+  $tmp192 = NULL;
+  $tmp193 = NULL;
+  $tmp194 = NULL;
+  $tmp195 = NULL;
+  $tmp196 = NULL;
+  $tmp197 = NULL;
+//
+  __patsflab__ats2jspre_stream_loop_68:
+  $tmp192 = ATSPMVlazyval_eval($arg0); 
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab84:
+    if(ATSCKptriscons($tmp192)) goto __atstmplab87;
+    __atstmplab85:
+    $tmpret191 = array($arg0, $arg2);
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab86:
+    __atstmplab87:
+    $tmp193 = $tmp192[0];
+    $tmp194 = $tmp192[1];
+    $tmp195 = $env0[0]($env0, $arg1, $tmp193);
+    if($tmp195) {
+      $tmp196 = ats2phppre_add_int1_int1($arg1, 1);
+      $tmp197 = array($tmp193, $arg2);
+      // ATStailcalseq_beg
+      $apy0 = $tmp194;
+      $apy1 = $tmp196;
+      $apy2 = $tmp197;
+      $arg0 = $apy0;
+      $arg1 = $apy1;
+      $arg2 = $apy2;
+      goto __patsflab__ats2jspre_stream_loop_68;
+      // ATStailcalseq_end
+    } else {
+      $tmpret191 = array($arg0, $arg2);
+    } // endif
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret191;
+} // end-of-function
+
+
+function
+ats2phppre_stream_take_until_cloref($arg0, $arg1)
+{
+//
+  $tmpret199 = NULL;
+//
+  __patsflab_stream_take_until_cloref:
+  $tmpret199 = ats2phppre_stream_take_while_cloref($arg0, _ats2jspre_stream_patsfun_70__closurerize($arg1));
+  return $tmpret199;
+} // end-of-function
+
+
+function
+_ats2jspre_stream_patsfun_70($env0, $arg0, $arg1)
+{
+//
+  $tmpret200 = NULL;
+  $tmp201 = NULL;
+//
+  __patsflab__ats2jspre_stream_patsfun_70:
+  $tmp201 = $env0[0]($env0, $arg0, $arg1);
+  $tmpret200 = atspre_neg_bool0($tmp201);
+  return $tmpret200;
 } // end-of-function
 
 
@@ -4734,25 +5562,25 @@ function
 ats2phppre_stream_rtake_until_cloref($arg0, $arg1)
 {
 //
-  $tmpret189 = NULL;
+  $tmpret202 = NULL;
 //
   __patsflab_stream_rtake_until_cloref:
-  $tmpret189 = ats2phppre_stream_rtake_while_cloref($arg0, _ats2jspre_stream_patsfun_67__closurerize($arg1));
-  return $tmpret189;
+  $tmpret202 = ats2phppre_stream_rtake_while_cloref($arg0, _ats2jspre_stream_patsfun_72__closurerize($arg1));
+  return $tmpret202;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_67($env0, $arg0, $arg1)
+_ats2jspre_stream_patsfun_72($env0, $arg0, $arg1)
 {
 //
-  $tmpret190 = NULL;
-  $tmp191 = NULL;
+  $tmpret203 = NULL;
+  $tmp204 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_67:
-  $tmp191 = $env0[0]($env0, $arg0, $arg1);
-  $tmpret190 = atspre_neg_bool0($tmp191);
-  return $tmpret190;
+  __patsflab__ats2jspre_stream_patsfun_72:
+  $tmp204 = $env0[0]($env0, $arg0, $arg1);
+  $tmpret203 = atspre_neg_bool0($tmp204);
+  return $tmpret203;
 } // end-of-function
 
 
@@ -4760,109 +5588,109 @@ function
 ats2phppre_stream_list_xprod2($arg0, $arg1)
 {
 //
-  $tmpret192 = NULL;
+  $tmpret205 = NULL;
 //
   __patsflab_stream_list_xprod2:
-  $tmpret192 = _ats2jspre_stream_auxlst_71($arg0, $arg1);
-  return $tmpret192;
+  $tmpret205 = _ats2jspre_stream_auxlst_76($arg0, $arg1);
+  return $tmpret205;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_aux_69($arg0, $arg1)
+_ats2jspre_stream_aux_74($arg0, $arg1)
 {
 //
-  $tmpret193 = NULL;
+  $tmpret206 = NULL;
 //
-  __patsflab__ats2jspre_stream_aux_69:
-  $tmpret193 = ATSPMVlazyval(_ats2jspre_stream_patsfun_70__closurerize($arg0, $arg1));
-  return $tmpret193;
+  __patsflab__ats2jspre_stream_aux_74:
+  $tmpret206 = ATSPMVlazyval(_ats2jspre_stream_patsfun_75__closurerize($arg0, $arg1));
+  return $tmpret206;
 } // end-of-function
 
 
 function
-_ats2jspre_stream_patsfun_70($env0, $env1)
+_ats2jspre_stream_patsfun_75($env0, $env1)
 {
 //
-  $tmpret194 = NULL;
-  $tmp195 = NULL;
-  $tmp196 = NULL;
-  $tmp197 = NULL;
-  $tmp198 = NULL;
+  $tmpret207 = NULL;
+  $tmp208 = NULL;
+  $tmp209 = NULL;
+  $tmp210 = NULL;
+  $tmp211 = NULL;
 //
-  __patsflab__ats2jspre_stream_patsfun_70:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab84:
-    if(ATSCKptriscons($env1)) goto __atstmplab87;
-    __atstmplab85:
-    $tmpret194 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab86:
-    __atstmplab87:
-    $tmp195 = $env1[0];
-    $tmp196 = $env1[1];
-    $tmp197 = array($env0, $tmp195);
-    $tmp198 = _ats2jspre_stream_aux_69($env0, $tmp196);
-    $tmpret194 = array($tmp197, $tmp198);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret194;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_auxlst_71($arg0, $arg1)
-{
-//
-  $tmpret199 = NULL;
-//
-  __patsflab__ats2jspre_stream_auxlst_71:
-  $tmpret199 = ATSPMVlazyval(_ats2jspre_stream_patsfun_72__closurerize($arg0, $arg1));
-  return $tmpret199;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_72($env0, $env1)
-{
-//
-  $tmpret200 = NULL;
-  $tmp201 = NULL;
-  $tmp202 = NULL;
-  $tmp203 = NULL;
-  $tmp204 = NULL;
-  $tmp205 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_72:
+  __patsflab__ats2jspre_stream_patsfun_75:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
     __atstmplab88:
-    if(ATSCKptriscons($env0)) goto __atstmplab91;
+    if(ATSCKptriscons($env1)) goto __atstmplab91;
     __atstmplab89:
-    $tmpret200 = NULL;
+    $tmpret207 = NULL;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
     __atstmplab90:
     __atstmplab91:
-    $tmp201 = $env0[0];
-    $tmp202 = $env0[1];
-    $tmp204 = _ats2jspre_stream_aux_69($tmp201, $env1);
-    $tmp205 = _ats2jspre_stream_auxlst_71($tmp202, $env1);
-    $tmp203 = ats2phppre_stream_append($tmp204, $tmp205);
-    $tmpret200 = ATSPMVlazyval_eval($tmp203); 
+    $tmp208 = $env1[0];
+    $tmp209 = $env1[1];
+    $tmp210 = array($env0, $tmp208);
+    $tmp211 = _ats2jspre_stream_aux_74($env0, $tmp209);
+    $tmpret207 = array($tmp210, $tmp211);
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret200;
+  return $tmpret207;
+} // end-of-function
+
+
+function
+_ats2jspre_stream_auxlst_76($arg0, $arg1)
+{
+//
+  $tmpret212 = NULL;
+//
+  __patsflab__ats2jspre_stream_auxlst_76:
+  $tmpret212 = ATSPMVlazyval(_ats2jspre_stream_patsfun_77__closurerize($arg0, $arg1));
+  return $tmpret212;
+} // end-of-function
+
+
+function
+_ats2jspre_stream_patsfun_77($env0, $env1)
+{
+//
+  $tmpret213 = NULL;
+  $tmp214 = NULL;
+  $tmp215 = NULL;
+  $tmp216 = NULL;
+  $tmp217 = NULL;
+  $tmp218 = NULL;
+//
+  __patsflab__ats2jspre_stream_patsfun_77:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab92:
+    if(ATSCKptriscons($env0)) goto __atstmplab95;
+    __atstmplab93:
+    $tmpret213 = NULL;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab94:
+    __atstmplab95:
+    $tmp214 = $env0[0];
+    $tmp215 = $env0[1];
+    $tmp217 = _ats2jspre_stream_aux_74($tmp214, $env1);
+    $tmp218 = _ats2jspre_stream_auxlst_76($tmp215, $env1);
+    $tmp216 = ats2phppre_stream_append($tmp217, $tmp218);
+    $tmpret213 = ATSPMVlazyval_eval($tmp216); 
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret213;
 } // end-of-function
 
 /* ****** ****** */
@@ -4873,91 +5701,103 @@ _ats2jspre_stream_patsfun_72($env0, $env1)
 /*
 **
 ** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-3-24:  1h:27m
+** The starting compilation time is: 2018-6-23: 17h:12m
 **
 */
 function
-_ats2phppre_stream_vt_patsfun_7__closurerize($env0)
+_ats2phppre_stream_vt_patsfun_10__closurerize($env0)
 {
-  return array(function($cenv) { return _ats2phppre_stream_vt_patsfun_7($cenv[1]); }, $env0);
+  return array(function($cenv) { return _ats2phppre_stream_vt_patsfun_10($cenv[1]); }, $env0);
 }
 
 function
-_ats2phppre_stream_vt_patsfun_10__closurerize($env0, $env1)
+_ats2phppre_stream_vt_patsfun_13__closurerize($env0, $env1)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_10($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_13($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
 }
 
 function
-_ats2phppre_stream_vt_patsfun_19__closurerize($env0, $env1)
+_ats2phppre_stream_vt_patsfun_21__closurerize($env0, $env1)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_19($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_21($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
 }
 
 function
-_ats2phppre_stream_vt_patsfun_22__closurerize($env0)
+_ats2phppre_stream_vt_patsfun_24__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_22($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_24($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_stream_vt_patsfun_25__closurerize($env0, $env1)
+_ats2phppre_stream_vt_patsfun_27__closurerize($env0, $env1)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_25($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_27($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
 }
 
 function
-_ats2phppre_stream_vt_patsfun_27__closurerize($env0)
+_ats2phppre_stream_vt_patsfun_29__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_27($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_29($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_stream_vt_patsfun_30__closurerize($env0, $env1)
+_ats2phppre_stream_vt_patsfun_32__closurerize($env0, $env1)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_30($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_32($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
 }
 
 function
-_ats2phppre_stream_vt_patsfun_32__closurerize($env0)
+_ats2phppre_stream_vt_patsfun_34__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_32($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_34($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_stream_vt_patsfun_36__closurerize($env0)
+_ats2phppre_stream_vt_patsfun_37__closurerize($env0, $env1)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_36($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_37($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
 }
 
 function
-_ats2phppre_stream_vt_patsfun_40__closurerize($env0)
+_ats2phppre_stream_vt_patsfun_39__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_40($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_39($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_stream_vt_patsfun_44__closurerize($env0)
+_ats2phppre_stream_vt_patsfun_43__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_44($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_43($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_stream_vt_patsfun_48__closurerize($env0)
+_ats2phppre_stream_vt_patsfun_47__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_48($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_47($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_stream_vt_patsfun_52__closurerize($env0)
+_ats2phppre_stream_vt_patsfun_51__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_52($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_51($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_stream_vt_patsfun_55__closurerize($env0, $env1)
+_ats2phppre_stream_vt_patsfun_55__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_55($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_55($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_stream_vt_patsfun_59__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_59($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_stream_vt_patsfun_62__closurerize($env0, $env1)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_62($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
 }
 
 
@@ -4976,60 +5816,60 @@ function
 ats2phppre_stream_vt2t($arg0)
 {
 //
-  $tmpret6 = NULL;
+  $tmpret11 = NULL;
 //
   __patsflab_stream_vt2t:
-  $tmpret6 = _ats2phppre_stream_vt_aux_6($arg0);
-  return $tmpret6;
+  $tmpret11 = _ats2phppre_stream_vt_aux_9($arg0);
+  return $tmpret11;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_aux_6($arg0)
+_ats2phppre_stream_vt_aux_9($arg0)
 {
 //
-  $tmpret7 = NULL;
+  $tmpret12 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_aux_6:
-  $tmpret7 = ATSPMVlazyval(_ats2phppre_stream_vt_patsfun_7__closurerize($arg0));
-  return $tmpret7;
+  __patsflab__ats2phppre_stream_vt_aux_9:
+  $tmpret12 = ATSPMVlazyval(_ats2phppre_stream_vt_patsfun_10__closurerize($arg0));
+  return $tmpret12;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_7($env0)
+_ats2phppre_stream_vt_patsfun_10($env0)
 {
 //
-  $tmpret8 = NULL;
-  $tmp9 = NULL;
-  $tmp10 = NULL;
-  $tmp11 = NULL;
-  $tmp12 = NULL;
+  $tmpret13 = NULL;
+  $tmp14 = NULL;
+  $tmp15 = NULL;
+  $tmp16 = NULL;
+  $tmp17 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_7:
-  $tmp9 = ATSPMVllazyval_eval($env0);
+  __patsflab__ats2phppre_stream_vt_patsfun_10:
+  $tmp14 = ATSPMVllazyval_eval($env0);
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
     __atstmplab0:
-    if(ATSCKptriscons($tmp9)) goto __atstmplab3;
+    if(ATSCKptriscons($tmp14)) goto __atstmplab3;
     __atstmplab1:
-    $tmpret8 = NULL;
+    $tmpret13 = NULL;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
     __atstmplab2:
     __atstmplab3:
-    $tmp10 = $tmp9[0];
-    $tmp11 = $tmp9[1];
-    // ATSINSfreecon($tmp9);
-    $tmp12 = _ats2phppre_stream_vt_aux_6($tmp11);
-    $tmpret8 = array($tmp10, $tmp12);
+    $tmp15 = $tmp14[0];
+    $tmp16 = $tmp14[1];
+    // ATSINSfreecon($tmp14);
+    $tmp17 = _ats2phppre_stream_vt_aux_9($tmp16);
+    $tmpret13 = array($tmp15, $tmp17);
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret8;
+  return $tmpret13;
 } // end-of-function
 
 
@@ -5037,73 +5877,73 @@ function
 ats2phppre_stream_vt_takeLte($arg0, $arg1)
 {
 //
-  $tmpret13 = NULL;
+  $tmpret18 = NULL;
 //
   __patsflab_stream_vt_takeLte:
-  $tmpret13 = _ats2phppre_stream_vt_auxmain_9($arg0, $arg1);
-  return $tmpret13;
+  $tmpret18 = _ats2phppre_stream_vt_auxmain_12($arg0, $arg1);
+  return $tmpret18;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_auxmain_9($arg0, $arg1)
+_ats2phppre_stream_vt_auxmain_12($arg0, $arg1)
 {
 //
-  $tmpret14 = NULL;
+  $tmpret19 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_auxmain_9:
-  $tmpret14 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_10__closurerize($arg0, $arg1));
-  return $tmpret14;
+  __patsflab__ats2phppre_stream_vt_auxmain_12:
+  $tmpret19 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_13__closurerize($arg0, $arg1));
+  return $tmpret19;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_10($env0, $env1, $arg0)
+_ats2phppre_stream_vt_patsfun_13($env0, $env1, $arg0)
 {
 //
-  $tmpret15 = NULL;
-  $tmp16 = NULL;
-  $tmp17 = NULL;
-  $tmp18 = NULL;
-  $tmp19 = NULL;
-  $tmp20 = NULL;
+  $tmpret20 = NULL;
   $tmp21 = NULL;
+  $tmp22 = NULL;
+  $tmp23 = NULL;
+  $tmp24 = NULL;
+  $tmp25 = NULL;
+  $tmp26 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_10:
+  __patsflab__ats2phppre_stream_vt_patsfun_13:
   if($arg0) {
-    $tmp16 = ats2phppre_gt_int1_int1($env1, 0);
-    if($tmp16) {
-      $tmp17 = ATSPMVllazyval_eval($env0);
+    $tmp21 = ats2phppre_gt_int1_int1($env1, 0);
+    if($tmp21) {
+      $tmp22 = ATSPMVllazyval_eval($env0);
       // ATScaseofseq_beg
       do {
         // ATSbranchseq_beg
         __atstmplab4:
-        if(ATSCKptriscons($tmp17)) goto __atstmplab7;
+        if(ATSCKptriscons($tmp22)) goto __atstmplab7;
         __atstmplab5:
-        $tmpret15 = NULL;
+        $tmpret20 = NULL;
         break;
         // ATSbranchseq_end
         // ATSbranchseq_beg
         __atstmplab6:
         __atstmplab7:
-        $tmp18 = $tmp17[0];
-        $tmp19 = $tmp17[1];
-        // ATSINSfreecon($tmp17);
-        $tmp21 = ats2phppre_sub_int1_int1($env1, 1);
-        $tmp20 = _ats2phppre_stream_vt_auxmain_9($tmp19, $tmp21);
-        $tmpret15 = array($tmp18, $tmp20);
+        $tmp23 = $tmp22[0];
+        $tmp24 = $tmp22[1];
+        // ATSINSfreecon($tmp22);
+        $tmp26 = ats2phppre_sub_int1_int1($env1, 1);
+        $tmp25 = _ats2phppre_stream_vt_auxmain_12($tmp24, $tmp26);
+        $tmpret20 = array($tmp23, $tmp25);
         break;
         // ATSbranchseq_end
       } while(0);
       // ATScaseofseq_end
     } else {
       atspre_lazy_vt_free($env0);
-      $tmpret15 = NULL;
+      $tmpret20 = NULL;
     } // endif
   } else {
     atspre_lazy_vt_free($env0);
   } // endif
-  return $tmpret15;
+  return $tmpret20;
 } // end-of-function
 
 
@@ -5111,54 +5951,54 @@ function
 ats2phppre_stream_vt_length($arg0)
 {
 //
-  $tmpret24 = NULL;
+  $tmpret29 = NULL;
 //
   __patsflab_stream_vt_length:
-  $tmpret24 = _ats2phppre_stream_vt_loop_12($arg0, 0);
-  return $tmpret24;
+  $tmpret29 = _ats2phppre_stream_vt_loop_15($arg0, 0);
+  return $tmpret29;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_loop_12($arg0, $arg1)
+_ats2phppre_stream_vt_loop_15($arg0, $arg1)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret25 = NULL;
-  $tmp26 = NULL;
-  $tmp28 = NULL;
-  $tmp29 = NULL;
+  $tmpret30 = NULL;
+  $tmp31 = NULL;
+  $tmp33 = NULL;
+  $tmp34 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_loop_12:
-  $tmp26 = ATSPMVllazyval_eval($arg0);
+  __patsflab__ats2phppre_stream_vt_loop_15:
+  $tmp31 = ATSPMVllazyval_eval($arg0);
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
     __atstmplab8:
-    if(ATSCKptriscons($tmp26)) goto __atstmplab11;
+    if(ATSCKptriscons($tmp31)) goto __atstmplab11;
     __atstmplab9:
-    $tmpret25 = $arg1;
+    $tmpret30 = $arg1;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
     __atstmplab10:
     __atstmplab11:
-    $tmp28 = $tmp26[1];
-    // ATSINSfreecon($tmp26);
-    $tmp29 = ats2phppre_add_int1_int1($arg1, 1);
+    $tmp33 = $tmp31[1];
+    // ATSINSfreecon($tmp31);
+    $tmp34 = ats2phppre_add_int1_int1($arg1, 1);
     // ATStailcalseq_beg
-    $apy0 = $tmp28;
-    $apy1 = $tmp29;
+    $apy0 = $tmp33;
+    $apy1 = $tmp34;
     $arg0 = $apy0;
     $arg1 = $apy1;
-    goto __patsflab__ats2phppre_stream_vt_loop_12;
+    goto __patsflab__ats2phppre_stream_vt_loop_15;
     // ATStailcalseq_end
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret25;
+  return $tmpret30;
 } // end-of-function
 
 
@@ -5166,48 +6006,13 @@ function
 ats2phppre_stream2list_vt($arg0)
 {
 //
-  $tmpret30 = NULL;
+  $tmpret35 = NULL;
+  $tmp36 = NULL;
 //
   __patsflab_stream2list_vt:
-  $tmpret30 = _ats2phppre_stream_vt_aux_14($arg0);
-  return $tmpret30;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_aux_14($arg0)
-{
-//
-  $tmpret31 = NULL;
-  $tmp32 = NULL;
-  $tmp33 = NULL;
-  $tmp34 = NULL;
-  $tmp35 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_aux_14:
-  $tmp32 = ATSPMVllazyval_eval($arg0);
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab12:
-    if(ATSCKptriscons($tmp32)) goto __atstmplab15;
-    __atstmplab13:
-    $tmpret31 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab14:
-    __atstmplab15:
-    $tmp33 = $tmp32[0];
-    $tmp34 = $tmp32[1];
-    // ATSINSfreecon($tmp32);
-    $tmp35 = _ats2phppre_stream_vt_aux_14($tmp34);
-    $tmpret31 = array($tmp33, $tmp35);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret31;
+  $tmp36 = ats2phppre_stream2list_vt_rev($arg0);
+  $tmpret35 = ats2phppre_list_vt_reverse($tmp36);
+  return $tmpret35;
 } // end-of-function
 
 
@@ -5215,58 +6020,58 @@ function
 ats2phppre_stream2list_vt_rev($arg0)
 {
 //
-  $tmpret36 = NULL;
-  $tmp42 = NULL;
+  $tmpret37 = NULL;
+  $tmp43 = NULL;
 //
   __patsflab_stream2list_vt_rev:
-  $tmp42 = NULL;
-  $tmpret36 = _ats2phppre_stream_vt_loop_16($arg0, $tmp42);
-  return $tmpret36;
+  $tmp43 = NULL;
+  $tmpret37 = _ats2phppre_stream_vt_loop_18($arg0, $tmp43);
+  return $tmpret37;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_loop_16($arg0, $arg1)
+_ats2phppre_stream_vt_loop_18($arg0, $arg1)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret37 = NULL;
-  $tmp38 = NULL;
+  $tmpret38 = NULL;
   $tmp39 = NULL;
   $tmp40 = NULL;
   $tmp41 = NULL;
+  $tmp42 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_loop_16:
-  $tmp38 = ATSPMVllazyval_eval($arg0);
+  __patsflab__ats2phppre_stream_vt_loop_18:
+  $tmp39 = ATSPMVllazyval_eval($arg0);
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab16:
-    if(ATSCKptriscons($tmp38)) goto __atstmplab19;
-    __atstmplab17:
-    $tmpret37 = $arg1;
+    __atstmplab12:
+    if(ATSCKptriscons($tmp39)) goto __atstmplab15;
+    __atstmplab13:
+    $tmpret38 = $arg1;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab18:
-    __atstmplab19:
-    $tmp39 = $tmp38[0];
-    $tmp40 = $tmp38[1];
-    // ATSINSfreecon($tmp38);
-    $tmp41 = array($tmp39, $arg1);
+    __atstmplab14:
+    __atstmplab15:
+    $tmp40 = $tmp39[0];
+    $tmp41 = $tmp39[1];
+    // ATSINSfreecon($tmp39);
+    $tmp42 = array($tmp40, $arg1);
     // ATStailcalseq_beg
-    $apy0 = $tmp40;
-    $apy1 = $tmp41;
+    $apy0 = $tmp41;
+    $apy1 = $tmp42;
     $arg0 = $apy0;
     $arg1 = $apy1;
-    goto __patsflab__ats2phppre_stream_vt_loop_16;
+    goto __patsflab__ats2phppre_stream_vt_loop_18;
     // ATStailcalseq_end
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret37;
+  return $tmpret38;
 } // end-of-function
 
 
@@ -5274,56 +6079,56 @@ function
 ats2phppre_stream_vt_append($arg0, $arg1)
 {
 //
-  $tmpret43 = NULL;
-//
-  __patsflab_stream_vt_append:
-  $tmpret43 = _ats2phppre_stream_vt_auxmain_18($arg0, $arg1);
-  return $tmpret43;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_auxmain_18($arg0, $arg1)
-{
-//
   $tmpret44 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_auxmain_18:
-  $tmpret44 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_19__closurerize($arg0, $arg1));
+  __patsflab_stream_vt_append:
+  $tmpret44 = _ats2phppre_stream_vt_auxmain_20($arg0, $arg1);
   return $tmpret44;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_19($env0, $env1, $arg0)
+_ats2phppre_stream_vt_auxmain_20($arg0, $arg1)
 {
 //
   $tmpret45 = NULL;
-  $tmp46 = NULL;
+//
+  __patsflab__ats2phppre_stream_vt_auxmain_20:
+  $tmpret45 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_21__closurerize($arg0, $arg1));
+  return $tmpret45;
+} // end-of-function
+
+
+function
+_ats2phppre_stream_vt_patsfun_21($env0, $env1, $arg0)
+{
+//
+  $tmpret46 = NULL;
   $tmp47 = NULL;
   $tmp48 = NULL;
   $tmp49 = NULL;
+  $tmp50 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_19:
+  __patsflab__ats2phppre_stream_vt_patsfun_21:
   if($arg0) {
-    $tmp46 = ATSPMVllazyval_eval($env0);
+    $tmp47 = ATSPMVllazyval_eval($env0);
     // ATScaseofseq_beg
     do {
       // ATSbranchseq_beg
-      __atstmplab20:
-      if(ATSCKptriscons($tmp46)) goto __atstmplab23;
-      __atstmplab21:
-      $tmpret45 = ATSPMVllazyval_eval($env1);
+      __atstmplab16:
+      if(ATSCKptriscons($tmp47)) goto __atstmplab19;
+      __atstmplab17:
+      $tmpret46 = ATSPMVllazyval_eval($env1);
       break;
       // ATSbranchseq_end
       // ATSbranchseq_beg
-      __atstmplab22:
-      __atstmplab23:
-      $tmp47 = $tmp46[0];
-      $tmp48 = $tmp46[1];
-      // ATSINSfreecon($tmp46);
-      $tmp49 = _ats2phppre_stream_vt_auxmain_18($tmp48, $env1);
-      $tmpret45 = array($tmp47, $tmp49);
+      __atstmplab18:
+      __atstmplab19:
+      $tmp48 = $tmp47[0];
+      $tmp49 = $tmp47[1];
+      // ATSINSfreecon($tmp47);
+      $tmp50 = _ats2phppre_stream_vt_auxmain_20($tmp49, $env1);
+      $tmpret46 = array($tmp48, $tmp50);
       break;
       // ATSbranchseq_end
     } while(0);
@@ -5332,7 +6137,7 @@ _ats2phppre_stream_vt_patsfun_19($env0, $env1, $arg0)
     atspre_lazy_vt_free($env0);
     atspre_lazy_vt_free($env1);
   } // endif
-  return $tmpret45;
+  return $tmpret46;
 } // end-of-function
 
 
@@ -5340,58 +6145,58 @@ function
 ats2phppre_stream_vt_concat($arg0)
 {
 //
-  $tmpret52 = NULL;
-//
-  __patsflab_stream_vt_concat:
-  $tmpret52 = _ats2phppre_stream_vt_auxmain_21($arg0);
-  return $tmpret52;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_auxmain_21($arg0)
-{
-//
   $tmpret53 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_auxmain_21:
-  $tmpret53 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_22__closurerize($arg0));
+  __patsflab_stream_vt_concat:
+  $tmpret53 = _ats2phppre_stream_vt_auxmain_23($arg0);
   return $tmpret53;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_22($env0, $arg0)
+_ats2phppre_stream_vt_auxmain_23($arg0)
 {
 //
   $tmpret54 = NULL;
-  $tmp55 = NULL;
+//
+  __patsflab__ats2phppre_stream_vt_auxmain_23:
+  $tmpret54 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_24__closurerize($arg0));
+  return $tmpret54;
+} // end-of-function
+
+
+function
+_ats2phppre_stream_vt_patsfun_24($env0, $arg0)
+{
+//
+  $tmpret55 = NULL;
   $tmp56 = NULL;
   $tmp57 = NULL;
   $tmp58 = NULL;
   $tmp59 = NULL;
+  $tmp60 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_22:
+  __patsflab__ats2phppre_stream_vt_patsfun_24:
   if($arg0) {
-    $tmp55 = ATSPMVllazyval_eval($env0);
+    $tmp56 = ATSPMVllazyval_eval($env0);
     // ATScaseofseq_beg
     do {
       // ATSbranchseq_beg
-      __atstmplab24:
-      if(ATSCKptriscons($tmp55)) goto __atstmplab27;
-      __atstmplab25:
-      $tmpret54 = NULL;
+      __atstmplab20:
+      if(ATSCKptriscons($tmp56)) goto __atstmplab23;
+      __atstmplab21:
+      $tmpret55 = NULL;
       break;
       // ATSbranchseq_end
       // ATSbranchseq_beg
-      __atstmplab26:
-      __atstmplab27:
-      $tmp56 = $tmp55[0];
-      $tmp57 = $tmp55[1];
-      // ATSINSfreecon($tmp55);
-      $tmp59 = _ats2phppre_stream_vt_auxmain_21($tmp57);
-      $tmp58 = ats2phppre_stream_vt_append($tmp56, $tmp59);
-      $tmpret54 = ATSPMVllazyval_eval($tmp58);
+      __atstmplab22:
+      __atstmplab23:
+      $tmp57 = $tmp56[0];
+      $tmp58 = $tmp56[1];
+      // ATSINSfreecon($tmp56);
+      $tmp60 = _ats2phppre_stream_vt_auxmain_23($tmp58);
+      $tmp59 = ats2phppre_stream_vt_append($tmp57, $tmp60);
+      $tmpret55 = ATSPMVllazyval_eval($tmp59);
       break;
       // ATSbranchseq_end
     } while(0);
@@ -5399,7 +6204,7 @@ _ats2phppre_stream_vt_patsfun_22($env0, $arg0)
   } else {
     atspre_lazy_vt_free($env0);
   } // endif
-  return $tmpret54;
+  return $tmpret55;
 } // end-of-function
 
 
@@ -5407,58 +6212,58 @@ function
 ats2phppre_stream_vt_map_cloref($arg0, $arg1)
 {
 //
-  $tmpret61 = NULL;
-//
-  __patsflab_stream_vt_map_cloref:
-  $tmpret61 = _ats2phppre_stream_vt_auxmain_24($arg1, $arg0);
-  return $tmpret61;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_auxmain_24($env0, $arg0)
-{
-//
   $tmpret62 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_auxmain_24:
-  $tmpret62 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_25__closurerize($env0, $arg0));
+  __patsflab_stream_vt_map_cloref:
+  $tmpret62 = _ats2phppre_stream_vt_auxmain_26($arg1, $arg0);
   return $tmpret62;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_25($env0, $env1, $arg0)
+_ats2phppre_stream_vt_auxmain_26($env0, $arg0)
 {
 //
   $tmpret63 = NULL;
-  $tmp64 = NULL;
+//
+  __patsflab__ats2phppre_stream_vt_auxmain_26:
+  $tmpret63 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_27__closurerize($env0, $arg0));
+  return $tmpret63;
+} // end-of-function
+
+
+function
+_ats2phppre_stream_vt_patsfun_27($env0, $env1, $arg0)
+{
+//
+  $tmpret64 = NULL;
   $tmp65 = NULL;
   $tmp66 = NULL;
   $tmp67 = NULL;
   $tmp68 = NULL;
+  $tmp69 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_25:
+  __patsflab__ats2phppre_stream_vt_patsfun_27:
   if($arg0) {
-    $tmp64 = ATSPMVllazyval_eval($env1);
+    $tmp65 = ATSPMVllazyval_eval($env1);
     // ATScaseofseq_beg
     do {
       // ATSbranchseq_beg
-      __atstmplab28:
-      if(ATSCKptriscons($tmp64)) goto __atstmplab31;
-      __atstmplab29:
-      $tmpret63 = NULL;
+      __atstmplab24:
+      if(ATSCKptriscons($tmp65)) goto __atstmplab27;
+      __atstmplab25:
+      $tmpret64 = NULL;
       break;
       // ATSbranchseq_end
       // ATSbranchseq_beg
-      __atstmplab30:
-      __atstmplab31:
-      $tmp65 = $tmp64[0];
-      $tmp66 = $tmp64[1];
-      // ATSINSfreecon($tmp64);
-      $tmp67 = $env0[0]($env0, $tmp65);
-      $tmp68 = _ats2phppre_stream_vt_auxmain_24($env0, $tmp66);
-      $tmpret63 = array($tmp67, $tmp68);
+      __atstmplab26:
+      __atstmplab27:
+      $tmp66 = $tmp65[0];
+      $tmp67 = $tmp65[1];
+      // ATSINSfreecon($tmp65);
+      $tmp68 = $env0[0]($env0, $tmp66);
+      $tmp69 = _ats2phppre_stream_vt_auxmain_26($env0, $tmp67);
+      $tmpret64 = array($tmp68, $tmp69);
       break;
       // ATSbranchseq_end
     } while(0);
@@ -5466,7 +6271,7 @@ _ats2phppre_stream_vt_patsfun_25($env0, $env1, $arg0)
   } else {
     atspre_lazy_vt_free($env1);
   } // endif
-  return $tmpret63;
+  return $tmpret64;
 } // end-of-function
 
 
@@ -5474,23 +6279,135 @@ function
 ats2phppre_stream_vt_map_method($arg0, $arg1)
 {
 //
-  $tmpret70 = NULL;
+  $tmpret71 = NULL;
 //
   __patsflab_stream_vt_map_method:
-  $tmpret70 = _ats2phppre_stream_vt_patsfun_27__closurerize($arg0);
-  return $tmpret70;
+  $tmpret71 = _ats2phppre_stream_vt_patsfun_29__closurerize($arg0);
+  return $tmpret71;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_27($env0, $arg0)
+_ats2phppre_stream_vt_patsfun_29($env0, $arg0)
 {
 //
-  $tmpret71 = NULL;
+  $tmpret72 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_27:
-  $tmpret71 = ats2phppre_stream_vt_map_cloref($env0, $arg0);
-  return $tmpret71;
+  __patsflab__ats2phppre_stream_vt_patsfun_29:
+  $tmpret72 = ats2phppre_stream_vt_map_cloref($env0, $arg0);
+  return $tmpret72;
+} // end-of-function
+
+
+function
+ats2phppre_stream_vt_mapopt_cloref($arg0, $arg1)
+{
+//
+  $tmpret73 = NULL;
+//
+  __patsflab_stream_vt_mapopt_cloref:
+  $tmpret73 = _ats2phppre_stream_vt_auxmain_31($arg1, $arg0);
+  return $tmpret73;
+} // end-of-function
+
+
+function
+_ats2phppre_stream_vt_auxmain_31($env0, $arg0)
+{
+//
+  $tmpret74 = NULL;
+//
+  __patsflab__ats2phppre_stream_vt_auxmain_31:
+  $tmpret74 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_32__closurerize($env0, $arg0));
+  return $tmpret74;
+} // end-of-function
+
+
+function
+_ats2phppre_stream_vt_patsfun_32($env0, $env1, $arg0)
+{
+//
+  $tmpret75 = NULL;
+  $tmp76 = NULL;
+  $tmp77 = NULL;
+  $tmp78 = NULL;
+  $tmp79 = NULL;
+  $tmp80 = NULL;
+  $tmp81 = NULL;
+  $tmp82 = NULL;
+//
+  __patsflab__ats2phppre_stream_vt_patsfun_32:
+  if($arg0) {
+    $tmp76 = ATSPMVllazyval_eval($env1);
+    // ATScaseofseq_beg
+    do {
+      // ATSbranchseq_beg
+      __atstmplab28:
+      if(ATSCKptriscons($tmp76)) goto __atstmplab31;
+      __atstmplab29:
+      $tmpret75 = NULL;
+      break;
+      // ATSbranchseq_end
+      // ATSbranchseq_beg
+      __atstmplab30:
+      __atstmplab31:
+      $tmp77 = $tmp76[0];
+      $tmp78 = $tmp76[1];
+      // ATSINSfreecon($tmp76);
+      $tmp79 = $env0[0]($env0, $tmp77);
+      // ATScaseofseq_beg
+      do {
+        // ATSbranchseq_beg
+        __atstmplab32:
+        if(ATSCKptriscons($tmp79)) goto __atstmplab35;
+        __atstmplab33:
+        $tmp81 = _ats2phppre_stream_vt_auxmain_31($env0, $tmp78);
+        $tmpret75 = ATSPMVllazyval_eval($tmp81);
+        break;
+        // ATSbranchseq_end
+        // ATSbranchseq_beg
+        __atstmplab34:
+        __atstmplab35:
+        $tmp80 = $tmp79[0];
+        // ATSINSfreecon($tmp79);
+        $tmp82 = _ats2phppre_stream_vt_auxmain_31($env0, $tmp78);
+        $tmpret75 = array($tmp80, $tmp82);
+        break;
+        // ATSbranchseq_end
+      } while(0);
+      // ATScaseofseq_end
+      break;
+      // ATSbranchseq_end
+    } while(0);
+    // ATScaseofseq_end
+  } else {
+    atspre_lazy_vt_free($env1);
+  } // endif
+  return $tmpret75;
+} // end-of-function
+
+
+function
+ats2phppre_stream_vt_mapopt_method($arg0, $arg1)
+{
+//
+  $tmpret84 = NULL;
+//
+  __patsflab_stream_vt_mapopt_method:
+  $tmpret84 = _ats2phppre_stream_vt_patsfun_34__closurerize($arg0);
+  return $tmpret84;
+} // end-of-function
+
+
+function
+_ats2phppre_stream_vt_patsfun_34($env0, $arg0)
+{
+//
+  $tmpret85 = NULL;
+//
+  __patsflab__ats2phppre_stream_vt_patsfun_34:
+  $tmpret85 = ats2phppre_stream_vt_mapopt_cloref($env0, $arg0);
+  return $tmpret85;
 } // end-of-function
 
 
@@ -5498,63 +6415,63 @@ function
 ats2phppre_stream_vt_filter_cloref($arg0, $arg1)
 {
 //
-  $tmpret72 = NULL;
+  $tmpret86 = NULL;
 //
   __patsflab_stream_vt_filter_cloref:
-  $tmpret72 = _ats2phppre_stream_vt_auxmain_29($arg1, $arg0);
-  return $tmpret72;
+  $tmpret86 = _ats2phppre_stream_vt_auxmain_36($arg1, $arg0);
+  return $tmpret86;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_auxmain_29($env0, $arg0)
+_ats2phppre_stream_vt_auxmain_36($env0, $arg0)
 {
 //
-  $tmpret73 = NULL;
+  $tmpret87 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_auxmain_29:
-  $tmpret73 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_30__closurerize($env0, $arg0));
-  return $tmpret73;
+  __patsflab__ats2phppre_stream_vt_auxmain_36:
+  $tmpret87 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_37__closurerize($env0, $arg0));
+  return $tmpret87;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_30($env0, $env1, $arg0)
+_ats2phppre_stream_vt_patsfun_37($env0, $env1, $arg0)
 {
 //
-  $tmpret74 = NULL;
-  $tmp75 = NULL;
-  $tmp76 = NULL;
-  $tmp77 = NULL;
-  $tmp78 = NULL;
-  $tmp79 = NULL;
-  $tmp80 = NULL;
+  $tmpret88 = NULL;
+  $tmp89 = NULL;
+  $tmp90 = NULL;
+  $tmp91 = NULL;
+  $tmp92 = NULL;
+  $tmp93 = NULL;
+  $tmp94 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_30:
+  __patsflab__ats2phppre_stream_vt_patsfun_37:
   if($arg0) {
-    $tmp75 = ATSPMVllazyval_eval($env1);
+    $tmp89 = ATSPMVllazyval_eval($env1);
     // ATScaseofseq_beg
     do {
       // ATSbranchseq_beg
-      __atstmplab32:
-      if(ATSCKptriscons($tmp75)) goto __atstmplab35;
-      __atstmplab33:
-      $tmpret74 = NULL;
+      __atstmplab36:
+      if(ATSCKptriscons($tmp89)) goto __atstmplab39;
+      __atstmplab37:
+      $tmpret88 = NULL;
       break;
       // ATSbranchseq_end
       // ATSbranchseq_beg
-      __atstmplab34:
-      __atstmplab35:
-      $tmp76 = $tmp75[0];
-      $tmp77 = $tmp75[1];
-      // ATSINSfreecon($tmp75);
-      $tmp78 = $env0[0]($env0, $tmp76);
-      if($tmp78) {
-        $tmp79 = _ats2phppre_stream_vt_auxmain_29($env0, $tmp77);
-        $tmpret74 = array($tmp76, $tmp79);
+      __atstmplab38:
+      __atstmplab39:
+      $tmp90 = $tmp89[0];
+      $tmp91 = $tmp89[1];
+      // ATSINSfreecon($tmp89);
+      $tmp92 = $env0[0]($env0, $tmp90);
+      if($tmp92) {
+        $tmp93 = _ats2phppre_stream_vt_auxmain_36($env0, $tmp91);
+        $tmpret88 = array($tmp90, $tmp93);
       } else {
-        $tmp80 = _ats2phppre_stream_vt_auxmain_29($env0, $tmp77);
-        $tmpret74 = ATSPMVllazyval_eval($tmp80);
+        $tmp94 = _ats2phppre_stream_vt_auxmain_36($env0, $tmp91);
+        $tmpret88 = ATSPMVllazyval_eval($tmp94);
       } // endif
       break;
       // ATSbranchseq_end
@@ -5563,7 +6480,7 @@ _ats2phppre_stream_vt_patsfun_30($env0, $env1, $arg0)
   } else {
     atspre_lazy_vt_free($env1);
   } // endif
-  return $tmpret74;
+  return $tmpret88;
 } // end-of-function
 
 
@@ -5571,23 +6488,23 @@ function
 ats2phppre_stream_vt_filter_method($arg0)
 {
 //
-  $tmpret82 = NULL;
+  $tmpret96 = NULL;
 //
   __patsflab_stream_vt_filter_method:
-  $tmpret82 = _ats2phppre_stream_vt_patsfun_32__closurerize($arg0);
-  return $tmpret82;
+  $tmpret96 = _ats2phppre_stream_vt_patsfun_39__closurerize($arg0);
+  return $tmpret96;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_32($env0, $arg0)
+_ats2phppre_stream_vt_patsfun_39($env0, $arg0)
 {
 //
-  $tmpret83 = NULL;
+  $tmpret97 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_32:
-  $tmpret83 = ats2phppre_stream_vt_filter_cloref($env0, $arg0);
-  return $tmpret83;
+  __patsflab__ats2phppre_stream_vt_patsfun_39:
+  $tmpret97 = ats2phppre_stream_vt_filter_cloref($env0, $arg0);
+  return $tmpret97;
 } // end-of-function
 
 
@@ -5595,58 +6512,58 @@ function
 ats2phppre_stream_vt_exists_cloref($arg0, $arg1)
 {
 //
-  $tmpret84 = NULL;
+  $tmpret98 = NULL;
 //
   __patsflab_stream_vt_exists_cloref:
-  $tmpret84 = _ats2phppre_stream_vt_loop_34($arg1, $arg0);
-  return $tmpret84;
+  $tmpret98 = _ats2phppre_stream_vt_loop_41($arg1, $arg0);
+  return $tmpret98;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_loop_34($env0, $arg0)
+_ats2phppre_stream_vt_loop_41($env0, $arg0)
 {
 //
   $apy0 = NULL;
-  $tmpret85 = NULL;
-  $tmp86 = NULL;
-  $tmp87 = NULL;
-  $tmp88 = NULL;
-  $tmp89 = NULL;
+  $tmpret99 = NULL;
+  $tmp100 = NULL;
+  $tmp101 = NULL;
+  $tmp102 = NULL;
+  $tmp103 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_loop_34:
-  $tmp86 = ATSPMVllazyval_eval($arg0);
+  __patsflab__ats2phppre_stream_vt_loop_41:
+  $tmp100 = ATSPMVllazyval_eval($arg0);
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab36:
-    if(ATSCKptriscons($tmp86)) goto __atstmplab39;
-    __atstmplab37:
-    $tmpret85 = false;
+    __atstmplab40:
+    if(ATSCKptriscons($tmp100)) goto __atstmplab43;
+    __atstmplab41:
+    $tmpret99 = false;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab38:
-    __atstmplab39:
-    $tmp87 = $tmp86[0];
-    $tmp88 = $tmp86[1];
-    // ATSINSfreecon($tmp86);
-    $tmp89 = $env0[0]($env0, $tmp87);
-    if($tmp89) {
-      atspre_lazy_vt_free($tmp88);
-      $tmpret85 = true;
+    __atstmplab42:
+    __atstmplab43:
+    $tmp101 = $tmp100[0];
+    $tmp102 = $tmp100[1];
+    // ATSINSfreecon($tmp100);
+    $tmp103 = $env0[0]($env0, $tmp101);
+    if($tmp103) {
+      atspre_lazy_vt_free($tmp102);
+      $tmpret99 = true;
     } else {
       // ATStailcalseq_beg
-      $apy0 = $tmp88;
+      $apy0 = $tmp102;
       $arg0 = $apy0;
-      goto __patsflab__ats2phppre_stream_vt_loop_34;
+      goto __patsflab__ats2phppre_stream_vt_loop_41;
       // ATStailcalseq_end
     } // endif
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret85;
+  return $tmpret99;
 } // end-of-function
 
 
@@ -5654,23 +6571,23 @@ function
 ats2phppre_stream_vt_exists_method($arg0)
 {
 //
-  $tmpret91 = NULL;
+  $tmpret105 = NULL;
 //
   __patsflab_stream_vt_exists_method:
-  $tmpret91 = _ats2phppre_stream_vt_patsfun_36__closurerize($arg0);
-  return $tmpret91;
+  $tmpret105 = _ats2phppre_stream_vt_patsfun_43__closurerize($arg0);
+  return $tmpret105;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_36($env0, $arg0)
+_ats2phppre_stream_vt_patsfun_43($env0, $arg0)
 {
 //
-  $tmpret92 = NULL;
+  $tmpret106 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_36:
-  $tmpret92 = ats2phppre_stream_vt_exists_cloref($env0, $arg0);
-  return $tmpret92;
+  __patsflab__ats2phppre_stream_vt_patsfun_43:
+  $tmpret106 = ats2phppre_stream_vt_exists_cloref($env0, $arg0);
+  return $tmpret106;
 } // end-of-function
 
 
@@ -5678,58 +6595,58 @@ function
 ats2phppre_stream_vt_forall_cloref($arg0, $arg1)
 {
 //
-  $tmpret93 = NULL;
+  $tmpret107 = NULL;
 //
   __patsflab_stream_vt_forall_cloref:
-  $tmpret93 = _ats2phppre_stream_vt_loop_38($arg1, $arg0);
-  return $tmpret93;
+  $tmpret107 = _ats2phppre_stream_vt_loop_45($arg1, $arg0);
+  return $tmpret107;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_loop_38($env0, $arg0)
+_ats2phppre_stream_vt_loop_45($env0, $arg0)
 {
 //
   $apy0 = NULL;
-  $tmpret94 = NULL;
-  $tmp95 = NULL;
-  $tmp96 = NULL;
-  $tmp97 = NULL;
-  $tmp98 = NULL;
+  $tmpret108 = NULL;
+  $tmp109 = NULL;
+  $tmp110 = NULL;
+  $tmp111 = NULL;
+  $tmp112 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_loop_38:
-  $tmp95 = ATSPMVllazyval_eval($arg0);
+  __patsflab__ats2phppre_stream_vt_loop_45:
+  $tmp109 = ATSPMVllazyval_eval($arg0);
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab40:
-    if(ATSCKptriscons($tmp95)) goto __atstmplab43;
-    __atstmplab41:
-    $tmpret94 = true;
+    __atstmplab44:
+    if(ATSCKptriscons($tmp109)) goto __atstmplab47;
+    __atstmplab45:
+    $tmpret108 = true;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab42:
-    __atstmplab43:
-    $tmp96 = $tmp95[0];
-    $tmp97 = $tmp95[1];
-    // ATSINSfreecon($tmp95);
-    $tmp98 = $env0[0]($env0, $tmp96);
-    if($tmp98) {
+    __atstmplab46:
+    __atstmplab47:
+    $tmp110 = $tmp109[0];
+    $tmp111 = $tmp109[1];
+    // ATSINSfreecon($tmp109);
+    $tmp112 = $env0[0]($env0, $tmp110);
+    if($tmp112) {
       // ATStailcalseq_beg
-      $apy0 = $tmp97;
+      $apy0 = $tmp111;
       $arg0 = $apy0;
-      goto __patsflab__ats2phppre_stream_vt_loop_38;
+      goto __patsflab__ats2phppre_stream_vt_loop_45;
       // ATStailcalseq_end
     } else {
-      atspre_lazy_vt_free($tmp97);
-      $tmpret94 = false;
+      atspre_lazy_vt_free($tmp111);
+      $tmpret108 = false;
     } // endif
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret94;
+  return $tmpret108;
 } // end-of-function
 
 
@@ -5737,23 +6654,23 @@ function
 ats2phppre_stream_vt_forall_method($arg0)
 {
 //
-  $tmpret100 = NULL;
+  $tmpret114 = NULL;
 //
   __patsflab_stream_vt_forall_method:
-  $tmpret100 = _ats2phppre_stream_vt_patsfun_40__closurerize($arg0);
-  return $tmpret100;
+  $tmpret114 = _ats2phppre_stream_vt_patsfun_47__closurerize($arg0);
+  return $tmpret114;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_40($env0, $arg0)
+_ats2phppre_stream_vt_patsfun_47($env0, $arg0)
 {
 //
-  $tmpret101 = NULL;
+  $tmpret115 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_40:
-  $tmpret101 = ats2phppre_stream_vt_forall_cloref($env0, $arg0);
-  return $tmpret101;
+  __patsflab__ats2phppre_stream_vt_patsfun_47:
+  $tmpret115 = ats2phppre_stream_vt_forall_cloref($env0, $arg0);
+  return $tmpret115;
 } // end-of-function
 
 
@@ -5763,42 +6680,42 @@ ats2phppre_stream_vt_foreach_cloref($arg0, $arg1)
 //
 //
   __patsflab_stream_vt_foreach_cloref:
-  _ats2phppre_stream_vt_loop_42($arg1, $arg0);
+  _ats2phppre_stream_vt_loop_49($arg1, $arg0);
   return/*_void*/;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_loop_42($env0, $arg0)
+_ats2phppre_stream_vt_loop_49($env0, $arg0)
 {
 //
   $apy0 = NULL;
-  $tmp104 = NULL;
-  $tmp105 = NULL;
-  $tmp106 = NULL;
+  $tmp118 = NULL;
+  $tmp119 = NULL;
+  $tmp120 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_loop_42:
-  $tmp104 = ATSPMVllazyval_eval($arg0);
+  __patsflab__ats2phppre_stream_vt_loop_49:
+  $tmp118 = ATSPMVllazyval_eval($arg0);
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab44:
-    if(ATSCKptriscons($tmp104)) goto __atstmplab47;
-    __atstmplab45:
+    __atstmplab48:
+    if(ATSCKptriscons($tmp118)) goto __atstmplab51;
+    __atstmplab49:
     // ATSINSmove_void;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab46:
-    __atstmplab47:
-    $tmp105 = $tmp104[0];
-    $tmp106 = $tmp104[1];
-    // ATSINSfreecon($tmp104);
-    $env0[0]($env0, $tmp105);
+    __atstmplab50:
+    __atstmplab51:
+    $tmp119 = $tmp118[0];
+    $tmp120 = $tmp118[1];
+    // ATSINSfreecon($tmp118);
+    $env0[0]($env0, $tmp119);
     // ATStailcalseq_beg
-    $apy0 = $tmp106;
+    $apy0 = $tmp120;
     $arg0 = $apy0;
-    goto __patsflab__ats2phppre_stream_vt_loop_42;
+    goto __patsflab__ats2phppre_stream_vt_loop_49;
     // ATStailcalseq_end
     break;
     // ATSbranchseq_end
@@ -5812,20 +6729,20 @@ function
 ats2phppre_stream_vt_foreach_method($arg0)
 {
 //
-  $tmpret108 = NULL;
+  $tmpret122 = NULL;
 //
   __patsflab_stream_vt_foreach_method:
-  $tmpret108 = _ats2phppre_stream_vt_patsfun_44__closurerize($arg0);
-  return $tmpret108;
+  $tmpret122 = _ats2phppre_stream_vt_patsfun_51__closurerize($arg0);
+  return $tmpret122;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_44($env0, $arg0)
+_ats2phppre_stream_vt_patsfun_51($env0, $arg0)
 {
 //
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_44:
+  __patsflab__ats2phppre_stream_vt_patsfun_51:
   ats2phppre_stream_vt_foreach_cloref($env0, $arg0);
   return/*_void*/;
 } // end-of-function
@@ -5837,47 +6754,47 @@ ats2phppre_stream_vt_iforeach_cloref($arg0, $arg1)
 //
 //
   __patsflab_stream_vt_iforeach_cloref:
-  _ats2phppre_stream_vt_loop_46($arg1, 0, $arg0);
+  _ats2phppre_stream_vt_loop_53($arg1, 0, $arg0);
   return/*_void*/;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_loop_46($env0, $arg0, $arg1)
+_ats2phppre_stream_vt_loop_53($env0, $arg0, $arg1)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmp112 = NULL;
-  $tmp113 = NULL;
-  $tmp114 = NULL;
-  $tmp116 = NULL;
+  $tmp126 = NULL;
+  $tmp127 = NULL;
+  $tmp128 = NULL;
+  $tmp130 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_loop_46:
-  $tmp112 = ATSPMVllazyval_eval($arg1);
+  __patsflab__ats2phppre_stream_vt_loop_53:
+  $tmp126 = ATSPMVllazyval_eval($arg1);
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab48:
-    if(ATSCKptriscons($tmp112)) goto __atstmplab51;
-    __atstmplab49:
+    __atstmplab52:
+    if(ATSCKptriscons($tmp126)) goto __atstmplab55;
+    __atstmplab53:
     // ATSINSmove_void;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab50:
-    __atstmplab51:
-    $tmp113 = $tmp112[0];
-    $tmp114 = $tmp112[1];
-    // ATSINSfreecon($tmp112);
-    $env0[0]($env0, $arg0, $tmp113);
-    $tmp116 = ats2phppre_add_int1_int1($arg0, 1);
+    __atstmplab54:
+    __atstmplab55:
+    $tmp127 = $tmp126[0];
+    $tmp128 = $tmp126[1];
+    // ATSINSfreecon($tmp126);
+    $env0[0]($env0, $arg0, $tmp127);
+    $tmp130 = ats2phppre_add_int1_int1($arg0, 1);
     // ATStailcalseq_beg
-    $apy0 = $tmp116;
-    $apy1 = $tmp114;
+    $apy0 = $tmp130;
+    $apy1 = $tmp128;
     $arg0 = $apy0;
     $arg1 = $apy1;
-    goto __patsflab__ats2phppre_stream_vt_loop_46;
+    goto __patsflab__ats2phppre_stream_vt_loop_53;
     // ATStailcalseq_end
     break;
     // ATSbranchseq_end
@@ -5891,20 +6808,20 @@ function
 ats2phppre_stream_vt_iforeach_method($arg0)
 {
 //
-  $tmpret117 = NULL;
+  $tmpret131 = NULL;
 //
   __patsflab_stream_vt_iforeach_method:
-  $tmpret117 = _ats2phppre_stream_vt_patsfun_48__closurerize($arg0);
-  return $tmpret117;
+  $tmpret131 = _ats2phppre_stream_vt_patsfun_55__closurerize($arg0);
+  return $tmpret131;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_48($env0, $arg0)
+_ats2phppre_stream_vt_patsfun_55($env0, $arg0)
 {
 //
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_48:
+  __patsflab__ats2phppre_stream_vt_patsfun_55:
   ats2phppre_stream_vt_iforeach_cloref($env0, $arg0);
   return/*_void*/;
 } // end-of-function
@@ -5916,38 +6833,38 @@ ats2phppre_stream_vt_rforeach_cloref($arg0, $arg1)
 //
 //
   __patsflab_stream_vt_rforeach_cloref:
-  _ats2phppre_stream_vt_auxmain_50($arg1, $arg0);
+  _ats2phppre_stream_vt_auxmain_57($arg1, $arg0);
   return/*_void*/;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_auxmain_50($env0, $arg0)
+_ats2phppre_stream_vt_auxmain_57($env0, $arg0)
 {
 //
-  $tmp121 = NULL;
-  $tmp122 = NULL;
-  $tmp123 = NULL;
+  $tmp135 = NULL;
+  $tmp136 = NULL;
+  $tmp137 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_auxmain_50:
-  $tmp121 = ATSPMVllazyval_eval($arg0);
+  __patsflab__ats2phppre_stream_vt_auxmain_57:
+  $tmp135 = ATSPMVllazyval_eval($arg0);
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab52:
-    if(ATSCKptriscons($tmp121)) goto __atstmplab55;
-    __atstmplab53:
+    __atstmplab56:
+    if(ATSCKptriscons($tmp135)) goto __atstmplab59;
+    __atstmplab57:
     // ATSINSmove_void;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab54:
-    __atstmplab55:
-    $tmp122 = $tmp121[0];
-    $tmp123 = $tmp121[1];
-    // ATSINSfreecon($tmp121);
-    _ats2phppre_stream_vt_auxmain_50($env0, $tmp123);
-    $env0[0]($env0, $tmp122);
+    __atstmplab58:
+    __atstmplab59:
+    $tmp136 = $tmp135[0];
+    $tmp137 = $tmp135[1];
+    // ATSINSfreecon($tmp135);
+    _ats2phppre_stream_vt_auxmain_57($env0, $tmp137);
+    $env0[0]($env0, $tmp136);
     break;
     // ATSbranchseq_end
   } while(0);
@@ -5960,20 +6877,20 @@ function
 ats2phppre_stream_vt_rforeach_method($arg0)
 {
 //
-  $tmpret125 = NULL;
+  $tmpret139 = NULL;
 //
   __patsflab_stream_vt_rforeach_method:
-  $tmpret125 = _ats2phppre_stream_vt_patsfun_52__closurerize($arg0);
-  return $tmpret125;
+  $tmpret139 = _ats2phppre_stream_vt_patsfun_59__closurerize($arg0);
+  return $tmpret139;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_52($env0, $arg0)
+_ats2phppre_stream_vt_patsfun_59($env0, $arg0)
 {
 //
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_52:
+  __patsflab__ats2phppre_stream_vt_patsfun_59:
   ats2phppre_stream_vt_rforeach_cloref($env0, $arg0);
   return/*_void*/;
 } // end-of-function
@@ -5983,44 +6900,44 @@ function
 ats2phppre_stream_vt_tabulate_cloref($arg0)
 {
 //
-  $tmpret127 = NULL;
+  $tmpret141 = NULL;
 //
   __patsflab_stream_vt_tabulate_cloref:
-  $tmpret127 = _ats2phppre_stream_vt_auxmain_54($arg0, 0);
-  return $tmpret127;
+  $tmpret141 = _ats2phppre_stream_vt_auxmain_61($arg0, 0);
+  return $tmpret141;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_auxmain_54($env0, $arg0)
+_ats2phppre_stream_vt_auxmain_61($env0, $arg0)
 {
 //
-  $tmpret128 = NULL;
+  $tmpret142 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_auxmain_54:
-  $tmpret128 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_55__closurerize($env0, $arg0));
-  return $tmpret128;
+  __patsflab__ats2phppre_stream_vt_auxmain_61:
+  $tmpret142 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_62__closurerize($env0, $arg0));
+  return $tmpret142;
 } // end-of-function
 
 
 function
-_ats2phppre_stream_vt_patsfun_55($env0, $env1, $arg0)
+_ats2phppre_stream_vt_patsfun_62($env0, $env1, $arg0)
 {
 //
-  $tmpret129 = NULL;
-  $tmp130 = NULL;
-  $tmp131 = NULL;
-  $tmp132 = NULL;
+  $tmpret143 = NULL;
+  $tmp144 = NULL;
+  $tmp145 = NULL;
+  $tmp146 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_55:
+  __patsflab__ats2phppre_stream_vt_patsfun_62:
   if($arg0) {
-    $tmp130 = $env0[0]($env0, $env1);
-    $tmp132 = ats2phppre_add_int1_int1($env1, 1);
-    $tmp131 = _ats2phppre_stream_vt_auxmain_54($env0, $tmp132);
-    $tmpret129 = array($tmp130, $tmp131);
+    $tmp144 = $env0[0]($env0, $env1);
+    $tmp146 = ats2phppre_add_int1_int1($env1, 1);
+    $tmp145 = _ats2phppre_stream_vt_auxmain_61($env0, $tmp146);
+    $tmpret143 = array($tmp144, $tmp145);
   } else {
   } // endif
-  return $tmpret129;
+  return $tmpret143;
 } // end-of-function
 
 /* ****** ****** */
@@ -6031,7 +6948,132 @@ _ats2phppre_stream_vt_patsfun_55($env0, $env1, $arg0)
 /*
 **
 ** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-3-24:  1h:27m
+** The starting compilation time is: 2018-6-23: 17h:12m
+**
+*/
+function
+_ats2phppre_filebas_patsfun_2__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_filebas_patsfun_2($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_filebas_patsfun_5__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_filebas_patsfun_5($cenv[1], $arg0); }, $env0);
+}
+
+
+function
+ats2phppre_streamize_fileref_line($arg0)
+{
+//
+  $tmpret0 = NULL;
+//
+  __patsflab_streamize_fileref_line:
+  $tmpret0 = _ats2phppre_filebas_auxmain_1($arg0);
+  return $tmpret0;
+} // end-of-function
+
+
+function
+_ats2phppre_filebas_auxmain_1($arg0)
+{
+//
+  $tmpret1 = NULL;
+//
+  __patsflab__ats2phppre_filebas_auxmain_1:
+  $tmpret1 = ATSPMVllazyval(_ats2phppre_filebas_patsfun_2__closurerize($arg0));
+  return $tmpret1;
+} // end-of-function
+
+
+function
+_ats2phppre_filebas_patsfun_2($env0, $arg0)
+{
+//
+  $tmpret2 = NULL;
+  $tmp3 = NULL;
+  $tmp4 = NULL;
+  $tmp5 = NULL;
+//
+  __patsflab__ats2phppre_filebas_patsfun_2:
+  if($arg0) {
+    $tmp3 = fgets($env0);
+    $tmp4 = ats2phppre_boolize($tmp3);
+    if($tmp4) {
+      $tmp5 = _ats2phppre_filebas_auxmain_1($env0);
+      $tmpret2 = array($tmp3, $tmp5);
+    } else {
+      $tmpret2 = NULL;
+    } // endif
+  } else {
+  } // endif
+  return $tmpret2;
+} // end-of-function
+
+
+function
+ats2phppre_streamize_fileptr_line($arg0)
+{
+//
+  $tmpret6 = NULL;
+//
+  __patsflab_streamize_fileptr_line:
+  $tmpret6 = _ats2phppre_filebas_auxmain_4($arg0);
+  return $tmpret6;
+} // end-of-function
+
+
+function
+_ats2phppre_filebas_auxmain_4($arg0)
+{
+//
+  $tmpret7 = NULL;
+//
+  __patsflab__ats2phppre_filebas_auxmain_4:
+  $tmpret7 = ATSPMVllazyval(_ats2phppre_filebas_patsfun_5__closurerize($arg0));
+  return $tmpret7;
+} // end-of-function
+
+
+function
+_ats2phppre_filebas_patsfun_5($env0, $arg0)
+{
+//
+  $tmpret8 = NULL;
+  $tmp9 = NULL;
+  $tmp10 = NULL;
+  $tmp11 = NULL;
+  $tmp12 = NULL;
+  $tmp13 = NULL;
+//
+  __patsflab__ats2phppre_filebas_patsfun_5:
+  if($arg0) {
+    $tmp9 = fgets($env0);
+    $tmp10 = ats2phppre_boolize($tmp9);
+    if($tmp10) {
+      $tmp11 = _ats2phppre_filebas_auxmain_4($env0);
+      $tmpret8 = array($tmp9, $tmp11);
+    } else {
+      $tmp12 = ats2phppre_fclose_1($env0);
+      $tmpret8 = NULL;
+    } // endif
+  } else {
+    $tmp13 = ats2phppre_fclose_1($env0);
+  } // endif
+  return $tmpret8;
+} // end-of-function
+
+/* ****** ****** */
+
+/* end-of-compilation-unit */
+?>
+<?php
+/*
+**
+** The PHP code is generated by atscc2php
+** The starting compilation time is: 2018-6-23: 17h:12m
 **
 */
 function
@@ -6041,87 +7083,123 @@ _ats2phppre_intrange_patsfun_4__closurerize($env0)
 }
 
 function
-_ats2phppre_intrange_patsfun_9__closurerize($env0)
+_ats2phppre_intrange_patsfun_8__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_9($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_8($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_intrange_patsfun_11__closurerize($env0)
+_ats2phppre_intrange_patsfun_10__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_11($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_10($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_intrange_patsfun_13__closurerize($env0)
+_ats2phppre_intrange_patsfun_14__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_13($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_14($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_intrange_patsfun_16__closurerize($env0, $env1)
+_ats2phppre_intrange_patsfun_17__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_16($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+  return array(function($cenv, $arg0, $arg1) { return _ats2phppre_intrange_patsfun_17($cenv[1], $arg0, $arg1); }, $env0);
 }
 
 function
 _ats2phppre_intrange_patsfun_20__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_20($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0, $arg1) { return _ats2phppre_intrange_patsfun_20($cenv[1], $arg0, $arg1); }, $env0);
 }
 
 function
-_ats2phppre_intrange_patsfun_23__closurerize($env0)
+_ats2phppre_intrange_patsfun_24__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_23($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_24($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_intrange_patsfun_26__closurerize($env0, $env1, $env2)
+_ats2phppre_intrange_patsfun_27__closurerize($env0)
 {
-  return array(function($cenv) { return _ats2phppre_intrange_patsfun_26($cenv[1], $cenv[2], $cenv[3]); }, $env0, $env1, $env2);
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_27($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_intrange_patsfun_28__closurerize($env0)
+_ats2phppre_intrange_patsfun_30__closurerize($env0, $env1, $env2)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_28($cenv[1], $arg0); }, $env0);
+  return array(function($cenv) { return _ats2phppre_intrange_patsfun_30($cenv[1], $cenv[2], $cenv[3]); }, $env0, $env1, $env2);
 }
 
 function
-_ats2phppre_intrange_patsfun_31__closurerize($env0, $env1, $env2)
+_ats2phppre_intrange_patsfun_32__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_31($cenv[1], $cenv[2], $cenv[3], $arg0); }, $env0, $env1, $env2);
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_32($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_intrange_patsfun_33__closurerize($env0)
+_ats2phppre_intrange_patsfun_35__closurerize($env0, $env1, $env2)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_33($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_35($cenv[1], $cenv[2], $cenv[3], $arg0); }, $env0, $env1, $env2);
 }
 
 function
-_ats2phppre_intrange_patsfun_40__closurerize($env0)
+_ats2phppre_intrange_patsfun_37__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_40($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_37($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_intrange_patsfun_44__closurerize($env0)
+_ats2phppre_intrange_patsfun_42__closurerize($env0, $env1)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_44($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_42($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
 }
 
 function
-_ats2phppre_intrange_patsfun_48__closurerize($env0)
+_ats2phppre_intrange_patsfun_44__closurerize($env0, $env1)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_48($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_44($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
 }
 
 function
-_ats2phppre_intrange_patsfun_52__closurerize($env0, $env1, $env2)
+_ats2phppre_intrange_patsfun_46__closurerize($env0, $env1)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_52($cenv[1], $cenv[2], $cenv[3], $arg0); }, $env0, $env1, $env2);
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_46($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+}
+
+function
+_ats2phppre_intrange_patsfun_50__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_50($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_intrange_patsfun_54__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_54($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_intrange_patsfun_58__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_58($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_intrange_patsfun_62__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_62($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_intrange_patsfun_66__closurerize($env0, $env1)
+{
+  return array(function($cenv, $arg0, $arg1) { return _ats2phppre_intrange_patsfun_66($cenv[1], $cenv[2], $arg0, $arg1); }, $env0, $env1);
+}
+
+function
+_ats2phppre_intrange_patsfun_70__closurerize($env0, $env1)
+{
+  return array(function($cenv, $arg0, $arg1) { return _ats2phppre_intrange_patsfun_70($cenv[1], $cenv[2], $arg0, $arg1); }, $env0, $env1);
 }
 
 
@@ -6225,6 +7303,54 @@ ats2phppre_int_forall_cloref($arg0, $arg1)
 
 
 function
+ats2phppre_int_exists_method($arg0)
+{
+//
+  $tmpret11 = NULL;
+//
+  __patsflab_int_exists_method:
+  $tmpret11 = _ats2phppre_intrange_patsfun_8__closurerize($arg0);
+  return $tmpret11;
+} // end-of-function
+
+
+function
+_ats2phppre_intrange_patsfun_8($env0, $arg0)
+{
+//
+  $tmpret12 = NULL;
+//
+  __patsflab__ats2phppre_intrange_patsfun_8:
+  $tmpret12 = ats2phppre_int_exists_cloref($env0, $arg0);
+  return $tmpret12;
+} // end-of-function
+
+
+function
+ats2phppre_int_forall_method($arg0)
+{
+//
+  $tmpret13 = NULL;
+//
+  __patsflab_int_forall_method:
+  $tmpret13 = _ats2phppre_intrange_patsfun_10__closurerize($arg0);
+  return $tmpret13;
+} // end-of-function
+
+
+function
+_ats2phppre_intrange_patsfun_10($env0, $arg0)
+{
+//
+  $tmpret14 = NULL;
+//
+  __patsflab__ats2phppre_intrange_patsfun_10:
+  $tmpret14 = ats2phppre_int_forall_cloref($env0, $arg0);
+  return $tmpret14;
+} // end-of-function
+
+
+function
 ats2phppre_int_foreach_cloref($arg0, $arg1)
 {
 //
@@ -6236,50 +7362,13 @@ ats2phppre_int_foreach_cloref($arg0, $arg1)
 
 
 function
-ats2phppre_int_exists_method($arg0)
+ats2phppre_int_rforeach_cloref($arg0, $arg1)
 {
 //
-  $tmpret12 = NULL;
 //
-  __patsflab_int_exists_method:
-  $tmpret12 = _ats2phppre_intrange_patsfun_9__closurerize($arg0);
-  return $tmpret12;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_9($env0, $arg0)
-{
-//
-  $tmpret13 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_9:
-  $tmpret13 = ats2phppre_int_exists_cloref($env0, $arg0);
-  return $tmpret13;
-} // end-of-function
-
-
-function
-ats2phppre_int_forall_method($arg0)
-{
-//
-  $tmpret14 = NULL;
-//
-  __patsflab_int_forall_method:
-  $tmpret14 = _ats2phppre_intrange_patsfun_11__closurerize($arg0);
-  return $tmpret14;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_11($env0, $arg0)
-{
-//
-  $tmpret15 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_11:
-  $tmpret15 = ats2phppre_int_forall_cloref($env0, $arg0);
-  return $tmpret15;
+  __patsflab_int_rforeach_cloref:
+  ats2phppre_intrange_rforeach_cloref(0, $arg0, $arg1);
+  return/*_void*/;
 } // end-of-function
 
 
@@ -6287,20 +7376,20 @@ function
 ats2phppre_int_foreach_method($arg0)
 {
 //
-  $tmpret16 = NULL;
+  $tmpret17 = NULL;
 //
   __patsflab_int_foreach_method:
-  $tmpret16 = _ats2phppre_intrange_patsfun_13__closurerize($arg0);
-  return $tmpret16;
+  $tmpret17 = _ats2phppre_intrange_patsfun_14__closurerize($arg0);
+  return $tmpret17;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_patsfun_13($env0, $arg0)
+_ats2phppre_intrange_patsfun_14($env0, $arg0)
 {
 //
 //
-  __patsflab__ats2phppre_intrange_patsfun_13:
+  __patsflab__ats2phppre_intrange_patsfun_14:
   ats2phppre_int_foreach_cloref($env0, $arg0);
   return/*_void*/;
 } // end-of-function
@@ -6310,11 +7399,11 @@ function
 ats2phppre_int_foldleft_cloref($arg0, $arg1, $arg2)
 {
 //
-  $tmpret18 = NULL;
+  $tmpret19 = NULL;
 //
   __patsflab_int_foldleft_cloref:
-  $tmpret18 = ats2phppre_intrange_foldleft_cloref(0, $arg0, $arg1, $arg2);
-  return $tmpret18;
+  $tmpret19 = ats2phppre_intrange_foldleft_cloref(0, $arg0, $arg1, $arg2);
+  return $tmpret19;
 } // end-of-function
 
 
@@ -6322,23 +7411,59 @@ function
 ats2phppre_int_foldleft_method($arg0, $arg1)
 {
 //
-  $tmpret19 = NULL;
+  $tmpret20 = NULL;
 //
   __patsflab_int_foldleft_method:
-  $tmpret19 = _ats2phppre_intrange_patsfun_16__closurerize($arg0, $arg1);
-  return $tmpret19;
+  $tmpret20 = _ats2phppre_intrange_patsfun_17__closurerize($arg0);
+  return $tmpret20;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_patsfun_16($env0, $env1, $arg0)
+_ats2phppre_intrange_patsfun_17($env0, $arg0, $arg1)
 {
 //
-  $tmpret20 = NULL;
+  $tmpret21 = NULL;
 //
-  __patsflab__ats2phppre_intrange_patsfun_16:
-  $tmpret20 = ats2phppre_int_foldleft_cloref($env0, $env1, $arg0);
-  return $tmpret20;
+  __patsflab__ats2phppre_intrange_patsfun_17:
+  $tmpret21 = ats2phppre_int_foldleft_cloref($env0, $arg0, $arg1);
+  return $tmpret21;
+} // end-of-function
+
+
+function
+ats2phppre_int_foldright_cloref($arg0, $arg1, $arg2)
+{
+//
+  $tmpret22 = NULL;
+//
+  __patsflab_int_foldright_cloref:
+  $tmpret22 = ats2phppre_intrange_foldright_cloref(0, $arg0, $arg1, $arg2);
+  return $tmpret22;
+} // end-of-function
+
+
+function
+ats2phppre_int_foldright_method($arg0, $arg1)
+{
+//
+  $tmpret23 = NULL;
+//
+  __patsflab_int_foldright_method:
+  $tmpret23 = _ats2phppre_intrange_patsfun_20__closurerize($arg0);
+  return $tmpret23;
+} // end-of-function
+
+
+function
+_ats2phppre_intrange_patsfun_20($env0, $arg0, $arg1)
+{
+//
+  $tmpret24 = NULL;
+//
+  __patsflab__ats2phppre_intrange_patsfun_20:
+  $tmpret24 = ats2phppre_int_foldright_cloref($env0, $arg0, $arg1);
+  return $tmpret24;
 } // end-of-function
 
 
@@ -6346,35 +7471,35 @@ function
 ats2phppre_int_list_map_cloref($arg0, $arg1)
 {
 //
-  $tmpret21 = NULL;
+  $tmpret25 = NULL;
 //
   __patsflab_int_list_map_cloref:
-  $tmpret21 = _ats2phppre_intrange_aux_18($arg0, $arg1, 0);
-  return $tmpret21;
+  $tmpret25 = _ats2phppre_intrange_aux_22($arg0, $arg1, 0);
+  return $tmpret25;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_aux_18($env0, $env1, $arg0)
+_ats2phppre_intrange_aux_22($env0, $env1, $arg0)
 {
 //
-  $tmpret22 = NULL;
-  $tmp23 = NULL;
-  $tmp24 = NULL;
-  $tmp25 = NULL;
-  $tmp26 = NULL;
+  $tmpret26 = NULL;
+  $tmp27 = NULL;
+  $tmp28 = NULL;
+  $tmp29 = NULL;
+  $tmp30 = NULL;
 //
-  __patsflab__ats2phppre_intrange_aux_18:
-  $tmp23 = ats2phppre_lt_int1_int1($arg0, $env0);
-  if($tmp23) {
-    $tmp24 = $env1[0]($env1, $arg0);
-    $tmp26 = ats2phppre_add_int1_int1($arg0, 1);
-    $tmp25 = _ats2phppre_intrange_aux_18($env0, $env1, $tmp26);
-    $tmpret22 = array($tmp24, $tmp25);
+  __patsflab__ats2phppre_intrange_aux_22:
+  $tmp27 = ats2phppre_lt_int1_int1($arg0, $env0);
+  if($tmp27) {
+    $tmp28 = $env1[0]($env1, $arg0);
+    $tmp30 = ats2phppre_add_int1_int1($arg0, 1);
+    $tmp29 = _ats2phppre_intrange_aux_22($env0, $env1, $tmp30);
+    $tmpret26 = array($tmp28, $tmp29);
   } else {
-    $tmpret22 = NULL;
+    $tmpret26 = NULL;
   } // endif
-  return $tmpret22;
+  return $tmpret26;
 } // end-of-function
 
 
@@ -6382,23 +7507,23 @@ function
 ats2phppre_int_list_map_method($arg0, $arg1)
 {
 //
-  $tmpret27 = NULL;
+  $tmpret31 = NULL;
 //
   __patsflab_int_list_map_method:
-  $tmpret27 = _ats2phppre_intrange_patsfun_20__closurerize($arg0);
-  return $tmpret27;
+  $tmpret31 = _ats2phppre_intrange_patsfun_24__closurerize($arg0);
+  return $tmpret31;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_patsfun_20($env0, $arg0)
+_ats2phppre_intrange_patsfun_24($env0, $arg0)
 {
 //
-  $tmpret28 = NULL;
+  $tmpret32 = NULL;
 //
-  __patsflab__ats2phppre_intrange_patsfun_20:
-  $tmpret28 = ats2phppre_int_list_map_cloref($env0, $arg0);
-  return $tmpret28;
+  __patsflab__ats2phppre_intrange_patsfun_24:
+  $tmpret32 = ats2phppre_int_list_map_cloref($env0, $arg0);
+  return $tmpret32;
 } // end-of-function
 
 
@@ -6406,19 +7531,19 @@ function
 ats2phppre_int_list0_map_cloref($arg0, $arg1)
 {
 //
-  $tmpret29 = NULL;
-  $tmp30 = NULL;
-  $tmp31 = NULL;
+  $tmpret33 = NULL;
+  $tmp34 = NULL;
+  $tmp35 = NULL;
 //
   __patsflab_int_list0_map_cloref:
-  $tmp30 = ats2phppre_gte_int1_int1($arg0, 0);
-  if($tmp30) {
-    $tmp31 = ats2phppre_int_list_map_cloref($arg0, $arg1);
-    $tmpret29 = $tmp31;
+  $tmp34 = ats2phppre_gte_int1_int1($arg0, 0);
+  if($tmp34) {
+    $tmp35 = ats2phppre_int_list_map_cloref($arg0, $arg1);
+    $tmpret33 = $tmp35;
   } else {
-    $tmpret29 = NULL;
+    $tmpret33 = NULL;
   } // endif
-  return $tmpret29;
+  return $tmpret33;
 } // end-of-function
 
 
@@ -6426,23 +7551,23 @@ function
 ats2phppre_int_list0_map_method($arg0, $arg1)
 {
 //
-  $tmpret32 = NULL;
+  $tmpret36 = NULL;
 //
   __patsflab_int_list0_map_method:
-  $tmpret32 = _ats2phppre_intrange_patsfun_23__closurerize($arg0);
-  return $tmpret32;
+  $tmpret36 = _ats2phppre_intrange_patsfun_27__closurerize($arg0);
+  return $tmpret36;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_patsfun_23($env0, $arg0)
+_ats2phppre_intrange_patsfun_27($env0, $arg0)
 {
 //
-  $tmpret33 = NULL;
+  $tmpret37 = NULL;
 //
-  __patsflab__ats2phppre_intrange_patsfun_23:
-  $tmpret33 = ats2phppre_int_list0_map_cloref($env0, $arg0);
-  return $tmpret33;
+  __patsflab__ats2phppre_intrange_patsfun_27:
+  $tmpret37 = ats2phppre_int_list0_map_cloref($env0, $arg0);
+  return $tmpret37;
 } // end-of-function
 
 
@@ -6450,47 +7575,47 @@ function
 ats2phppre_int_stream_map_cloref($arg0, $arg1)
 {
 //
-  $tmpret34 = NULL;
+  $tmpret38 = NULL;
 //
   __patsflab_int_stream_map_cloref:
-  $tmpret34 = _ats2phppre_intrange_aux_25($arg0, $arg1, 0);
-  return $tmpret34;
+  $tmpret38 = _ats2phppre_intrange_aux_29($arg0, $arg1, 0);
+  return $tmpret38;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_aux_25($env0, $env1, $arg0)
+_ats2phppre_intrange_aux_29($env0, $env1, $arg0)
 {
 //
-  $tmpret35 = NULL;
+  $tmpret39 = NULL;
 //
-  __patsflab__ats2phppre_intrange_aux_25:
-  $tmpret35 = ATSPMVlazyval(_ats2phppre_intrange_patsfun_26__closurerize($env0, $env1, $arg0));
-  return $tmpret35;
+  __patsflab__ats2phppre_intrange_aux_29:
+  $tmpret39 = ATSPMVlazyval(_ats2phppre_intrange_patsfun_30__closurerize($env0, $env1, $arg0));
+  return $tmpret39;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_patsfun_26($env0, $env1, $env2)
+_ats2phppre_intrange_patsfun_30($env0, $env1, $env2)
 {
 //
-  $tmpret36 = NULL;
-  $tmp37 = NULL;
-  $tmp38 = NULL;
-  $tmp39 = NULL;
-  $tmp40 = NULL;
+  $tmpret40 = NULL;
+  $tmp41 = NULL;
+  $tmp42 = NULL;
+  $tmp43 = NULL;
+  $tmp44 = NULL;
 //
-  __patsflab__ats2phppre_intrange_patsfun_26:
-  $tmp37 = ats2phppre_lt_int1_int1($env2, $env0);
-  if($tmp37) {
-    $tmp38 = $env1[0]($env1, $env2);
-    $tmp40 = ats2phppre_add_int1_int1($env2, 1);
-    $tmp39 = _ats2phppre_intrange_aux_25($env0, $env1, $tmp40);
-    $tmpret36 = array($tmp38, $tmp39);
+  __patsflab__ats2phppre_intrange_patsfun_30:
+  $tmp41 = ats2phppre_lt_int1_int1($env2, $env0);
+  if($tmp41) {
+    $tmp42 = $env1[0]($env1, $env2);
+    $tmp44 = ats2phppre_add_int1_int1($env2, 1);
+    $tmp43 = _ats2phppre_intrange_aux_29($env0, $env1, $tmp44);
+    $tmpret40 = array($tmp42, $tmp43);
   } else {
-    $tmpret36 = NULL;
+    $tmpret40 = NULL;
   } // endif
-  return $tmpret36;
+  return $tmpret40;
 } // end-of-function
 
 
@@ -6498,23 +7623,23 @@ function
 ats2phppre_int_stream_map_method($arg0, $arg1)
 {
 //
-  $tmpret41 = NULL;
+  $tmpret45 = NULL;
 //
   __patsflab_int_stream_map_method:
-  $tmpret41 = _ats2phppre_intrange_patsfun_28__closurerize($arg0);
-  return $tmpret41;
+  $tmpret45 = _ats2phppre_intrange_patsfun_32__closurerize($arg0);
+  return $tmpret45;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_patsfun_28($env0, $arg0)
+_ats2phppre_intrange_patsfun_32($env0, $arg0)
 {
 //
-  $tmpret42 = NULL;
+  $tmpret46 = NULL;
 //
-  __patsflab__ats2phppre_intrange_patsfun_28:
-  $tmpret42 = ats2phppre_int_stream_map_cloref($env0, $arg0);
-  return $tmpret42;
+  __patsflab__ats2phppre_intrange_patsfun_32:
+  $tmpret46 = ats2phppre_int_stream_map_cloref($env0, $arg0);
+  return $tmpret46;
 } // end-of-function
 
 
@@ -6522,50 +7647,50 @@ function
 ats2phppre_int_stream_vt_map_cloref($arg0, $arg1)
 {
 //
-  $tmpret43 = NULL;
+  $tmpret47 = NULL;
 //
   __patsflab_int_stream_vt_map_cloref:
-  $tmpret43 = _ats2phppre_intrange_aux_30($arg0, $arg1, 0);
-  return $tmpret43;
+  $tmpret47 = _ats2phppre_intrange_aux_34($arg0, $arg1, 0);
+  return $tmpret47;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_aux_30($env0, $env1, $arg0)
+_ats2phppre_intrange_aux_34($env0, $env1, $arg0)
 {
 //
-  $tmpret44 = NULL;
+  $tmpret48 = NULL;
 //
-  __patsflab__ats2phppre_intrange_aux_30:
-  $tmpret44 = ATSPMVllazyval(_ats2phppre_intrange_patsfun_31__closurerize($env0, $env1, $arg0));
-  return $tmpret44;
+  __patsflab__ats2phppre_intrange_aux_34:
+  $tmpret48 = ATSPMVllazyval(_ats2phppre_intrange_patsfun_35__closurerize($env0, $env1, $arg0));
+  return $tmpret48;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_patsfun_31($env0, $env1, $env2, $arg0)
+_ats2phppre_intrange_patsfun_35($env0, $env1, $env2, $arg0)
 {
 //
-  $tmpret45 = NULL;
-  $tmp46 = NULL;
-  $tmp47 = NULL;
-  $tmp48 = NULL;
-  $tmp49 = NULL;
+  $tmpret49 = NULL;
+  $tmp50 = NULL;
+  $tmp51 = NULL;
+  $tmp52 = NULL;
+  $tmp53 = NULL;
 //
-  __patsflab__ats2phppre_intrange_patsfun_31:
+  __patsflab__ats2phppre_intrange_patsfun_35:
   if($arg0) {
-    $tmp46 = ats2phppre_lt_int1_int1($env2, $env0);
-    if($tmp46) {
-      $tmp47 = $env1[0]($env1, $env2);
-      $tmp49 = ats2phppre_add_int1_int1($env2, 1);
-      $tmp48 = _ats2phppre_intrange_aux_30($env0, $env1, $tmp49);
-      $tmpret45 = array($tmp47, $tmp48);
+    $tmp50 = ats2phppre_lt_int1_int1($env2, $env0);
+    if($tmp50) {
+      $tmp51 = $env1[0]($env1, $env2);
+      $tmp53 = ats2phppre_add_int1_int1($env2, 1);
+      $tmp52 = _ats2phppre_intrange_aux_34($env0, $env1, $tmp53);
+      $tmpret49 = array($tmp51, $tmp52);
     } else {
-      $tmpret45 = NULL;
+      $tmpret49 = NULL;
     } // endif
   } else {
   } // endif
-  return $tmpret45;
+  return $tmpret49;
 } // end-of-function
 
 
@@ -6573,23 +7698,23 @@ function
 ats2phppre_int_stream_vt_map_method($arg0, $arg1)
 {
 //
-  $tmpret50 = NULL;
+  $tmpret54 = NULL;
 //
   __patsflab_int_stream_vt_map_method:
-  $tmpret50 = _ats2phppre_intrange_patsfun_33__closurerize($arg0);
-  return $tmpret50;
+  $tmpret54 = _ats2phppre_intrange_patsfun_37__closurerize($arg0);
+  return $tmpret54;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_patsfun_33($env0, $arg0)
+_ats2phppre_intrange_patsfun_37($env0, $arg0)
 {
 //
-  $tmpret51 = NULL;
+  $tmpret55 = NULL;
 //
-  __patsflab__ats2phppre_intrange_patsfun_33:
-  $tmpret51 = ats2phppre_int_stream_vt_map_cloref($env0, $arg0);
-  return $tmpret51;
+  __patsflab__ats2phppre_intrange_patsfun_37:
+  $tmpret55 = ats2phppre_int_stream_vt_map_cloref($env0, $arg0);
+  return $tmpret55;
 } // end-of-function
 
 
@@ -6597,11 +7722,11 @@ function
 ats2phppre_int2_exists_cloref($arg0, $arg1, $arg2)
 {
 //
-  $tmpret52 = NULL;
+  $tmpret56 = NULL;
 //
   __patsflab_int2_exists_cloref:
-  $tmpret52 = ats2phppre_intrange2_exists_cloref(0, $arg0, 0, $arg1, $arg2);
-  return $tmpret52;
+  $tmpret56 = ats2phppre_intrange2_exists_cloref(0, $arg0, 0, $arg1, $arg2);
+  return $tmpret56;
 } // end-of-function
 
 
@@ -6609,11 +7734,11 @@ function
 ats2phppre_int2_forall_cloref($arg0, $arg1, $arg2)
 {
 //
-  $tmpret53 = NULL;
+  $tmpret57 = NULL;
 //
   __patsflab_int2_forall_cloref:
-  $tmpret53 = ats2phppre_intrange2_forall_cloref(0, $arg0, 0, $arg1, $arg2);
-  return $tmpret53;
+  $tmpret57 = ats2phppre_intrange2_forall_cloref(0, $arg0, 0, $arg1, $arg2);
+  return $tmpret57;
 } // end-of-function
 
 
@@ -6629,51 +7754,122 @@ ats2phppre_int2_foreach_cloref($arg0, $arg1, $arg2)
 
 
 function
-ats2phppre_intrange_exists_cloref($arg0, $arg1, $arg2)
+ats2phppre_int_cross_exists_method($arg0, $arg1)
 {
 //
-  $tmpret55 = NULL;
+  $tmpret59 = NULL;
 //
-  __patsflab_intrange_exists_cloref:
-  $tmpret55 = _ats2phppre_intrange_loop_38($arg0, $arg1, $arg2);
-  return $tmpret55;
+  __patsflab_int_cross_exists_method:
+  $tmpret59 = _ats2phppre_intrange_patsfun_42__closurerize($arg0, $arg1);
+  return $tmpret59;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_loop_38($arg0, $arg1, $arg2)
+_ats2phppre_intrange_patsfun_42($env0, $env1, $arg0)
+{
+//
+  $tmpret60 = NULL;
+//
+  __patsflab__ats2phppre_intrange_patsfun_42:
+  $tmpret60 = ats2phppre_int2_exists_cloref($env0, $env1, $arg0);
+  return $tmpret60;
+} // end-of-function
+
+
+function
+ats2phppre_int_cross_forall_method($arg0, $arg1)
+{
+//
+  $tmpret61 = NULL;
+//
+  __patsflab_int_cross_forall_method:
+  $tmpret61 = _ats2phppre_intrange_patsfun_44__closurerize($arg0, $arg1);
+  return $tmpret61;
+} // end-of-function
+
+
+function
+_ats2phppre_intrange_patsfun_44($env0, $env1, $arg0)
+{
+//
+  $tmpret62 = NULL;
+//
+  __patsflab__ats2phppre_intrange_patsfun_44:
+  $tmpret62 = ats2phppre_int2_forall_cloref($env0, $env1, $arg0);
+  return $tmpret62;
+} // end-of-function
+
+
+function
+ats2phppre_int_cross_foreach_method($arg0, $arg1)
+{
+//
+  $tmpret63 = NULL;
+//
+  __patsflab_int_cross_foreach_method:
+  $tmpret63 = _ats2phppre_intrange_patsfun_46__closurerize($arg0, $arg1);
+  return $tmpret63;
+} // end-of-function
+
+
+function
+_ats2phppre_intrange_patsfun_46($env0, $env1, $arg0)
+{
+//
+//
+  __patsflab__ats2phppre_intrange_patsfun_46:
+  ats2phppre_int2_foreach_cloref($env0, $env1, $arg0);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_intrange_exists_cloref($arg0, $arg1, $arg2)
+{
+//
+  $tmpret65 = NULL;
+//
+  __patsflab_intrange_exists_cloref:
+  $tmpret65 = _ats2phppre_intrange_loop_48($arg0, $arg1, $arg2);
+  return $tmpret65;
+} // end-of-function
+
+
+function
+_ats2phppre_intrange_loop_48($arg0, $arg1, $arg2)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
   $apy2 = NULL;
-  $tmpret56 = NULL;
-  $tmp57 = NULL;
-  $tmp58 = NULL;
-  $tmp59 = NULL;
+  $tmpret66 = NULL;
+  $tmp67 = NULL;
+  $tmp68 = NULL;
+  $tmp69 = NULL;
 //
-  __patsflab__ats2phppre_intrange_loop_38:
-  $tmp57 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp57) {
-    $tmp58 = $arg2[0]($arg2, $arg0);
-    if($tmp58) {
-      $tmpret56 = true;
+  __patsflab__ats2phppre_intrange_loop_48:
+  $tmp67 = ats2phppre_lt_int0_int0($arg0, $arg1);
+  if($tmp67) {
+    $tmp68 = $arg2[0]($arg2, $arg0);
+    if($tmp68) {
+      $tmpret66 = true;
     } else {
-      $tmp59 = ats2phppre_add_int0_int0($arg0, 1);
+      $tmp69 = ats2phppre_add_int0_int0($arg0, 1);
       // ATStailcalseq_beg
-      $apy0 = $tmp59;
+      $apy0 = $tmp69;
       $apy1 = $arg1;
       $apy2 = $arg2;
       $arg0 = $apy0;
       $arg1 = $apy1;
       $arg2 = $apy2;
-      goto __patsflab__ats2phppre_intrange_loop_38;
+      goto __patsflab__ats2phppre_intrange_loop_48;
       // ATStailcalseq_end
     } // endif
   } else {
-    $tmpret56 = false;
+    $tmpret66 = false;
   } // endif
-  return $tmpret56;
+  return $tmpret66;
 } // end-of-function
 
 
@@ -6681,23 +7877,23 @@ function
 ats2phppre_intrange_exists_method($arg0)
 {
 //
-  $tmpret60 = NULL;
+  $tmpret70 = NULL;
 //
   __patsflab_intrange_exists_method:
-  $tmpret60 = _ats2phppre_intrange_patsfun_40__closurerize($arg0);
-  return $tmpret60;
+  $tmpret70 = _ats2phppre_intrange_patsfun_50__closurerize($arg0);
+  return $tmpret70;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_patsfun_40($env0, $arg0)
+_ats2phppre_intrange_patsfun_50($env0, $arg0)
 {
 //
-  $tmpret61 = NULL;
+  $tmpret71 = NULL;
 //
-  __patsflab__ats2phppre_intrange_patsfun_40:
-  $tmpret61 = ats2phppre_intrange_exists_cloref($env0[0], $env0[1], $arg0);
-  return $tmpret61;
+  __patsflab__ats2phppre_intrange_patsfun_50:
+  $tmpret71 = ats2phppre_intrange_exists_cloref($env0[0], $env0[1], $arg0);
+  return $tmpret71;
 } // end-of-function
 
 
@@ -6705,48 +7901,48 @@ function
 ats2phppre_intrange_forall_cloref($arg0, $arg1, $arg2)
 {
 //
-  $tmpret62 = NULL;
+  $tmpret72 = NULL;
 //
   __patsflab_intrange_forall_cloref:
-  $tmpret62 = _ats2phppre_intrange_loop_42($arg0, $arg1, $arg2);
-  return $tmpret62;
+  $tmpret72 = _ats2phppre_intrange_loop_52($arg0, $arg1, $arg2);
+  return $tmpret72;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_loop_42($arg0, $arg1, $arg2)
+_ats2phppre_intrange_loop_52($arg0, $arg1, $arg2)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
   $apy2 = NULL;
-  $tmpret63 = NULL;
-  $tmp64 = NULL;
-  $tmp65 = NULL;
-  $tmp66 = NULL;
+  $tmpret73 = NULL;
+  $tmp74 = NULL;
+  $tmp75 = NULL;
+  $tmp76 = NULL;
 //
-  __patsflab__ats2phppre_intrange_loop_42:
-  $tmp64 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp64) {
-    $tmp65 = $arg2[0]($arg2, $arg0);
-    if($tmp65) {
-      $tmp66 = ats2phppre_add_int0_int0($arg0, 1);
+  __patsflab__ats2phppre_intrange_loop_52:
+  $tmp74 = ats2phppre_lt_int0_int0($arg0, $arg1);
+  if($tmp74) {
+    $tmp75 = $arg2[0]($arg2, $arg0);
+    if($tmp75) {
+      $tmp76 = ats2phppre_add_int0_int0($arg0, 1);
       // ATStailcalseq_beg
-      $apy0 = $tmp66;
+      $apy0 = $tmp76;
       $apy1 = $arg1;
       $apy2 = $arg2;
       $arg0 = $apy0;
       $arg1 = $apy1;
       $arg2 = $apy2;
-      goto __patsflab__ats2phppre_intrange_loop_42;
+      goto __patsflab__ats2phppre_intrange_loop_52;
       // ATStailcalseq_end
     } else {
-      $tmpret63 = false;
+      $tmpret73 = false;
     } // endif
   } else {
-    $tmpret63 = true;
+    $tmpret73 = true;
   } // endif
-  return $tmpret63;
+  return $tmpret73;
 } // end-of-function
 
 
@@ -6754,23 +7950,23 @@ function
 ats2phppre_intrange_forall_method($arg0)
 {
 //
-  $tmpret67 = NULL;
+  $tmpret77 = NULL;
 //
   __patsflab_intrange_forall_method:
-  $tmpret67 = _ats2phppre_intrange_patsfun_44__closurerize($arg0);
-  return $tmpret67;
+  $tmpret77 = _ats2phppre_intrange_patsfun_54__closurerize($arg0);
+  return $tmpret77;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_patsfun_44($env0, $arg0)
+_ats2phppre_intrange_patsfun_54($env0, $arg0)
 {
 //
-  $tmpret68 = NULL;
+  $tmpret78 = NULL;
 //
-  __patsflab__ats2phppre_intrange_patsfun_44:
-  $tmpret68 = ats2phppre_intrange_forall_cloref($env0[0], $env0[1], $arg0);
-  return $tmpret68;
+  __patsflab__ats2phppre_intrange_patsfun_54:
+  $tmpret78 = ats2phppre_intrange_forall_cloref($env0[0], $env0[1], $arg0);
+  return $tmpret78;
 } // end-of-function
 
 
@@ -6780,34 +7976,34 @@ ats2phppre_intrange_foreach_cloref($arg0, $arg1, $arg2)
 //
 //
   __patsflab_intrange_foreach_cloref:
-  _ats2phppre_intrange_loop_46($arg0, $arg1, $arg2);
+  _ats2phppre_intrange_loop_56($arg0, $arg1, $arg2);
   return/*_void*/;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_loop_46($arg0, $arg1, $arg2)
+_ats2phppre_intrange_loop_56($arg0, $arg1, $arg2)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
   $apy2 = NULL;
-  $tmp71 = NULL;
-  $tmp73 = NULL;
+  $tmp81 = NULL;
+  $tmp83 = NULL;
 //
-  __patsflab__ats2phppre_intrange_loop_46:
-  $tmp71 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp71) {
+  __patsflab__ats2phppre_intrange_loop_56:
+  $tmp81 = ats2phppre_lt_int0_int0($arg0, $arg1);
+  if($tmp81) {
     $arg2[0]($arg2, $arg0);
-    $tmp73 = ats2phppre_add_int0_int0($arg0, 1);
+    $tmp83 = ats2phppre_add_int0_int0($arg0, 1);
     // ATStailcalseq_beg
-    $apy0 = $tmp73;
+    $apy0 = $tmp83;
     $apy1 = $arg1;
     $apy2 = $arg2;
     $arg0 = $apy0;
     $arg1 = $apy1;
     $arg2 = $apy2;
-    goto __patsflab__ats2phppre_intrange_loop_46;
+    goto __patsflab__ats2phppre_intrange_loop_56;
     // ATStailcalseq_end
   } else {
     // ATSINSmove_void;
@@ -6820,21 +8016,88 @@ function
 ats2phppre_intrange_foreach_method($arg0)
 {
 //
-  $tmpret74 = NULL;
+  $tmpret84 = NULL;
 //
   __patsflab_intrange_foreach_method:
-  $tmpret74 = _ats2phppre_intrange_patsfun_48__closurerize($arg0);
-  return $tmpret74;
+  $tmpret84 = _ats2phppre_intrange_patsfun_58__closurerize($arg0);
+  return $tmpret84;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_patsfun_48($env0, $arg0)
+_ats2phppre_intrange_patsfun_58($env0, $arg0)
 {
 //
 //
-  __patsflab__ats2phppre_intrange_patsfun_48:
+  __patsflab__ats2phppre_intrange_patsfun_58:
   ats2phppre_intrange_foreach_cloref($env0[0], $env0[1], $arg0);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_intrange_rforeach_cloref($arg0, $arg1, $arg2)
+{
+//
+//
+  __patsflab_intrange_rforeach_cloref:
+  _ats2phppre_intrange_loop_60($arg0, $arg1, $arg2);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+_ats2phppre_intrange_loop_60($arg0, $arg1, $arg2)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $apy2 = NULL;
+  $tmp88 = NULL;
+  $tmp90 = NULL;
+  $tmp91 = NULL;
+//
+  __patsflab__ats2phppre_intrange_loop_60:
+  $tmp88 = ats2phppre_lt_int0_int0($arg0, $arg1);
+  if($tmp88) {
+    $tmp90 = ats2phppre_sub_int0_int0($arg1, 1);
+    $arg2[0]($arg2, $tmp90);
+    $tmp91 = ats2phppre_sub_int0_int0($arg1, 1);
+    // ATStailcalseq_beg
+    $apy0 = $arg0;
+    $apy1 = $tmp91;
+    $apy2 = $arg2;
+    $arg0 = $apy0;
+    $arg1 = $apy1;
+    $arg2 = $apy2;
+    goto __patsflab__ats2phppre_intrange_loop_60;
+    // ATStailcalseq_end
+  } else {
+    // ATSINSmove_void;
+  } // endif
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_intrange_rforeach_method($arg0)
+{
+//
+  $tmpret92 = NULL;
+//
+  __patsflab_intrange_rforeach_method:
+  $tmpret92 = _ats2phppre_intrange_patsfun_62__closurerize($arg0);
+  return $tmpret92;
+} // end-of-function
+
+
+function
+_ats2phppre_intrange_patsfun_62($env0, $arg0)
+{
+//
+//
+  __patsflab__ats2phppre_intrange_patsfun_62:
+  ats2phppre_intrange_rforeach_cloref($env0[0], $env0[1], $arg0);
   return/*_void*/;
 } // end-of-function
 
@@ -6843,47 +8106,44 @@ function
 ats2phppre_intrange_foldleft_cloref($arg0, $arg1, $arg2, $arg3)
 {
 //
-  $tmpret76 = NULL;
+  $tmpret94 = NULL;
 //
   __patsflab_intrange_foldleft_cloref:
-  $tmpret76 = _ats2phppre_intrange_loop_50($arg3, $arg0, $arg1, $arg2, $arg3);
-  return $tmpret76;
+  $tmpret94 = _ats2phppre_intrange_loop_64($arg3, $arg0, $arg1, $arg2);
+  return $tmpret94;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_loop_50($env0, $arg0, $arg1, $arg2, $arg3)
+_ats2phppre_intrange_loop_64($env0, $arg0, $arg1, $arg2)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
   $apy2 = NULL;
-  $apy3 = NULL;
-  $tmpret77 = NULL;
-  $tmp78 = NULL;
-  $tmp79 = NULL;
-  $tmp80 = NULL;
+  $tmpret95 = NULL;
+  $tmp96 = NULL;
+  $tmp97 = NULL;
+  $tmp98 = NULL;
 //
-  __patsflab__ats2phppre_intrange_loop_50:
-  $tmp78 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp78) {
-    $tmp79 = ats2phppre_add_int0_int0($arg0, 1);
-    $tmp80 = $arg3[0]($arg3, $arg2, $arg0);
+  __patsflab__ats2phppre_intrange_loop_64:
+  $tmp96 = ats2phppre_lt_int0_int0($arg0, $arg1);
+  if($tmp96) {
+    $tmp97 = ats2phppre_add_int0_int0($arg0, 1);
+    $tmp98 = $env0[0]($env0, $arg2, $arg0);
     // ATStailcalseq_beg
-    $apy0 = $tmp79;
+    $apy0 = $tmp97;
     $apy1 = $arg1;
-    $apy2 = $tmp80;
-    $apy3 = $env0;
+    $apy2 = $tmp98;
     $arg0 = $apy0;
     $arg1 = $apy1;
     $arg2 = $apy2;
-    $arg3 = $apy3;
-    goto __patsflab__ats2phppre_intrange_loop_50;
+    goto __patsflab__ats2phppre_intrange_loop_64;
     // ATStailcalseq_end
   } else {
-    $tmpret77 = $arg2;
+    $tmpret95 = $arg2;
   } // endif
-  return $tmpret77;
+  return $tmpret95;
 } // end-of-function
 
 
@@ -6891,27 +8151,102 @@ function
 ats2phppre_intrange_foldleft_method($arg0, $arg1)
 {
 //
-  $tmp81 = NULL;
-  $tmp82 = NULL;
-  $tmpret83 = NULL;
+  $tmp99 = NULL;
+  $tmp100 = NULL;
+  $tmpret101 = NULL;
 //
   __patsflab_intrange_foldleft_method:
-  $tmp81 = $arg0[0];
-  $tmp82 = $arg0[1];
-  $tmpret83 = _ats2phppre_intrange_patsfun_52__closurerize($tmp81, $tmp82, $arg1);
-  return $tmpret83;
+  $tmp99 = $arg0[0];
+  $tmp100 = $arg0[1];
+  $tmpret101 = _ats2phppre_intrange_patsfun_66__closurerize($tmp99, $tmp100);
+  return $tmpret101;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_patsfun_52($env0, $env1, $env2, $arg0)
+_ats2phppre_intrange_patsfun_66($env0, $env1, $arg0, $arg1)
 {
 //
-  $tmpret84 = NULL;
+  $tmpret102 = NULL;
 //
-  __patsflab__ats2phppre_intrange_patsfun_52:
-  $tmpret84 = ats2phppre_intrange_foldleft_cloref($env0, $env1, $env2, $arg0);
-  return $tmpret84;
+  __patsflab__ats2phppre_intrange_patsfun_66:
+  $tmpret102 = ats2phppre_intrange_foldleft_cloref($env0, $env1, $arg0, $arg1);
+  return $tmpret102;
+} // end-of-function
+
+
+function
+ats2phppre_intrange_foldright_cloref($arg0, $arg1, $arg2, $arg3)
+{
+//
+  $tmpret103 = NULL;
+//
+  __patsflab_intrange_foldright_cloref:
+  $tmpret103 = _ats2phppre_intrange_loop_68($arg2, $arg0, $arg1, $arg3);
+  return $tmpret103;
+} // end-of-function
+
+
+function
+_ats2phppre_intrange_loop_68($env0, $arg0, $arg1, $arg2)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $apy2 = NULL;
+  $tmpret104 = NULL;
+  $tmp105 = NULL;
+  $tmp106 = NULL;
+  $tmp107 = NULL;
+  $tmp108 = NULL;
+//
+  __patsflab__ats2phppre_intrange_loop_68:
+  $tmp105 = ats2phppre_lt_int0_int0($arg0, $arg1);
+  if($tmp105) {
+    $tmp106 = ats2phppre_sub_int0_int0($arg1, 1);
+    $tmp108 = ats2phppre_sub_int0_int0($arg1, 1);
+    $tmp107 = $env0[0]($env0, $tmp108, $arg2);
+    // ATStailcalseq_beg
+    $apy0 = $arg0;
+    $apy1 = $tmp106;
+    $apy2 = $tmp107;
+    $arg0 = $apy0;
+    $arg1 = $apy1;
+    $arg2 = $apy2;
+    goto __patsflab__ats2phppre_intrange_loop_68;
+    // ATStailcalseq_end
+  } else {
+    $tmpret104 = $arg2;
+  } // endif
+  return $tmpret104;
+} // end-of-function
+
+
+function
+ats2phppre_intrange_foldright_method($arg0, $arg1)
+{
+//
+  $tmp109 = NULL;
+  $tmp110 = NULL;
+  $tmpret111 = NULL;
+//
+  __patsflab_intrange_foldright_method:
+  $tmp109 = $arg0[0];
+  $tmp110 = $arg0[1];
+  $tmpret111 = _ats2phppre_intrange_patsfun_70__closurerize($tmp109, $tmp110);
+  return $tmpret111;
+} // end-of-function
+
+
+function
+_ats2phppre_intrange_patsfun_70($env0, $env1, $arg0, $arg1)
+{
+//
+  $tmpret112 = NULL;
+//
+  __patsflab__ats2phppre_intrange_patsfun_70:
+  $tmpret112 = ats2phppre_intrange_foldright_cloref($env0, $env1, $arg0, $arg1);
+  return $tmpret112;
 } // end-of-function
 
 
@@ -6919,16 +8254,16 @@ function
 ats2phppre_intrange2_exists_cloref($arg0, $arg1, $arg2, $arg3, $arg4)
 {
 //
-  $tmpret85 = NULL;
+  $tmpret113 = NULL;
 //
   __patsflab_intrange2_exists_cloref:
-  $tmpret85 = _ats2phppre_intrange_loop1_54($arg2, $arg3, $arg4, $arg0, $arg1, $arg2, $arg3, $arg4);
-  return $tmpret85;
+  $tmpret113 = _ats2phppre_intrange_loop1_72($arg2, $arg3, $arg4, $arg0, $arg1, $arg2, $arg3, $arg4);
+  return $tmpret113;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_loop1_54($env0, $env1, $env2, $arg0, $arg1, $arg2, $arg3, $arg4)
+_ats2phppre_intrange_loop1_72($env0, $env1, $env2, $arg0, $arg1, $arg2, $arg3, $arg4)
 {
 //
   $apy0 = NULL;
@@ -6936,8 +8271,8 @@ _ats2phppre_intrange_loop1_54($env0, $env1, $env2, $arg0, $arg1, $arg2, $arg3, $
   $apy2 = NULL;
   $apy3 = NULL;
   $apy4 = NULL;
-  $tmpret86 = NULL;
-  $tmp87 = NULL;
+  $tmpret114 = NULL;
+  $tmp115 = NULL;
   $a2rg0 = NULL;
   $a2rg1 = NULL;
   $a2rg2 = NULL;
@@ -6948,15 +8283,15 @@ _ats2phppre_intrange_loop1_54($env0, $env1, $env2, $arg0, $arg1, $arg2, $arg3, $
   $a2py2 = NULL;
   $a2py3 = NULL;
   $a2py4 = NULL;
-  $tmpret88 = NULL;
-  $tmp89 = NULL;
-  $tmp90 = NULL;
-  $tmp91 = NULL;
-  $tmp92 = NULL;
+  $tmpret116 = NULL;
+  $tmp117 = NULL;
+  $tmp118 = NULL;
+  $tmp119 = NULL;
+  $tmp120 = NULL;
 //
-  __patsflab__ats2phppre_intrange_loop1_54:
-  $tmp87 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp87) {
+  __patsflab__ats2phppre_intrange_loop1_72:
+  $tmp115 = ats2phppre_lt_int0_int0($arg0, $arg1);
+  if($tmp115) {
     // ATStailcalseq_beg
     $a2py0 = $arg0;
     $a2py1 = $arg1;
@@ -6968,25 +8303,25 @@ _ats2phppre_intrange_loop1_54($env0, $env1, $env2, $arg0, $arg1, $arg2, $arg3, $
     $a2rg2 = $a2py2;
     $a2rg3 = $a2py3;
     $a2rg4 = $a2py4;
-    goto __patsflab__ats2phppre_intrange_loop2_55;
+    goto __patsflab__ats2phppre_intrange_loop2_73;
     // ATStailcalseq_end
   } else {
-    $tmpret86 = false;
+    $tmpret114 = false;
   } // endif
-  return $tmpret86;
+  return $tmpret114;
 //
-  __patsflab__ats2phppre_intrange_loop2_55:
-  $tmp89 = ats2phppre_lt_int0_int0($a2rg2, $a2rg3);
-  if($tmp89) {
-    $tmp90 = $a2rg4[0]($a2rg4, $a2rg0, $a2rg2);
-    if($tmp90) {
-      $tmpret88 = true;
+  __patsflab__ats2phppre_intrange_loop2_73:
+  $tmp117 = ats2phppre_lt_int0_int0($a2rg2, $a2rg3);
+  if($tmp117) {
+    $tmp118 = $a2rg4[0]($a2rg4, $a2rg0, $a2rg2);
+    if($tmp118) {
+      $tmpret116 = true;
     } else {
-      $tmp91 = ats2phppre_add_int0_int0($a2rg2, 1);
+      $tmp119 = ats2phppre_add_int0_int0($a2rg2, 1);
       // ATStailcalseq_beg
       $a2py0 = $a2rg0;
       $a2py1 = $a2rg1;
-      $a2py2 = $tmp91;
+      $a2py2 = $tmp119;
       $a2py3 = $a2rg3;
       $a2py4 = $a2rg4;
       $a2rg0 = $a2py0;
@@ -6994,13 +8329,13 @@ _ats2phppre_intrange_loop1_54($env0, $env1, $env2, $arg0, $arg1, $arg2, $arg3, $
       $a2rg2 = $a2py2;
       $a2rg3 = $a2py3;
       $a2rg4 = $a2py4;
-      goto __patsflab__ats2phppre_intrange_loop2_55;
+      goto __patsflab__ats2phppre_intrange_loop2_73;
       // ATStailcalseq_end
     } // endif
   } else {
-    $tmp92 = ats2phppre_add_int0_int0($a2rg0, 1);
+    $tmp120 = ats2phppre_add_int0_int0($a2rg0, 1);
     // ATStailcalseq_beg
-    $apy0 = $tmp92;
+    $apy0 = $tmp120;
     $apy1 = $a2rg1;
     $apy2 = $env0;
     $apy3 = $env1;
@@ -7010,10 +8345,10 @@ _ats2phppre_intrange_loop1_54($env0, $env1, $env2, $arg0, $arg1, $arg2, $arg3, $
     $arg2 = $apy2;
     $arg3 = $apy3;
     $arg4 = $apy4;
-    goto __patsflab__ats2phppre_intrange_loop1_54;
+    goto __patsflab__ats2phppre_intrange_loop1_72;
     // ATStailcalseq_end
   } // endif
-  return $tmpret88;
+  return $tmpret116;
 } // end-of-function
 
 
@@ -7021,16 +8356,16 @@ function
 ats2phppre_intrange2_forall_cloref($arg0, $arg1, $arg2, $arg3, $arg4)
 {
 //
-  $tmpret93 = NULL;
+  $tmpret121 = NULL;
 //
   __patsflab_intrange2_forall_cloref:
-  $tmpret93 = _ats2phppre_intrange_loop1_57($arg2, $arg3, $arg0, $arg1, $arg2, $arg3, $arg4);
-  return $tmpret93;
+  $tmpret121 = _ats2phppre_intrange_loop1_75($arg2, $arg3, $arg0, $arg1, $arg2, $arg3, $arg4);
+  return $tmpret121;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_loop1_57($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
+_ats2phppre_intrange_loop1_75($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
 {
 //
   $apy0 = NULL;
@@ -7038,8 +8373,8 @@ _ats2phppre_intrange_loop1_57($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
   $apy2 = NULL;
   $apy3 = NULL;
   $apy4 = NULL;
-  $tmpret94 = NULL;
-  $tmp95 = NULL;
+  $tmpret122 = NULL;
+  $tmp123 = NULL;
   $a2rg0 = NULL;
   $a2rg1 = NULL;
   $a2rg2 = NULL;
@@ -7050,15 +8385,15 @@ _ats2phppre_intrange_loop1_57($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
   $a2py2 = NULL;
   $a2py3 = NULL;
   $a2py4 = NULL;
-  $tmpret96 = NULL;
-  $tmp97 = NULL;
-  $tmp98 = NULL;
-  $tmp99 = NULL;
-  $tmp100 = NULL;
+  $tmpret124 = NULL;
+  $tmp125 = NULL;
+  $tmp126 = NULL;
+  $tmp127 = NULL;
+  $tmp128 = NULL;
 //
-  __patsflab__ats2phppre_intrange_loop1_57:
-  $tmp95 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp95) {
+  __patsflab__ats2phppre_intrange_loop1_75:
+  $tmp123 = ats2phppre_lt_int0_int0($arg0, $arg1);
+  if($tmp123) {
     // ATStailcalseq_beg
     $a2py0 = $arg0;
     $a2py1 = $arg1;
@@ -7070,23 +8405,23 @@ _ats2phppre_intrange_loop1_57($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
     $a2rg2 = $a2py2;
     $a2rg3 = $a2py3;
     $a2rg4 = $a2py4;
-    goto __patsflab__ats2phppre_intrange_loop2_58;
+    goto __patsflab__ats2phppre_intrange_loop2_76;
     // ATStailcalseq_end
   } else {
-    $tmpret94 = true;
+    $tmpret122 = true;
   } // endif
-  return $tmpret94;
+  return $tmpret122;
 //
-  __patsflab__ats2phppre_intrange_loop2_58:
-  $tmp97 = ats2phppre_lt_int0_int0($a2rg2, $a2rg3);
-  if($tmp97) {
-    $tmp98 = $a2rg4[0]($a2rg4, $a2rg0, $a2rg2);
-    if($tmp98) {
-      $tmp99 = ats2phppre_add_int0_int0($a2rg2, 1);
+  __patsflab__ats2phppre_intrange_loop2_76:
+  $tmp125 = ats2phppre_lt_int0_int0($a2rg2, $a2rg3);
+  if($tmp125) {
+    $tmp126 = $a2rg4[0]($a2rg4, $a2rg0, $a2rg2);
+    if($tmp126) {
+      $tmp127 = ats2phppre_add_int0_int0($a2rg2, 1);
       // ATStailcalseq_beg
       $a2py0 = $a2rg0;
       $a2py1 = $a2rg1;
-      $a2py2 = $tmp99;
+      $a2py2 = $tmp127;
       $a2py3 = $a2rg3;
       $a2py4 = $a2rg4;
       $a2rg0 = $a2py0;
@@ -7094,15 +8429,15 @@ _ats2phppre_intrange_loop1_57($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
       $a2rg2 = $a2py2;
       $a2rg3 = $a2py3;
       $a2rg4 = $a2py4;
-      goto __patsflab__ats2phppre_intrange_loop2_58;
+      goto __patsflab__ats2phppre_intrange_loop2_76;
       // ATStailcalseq_end
     } else {
-      $tmpret96 = false;
+      $tmpret124 = false;
     } // endif
   } else {
-    $tmp100 = ats2phppre_add_int0_int0($a2rg0, 1);
+    $tmp128 = ats2phppre_add_int0_int0($a2rg0, 1);
     // ATStailcalseq_beg
-    $apy0 = $tmp100;
+    $apy0 = $tmp128;
     $apy1 = $a2rg1;
     $apy2 = $env0;
     $apy3 = $env1;
@@ -7112,10 +8447,10 @@ _ats2phppre_intrange_loop1_57($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
     $arg2 = $apy2;
     $arg3 = $apy3;
     $arg4 = $apy4;
-    goto __patsflab__ats2phppre_intrange_loop1_57;
+    goto __patsflab__ats2phppre_intrange_loop1_75;
     // ATStailcalseq_end
   } // endif
-  return $tmpret96;
+  return $tmpret124;
 } // end-of-function
 
 
@@ -7125,13 +8460,13 @@ ats2phppre_intrange2_foreach_cloref($arg0, $arg1, $arg2, $arg3, $arg4)
 //
 //
   __patsflab_intrange2_foreach_cloref:
-  _ats2phppre_intrange_loop1_60($arg2, $arg3, $arg0, $arg1, $arg2, $arg3, $arg4);
+  _ats2phppre_intrange_loop1_78($arg2, $arg3, $arg0, $arg1, $arg2, $arg3, $arg4);
   return/*_void*/;
 } // end-of-function
 
 
 function
-_ats2phppre_intrange_loop1_60($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
+_ats2phppre_intrange_loop1_78($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
 {
 //
   $apy0 = NULL;
@@ -7139,7 +8474,7 @@ _ats2phppre_intrange_loop1_60($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
   $apy2 = NULL;
   $apy3 = NULL;
   $apy4 = NULL;
-  $tmp103 = NULL;
+  $tmp131 = NULL;
   $a2rg0 = NULL;
   $a2rg1 = NULL;
   $a2rg2 = NULL;
@@ -7150,13 +8485,13 @@ _ats2phppre_intrange_loop1_60($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
   $a2py2 = NULL;
   $a2py3 = NULL;
   $a2py4 = NULL;
-  $tmp105 = NULL;
-  $tmp107 = NULL;
-  $tmp108 = NULL;
+  $tmp133 = NULL;
+  $tmp135 = NULL;
+  $tmp136 = NULL;
 //
-  __patsflab__ats2phppre_intrange_loop1_60:
-  $tmp103 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp103) {
+  __patsflab__ats2phppre_intrange_loop1_78:
+  $tmp131 = ats2phppre_lt_int0_int0($arg0, $arg1);
+  if($tmp131) {
     // ATStailcalseq_beg
     $a2py0 = $arg0;
     $a2py1 = $arg1;
@@ -7168,22 +8503,22 @@ _ats2phppre_intrange_loop1_60($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
     $a2rg2 = $a2py2;
     $a2rg3 = $a2py3;
     $a2rg4 = $a2py4;
-    goto __patsflab__ats2phppre_intrange_loop2_61;
+    goto __patsflab__ats2phppre_intrange_loop2_79;
     // ATStailcalseq_end
   } else {
     // ATSINSmove_void;
   } // endif
   return/*_void*/;
 //
-  __patsflab__ats2phppre_intrange_loop2_61:
-  $tmp105 = ats2phppre_lt_int0_int0($a2rg2, $a2rg3);
-  if($tmp105) {
+  __patsflab__ats2phppre_intrange_loop2_79:
+  $tmp133 = ats2phppre_lt_int0_int0($a2rg2, $a2rg3);
+  if($tmp133) {
     $a2rg4[0]($a2rg4, $a2rg0, $a2rg2);
-    $tmp107 = ats2phppre_add_int0_int0($a2rg2, 1);
+    $tmp135 = ats2phppre_add_int0_int0($a2rg2, 1);
     // ATStailcalseq_beg
     $a2py0 = $a2rg0;
     $a2py1 = $a2rg1;
-    $a2py2 = $tmp107;
+    $a2py2 = $tmp135;
     $a2py3 = $a2rg3;
     $a2py4 = $a2rg4;
     $a2rg0 = $a2py0;
@@ -7191,12 +8526,12 @@ _ats2phppre_intrange_loop1_60($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
     $a2rg2 = $a2py2;
     $a2rg3 = $a2py3;
     $a2rg4 = $a2py4;
-    goto __patsflab__ats2phppre_intrange_loop2_61;
+    goto __patsflab__ats2phppre_intrange_loop2_79;
     // ATStailcalseq_end
   } else {
-    $tmp108 = ats2phppre_succ_int0($a2rg0);
+    $tmp136 = ats2phppre_succ_int0($a2rg0);
     // ATStailcalseq_beg
-    $apy0 = $tmp108;
+    $apy0 = $tmp136;
     $apy1 = $a2rg1;
     $apy2 = $env0;
     $apy3 = $env1;
@@ -7206,7 +8541,7 @@ _ats2phppre_intrange_loop1_60($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
     $arg2 = $apy2;
     $arg3 = $apy3;
     $arg4 = $apy4;
-    goto __patsflab__ats2phppre_intrange_loop1_60;
+    goto __patsflab__ats2phppre_intrange_loop1_78;
     // ATStailcalseq_end
   } // endif
   return/*_void*/;
@@ -7220,13 +8555,517 @@ _ats2phppre_intrange_loop1_60($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
 /*
 **
 ** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-3-24:  1h:27m
+** The starting compilation time is: 2018-6-23: 17h:12m
 **
 */
 function
-_ats2phppre_arrayref_patsfun_8__closurerize($env0)
+_ats2phppre_PHParray_patsfun_15__closurerize($env0, $env1, $env2)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_arrayref_patsfun_8($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_PHParray_patsfun_15($cenv[1], $cenv[2], $cenv[3], $arg0); }, $env0, $env1, $env2);
+}
+
+
+function
+ats2phppre_PHParray_make_list($arg0)
+{
+//
+  $tmpret0 = NULL;
+  $tmp1 = NULL;
+//
+  __patsflab_PHParray_make_list:
+  $tmp1 = ats2phppre_PHParref_make_list($arg0);
+  $tmpret0 = ats2phppre_PHParref2array($tmp1);
+  return $tmpret0;
+} // end-of-function
+
+
+function
+ats2phppre_PHParray2list($arg0)
+{
+//
+  $tmpret2 = NULL;
+  $tmp3 = NULL;
+  $tmp10 = NULL;
+//
+  __patsflab_PHParray2list:
+  $tmp3 = ats2phppre_PHParray_size($arg0);
+  $tmp10 = NULL;
+  $tmpret2 = _ats2phppre_PHParray_loop_2($arg0, $tmp3, $tmp10);
+  return $tmpret2;
+} // end-of-function
+
+
+function
+_ats2phppre_PHParray_loop_2($env0, $arg0, $arg1)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $tmpret4 = NULL;
+  $tmp5 = NULL;
+  $tmp6 = NULL;
+  $tmp7 = NULL;
+  $tmp8 = NULL;
+  $tmp9 = NULL;
+//
+  __patsflab__ats2phppre_PHParray_loop_2:
+  $tmp5 = ats2phppre_gt_int1_int1($arg0, 0);
+  if($tmp5) {
+    $tmp6 = ats2phppre_sub_int1_int1($arg0, 1);
+    $tmp9 = ats2phppre_sub_int1_int1($arg0, 1);
+    $tmp8 = ats2phppre_PHParray_get_at($env0, $tmp9);
+    $tmp7 = array($tmp8, $arg1);
+    // ATStailcalseq_beg
+    $apy0 = $tmp6;
+    $apy1 = $tmp7;
+    $arg0 = $apy0;
+    $arg1 = $apy1;
+    goto __patsflab__ats2phppre_PHParray_loop_2;
+    // ATStailcalseq_end
+  } else {
+    $tmpret4 = $arg1;
+  } // endif
+  return $tmpret4;
+} // end-of-function
+
+
+function
+ats2phppre_PHParray2list_rev($arg0)
+{
+//
+  $tmpret11 = NULL;
+  $tmp12 = NULL;
+  $tmp18 = NULL;
+//
+  __patsflab_PHParray2list_rev:
+  $tmp12 = ats2phppre_PHParray_size($arg0);
+  $tmp18 = NULL;
+  $tmpret11 = _ats2phppre_PHParray_loop_4($arg0, $tmp12, 0, $tmp18);
+  return $tmpret11;
+} // end-of-function
+
+
+function
+_ats2phppre_PHParray_loop_4($env0, $arg0, $arg1, $arg2)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $apy2 = NULL;
+  $tmpret13 = NULL;
+  $tmp14 = NULL;
+  $tmp15 = NULL;
+  $tmp16 = NULL;
+  $tmp17 = NULL;
+//
+  __patsflab__ats2phppre_PHParray_loop_4:
+  $tmp14 = ats2phppre_lt_int1_int1($arg1, $arg0);
+  if($tmp14) {
+    $tmp15 = ats2phppre_add_int1_int1($arg1, 1);
+    $tmp17 = ats2phppre_PHParray_get_at($env0, $arg1);
+    $tmp16 = array($tmp17, $arg2);
+    // ATStailcalseq_beg
+    $apy0 = $arg0;
+    $apy1 = $tmp15;
+    $apy2 = $tmp16;
+    $arg0 = $apy0;
+    $arg1 = $apy1;
+    $arg2 = $apy2;
+    goto __patsflab__ats2phppre_PHParray_loop_4;
+    // ATStailcalseq_end
+  } else {
+    $tmpret13 = $arg2;
+  } // endif
+  return $tmpret13;
+} // end-of-function
+
+
+function
+ats2phppre_PHParray2list_map($arg0, $arg1)
+{
+//
+  $tmpret19 = NULL;
+  $tmp20 = NULL;
+  $tmp27 = NULL;
+  $tmp28 = NULL;
+//
+  __patsflab_PHParray2list_map:
+  $tmp20 = ats2phppre_PHParray_size($arg0);
+  $tmp28 = NULL;
+  $tmp27 = _ats2phppre_PHParray_loop_6($arg0, $arg1, $tmp20, 0, $tmp28);
+  $tmpret19 = ats2phppre_list_reverse($tmp27);
+  return $tmpret19;
+} // end-of-function
+
+
+function
+_ats2phppre_PHParray_loop_6($env0, $env1, $arg0, $arg1, $arg2)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $apy2 = NULL;
+  $tmpret21 = NULL;
+  $tmp22 = NULL;
+  $tmp23 = NULL;
+  $tmp24 = NULL;
+  $tmp25 = NULL;
+  $tmp26 = NULL;
+//
+  __patsflab__ats2phppre_PHParray_loop_6:
+  $tmp22 = ats2phppre_lt_int1_int1($arg1, $arg0);
+  if($tmp22) {
+    $tmp23 = ats2phppre_add_int1_int1($arg1, 1);
+    $tmp26 = ats2phppre_PHParray_get_at($env0, $arg1);
+    $tmp25 = $env1[0]($env1, $tmp26);
+    $tmp24 = array($tmp25, $arg2);
+    // ATStailcalseq_beg
+    $apy0 = $arg0;
+    $apy1 = $tmp23;
+    $apy2 = $tmp24;
+    $arg0 = $apy0;
+    $arg1 = $apy1;
+    $arg2 = $apy2;
+    goto __patsflab__ats2phppre_PHParray_loop_6;
+    // ATStailcalseq_end
+  } else {
+    $tmpret21 = $arg2;
+  } // endif
+  return $tmpret21;
+} // end-of-function
+
+
+function
+ats2phppre_PHParray2list_map_rev($arg0, $arg1)
+{
+//
+  $tmpret29 = NULL;
+  $tmp30 = NULL;
+  $tmp38 = NULL;
+  $tmp39 = NULL;
+//
+  __patsflab_PHParray2list_map_rev:
+  $tmp30 = ats2phppre_PHParray_size($arg0);
+  $tmp39 = NULL;
+  $tmp38 = _ats2phppre_PHParray_loop_8($arg0, $arg1, $tmp30, $tmp39);
+  $tmpret29 = ats2phppre_list_reverse($tmp38);
+  return $tmpret29;
+} // end-of-function
+
+
+function
+_ats2phppre_PHParray_loop_8($env0, $env1, $arg0, $arg1)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $tmpret31 = NULL;
+  $tmp32 = NULL;
+  $tmp33 = NULL;
+  $tmp34 = NULL;
+  $tmp35 = NULL;
+  $tmp36 = NULL;
+  $tmp37 = NULL;
+//
+  __patsflab__ats2phppre_PHParray_loop_8:
+  $tmp32 = ats2phppre_gt_int1_int1($arg0, 0);
+  if($tmp32) {
+    $tmp33 = ats2phppre_sub_int1_int1($arg0, 1);
+    $tmp37 = ats2phppre_sub_int1_int1($arg0, 1);
+    $tmp36 = ats2phppre_PHParray_get_at($env0, $tmp37);
+    $tmp35 = $env1[0]($env1, $tmp36);
+    $tmp34 = array($tmp35, $arg1);
+    // ATStailcalseq_beg
+    $apy0 = $tmp33;
+    $apy1 = $tmp34;
+    $arg0 = $apy0;
+    $arg1 = $apy1;
+    goto __patsflab__ats2phppre_PHParray_loop_8;
+    // ATStailcalseq_end
+  } else {
+    $tmpret31 = $arg1;
+  } // endif
+  return $tmpret31;
+} // end-of-function
+
+
+function
+ats2phppre_PHParray_forall($arg0, $arg1)
+{
+//
+  $tmpret40 = NULL;
+  $tmp41 = NULL;
+//
+  __patsflab_PHParray_forall:
+  $tmp41 = ats2phppre_PHParray_size($arg0);
+  $tmpret40 = _ats2phppre_PHParray_loop_10($arg0, $arg1, $tmp41, 0);
+  return $tmpret40;
+} // end-of-function
+
+
+function
+_ats2phppre_PHParray_loop_10($env0, $env1, $arg0, $arg1)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $tmpret42 = NULL;
+  $tmp43 = NULL;
+  $tmp44 = NULL;
+  $tmp45 = NULL;
+  $tmp46 = NULL;
+//
+  __patsflab__ats2phppre_PHParray_loop_10:
+  $tmp43 = ats2phppre_lt_int1_int1($arg1, $arg0);
+  if($tmp43) {
+    $tmp45 = ats2phppre_PHParray_get_at($env0, $arg1);
+    $tmp44 = $env1[0]($env1, $tmp45);
+    if($tmp44) {
+      $tmp46 = ats2phppre_add_int1_int1($arg1, 1);
+      // ATStailcalseq_beg
+      $apy0 = $arg0;
+      $apy1 = $tmp46;
+      $arg0 = $apy0;
+      $arg1 = $apy1;
+      goto __patsflab__ats2phppre_PHParray_loop_10;
+      // ATStailcalseq_end
+    } else {
+      $tmpret42 = false;
+    } // endif
+  } else {
+    $tmpret42 = true;
+  } // endif
+  return $tmpret42;
+} // end-of-function
+
+
+function
+ats2phppre_PHParray_foreach($arg0, $arg1)
+{
+//
+  $tmp48 = NULL;
+//
+  __patsflab_PHParray_foreach:
+  $tmp48 = ats2phppre_PHParray_size($arg0);
+  _ats2phppre_PHParray_loop_12($arg0, $arg1, $tmp48, 0);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+_ats2phppre_PHParray_loop_12($env0, $env1, $arg0, $arg1)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $tmp50 = NULL;
+  $tmp52 = NULL;
+  $tmp53 = NULL;
+//
+  __patsflab__ats2phppre_PHParray_loop_12:
+  $tmp50 = ats2phppre_lt_int1_int1($arg1, $arg0);
+  if($tmp50) {
+    $tmp52 = ats2phppre_PHParray_get_at($env0, $arg1);
+    $env1[0]($env1, $tmp52);
+    $tmp53 = ats2phppre_add_int1_int1($arg1, 1);
+    // ATStailcalseq_beg
+    $apy0 = $arg0;
+    $apy1 = $tmp53;
+    $arg0 = $apy0;
+    $arg1 = $apy1;
+    goto __patsflab__ats2phppre_PHParray_loop_12;
+    // ATStailcalseq_end
+  } else {
+    // ATSINSmove_void;
+  } // endif
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_PHParray_streamize_elt($arg0)
+{
+//
+  $tmpret54 = NULL;
+  $tmp55 = NULL;
+//
+  __patsflab_PHParray_streamize_elt:
+  $tmp55 = ats2phppre_PHParray_size($arg0);
+  $tmpret54 = _ats2phppre_PHParray_auxmain_14($arg0, $tmp55, 0);
+  return $tmpret54;
+} // end-of-function
+
+
+function
+_ats2phppre_PHParray_auxmain_14($env0, $arg0, $arg1)
+{
+//
+  $tmpret56 = NULL;
+//
+  __patsflab__ats2phppre_PHParray_auxmain_14:
+  $tmpret56 = ATSPMVllazyval(_ats2phppre_PHParray_patsfun_15__closurerize($env0, $arg0, $arg1));
+  return $tmpret56;
+} // end-of-function
+
+
+function
+_ats2phppre_PHParray_patsfun_15($env0, $env1, $env2, $arg0)
+{
+//
+  $tmpret57 = NULL;
+  $tmp58 = NULL;
+  $tmp59 = NULL;
+  $tmp60 = NULL;
+  $tmp61 = NULL;
+//
+  __patsflab__ats2phppre_PHParray_patsfun_15:
+  if($arg0) {
+    $tmp58 = ats2phppre_lt_int1_int1($env2, $env1);
+    if($tmp58) {
+      $tmp59 = ats2phppre_PHParray_get_at($env0, $env2);
+      $tmp61 = ats2phppre_add_int1_int1($env2, 1);
+      $tmp60 = _ats2phppre_PHParray_auxmain_14($env0, $env1, $tmp61);
+      $tmpret57 = array($tmp59, $tmp60);
+    } else {
+      $tmpret57 = NULL;
+    } // endif
+  } else {
+  } // endif
+  return $tmpret57;
+} // end-of-function
+
+/* ****** ****** */
+
+/* end-of-compilation-unit */
+?>
+<?php
+/*
+**
+** The PHP code is generated by atscc2php
+** The starting compilation time is: 2018-6-23: 17h:12m
+**
+*/
+
+function
+ats2phppre_PHParref_make_list($arg0)
+{
+//
+  $tmpret0 = NULL;
+  $tmp1 = NULL;
+//
+  __patsflab_PHParref_make_list:
+  $tmp1 = ats2phppre_PHParref_nil();
+  _ats2phppre_PHParref_loop_1($tmp1, $arg0);
+  $tmpret0 = $tmp1;
+  return $tmpret0;
+} // end-of-function
+
+
+function
+_ats2phppre_PHParref_loop_1($env0, $arg0)
+{
+//
+  $apy0 = NULL;
+  $tmp3 = NULL;
+  $tmp4 = NULL;
+//
+  __patsflab__ats2phppre_PHParref_loop_1:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab0:
+    if(ATSCKptriscons($arg0)) goto __atstmplab3;
+    __atstmplab1:
+    // ATSINSmove_void;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab2:
+    __atstmplab3:
+    $tmp3 = $arg0[0];
+    $tmp4 = $arg0[1];
+    ats2phppre_PHParref_extend($env0, $tmp3);
+    // ATStailcalseq_beg
+    $apy0 = $tmp4;
+    $arg0 = $apy0;
+    goto __patsflab__ats2phppre_PHParref_loop_1;
+    // ATStailcalseq_end
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_PHParref2list($arg0)
+{
+//
+  $tmpret7 = NULL;
+  $tmp8 = NULL;
+//
+  __patsflab_PHParref2list:
+  $tmp8 = ats2phppre_PHParref2array($arg0);
+  $tmpret7 = ats2phppre_PHParray2list($tmp8);
+  return $tmpret7;
+} // end-of-function
+
+
+function
+ats2phppre_PHParref2list_rev($arg0)
+{
+//
+  $tmpret9 = NULL;
+  $tmp10 = NULL;
+//
+  __patsflab_PHParref2list_rev:
+  $tmp10 = ats2phppre_PHParref2array($arg0);
+  $tmpret9 = ats2phppre_PHParray2list_rev($tmp10);
+  return $tmpret9;
+} // end-of-function
+
+
+function
+ats2phppre_PHParref_streamize_elt($arg0)
+{
+//
+  $tmpret11 = NULL;
+  $tmp12 = NULL;
+//
+  __patsflab_PHParref_streamize_elt:
+  $tmp12 = ats2phppre_PHParref2array($arg0);
+  $tmpret11 = ats2phppre_PHParray_streamize_elt($tmp12);
+  return $tmpret11;
+} // end-of-function
+
+/* ****** ****** */
+
+/* end-of-compilation-unit */
+?>
+<?php
+/*
+**
+** The PHP code is generated by atscc2php
+** The starting compilation time is: 2018-6-23: 17h:12m
+**
+*/
+function
+_ats2phppre_arrayref_patsfun_6__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_arrayref_patsfun_6($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_arrayref_patsfun_9__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_arrayref_patsfun_9($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_arrayref_patsfun_12__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_arrayref_patsfun_12($cenv[1], $arg0); }, $env0);
 }
 
 
@@ -7294,16 +9133,64 @@ ats2phppre_arrszref_exists_cloref($arg0, $arg1)
 
 
 function
-ats2phppre_arrszref_forall_cloref($arg0, $arg1)
+ats2phppre_arrszref_exists_method($arg0)
 {
 //
   $tmpret7 = NULL;
-  $tmp8 = NULL;
+//
+  __patsflab_arrszref_exists_method:
+  $tmpret7 = _ats2phppre_arrayref_patsfun_6__closurerize($arg0);
+  return $tmpret7;
+} // end-of-function
+
+
+function
+_ats2phppre_arrayref_patsfun_6($env0, $arg0)
+{
+//
+  $tmpret8 = NULL;
+//
+  __patsflab__ats2phppre_arrayref_patsfun_6:
+  $tmpret8 = ats2phppre_arrszref_exists_cloref($env0, $arg0);
+  return $tmpret8;
+} // end-of-function
+
+
+function
+ats2phppre_arrszref_forall_cloref($arg0, $arg1)
+{
+//
+  $tmpret9 = NULL;
+  $tmp10 = NULL;
 //
   __patsflab_arrszref_forall_cloref:
-  $tmp8 = ats2phppre_arrszref_size($arg0);
-  $tmpret7 = ats2phppre_int_forall_cloref($tmp8, $arg1);
-  return $tmpret7;
+  $tmp10 = ats2phppre_arrszref_size($arg0);
+  $tmpret9 = ats2phppre_int_forall_cloref($tmp10, $arg1);
+  return $tmpret9;
+} // end-of-function
+
+
+function
+ats2phppre_arrszref_forall_method($arg0)
+{
+//
+  $tmpret11 = NULL;
+//
+  __patsflab_arrszref_forall_method:
+  $tmpret11 = _ats2phppre_arrayref_patsfun_9__closurerize($arg0);
+  return $tmpret11;
+} // end-of-function
+
+
+function
+_ats2phppre_arrayref_patsfun_9($env0, $arg0)
+{
+//
+  $tmpret12 = NULL;
+//
+  __patsflab__ats2phppre_arrayref_patsfun_9:
+  $tmpret12 = ats2phppre_arrszref_forall_cloref($env0, $arg0);
+  return $tmpret12;
 } // end-of-function
 
 
@@ -7311,11 +9198,11 @@ function
 ats2phppre_arrszref_foreach_cloref($arg0, $arg1)
 {
 //
-  $tmp10 = NULL;
+  $tmp14 = NULL;
 //
   __patsflab_arrszref_foreach_cloref:
-  $tmp10 = ats2phppre_arrszref_size($arg0);
-  ats2phppre_int_foreach_cloref($tmp10, $arg1);
+  $tmp14 = ats2phppre_arrszref_size($arg0);
+  ats2phppre_int_foreach_cloref($tmp14, $arg1);
   return/*_void*/;
 } // end-of-function
 
@@ -7324,22 +9211,38 @@ function
 ats2phppre_arrszref_foreach_method($arg0)
 {
 //
-  $tmpret11 = NULL;
+  $tmpret15 = NULL;
 //
   __patsflab_arrszref_foreach_method:
-  $tmpret11 = _ats2phppre_arrayref_patsfun_8__closurerize($arg0);
-  return $tmpret11;
+  $tmpret15 = _ats2phppre_arrayref_patsfun_12__closurerize($arg0);
+  return $tmpret15;
 } // end-of-function
 
 
 function
-_ats2phppre_arrayref_patsfun_8($env0, $arg0)
+_ats2phppre_arrayref_patsfun_12($env0, $arg0)
 {
 //
 //
-  __patsflab__ats2phppre_arrayref_patsfun_8:
+  __patsflab__ats2phppre_arrayref_patsfun_12:
   ats2phppre_arrszref_foreach_cloref($env0, $arg0);
   return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_arrszref_tabulate_cloref($arg0, $arg1)
+{
+//
+  $tmpret17 = NULL;
+  $tmp18 = NULL;
+  $tmp19 = NULL;
+//
+  __patsflab_arrszref_tabulate_cloref:
+  $tmp19 = ats2phppre_arrayref_tabulate_cloref($arg0, $arg1);
+  $tmp18 = ats2phppre_arrszref_make_arrayref($tmp19, $arg0);
+  $tmpret17 = $tmp18;
+  return $tmpret17;
 } // end-of-function
 
 
@@ -7347,13 +9250,13 @@ function
 ats2phppre_arrayref_make_elt($arg0, $arg1)
 {
 //
-  $tmpret13 = NULL;
-  $tmp14 = NULL;
+  $tmpret20 = NULL;
+  $tmp21 = NULL;
 //
   __patsflab_arrayref_make_elt:
-  $tmp14 = ats2phppre_PHParref_make_elt($arg0, $arg1);
-  $tmpret13 = $tmp14;
-  return $tmpret13;
+  $tmp21 = ats2phppre_PHParref_make_elt($arg0, $arg1);
+  $tmpret20 = $tmp21;
+  return $tmpret20;
 } // end-of-function
 
 
@@ -7361,11 +9264,11 @@ function
 ats2phppre_arrayref_get_at($arg0, $arg1)
 {
 //
-  $tmpret15 = NULL;
+  $tmpret22 = NULL;
 //
   __patsflab_arrayref_get_at:
-  $tmpret15 = ats2phppre_PHParref_get_at($arg0, $arg1);
-  return $tmpret15;
+  $tmpret22 = ats2phppre_PHParref_get_at($arg0, $arg1);
+  return $tmpret22;
 } // end-of-function
 
 
@@ -7384,11 +9287,11 @@ function
 ats2phppre_arrszref_make_arrayref($arg0, $arg1)
 {
 //
-  $tmpret17 = NULL;
+  $tmpret24 = NULL;
 //
   __patsflab_arrszref_make_arrayref:
-  $tmpret17 = $arg0;
-  return $tmpret17;
+  $tmpret24 = $arg0;
+  return $tmpret24;
 } // end-of-function
 
 
@@ -7396,11 +9299,11 @@ function
 ats2phppre_arrszref_size($arg0)
 {
 //
-  $tmpret18 = NULL;
+  $tmpret25 = NULL;
 //
   __patsflab_arrszref_size:
-  $tmpret18 = ats2phppre_PHParref_length($arg0);
-  return $tmpret18;
+  $tmpret25 = ats2phppre_PHParref_length($arg0);
+  return $tmpret25;
 } // end-of-function
 
 
@@ -7408,11 +9311,11 @@ function
 ats2phppre_arrszref_get_at($arg0, $arg1)
 {
 //
-  $tmpret19 = NULL;
+  $tmpret26 = NULL;
 //
   __patsflab_arrszref_get_at:
-  $tmpret19 = ats2phppre_PHParref_get_at($arg0, $arg1);
-  return $tmpret19;
+  $tmpret26 = ats2phppre_PHParref_get_at($arg0, $arg1);
+  return $tmpret26;
 } // end-of-function
 
 
@@ -7434,7 +9337,498 @@ ats2phppre_arrszref_set_at($arg0, $arg1, $arg2)
 /*
 **
 ** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-3-24:  1h:27m
+** The starting compilation time is: 2018-6-23: 17h:12m
+**
+*/
+
+/* ATSextcode_beg() */
+// COMMENT_line(...)
+
+function
+ats2phppre_mtrxszref_make_matrixref
+  ($matrix, $nrow, $ncol)
+{
+  return array($matrix, $nrow, $ncol);
+}
+// COMMENT_line(...)
+
+function
+ats2phppre_mtrxszref_get_nrow($MSZ) { return $MSZ[1]; }
+function
+ats2phppre_mtrxszref_get_ncol($MSZ) { return $MSZ[2]; }
+// COMMENT_line(...)
+
+function
+ats2phppre_mtrxszref_get_at
+  ($MSZ, $i, $j)
+{
+  $nrow = $MSZ[1];
+  $ncol = $MSZ[2];
+  if ($i < 0) throw new RangeException("mtrxszref_get_at");
+  if ($j < 0) throw new RangeException("mtrxszref_get_at");
+  if ($i >= $nrow) throw new RangeException("mtrxszref_get_at");
+  if ($j >= $ncol) throw new RangeException("mtrxszref_get_at");
+  return ats2phppre_PHParref_get_at($MSZ[0], $i*$ncol+$j);
+}
+// COMMENT_line(...)
+
+function
+ats2phppre_mtrxszref_set_at
+  ($MSZ, $i, $j, $x0)
+{
+  $nrow = $MSZ[1];
+  $ncol = $MSZ[2];
+  if ($i < 0) throw new RangeException("mtrxszref_set_at");
+  if ($j < 0) throw new RangeException("mtrxszref_set_at");
+  if ($i >= $nrow) throw new RangeException("mtrxszref_set_at");
+  if ($j >= $ncol) throw new RangeException("mtrxszref_set_at");
+  ats2phppre_PHParref_set_at($MSZ[0], $i*$ncol+$j, $x0); return;
+}
+// COMMENT_line(...)
+
+/* ATSextcode_end() */
+function
+_ats2phppre_matrixref_patsfun_4__closurerize($env0, $env1, $env2, $env3)
+{
+  return array(function($cenv, $arg0, $arg1) { return _ats2phppre_matrixref_patsfun_4($cenv[1], $cenv[2], $cenv[3], $cenv[4], $arg0, $arg1); }, $env0, $env1, $env2, $env3);
+}
+
+function
+_ats2phppre_matrixref_patsfun_6__closurerize($env0, $env1, $env2, $env3)
+{
+  return array(function($cenv, $arg0, $arg1) { return _ats2phppre_matrixref_patsfun_6($cenv[1], $cenv[2], $cenv[3], $cenv[4], $arg0, $arg1); }, $env0, $env1, $env2, $env3);
+}
+
+function
+_ats2phppre_matrixref_patsfun_11__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_matrixref_patsfun_11($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_matrixref_patsfun_13__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_matrixref_patsfun_13($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_matrixref_patsfun_16__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_matrixref_patsfun_16($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_matrixref_patsfun_19__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_matrixref_patsfun_19($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_matrixref_patsfun_21__closurerize($env0)
+{
+  return array(function($cenv, $arg0, $arg1) { return _ats2phppre_matrixref_patsfun_21($cenv[1], $arg0, $arg1); }, $env0);
+}
+
+function
+_ats2phppre_matrixref_patsfun_23__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_matrixref_patsfun_23($cenv[1], $arg0); }, $env0);
+}
+
+
+function
+ats2phppre_matrixref_exists_cloref($arg0, $arg1, $arg2, $arg3)
+{
+//
+  $tmpret0 = NULL;
+//
+  __patsflab_matrixref_exists_cloref:
+  $tmpret0 = ats2phppre_int2_exists_cloref($arg1, $arg2, $arg3);
+  return $tmpret0;
+} // end-of-function
+
+
+function
+ats2phppre_matrixref_forall_cloref($arg0, $arg1, $arg2, $arg3)
+{
+//
+  $tmpret1 = NULL;
+//
+  __patsflab_matrixref_forall_cloref:
+  $tmpret1 = ats2phppre_int2_forall_cloref($arg1, $arg2, $arg3);
+  return $tmpret1;
+} // end-of-function
+
+
+function
+ats2phppre_matrixref_foreach_cloref($arg0, $arg1, $arg2, $arg3)
+{
+//
+//
+  __patsflab_matrixref_foreach_cloref:
+  ats2phppre_int2_foreach_cloref($arg1, $arg2, $arg3);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_cbind_matrixref_matrixref($arg0, $arg1, $arg2, $arg3, $arg4)
+{
+//
+  $tmpret3 = NULL;
+  $tmp4 = NULL;
+//
+  __patsflab_cbind_matrixref_matrixref:
+  $tmp4 = ats2phppre_add_int1_int1($arg3, $arg4);
+  $tmpret3 = ats2phppre_matrixref_tabulate_cloref($arg2, $tmp4, _ats2phppre_matrixref_patsfun_4__closurerize($arg0, $arg1, $arg3, $arg4));
+  return $tmpret3;
+} // end-of-function
+
+
+function
+_ats2phppre_matrixref_patsfun_4($env0, $env1, $env2, $env3, $arg0, $arg1)
+{
+//
+  $tmpret5 = NULL;
+  $tmp6 = NULL;
+  $tmp7 = NULL;
+//
+  __patsflab__ats2phppre_matrixref_patsfun_4:
+  $tmp6 = ats2phppre_lt_int1_int1($arg1, $env2);
+  if($tmp6) {
+    $tmpret5 = ats2phppre_matrixref_get_at($env0, $arg0, $env2, $arg1);
+  } else {
+    $tmp7 = ats2phppre_sub_int1_int1($arg1, $env2);
+    $tmpret5 = ats2phppre_matrixref_get_at($env1, $arg0, $env3, $tmp7);
+  } // endif
+  return $tmpret5;
+} // end-of-function
+
+
+function
+ats2phppre_rbind_matrixref_matrixref($arg0, $arg1, $arg2, $arg3, $arg4)
+{
+//
+  $tmpret8 = NULL;
+  $tmp9 = NULL;
+//
+  __patsflab_rbind_matrixref_matrixref:
+  $tmp9 = ats2phppre_add_int1_int1($arg2, $arg3);
+  $tmpret8 = ats2phppre_matrixref_tabulate_cloref($tmp9, $arg4, _ats2phppre_matrixref_patsfun_6__closurerize($arg0, $arg1, $arg2, $arg4));
+  return $tmpret8;
+} // end-of-function
+
+
+function
+_ats2phppre_matrixref_patsfun_6($env0, $env1, $env2, $env3, $arg0, $arg1)
+{
+//
+  $tmpret10 = NULL;
+  $tmp11 = NULL;
+  $tmp12 = NULL;
+//
+  __patsflab__ats2phppre_matrixref_patsfun_6:
+  $tmp11 = ats2phppre_lt_int1_int1($arg0, $env2);
+  if($tmp11) {
+    $tmpret10 = ats2phppre_matrixref_get_at($env0, $arg0, $env3, $arg1);
+  } else {
+    $tmp12 = ats2phppre_sub_int1_int1($arg0, $env2);
+    $tmpret10 = ats2phppre_matrixref_get_at($env1, $tmp12, $env3, $arg1);
+  } // endif
+  return $tmpret10;
+} // end-of-function
+
+
+function
+ats2phppre_mtrxszref_make_elt($arg0, $arg1, $arg2)
+{
+//
+  $tmpret13 = NULL;
+  $tmp14 = NULL;
+//
+  __patsflab_mtrxszref_make_elt:
+  $tmp14 = ats2phppre_matrixref_make_elt($arg0, $arg1, $arg2);
+  $tmpret13 = ats2phppre_mtrxszref_make_matrixref($tmp14, $arg0, $arg1);
+  return $tmpret13;
+} // end-of-function
+
+
+function
+ats2phppre_mtrxszref_exists_cloref($arg0, $arg1)
+{
+//
+  $tmpret15 = NULL;
+  $tmp16 = NULL;
+  $tmp17 = NULL;
+//
+  __patsflab_mtrxszref_exists_cloref:
+  $tmp16 = ats2phppre_mtrxszref_get_nrow($arg0);
+  $tmp17 = ats2phppre_mtrxszref_get_ncol($arg0);
+  $tmpret15 = ats2phppre_int2_exists_cloref($tmp16, $tmp17, $arg1);
+  return $tmpret15;
+} // end-of-function
+
+
+function
+ats2phppre_mtrxszref_forall_cloref($arg0, $arg1)
+{
+//
+  $tmpret18 = NULL;
+  $tmp19 = NULL;
+  $tmp20 = NULL;
+//
+  __patsflab_mtrxszref_forall_cloref:
+  $tmp19 = ats2phppre_mtrxszref_get_nrow($arg0);
+  $tmp20 = ats2phppre_mtrxszref_get_ncol($arg0);
+  $tmpret18 = ats2phppre_int2_forall_cloref($tmp19, $tmp20, $arg1);
+  return $tmpret18;
+} // end-of-function
+
+
+function
+ats2phppre_mtrxszref_exists_method($arg0)
+{
+//
+  $tmpret21 = NULL;
+//
+  __patsflab_mtrxszref_exists_method:
+  $tmpret21 = _ats2phppre_matrixref_patsfun_11__closurerize($arg0);
+  return $tmpret21;
+} // end-of-function
+
+
+function
+_ats2phppre_matrixref_patsfun_11($env0, $arg0)
+{
+//
+  $tmpret22 = NULL;
+//
+  __patsflab__ats2phppre_matrixref_patsfun_11:
+  $tmpret22 = ats2phppre_mtrxszref_exists_cloref($env0, $arg0);
+  return $tmpret22;
+} // end-of-function
+
+
+function
+ats2phppre_mtrxszref_forall_method($arg0)
+{
+//
+  $tmpret23 = NULL;
+//
+  __patsflab_mtrxszref_forall_method:
+  $tmpret23 = _ats2phppre_matrixref_patsfun_13__closurerize($arg0);
+  return $tmpret23;
+} // end-of-function
+
+
+function
+_ats2phppre_matrixref_patsfun_13($env0, $arg0)
+{
+//
+  $tmpret24 = NULL;
+//
+  __patsflab__ats2phppre_matrixref_patsfun_13:
+  $tmpret24 = ats2phppre_mtrxszref_forall_cloref($env0, $arg0);
+  return $tmpret24;
+} // end-of-function
+
+
+function
+ats2phppre_mtrxszref_foreach_cloref($arg0, $arg1)
+{
+//
+  $tmp26 = NULL;
+  $tmp27 = NULL;
+//
+  __patsflab_mtrxszref_foreach_cloref:
+  $tmp26 = ats2phppre_mtrxszref_get_nrow($arg0);
+  $tmp27 = ats2phppre_mtrxszref_get_ncol($arg0);
+  ats2phppre_int2_foreach_cloref($tmp26, $tmp27, $arg1);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_mtrxszref_foreach_method($arg0)
+{
+//
+  $tmpret28 = NULL;
+//
+  __patsflab_mtrxszref_foreach_method:
+  $tmpret28 = _ats2phppre_matrixref_patsfun_16__closurerize($arg0);
+  return $tmpret28;
+} // end-of-function
+
+
+function
+_ats2phppre_matrixref_patsfun_16($env0, $arg0)
+{
+//
+//
+  __patsflab__ats2phppre_matrixref_patsfun_16:
+  ats2phppre_mtrxszref_foreach_cloref($env0, $arg0);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_mtrxszref_foreach_row_cloref($arg0, $arg1)
+{
+//
+  $tmp31 = NULL;
+  $tmp32 = NULL;
+//
+  __patsflab_mtrxszref_foreach_row_cloref:
+  $tmp31 = ats2phppre_mtrxszref_get_nrow($arg0);
+  $tmp32 = ats2phppre_mtrxszref_get_ncol($arg0);
+  ats2phppre_int2_foreach_cloref($tmp31, $tmp32, $arg1);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_mtrxszref_foreach_row_method($arg0)
+{
+//
+  $tmpret33 = NULL;
+//
+  __patsflab_mtrxszref_foreach_row_method:
+  $tmpret33 = _ats2phppre_matrixref_patsfun_19__closurerize($arg0);
+  return $tmpret33;
+} // end-of-function
+
+
+function
+_ats2phppre_matrixref_patsfun_19($env0, $arg0)
+{
+//
+//
+  __patsflab__ats2phppre_matrixref_patsfun_19:
+  ats2phppre_mtrxszref_foreach_row_cloref($env0, $arg0);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_mtrxszref_foreach_col_cloref($arg0, $arg1)
+{
+//
+  $tmp36 = NULL;
+  $tmp37 = NULL;
+//
+  __patsflab_mtrxszref_foreach_col_cloref:
+  $tmp36 = ats2phppre_mtrxszref_get_nrow($arg0);
+  $tmp37 = ats2phppre_mtrxszref_get_ncol($arg0);
+  ats2phppre_int2_foreach_cloref($tmp37, $tmp36, _ats2phppre_matrixref_patsfun_21__closurerize($arg1));
+  return/*_void*/;
+} // end-of-function
+
+
+function
+_ats2phppre_matrixref_patsfun_21($env0, $arg0, $arg1)
+{
+//
+//
+  __patsflab__ats2phppre_matrixref_patsfun_21:
+  $env0[0]($env0, $arg1, $arg0);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_mtrxszref_foreach_col_method($arg0)
+{
+//
+  $tmpret39 = NULL;
+//
+  __patsflab_mtrxszref_foreach_col_method:
+  $tmpret39 = _ats2phppre_matrixref_patsfun_23__closurerize($arg0);
+  return $tmpret39;
+} // end-of-function
+
+
+function
+_ats2phppre_matrixref_patsfun_23($env0, $arg0)
+{
+//
+//
+  __patsflab__ats2phppre_matrixref_patsfun_23:
+  ats2phppre_mtrxszref_foreach_col_cloref($env0, $arg0);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_mtrxszref_tabulate_cloref($arg0, $arg1, $arg2)
+{
+//
+  $tmpret41 = NULL;
+  $tmp42 = NULL;
+  $tmp43 = NULL;
+//
+  __patsflab_mtrxszref_tabulate_cloref:
+  $tmp43 = ats2phppre_matrixref_tabulate_cloref($arg0, $arg1, $arg2);
+  $tmp42 = ats2phppre_mtrxszref_make_matrixref($tmp43, $arg0, $arg1);
+  $tmpret41 = $tmp42;
+  return $tmpret41;
+} // end-of-function
+
+
+function
+ats2phppre_matrixref_make_elt($arg0, $arg1, $arg2)
+{
+//
+  $tmpret44 = NULL;
+  $tmp45 = NULL;
+  $tmp46 = NULL;
+//
+  __patsflab_matrixref_make_elt:
+  $tmp45 = ats2phppre_mul_int1_int1($arg0, $arg1);
+  $tmp46 = ats2phppre_PHParref_make_elt($tmp45, $arg2);
+  $tmpret44 = $tmp46;
+  return $tmpret44;
+} // end-of-function
+
+
+function
+ats2phppre_matrixref_get_at($arg0, $arg1, $arg2, $arg3)
+{
+//
+  $tmpret47 = NULL;
+  $tmp48 = NULL;
+  $tmp49 = NULL;
+//
+  __patsflab_matrixref_get_at:
+  $tmp49 = ats2phppre_mul_int1_int1($arg1, $arg2);
+  $tmp48 = ats2phppre_add_int1_int1($tmp49, $arg3);
+  $tmpret47 = ats2phppre_PHParref_get_at($arg0, $tmp48);
+  return $tmpret47;
+} // end-of-function
+
+
+function
+ats2phppre_matrixref_set_at($arg0, $arg1, $arg2, $arg3, $arg4)
+{
+//
+  $tmp51 = NULL;
+  $tmp52 = NULL;
+//
+  __patsflab_matrixref_set_at:
+  $tmp52 = ats2phppre_mul_int1_int1($arg1, $arg2);
+  $tmp51 = ats2phppre_add_int1_int1($tmp52, $arg3);
+  ats2phppre_PHParref_set_at($arg0, $tmp51, $arg4);
+  return/*_void*/;
+} // end-of-function
+
+/* ****** ****** */
+
+/* end-of-compilation-unit */
+?>
+<?php
+/*
+**
+** The PHP code is generated by atscc2php
+** The starting compilation time is: 2018-6-23: 17h:12m
 **
 */
 
@@ -7458,7 +9852,7 @@ ats2phppre_ref_make_elt($arg0)
   $tmp2 = NULL;
 //
   __patsflab_ref_make_elt:
-  $tmp2 = PHPref_new($arg0);
+  $tmp2 = ats2phppre_PHPref_new($arg0);
   $tmpret1 = $tmp2;
   return $tmpret1;
 } // end-of-function
@@ -7471,7 +9865,7 @@ ats2phppre_ref_get_elt($arg0)
   $tmpret3 = NULL;
 //
   __patsflab_ref_get_elt:
-  $tmpret3 = PHPref_get_elt($arg0);
+  $tmpret3 = ats2phppre_PHPref_get_elt($arg0);
   return $tmpret3;
 } // end-of-function
 
@@ -7482,7 +9876,7 @@ ats2phppre_ref_set_elt($arg0, $arg1)
 //
 //
   __patsflab_ref_set_elt:
-  PHPref_set_elt($arg0, $arg1);
+  ats2phppre_PHPref_set_elt($arg0, $arg1);
   return/*_void*/;
 } // end-of-function
 
@@ -7494,7 +9888,507 @@ ats2phppre_ref_set_elt($arg0, $arg1)
 /*
 **
 ** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-3-24:  1h:27m
+** The starting compilation time is: 2018-6-23: 17h:12m
+**
+*/
+
+function
+ats2phppre_funarray_make_nil()
+{
+//
+  $tmpret0 = NULL;
+//
+  __patsflab_funarray_make_nil:
+  $tmpret0 = NULL;
+  return $tmpret0;
+} // end-of-function
+
+
+function
+ats2phppre_funarray_size($arg0)
+{
+//
+  $tmpret1 = NULL;
+//
+  __patsflab_funarray_size:
+  $tmpret1 = _ats2phppre_funarray_size_3($arg0);
+  return $tmpret1;
+} // end-of-function
+
+
+function
+_ats2phppre_funarray_diff_2($arg0, $arg1)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $tmpret2 = NULL;
+  $tmp4 = NULL;
+  $tmp5 = NULL;
+  $tmp6 = NULL;
+  $tmp7 = NULL;
+  $tmp8 = NULL;
+  $tmp9 = NULL;
+  $tmp10 = NULL;
+//
+  __patsflab__ats2phppre_funarray_diff_2:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab0:
+    if(ATSCKptriscons($arg1)) goto __atstmplab3;
+    __atstmplab1:
+    $tmpret2 = 0;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab2:
+    __atstmplab3:
+    $tmp4 = $arg1[1];
+    $tmp5 = $arg1[2];
+    $tmp6 = ats2phppre_gt_int1_int1($arg0, 0);
+    if($tmp6) {
+      $tmp7 = ats2phppre_half_int1($arg0);
+      $tmp9 = ats2phppre_add_int1_int1($tmp7, $tmp7);
+      $tmp8 = ats2phppre_gt_int1_int1($arg0, $tmp9);
+      if($tmp8) {
+        // ATStailcalseq_beg
+        $apy0 = $tmp7;
+        $apy1 = $tmp4;
+        $arg0 = $apy0;
+        $arg1 = $apy1;
+        goto __patsflab__ats2phppre_funarray_diff_2;
+        // ATStailcalseq_end
+      } else {
+        $tmp10 = ats2phppre_sub_int1_int1($tmp7, 1);
+        // ATStailcalseq_beg
+        $apy0 = $tmp10;
+        $apy1 = $tmp5;
+        $arg0 = $apy0;
+        $arg1 = $apy1;
+        goto __patsflab__ats2phppre_funarray_diff_2;
+        // ATStailcalseq_end
+      } // endif
+    } else {
+      $tmpret2 = 1;
+    } // endif
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret2;
+} // end-of-function
+
+
+function
+_ats2phppre_funarray_size_3($arg0)
+{
+//
+  $tmpret11 = NULL;
+  $tmp13 = NULL;
+  $tmp14 = NULL;
+  $tmp15 = NULL;
+  $tmp16 = NULL;
+  $tmp17 = NULL;
+  $tmp18 = NULL;
+//
+  __patsflab__ats2phppre_funarray_size_3:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab4:
+    if(ATSCKptriscons($arg0)) goto __atstmplab7;
+    __atstmplab5:
+    $tmpret11 = 0;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab6:
+    __atstmplab7:
+    $tmp13 = $arg0[1];
+    $tmp14 = $arg0[2];
+    $tmp15 = _ats2phppre_funarray_size_3($tmp14);
+    $tmp17 = _ats2phppre_funarray_diff_2($tmp15, $tmp13);
+    $tmp16 = ats2phppre_add_int1_int1(1, $tmp17);
+    $tmp18 = ats2phppre_mul_int1_int1(2, $tmp15);
+    $tmpret11 = ats2phppre_add_int1_int1($tmp18, $tmp16);
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret11;
+} // end-of-function
+
+
+function
+ats2phppre_funarray_get_at($arg0, $arg1)
+{
+//
+  $tmpret19 = NULL;
+//
+  __patsflab_funarray_get_at:
+  $tmpret19 = _ats2phppre_funarray_get_at_5($arg0, $arg1);
+  return $tmpret19;
+} // end-of-function
+
+
+function
+_ats2phppre_funarray_get_at_5($arg0, $arg1)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $tmpret20 = NULL;
+  $tmp21 = NULL;
+  $tmp22 = NULL;
+  $tmp23 = NULL;
+  $tmp24 = NULL;
+  $tmp25 = NULL;
+  $tmp26 = NULL;
+  $tmp27 = NULL;
+  $tmp28 = NULL;
+//
+  __patsflab__ats2phppre_funarray_get_at_5:
+  $tmp21 = ats2phppre_gt_int1_int1($arg1, 0);
+  if($tmp21) {
+    $tmp22 = ats2phppre_half_int1($arg1);
+    $tmp24 = ats2phppre_add_int1_int1($tmp22, $tmp22);
+    $tmp23 = ats2phppre_gt_int1_int1($arg1, $tmp24);
+    if($tmp23) {
+      $tmp25 = $arg0[1];
+      // ATStailcalseq_beg
+      $apy0 = $tmp25;
+      $apy1 = $tmp22;
+      $arg0 = $apy0;
+      $arg1 = $apy1;
+      goto __patsflab__ats2phppre_funarray_get_at_5;
+      // ATStailcalseq_end
+    } else {
+      $tmp26 = $arg0[2];
+      $tmp27 = ats2phppre_sub_int1_int1($tmp22, 1);
+      // ATStailcalseq_beg
+      $apy0 = $tmp26;
+      $apy1 = $tmp27;
+      $arg0 = $apy0;
+      $arg1 = $apy1;
+      goto __patsflab__ats2phppre_funarray_get_at_5;
+      // ATStailcalseq_end
+    } // endif
+  } else {
+    $tmp28 = $arg0[0];
+    $tmpret20 = $tmp28;
+  } // endif
+  return $tmpret20;
+} // end-of-function
+
+
+function
+ats2phppre_funarray_set_at($arg0, $arg1, $arg2)
+{
+//
+  $tmpret29 = NULL;
+//
+  __patsflab_funarray_set_at:
+  $tmpret29 = _ats2phppre_funarray_set_at_7($arg0, $arg1, $arg2);
+  return $tmpret29;
+} // end-of-function
+
+
+function
+_ats2phppre_funarray_set_at_7($arg0, $arg1, $arg2)
+{
+//
+  $tmpret30 = NULL;
+  $tmp31 = NULL;
+  $tmp32 = NULL;
+  $tmp33 = NULL;
+  $tmp34 = NULL;
+  $tmp35 = NULL;
+  $tmp36 = NULL;
+  $tmp37 = NULL;
+  $tmp38 = NULL;
+  $tmp39 = NULL;
+  $tmp40 = NULL;
+  $tmp41 = NULL;
+  $tmp42 = NULL;
+//
+  __patsflab__ats2phppre_funarray_set_at_7:
+  $tmp31 = ats2phppre_gt_int1_int1($arg1, 0);
+  if($tmp31) {
+    $tmp32 = ats2phppre_half_int1($arg1);
+    $tmp33 = $arg0[0];
+    $tmp34 = $arg0[1];
+    $tmp35 = $arg0[2];
+    $tmp37 = ats2phppre_add_int1_int1($tmp32, $tmp32);
+    $tmp36 = ats2phppre_gt_int1_int1($arg1, $tmp37);
+    if($tmp36) {
+      $tmp38 = _ats2phppre_funarray_set_at_7($tmp34, $tmp32, $arg2);
+      $tmpret30 = array($tmp33, $tmp38, $tmp35);
+    } else {
+      $tmp40 = ats2phppre_sub_int1_int1($tmp32, 1);
+      $tmp39 = _ats2phppre_funarray_set_at_7($tmp35, $tmp40, $arg2);
+      $tmpret30 = array($tmp33, $tmp34, $tmp39);
+    } // endif
+  } else {
+    $tmp41 = $arg0[1];
+    $tmp42 = $arg0[2];
+    $tmpret30 = array($arg2, $tmp41, $tmp42);
+  } // endif
+  return $tmpret30;
+} // end-of-function
+
+
+function
+ats2phppre_funarray_insert_l($arg0, $arg1)
+{
+//
+  $tmpret43 = NULL;
+//
+  __patsflab_funarray_insert_l:
+  $tmpret43 = _ats2phppre_funarray_ins_l_9($arg0, $arg1);
+  return $tmpret43;
+} // end-of-function
+
+
+function
+_ats2phppre_funarray_ins_l_9($arg0, $arg1)
+{
+//
+  $tmpret44 = NULL;
+  $tmp45 = NULL;
+  $tmp46 = NULL;
+  $tmp47 = NULL;
+  $tmp48 = NULL;
+  $tmp49 = NULL;
+  $tmp50 = NULL;
+//
+  __patsflab__ats2phppre_funarray_ins_l_9:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab8:
+    if(ATSCKptriscons($arg0)) goto __atstmplab11;
+    __atstmplab9:
+    $tmp48 = NULL;
+    $tmp49 = NULL;
+    $tmpret44 = array($arg1, $tmp48, $tmp49);
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab10:
+    __atstmplab11:
+    $tmp45 = $arg0[0];
+    $tmp46 = $arg0[1];
+    $tmp47 = $arg0[2];
+    $tmp50 = _ats2phppre_funarray_ins_l_9($tmp47, $tmp45);
+    $tmpret44 = array($arg1, $tmp50, $tmp46);
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret44;
+} // end-of-function
+
+
+function
+ats2phppre_funarray_insert_r($arg0, $arg1, $arg2)
+{
+//
+  $tmpret51 = NULL;
+//
+  __patsflab_funarray_insert_r:
+  $tmpret51 = _ats2phppre_funarray_ins_r_11($arg0, $arg1, $arg2);
+  return $tmpret51;
+} // end-of-function
+
+
+function
+_ats2phppre_funarray_ins_r_11($arg0, $arg1, $arg2)
+{
+//
+  $tmpret52 = NULL;
+  $tmp53 = NULL;
+  $tmp54 = NULL;
+  $tmp55 = NULL;
+  $tmp56 = NULL;
+  $tmp57 = NULL;
+  $tmp58 = NULL;
+  $tmp59 = NULL;
+  $tmp60 = NULL;
+  $tmp61 = NULL;
+  $tmp62 = NULL;
+  $tmp63 = NULL;
+  $tmp64 = NULL;
+//
+  __patsflab__ats2phppre_funarray_ins_r_11:
+  $tmp53 = ats2phppre_gt_int1_int1($arg1, 0);
+  if($tmp53) {
+    $tmp54 = ats2phppre_half_int1($arg1);
+    $tmp55 = $arg0[0];
+    $tmp56 = $arg0[1];
+    $tmp57 = $arg0[2];
+    $tmp59 = ats2phppre_add_int1_int1($tmp54, $tmp54);
+    $tmp58 = ats2phppre_gt_int1_int1($arg1, $tmp59);
+    if($tmp58) {
+      $tmp60 = _ats2phppre_funarray_ins_r_11($tmp56, $tmp54, $arg2);
+      $tmpret52 = array($tmp55, $tmp60, $tmp57);
+    } else {
+      $tmp62 = ats2phppre_sub_int1_int1($tmp54, 1);
+      $tmp61 = _ats2phppre_funarray_ins_r_11($tmp57, $tmp62, $arg2);
+      $tmpret52 = array($tmp55, $tmp56, $tmp61);
+    } // endif
+  } else {
+    $tmp63 = NULL;
+    $tmp64 = NULL;
+    $tmpret52 = array($arg2, $tmp63, $tmp64);
+  } // endif
+  return $tmpret52;
+} // end-of-function
+
+
+function
+ats2phppre_funarray_remove_l($arg0)
+{
+//
+  $tmpret65 = NULL;
+//
+  __patsflab_funarray_remove_l:
+  $tmpret65 = _ats2phppre_funarray_rem_l_13($arg0);
+  return $tmpret65;
+} // end-of-function
+
+
+function
+_ats2phppre_funarray_rem_l_13($arg0)
+{
+//
+  $tmpret66 = NULL;
+  $tmp67 = NULL;
+  $tmp68 = NULL;
+  $tmp70 = NULL;
+  $tmp71 = NULL;
+  $tmp72 = NULL;
+  $tmp73 = NULL;
+  $tmp74 = NULL;
+  $tmp75 = NULL;
+  $tmp76 = NULL;
+  $tmp77 = NULL;
+//
+  __patsflab__ats2phppre_funarray_rem_l_13:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab12:
+    $tmp68 = $arg0[1];
+    __atstmplab13:
+    if(ATSCKptriscons($tmp68)) goto __atstmplab16;
+    __atstmplab14:
+    $tmp67 = $arg0[0];
+    $tmp73 = NULL;
+    $tmpret66 = array($tmp73, $tmp67);
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab15:
+    __atstmplab16:
+    $tmp70 = $arg0[0];
+    $tmp71 = $arg0[1];
+    $tmp72 = $arg0[2];
+    $tmp74 = _ats2phppre_funarray_rem_l_13($tmp71);
+    $tmp75 = $tmp74[0];
+    $tmp76 = $tmp74[1];
+    $tmp77 = array($tmp70, $tmp72, $tmp75);
+    $tmpret66 = array($tmp77, $tmp76);
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret66;
+} // end-of-function
+
+
+function
+ats2phppre_funarray_remove_r($arg0, $arg1)
+{
+//
+  $tmpret78 = NULL;
+//
+  __patsflab_funarray_remove_r:
+  $tmpret78 = _ats2phppre_funarray_rem_r_15($arg0, $arg1);
+  return $tmpret78;
+} // end-of-function
+
+
+function
+_ats2phppre_funarray_rem_r_15($arg0, $arg1)
+{
+//
+  $tmpret79 = NULL;
+  $tmp80 = NULL;
+  $tmp81 = NULL;
+  $tmp82 = NULL;
+  $tmp83 = NULL;
+  $tmp84 = NULL;
+  $tmp85 = NULL;
+  $tmp86 = NULL;
+  $tmp87 = NULL;
+  $tmp88 = NULL;
+  $tmp89 = NULL;
+  $tmp90 = NULL;
+  $tmp91 = NULL;
+  $tmp92 = NULL;
+  $tmp93 = NULL;
+  $tmp94 = NULL;
+//
+  __patsflab__ats2phppre_funarray_rem_r_15:
+  $tmp80 = ats2phppre_half_int1($arg1);
+  $tmp81 = $arg0[0];
+  $tmp82 = $arg0[1];
+  $tmp83 = $arg0[2];
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab17:
+    if(ATSCKptriscons($tmp82)) goto __atstmplab20;
+    __atstmplab18:
+    $tmp84 = NULL;
+    $tmpret79 = array($tmp84, $tmp81);
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab19:
+    __atstmplab20:
+    $tmp86 = ats2phppre_add_int1_int1($tmp80, $tmp80);
+    $tmp85 = ats2phppre_gt_int1_int1($arg1, $tmp86);
+    if($tmp85) {
+      $tmp87 = _ats2phppre_funarray_rem_r_15($tmp83, $tmp80);
+      $tmp88 = $tmp87[0];
+      $tmp89 = $tmp87[1];
+      $tmp90 = array($tmp81, $tmp82, $tmp88);
+      $tmpret79 = array($tmp90, $tmp89);
+    } else {
+      $tmp91 = _ats2phppre_funarray_rem_r_15($tmp82, $tmp80);
+      $tmp92 = $tmp91[0];
+      $tmp93 = $tmp91[1];
+      $tmp94 = array($tmp81, $tmp92, $tmp83);
+      $tmpret79 = array($tmp94, $tmp93);
+    } // endif
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret79;
+} // end-of-function
+
+/* ****** ****** */
+
+/* end-of-compilation-unit */
+?>
+<?php
+/*
+**
+** The PHP code is generated by atscc2php
+** The starting compilation time is: 2018-6-23: 17h:12m
 **
 */
 
@@ -7611,7 +10505,7 @@ slistref_foldright($arg0, $arg1, $arg2)
 /*
 **
 ** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-3-24:  1h:27m
+** The starting compilation time is: 2018-6-23: 17h:12m
 **
 */
 
@@ -7946,7 +10840,7 @@ _ats2phppre_qlistref_auxr_9($env0, $arg0, $arg1)
 /*
 **
 ** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-3-24:  1h:27m
+** The starting compilation time is: 2018-6-23: 17h:12m
 **
 */
 function
@@ -7998,9 +10892,9 @@ _ats2phppre_ML_list0_patsfun_51__closurerize($env0)
 }
 
 function
-_ats2phppre_ML_list0_patsfun_54__closurerize($env0)
+_ats2phppre_ML_list0_patsfun_55__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_54($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_55($cenv[1], $arg0); }, $env0);
 }
 
 function
@@ -8010,9 +10904,21 @@ _ats2phppre_ML_list0_patsfun_58__closurerize($env0)
 }
 
 function
-_ats2phppre_ML_list0_patsfun_64__closurerize($env0, $env1)
+_ats2phppre_ML_list0_patsfun_65__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_64($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
+  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_65($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_ML_list0_patsfun_68__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_68($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_ML_list0_patsfun_74__closurerize($env0, $env1)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_74($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
 }
 
 
@@ -8727,16 +11633,30 @@ _ats2phppre_ML_list0_patsfun_51($env0, $arg0)
 
 
 function
-ats2phppre_ML_list0_map($arg0, $arg1)
+ats2phppre_ML_list0_labelize($arg0)
 {
 //
   $tmpret93 = NULL;
   $tmp94 = NULL;
 //
-  __patsflab_list0_map:
-  $tmp94 = ats2phppre_list_map($arg0, $arg1);
+  __patsflab_list0_labelize:
+  $tmp94 = ats2phppre_list_labelize($arg0);
   $tmpret93 = $tmp94;
   return $tmpret93;
+} // end-of-function
+
+
+function
+ats2phppre_ML_list0_map($arg0, $arg1)
+{
+//
+  $tmpret95 = NULL;
+  $tmp96 = NULL;
+//
+  __patsflab_list0_map:
+  $tmp96 = ats2phppre_list_map($arg0, $arg1);
+  $tmpret95 = $tmp96;
+  return $tmpret95;
 } // end-of-function
 
 
@@ -8744,23 +11664,75 @@ function
 ats2phppre_ML_list0_map_method($arg0, $arg1)
 {
 //
-  $tmpret95 = NULL;
+  $tmpret97 = NULL;
 //
   __patsflab_list0_map_method:
-  $tmpret95 = _ats2phppre_ML_list0_patsfun_54__closurerize($arg0);
-  return $tmpret95;
+  $tmpret97 = _ats2phppre_ML_list0_patsfun_55__closurerize($arg0);
+  return $tmpret97;
 } // end-of-function
 
 
 function
-_ats2phppre_ML_list0_patsfun_54($env0, $arg0)
+_ats2phppre_ML_list0_patsfun_55($env0, $arg0)
 {
 //
-  $tmpret96 = NULL;
+  $tmpret98 = NULL;
 //
-  __patsflab__ats2phppre_ML_list0_patsfun_54:
-  $tmpret96 = ats2phppre_ML_list0_map($env0, $arg0);
-  return $tmpret96;
+  __patsflab__ats2phppre_ML_list0_patsfun_55:
+  $tmpret98 = ats2phppre_ML_list0_map($env0, $arg0);
+  return $tmpret98;
+} // end-of-function
+
+
+function
+ats2phppre_ML_list0_imap($arg0, $arg1)
+{
+//
+  $tmpret99 = NULL;
+  $tmp100 = NULL;
+//
+  __patsflab_list0_imap:
+  $tmp100 = ats2phppre_list_imap($arg0, $arg1);
+  $tmpret99 = $tmp100;
+  return $tmpret99;
+} // end-of-function
+
+
+function
+ats2phppre_ML_list0_imap_method($arg0, $arg1)
+{
+//
+  $tmpret101 = NULL;
+//
+  __patsflab_list0_imap_method:
+  $tmpret101 = _ats2phppre_ML_list0_patsfun_58__closurerize($arg0);
+  return $tmpret101;
+} // end-of-function
+
+
+function
+_ats2phppre_ML_list0_patsfun_58($env0, $arg0)
+{
+//
+  $tmpret102 = NULL;
+//
+  __patsflab__ats2phppre_ML_list0_patsfun_58:
+  $tmpret102 = ats2phppre_ML_list0_imap($env0, $arg0);
+  return $tmpret102;
+} // end-of-function
+
+
+function
+ats2phppre_ML_list0_map2($arg0, $arg1, $arg2)
+{
+//
+  $tmpret103 = NULL;
+  $tmp104 = NULL;
+//
+  __patsflab_list0_map2:
+  $tmp104 = ats2phppre_list_map2($arg0, $arg1, $arg2);
+  $tmpret103 = $tmp104;
+  return $tmpret103;
 } // end-of-function
 
 
@@ -8768,11 +11740,11 @@ function
 ats2phppre_ML_list0_mapcons($arg0, $arg1)
 {
 //
-  $tmpret97 = NULL;
-  $tmp98 = NULL;
-  $tmp99 = NULL;
-  $tmp100 = NULL;
-  $tmp101 = NULL;
+  $tmpret105 = NULL;
+  $tmp106 = NULL;
+  $tmp107 = NULL;
+  $tmp108 = NULL;
+  $tmp109 = NULL;
 //
   __patsflab_list0_mapcons:
   // ATScaseofseq_beg
@@ -8781,22 +11753,58 @@ ats2phppre_ML_list0_mapcons($arg0, $arg1)
     __atstmplab38:
     if(ATSCKptriscons($arg1)) goto __atstmplab41;
     __atstmplab39:
-    $tmpret97 = NULL;
+    $tmpret105 = NULL;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
     __atstmplab40:
     __atstmplab41:
-    $tmp98 = $arg1[0];
-    $tmp99 = $arg1[1];
-    $tmp100 = array($arg0, $tmp98);
-    $tmp101 = ats2phppre_ML_list0_mapcons($arg0, $tmp99);
-    $tmpret97 = array($tmp100, $tmp101);
+    $tmp106 = $arg1[0];
+    $tmp107 = $arg1[1];
+    $tmp108 = array($arg0, $tmp106);
+    $tmp109 = ats2phppre_ML_list0_mapcons($arg0, $tmp107);
+    $tmpret105 = array($tmp108, $tmp109);
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret97;
+  return $tmpret105;
+} // end-of-function
+
+
+function
+ats2phppre_ML_list0_tabulate($arg0, $arg1)
+{
+//
+  $tmpret110 = NULL;
+//
+  __patsflab_list0_tabulate:
+  $tmpret110 = _ats2phppre_ML_list0_auxmain_62($arg0, $arg1, 0);
+  return $tmpret110;
+} // end-of-function
+
+
+function
+_ats2phppre_ML_list0_auxmain_62($env0, $env1, $arg0)
+{
+//
+  $tmpret111 = NULL;
+  $tmp112 = NULL;
+  $tmp113 = NULL;
+  $tmp114 = NULL;
+  $tmp115 = NULL;
+//
+  __patsflab__ats2phppre_ML_list0_auxmain_62:
+  $tmp112 = ats2phppre_lt_int0_int0($arg0, $env0);
+  if($tmp112) {
+    $tmp113 = $env1[0]($env1, $arg0);
+    $tmp115 = ats2phppre_add_int0_int0($arg0, 1);
+    $tmp114 = _ats2phppre_ML_list0_auxmain_62($env0, $env1, $tmp115);
+    $tmpret111 = array($tmp113, $tmp114);
+  } else {
+    $tmpret111 = NULL;
+  } // endif
+  return $tmpret111;
 } // end-of-function
 
 
@@ -8806,10 +11814,10 @@ ats2phppre_ML_list0_find_opt($arg0, $arg1)
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret102 = NULL;
-  $tmp103 = NULL;
-  $tmp104 = NULL;
-  $tmp105 = NULL;
+  $tmpret116 = NULL;
+  $tmp117 = NULL;
+  $tmp118 = NULL;
+  $tmp119 = NULL;
 //
   __patsflab_list0_find_opt:
   // ATScaseofseq_beg
@@ -8818,20 +11826,20 @@ ats2phppre_ML_list0_find_opt($arg0, $arg1)
     __atstmplab42:
     if(ATSCKptriscons($arg0)) goto __atstmplab45;
     __atstmplab43:
-    $tmpret102 = NULL;
+    $tmpret116 = NULL;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
     __atstmplab44:
     __atstmplab45:
-    $tmp103 = $arg0[0];
-    $tmp104 = $arg0[1];
-    $tmp105 = $arg1[0]($arg1, $tmp103);
-    if($tmp105) {
-      $tmpret102 = array($tmp103);
+    $tmp117 = $arg0[0];
+    $tmp118 = $arg0[1];
+    $tmp119 = $arg1[0]($arg1, $tmp117);
+    if($tmp119) {
+      $tmpret116 = array($tmp117);
     } else {
       // ATStailcalseq_beg
-      $apy0 = $tmp104;
+      $apy0 = $tmp118;
       $apy1 = $arg1;
       $arg0 = $apy0;
       $arg1 = $apy1;
@@ -8842,7 +11850,7 @@ ats2phppre_ML_list0_find_opt($arg0, $arg1)
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret102;
+  return $tmpret116;
 } // end-of-function
 
 
@@ -8850,23 +11858,91 @@ function
 ats2phppre_ML_list0_find_opt_method($arg0)
 {
 //
-  $tmpret106 = NULL;
+  $tmpret120 = NULL;
 //
   __patsflab_list0_find_opt_method:
-  $tmpret106 = _ats2phppre_ML_list0_patsfun_58__closurerize($arg0);
-  return $tmpret106;
+  $tmpret120 = _ats2phppre_ML_list0_patsfun_65__closurerize($arg0);
+  return $tmpret120;
 } // end-of-function
 
 
 function
-_ats2phppre_ML_list0_patsfun_58($env0, $arg0)
+_ats2phppre_ML_list0_patsfun_65($env0, $arg0)
 {
 //
-  $tmpret107 = NULL;
+  $tmpret121 = NULL;
 //
-  __patsflab__ats2phppre_ML_list0_patsfun_58:
-  $tmpret107 = ats2phppre_ML_list0_find_opt($env0, $arg0);
-  return $tmpret107;
+  __patsflab__ats2phppre_ML_list0_patsfun_65:
+  $tmpret121 = ats2phppre_ML_list0_find_opt($env0, $arg0);
+  return $tmpret121;
+} // end-of-function
+
+
+function
+ats2phppre_ML_list0_find_suffix($arg0, $arg1)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $tmpret122 = NULL;
+  $tmp124 = NULL;
+  $tmp125 = NULL;
+//
+  __patsflab_list0_find_suffix:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab46:
+    if(ATSCKptriscons($arg0)) goto __atstmplab49;
+    __atstmplab47:
+    $tmpret122 = NULL;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab48:
+    __atstmplab49:
+    $tmp124 = $arg0[1];
+    $tmp125 = $arg1[0]($arg1, $arg0);
+    if($tmp125) {
+      $tmpret122 = $arg0;
+    } else {
+      // ATStailcalseq_beg
+      $apy0 = $tmp124;
+      $apy1 = $arg1;
+      $arg0 = $apy0;
+      $arg1 = $apy1;
+      goto __patsflab_list0_find_suffix;
+      // ATStailcalseq_end
+    } // endif
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
+  return $tmpret122;
+} // end-of-function
+
+
+function
+ats2phppre_ML_list0_find_suffix_method($arg0)
+{
+//
+  $tmpret126 = NULL;
+//
+  __patsflab_list0_find_suffix_method:
+  $tmpret126 = _ats2phppre_ML_list0_patsfun_68__closurerize($arg0);
+  return $tmpret126;
+} // end-of-function
+
+
+function
+_ats2phppre_ML_list0_patsfun_68($env0, $arg0)
+{
+//
+  $tmpret127 = NULL;
+//
+  __patsflab__ats2phppre_ML_list0_patsfun_68:
+  $tmpret127 = ats2phppre_ML_list0_find_suffix($env0, $arg0);
+  return $tmpret127;
 } // end-of-function
 
 
@@ -8874,9450 +11950,67 @@ function
 ats2phppre_ML_list0_zip($arg0, $arg1)
 {
 //
-  $tmpret108 = NULL;
+  $tmpret128 = NULL;
 //
   __patsflab_list0_zip:
-  $tmpret108 = _ats2phppre_ML_list0_aux_60($arg0, $arg1);
-  return $tmpret108;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_aux_60($arg0, $arg1)
-{
-//
-  $tmpret109 = NULL;
-  $tmp110 = NULL;
-  $tmp111 = NULL;
-  $tmp112 = NULL;
-  $tmp113 = NULL;
-  $tmp114 = NULL;
-  $tmp115 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_aux_60:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab46:
-    if(ATSCKptriscons($arg0)) goto __atstmplab49;
-    __atstmplab47:
-    $tmpret109 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab48:
-    __atstmplab49:
-    $tmp110 = $arg0[0];
-    $tmp111 = $arg0[1];
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab50:
-      if(ATSCKptriscons($arg1)) goto __atstmplab53;
-      __atstmplab51:
-      $tmpret109 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab52:
-      __atstmplab53:
-      $tmp112 = $arg1[0];
-      $tmp113 = $arg1[1];
-      $tmp114 = array($tmp110, $tmp112);
-      $tmp115 = _ats2phppre_ML_list0_aux_60($tmp111, $tmp113);
-      $tmpret109 = array($tmp114, $tmp115);
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret109;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_zipwith($arg0, $arg1, $arg2)
-{
-//
-  $tmpret116 = NULL;
-//
-  __patsflab_list0_zipwith:
-  $tmpret116 = _ats2phppre_ML_list0_aux_62($arg0, $arg1, $arg2);
-  return $tmpret116;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_aux_62($arg0, $arg1, $arg2)
-{
-//
-  $tmpret117 = NULL;
-  $tmp118 = NULL;
-  $tmp119 = NULL;
-  $tmp120 = NULL;
-  $tmp121 = NULL;
-  $tmp122 = NULL;
-  $tmp123 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_aux_62:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab54:
-    if(ATSCKptriscons($arg0)) goto __atstmplab57;
-    __atstmplab55:
-    $tmpret117 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab56:
-    __atstmplab57:
-    $tmp118 = $arg0[0];
-    $tmp119 = $arg0[1];
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab58:
-      if(ATSCKptriscons($arg1)) goto __atstmplab61;
-      __atstmplab59:
-      $tmpret117 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab60:
-      __atstmplab61:
-      $tmp120 = $arg1[0];
-      $tmp121 = $arg1[1];
-      $tmp122 = $arg2[0]($arg2, $tmp118, $tmp120);
-      $tmp123 = _ats2phppre_ML_list0_aux_62($tmp119, $tmp121, $arg2);
-      $tmpret117 = array($tmp122, $tmp123);
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret117;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_zipwith_method($arg0, $arg1)
-{
-//
-  $tmpret124 = NULL;
-//
-  __patsflab_list0_zipwith_method:
-  $tmpret124 = _ats2phppre_ML_list0_patsfun_64__closurerize($arg0, $arg1);
-  return $tmpret124;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_patsfun_64($env0, $env1, $arg0)
-{
-//
-  $tmpret125 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_patsfun_64:
-  $tmpret125 = ats2phppre_ML_list0_zipwith($env0, $env1, $arg0);
-  return $tmpret125;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_foldleft($arg0, $arg1, $arg2)
-{
-//
-  $tmpret126 = NULL;
-//
-  __patsflab_list0_foldleft:
-  $tmpret126 = _ats2phppre_ML_list0_aux_66($arg2, $arg1, $arg0);
-  return $tmpret126;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_aux_66($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret127 = NULL;
-  $tmp128 = NULL;
-  $tmp129 = NULL;
-  $tmp130 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_aux_66:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab62:
-    if(ATSCKptriscons($arg1)) goto __atstmplab65;
-    __atstmplab63:
-    $tmpret127 = $arg0;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab64:
-    __atstmplab65:
-    $tmp128 = $arg1[0];
-    $tmp129 = $arg1[1];
-    $tmp130 = $env0[0]($env0, $arg0, $tmp128);
-    // ATStailcalseq_beg
-    $apy0 = $tmp130;
-    $apy1 = $tmp129;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_ML_list0_aux_66;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret127;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_foldright($arg0, $arg1, $arg2)
-{
-//
-  $tmpret131 = NULL;
-//
-  __patsflab_list0_foldright:
-  $tmpret131 = _ats2phppre_ML_list0_aux_68($arg1, $arg2, $arg0, $arg2);
-  return $tmpret131;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_aux_68($env0, $env1, $arg0, $arg1)
-{
-//
-  $tmpret132 = NULL;
-  $tmp133 = NULL;
-  $tmp134 = NULL;
-  $tmp135 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_aux_68:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab66:
-    if(ATSCKptriscons($arg0)) goto __atstmplab69;
-    __atstmplab67:
-    $tmpret132 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab68:
-    __atstmplab69:
-    $tmp133 = $arg0[0];
-    $tmp134 = $arg0[1];
-    $tmp135 = _ats2phppre_ML_list0_aux_68($env0, $env1, $tmp134, $env1);
-    $tmpret132 = $env0[0]($env0, $tmp133, $tmp135);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret132;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_sort_2($arg0, $arg1)
-{
-//
-  $tmpret138 = NULL;
-  $tmp139 = NULL;
-//
-  __patsflab_list0_sort_2:
-  $tmp139 = ats2phppre_list_sort_2($arg0, $arg1);
-  $tmpret138 = $tmp139;
-  return $tmpret138;
-} // end-of-function
-
-
-function
-ats2phppre_ML_streamize_list0_zip($arg0, $arg1)
-{
-//
-  $tmpret140 = NULL;
-//
-  __patsflab_streamize_list0_zip:
-  $tmpret140 = ats2phppre_streamize_list_zip($arg0, $arg1);
-  return $tmpret140;
-} // end-of-function
-
-
-function
-ats2phppre_ML_streamize_list0_cross($arg0, $arg1)
-{
-//
-  $tmpret141 = NULL;
-//
-  __patsflab_streamize_list0_cross:
-  $tmpret141 = ats2phppre_streamize_list_cross($arg0, $arg1);
-  return $tmpret141;
-} // end-of-function
-
-/* ****** ****** */
-
-/* end-of-compilation-unit */
-?>
-<?php
-/*
-**
-** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-3-24:  1h:27m
-**
-*/
-function
-_ats2phppre_ML_array0_patsfun_7__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_array0_patsfun_7($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_ML_array0_patsfun_10__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_array0_patsfun_10($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_ML_array0_patsfun_14__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_array0_patsfun_14($cenv[1], $arg0); }, $env0);
-}
-
-
-function
-ats2phppre_ML_array0_make_elt($arg0, $arg1)
-{
-//
-  $tmpret0 = NULL;
-//
-  __patsflab_array0_make_elt:
-  $tmpret0 = ats2phppre_arrszref_make_elt($arg0, $arg1);
-  return $tmpret0;
-} // end-of-function
-
-
-function
-ats2phppre_ML_array0_size($arg0)
-{
-//
-  $tmpret1 = NULL;
-//
-  __patsflab_array0_size:
-  $tmpret1 = ats2phppre_arrszref_size($arg0);
-  return $tmpret1;
-} // end-of-function
-
-
-function
-ats2phppre_ML_array0_get_at($arg0, $arg1)
-{
-//
-  $tmpret2 = NULL;
-//
-  __patsflab_array0_get_at:
-  $tmpret2 = ats2phppre_arrszref_get_at($arg0, $arg1);
-  return $tmpret2;
-} // end-of-function
-
-
-function
-ats2phppre_ML_array0_set_at($arg0, $arg1, $arg2)
-{
-//
-//
-  __patsflab_array0_set_at:
-  ats2phppre_arrszref_set_at($arg0, $arg1, $arg2);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_ML_array0_exch_at($arg0, $arg1, $arg2)
-{
-//
-  $tmpret4 = NULL;
-//
-  __patsflab_array0_exch_at:
-  $tmpret4 = ats2phppre_arrszref_exch_at($arg0, $arg1, $arg2);
-  return $tmpret4;
-} // end-of-function
-
-
-function
-ats2phppre_ML_array0_exists_cloref($arg0, $arg1)
-{
-//
-  $tmpret5 = NULL;
-//
-  __patsflab_array0_exists_cloref:
-  $tmpret5 = ats2phppre_arrszref_exists_cloref($arg0, $arg1);
-  return $tmpret5;
-} // end-of-function
-
-
-function
-ats2phppre_ML_array0_exists_method($arg0)
-{
-//
-  $tmpret6 = NULL;
-//
-  __patsflab_array0_exists_method:
-  $tmpret6 = _ats2phppre_ML_array0_patsfun_7__closurerize($arg0);
-  return $tmpret6;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_array0_patsfun_7($env0, $arg0)
-{
-//
-  $tmpret7 = NULL;
-//
-  __patsflab__ats2phppre_ML_array0_patsfun_7:
-  $tmpret7 = ats2phppre_ML_array0_exists_cloref($env0, $arg0);
-  return $tmpret7;
-} // end-of-function
-
-
-function
-ats2phppre_ML_array0_forall_cloref($arg0, $arg1)
-{
-//
-  $tmpret8 = NULL;
-//
-  __patsflab_array0_forall_cloref:
-  $tmpret8 = ats2phppre_arrszref_forall_cloref($arg0, $arg1);
-  return $tmpret8;
-} // end-of-function
-
-
-function
-ats2phppre_ML_array0_forall_method($arg0)
-{
-//
-  $tmpret9 = NULL;
-//
-  __patsflab_array0_forall_method:
-  $tmpret9 = _ats2phppre_ML_array0_patsfun_10__closurerize($arg0);
-  return $tmpret9;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_array0_patsfun_10($env0, $arg0)
-{
-//
-  $tmpret10 = NULL;
-//
-  __patsflab__ats2phppre_ML_array0_patsfun_10:
-  $tmpret10 = ats2phppre_ML_array0_forall_cloref($env0, $arg0);
-  return $tmpret10;
-} // end-of-function
-
-
-function
-ats2phppre_ML_array0_app_cloref($arg0, $arg1)
-{
-//
-//
-  __patsflab_array0_app_cloref:
-  ats2phppre_ML_array0_foreach_cloref($arg0, $arg1);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_ML_array0_foreach_cloref($arg0, $arg1)
-{
-//
-//
-  __patsflab_array0_foreach_cloref:
-  ats2phppre_arrszref_foreach_cloref($arg0, $arg1);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_ML_array0_foreach_method($arg0)
-{
-//
-  $tmpret13 = NULL;
-//
-  __patsflab_array0_foreach_method:
-  $tmpret13 = _ats2phppre_ML_array0_patsfun_14__closurerize($arg0);
-  return $tmpret13;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_array0_patsfun_14($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_ML_array0_patsfun_14:
-  ats2phppre_ML_array0_foreach_cloref($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-/* ****** ****** */
-
-/* end-of-compilation-unit */
-?>
-<?php
-/*
-** end of [output/libatscc2php_all.php]
-*/
-?>
-<?php
-/*
-** Time of Generation:
-** Tue Apr 11 17:02:05 EDT 2017
-*/
-?>
-<?php
-
-/*
-******
-*
-* HX-2014-08:
-* for PHP code
-* translated from ATS
-*
-******
-*/
-
-/*
-******
-* beg of [basics_cats.php]
-******
-*/
-
-/* ****** ****** */
-
-function
-ATSCKiseqz($x) { return ($x === 0); }
-function
-ATSCKisneqz($x) { return ($x !== 0); }
-
-/* ****** ****** */
-
-function
-ATSCKptrisnull($xs) { return ($xs === NULL) ; }
-function
-ATSCKptriscons($xs) { return ($xs !== NULL) ; }
-
-/* ****** ****** */
-
-function
-ATSCKpat_int($tmp, $given) { return ($tmp === $given) ; }
-function
-ATSCKpat_bool($tmp, $given) { return ($tmp === $given) ; }
-function
-ATSCKpat_char($tmp, $given) { return ($tmp === $given) ; }
-function
-ATSCKpat_float($tmp, $given) { return ($tmp === $given) ; }
-
-/* ****** ****** */
-
-function
-ATSCKpat_con0($con, $tag) { return ($con === $tag) ; }
-function
-ATSCKpat_con1($con, $tag) { return ($con[0] === $tag) ; }
-
-/* ****** ****** */
-//
-function
-ATSINScaseof_fail($errmsg)
-{
-  fprintf(STDERR, "ATSINScaseof_fail:%s", $errmsg); exit(1);
-  return;
-}
-//
-function
-ATSINSdeadcode_fail()
-  { fprintf(STDERR, "ATSINSdeadcode_fail"); exit(1); return; }
-//
-/* ****** ****** */
-
-function
-ATSPMVempty() { return; }
-
-/* ****** ****** */
-
-function
-ATSPMVlazyval
-  ($thunk)
-{
-  return array(0, $thunk);
-}
-
-/* ****** ****** */
-
-function
-ATSPMVlazyval_eval
-  (&$lazyval)
-{
-//
-  $flag = $lazyval[0];
-//
-  if($flag===0)
-  {
-    $lazyval[0] = 1;
-    $mythunk = $lazyval[1];
-    $lazyval[1] = $mythunk[0]($mythunk);
-  } else {
-    $lazyval[0] = $flag + 1;
-  } // end of [if]
-//
-  return ($lazyval[1]);
-//
-} // end of [ATSPMVlazyval_eval]
-
-/* ****** ****** */
-//
-function
-ATSPMVllazyval($thunk){ return $thunk; }
-//
-/* ****** ****** */
-//
-function
-ATSPMVllazyval_eval($llazyval)
-  { return $llazyval[0]($llazyval, TRUE); }
-function
-atspre_lazy_vt_free($llazyval)
-  { return $llazyval[0]($llazyval, FALSE); }
-//
-/* ****** ****** */
-
-function
-ats2phppre_echo_obj($x) { echo($x); return; }
-
-/* ****** ****** */
-/*
-//
-function
-ats2phppre_echo0_obj() { return; }
-function
-ats2phppre_echo1_obj($x1) { echo($x1); return; }
-function
-ats2phppre_echo2_obj($x1, $x2) { echo $x1, $x2; return; }
-//
-function
-ats2phppre_echo3_obj
-  ($x1, $x2, $x3) { echo $x1, $x2, $x3; return; }
-function
-ats2phppre_echo4_obj
-  ($x1, $x2, $x3, $x4) { echo $x1, $x2, $x3, $x4; return; }
-function
-ats2phppre_echo5_obj
-  ($x1, $x2, $x3, $x4, $x5) { echo $x1, $x2, $x3, $x4, $x5; return; }
-function
-ats2phppre_echo6_obj
-  ($x1, $x2, $x3, $x4, $x5, $x6) { echo $x1, $x2, $x3, $x4, $x5, $x6; return; }
-//
-function
-ats2phppre_echo7_obj
-  ($x1, $x2, $x3, $x4, $x5, $x6, $x7)
-  { echo $x1, $x2, $x3, $x4, $x5, $x6, $x7; return; }
-function
-ats2phppre_echo8_obj
-  ($x1, $x2, $x3, $x4, $x5, $x6, $x7, $x8)
-  { echo $x1, $x2, $x3, $x4, $x5, $x6, $x7, $x8; return; }
-//
-*/
-/* ****** ****** */
-
-function
-ats2phppre_print_newline() { ats2phppre_fprint_newline(STDOUT); }
-function
-ats2phppre_prerr_newline() { ats2phppre_fprint_newline(STDERR); }
-function
-ats2phppre_fprint_newline($out) { fprintf($out, "\n"); fflush($out); return; }
-
-/* ****** ****** */
-
-function
-ats2phppre_lazy2cloref($lazyval) { return $lazyval[1]; }
-
-/* ****** ****** */
-//
-function
-ats2phppre_assert_bool0($tfv) { if (!$tfv) exit("**EXIT**"); return; }
-function
-ats2phppre_assert_bool1($tfv) { if (!$tfv) exit("**EXIT**"); return; }
-//
-/* ****** ****** */
-//
-function
-ats2phppre_assert_errmsg_bool0($tfv, $errmsg)
-{
-  if (!$tfv) { fprintf(STDERR, "%s", $errmsg); exit(errmsg); }; return;
-}
-function
-ats2phppre_assert_errmsg_bool1($tfv, $errmsg)
-{
-  if (!$tfv) { fprintf(STDERR, "%s", $errmsg); exit(errmsg); }; return;
-}
-//
-/* ****** ****** */
-
-/* end of [basics_cats.php] */
-
-?>
-<?php
-
-/*
-******
-*
-* HX-2014-08:
-* for PHP code
-* translated from ATS
-*
-******
-*/
-
-/*
-******
-* beg of [integer_cats.php]
-******
-*/
-
-/* ****** ****** */
-
-function
-ats2phppre_abs_int0($x) { return abs($x); }
-function
-ats2phppre_neg_int0($x) { return ( -$x ); }
-
-/* ****** ****** */
-
-function
-ats2phppre_succ_int0($x) { return ($x + 1); }
-function
-ats2phppre_pred_int0($x) { return ($x - 1); }
-
-/* ****** ****** */
-
-function
-ats2phppre_add_int0_int0($x, $y) { return ($x + $y); }
-function
-ats2phppre_sub_int0_int0($x, $y) { return ($x - $y); }
-function
-ats2phppre_mul_int0_int0($x, $y) { return ($x * $y); }
-function
-ats2phppre_div_int0_int0($x, $y) { return intval($x / $y); }
-function
-ats2phppre_mod_int0_int0($x, $y) { return ($x % $y); }
-
-/* ****** ****** */
-
-function
-ats2phppre_add_int1_int1($x, $y) { return ($x + $y); }
-function
-ats2phppre_sub_int1_int1($x, $y) { return ($x - $y); }
-function
-ats2phppre_mul_int1_int1($x, $y) { return ($x * $y); }
-function
-ats2phppre_div_int1_int1($x, $y) { return intval($x / $y); }
-
-/* ****** ****** */
-//
-function
-ats2phppre_mod_int1_int1($x, $y) { return ($x % $y); }
-function
-ats2phppre_nmod_int1_int1($x, $y) { return ($x % $y); }
-//
-/* ****** ****** */
-
-function
-ats2phppre_lt_int0_int0($x, $y) { return ($x < $y); }
-function
-ats2phppre_lte_int0_int0($x, $y) { return ($x <= $y); }
-function
-ats2phppre_gt_int0_int0($x, $y) { return ($x > $y); }
-function
-ats2phppre_gte_int0_int0($x, $y) { return ($x >= $y); }
-function
-ats2phppre_eq_int0_int0($x, $y) { return ($x === $y); }
-function
-ats2phppre_neq_int0_int0($x, $y) { return ($x !== $y); }
-
-/* ****** ****** */
-
-function
-ats2phppre_lt_int1_int1($x, $y) { return ($x < $y); }
-function
-ats2phppre_lte_int1_int1($x, $y) { return ($x <= $y); }
-function
-ats2phppre_gt_int1_int1($x, $y) { return ($x > $y); }
-function
-ats2phppre_gte_int1_int1($x, $y) { return ($x >= $y); }
-function
-ats2phppre_eq_int1_int1($x, $y) { return ($x === $y); }
-function
-ats2phppre_neq_int1_int1($x, $y) { return ($x !== $y); }
-
-/* ****** ****** */
-
-/* end of [integer_cats.php] */
-
-?>
-<?php
-
-/*
-******
-*
-* HX-2014-11:
-* for PHP code
-* translated from ATS
-*
-******
-*/
-
-/*
-******
-* beg of [bool_cats.php]
-******
-*/
-
-/* ****** ****** */
-
-function
-ats2phppre_neg_bool0($x) { return !($x); }
-function
-ats2phppre_neg_bool1($x) { return !($x); }
-
-/* ****** ****** */
-
-function
-ats2phppre_add_bool0_bool0($x, $y) { return (x || y); }
-function
-ats2phppre_add_bool0_bool1($x, $y) { return (x || y); }
-function
-ats2phppre_add_bool1_bool0($x, $y) { return (x || y); }
-function
-ats2phppre_add_bool1_bool1($x, $y) { return (x || y); }
-
-/* ****** ****** */
-
-function
-ats2phppre_mul_bool0_bool0($x, $y) { return (x && y); }
-function
-ats2phppre_mul_bool0_bool1($x, $y) { return (x && y); }
-function
-ats2phppre_mul_bool1_bool0($x, $y) { return (x && y); }
-function
-ats2phppre_mul_bool1_bool1($x, $y) { return (x && y); }
-
-/* ****** ****** */
-//
-function
-ats2phppre_eq_bool0_bool0($x, $y) { return (x === y); }
-function
-ats2phppre_eq_bool1_bool1($x, $y) { return (x === y); }
-//
-function
-ats2phppre_neq_bool0_bool0($x, $y) { return (x !== y); }
-function
-ats2phppre_neq_bool1_bool1($x, $y) { return (x !== y); }
-//
-/* ****** ****** */
-
-function
-ats2phppre_bool2int0($x) { return (x ? 1 : 0); }
-function
-ats2phppre_bool2int1($x) { return (x ? 1 : 0); }
-
-/* ****** ****** */
-
-function
-ats2phppre_int2bool20($x) { return (x !== 0 ? true : false); }
-
-/* ****** ****** */
-
-/* end of [bool_cats.php] */
-
-?>
-<?php
-
-/*
-******
-*
-* HX-2014-08:
-* for PHP code
-* translated from ATS
-*
-******
-*/
-
-/*
-******
-* beg of [float_cats.php]
-******
-*/
-
-/* ****** ****** */
-//
-function
-ats2phppre_double2int($x) { return intval($x); }
-function
-ats2phppre_int_of_double($x) { return intval($x); }
-//
-/* ****** ****** */
-//
-function
-ats2phppre_int2double($x) { return floatval($x); }
-function
-ats2phppre_double_of_int($x) { return floatval($x); }
-//
-/* ****** ****** */
-
-function
-ats2phppre_abs_double($x) { return abs($x); }
-function
-ats2phppre_neg_double($x) { return ( -$x ); }
-
-/* ****** ****** */
-
-function
-ats2phppre_succ_double($x) { return ($x + 1); }
-function
-ats2phppre_pred_double($x) { return ($x - 1); }
-
-/* ****** ****** */
-
-function
-ats2phppre_add_double_int($x, $y) { return ($x + $y); }
-function
-ats2phppre_sub_double_int($x, $y) { return ($x - $y); }
-function
-ats2phppre_mul_double_int($x, $y) { return ($x * $y); }
-function
-ats2phppre_div_double_int($x, $y) { return ($x / $y); }
-
-/* ****** ****** */
-
-function
-ats2phppre_add_int_double($x, $y) { return ($x + $y); }
-function
-ats2phppre_sub_int_double($x, $y) { return ($x - $y); }
-function
-ats2phppre_mul_int_double($x, $y) { return ($x * $y); }
-function
-ats2phppre_div_int_double($x, $y) { return ($x / $y); }
-
-/* ****** ****** */
-
-function
-ats2phppre_add_double_double($x, $y) { return ($x + $y); }
-function
-ats2phppre_sub_double_double($x, $y) { return ($x - $y); }
-function
-ats2phppre_mul_double_double($x, $y) { return ($x * $y); }
-function
-ats2phppre_div_double_double($x, $y) { return ($x / $y); }
-
-/* ****** ****** */
-
-function
-ats2phppre_lt_double_double($x, $y) { return ($x < $y); }
-function
-ats2phppre_lte_double_double($x, $y) { return ($x <= $y); }
-function
-ats2phppre_gt_double_double($x, $y) { return ($x > $y); }
-function
-ats2phppre_gte_double_double($x, $y) { return ($x >= $y); }
-function
-ats2phppre_eq_double_double($x, $y) { return ($x === $y); }
-function
-ats2phppre_neq_double_double($x, $y) { return ($x !== $y); }
-
-/* ****** ****** */
-
-/* end of [float_cats.php] */
-
-?>
-<?php
-
-/*
-******
-*
-* HX-2014-08:
-* for PHP code
-* translated from ATS
-*
-******
-*/
-
-/*
-******
-* beg of [string_cats.php]
-******
-*/
-
-/* ****** ****** */
-
-function
-ats2phppre_strval($x) { return strval($x); }
-
-/* ****** ****** */
-
-function
-ats2phppre_strlen($x) { return strlen($x); }
-function
-ats2phppre_string_length($x) { return strlen($x); }
-
-/* ****** ****** */
-
-/* end of [string_cats.php] */
-
-?>
-<?php
-
-/*
-******
-*
-* HX-2014-08:
-* for PHP code
-* translated from ATS
-*
-******
-*/
-
-/*
-******
-* beg of [print_cats.php]
-******
-*/
-
-/* ****** ****** */
-//
-function
-ats2phppre_print_int($x)
-  { fprintf(STDOUT, "%d", $x); return; }
-function
-ats2phppre_prerr_int($x)
-  { fprintf(STDERR, "%d", $x); return; }
-function
-ats2phppre_fprint_int
-  ($out, $x) { fprintf($out, "%d", $x); return; }
-//
-/* ****** ****** */
-//
-function
-ats2phppre_print_bool($x)
-{
-  ats2phppre_fprint_bool(STDOUT, $x); return;
-}
-function
-ats2phppre_prerr_bool($x)
-{
-  ats2phppre_fprint_bool(STDERR, $x); return;
-}
-function
-ats2phppre_fprint_bool
-  ($out, $x)
-{
-  if($x) {
-    fprintf($out, "true"); return;
-  } else {
-    fprintf($out, "false"); return;
-  } // end of [if]
-}
-//
-/* ****** ****** */
-//
-function
-ats2phppre_print_double($x)
-  { fprintf(STDOUT, "%f", $x); return; }
-function
-ats2phppre_prerr_double($x)
-  { fprintf(STDERR, "%f", $x); return; }
-function
-ats2phppre_fprint_double
-  ($out, $x) { fprintf($out, "%f", $x); return; }
-//
-/* ****** ****** */
-//
-function
-ats2phppre_print_string($x)
-  { fprintf(STDOUT, "%s", $x); return ; }
-function
-ats2phppre_prerr_string($x)
-  { fprintf(STDERR, "%s", $x); return ; }
-function
-ats2phppre_fprint_string
- ($out, $x) { fprintf($out, "%s", $x); return ; }
-//
-/* ****** ****** */
-//
-function
-ats2phppre_print_obj($x) { print($x); return; }
-function
-ats2phppre_print_r_obj($x) { print_r($x); return; }
-//
-/* ****** ****** */
-
-/* end of [print_cats.php] */
-
-?>
-<?php
-
-/*
-******
-*
-* HX-2014-09:
-* for PHP code
-* translated from ATS
-*
-******
-*/
-
-/*
-******
-* beg of [filebas_cats.php]
-******
-*/
-
-/* ****** ****** */
-//
-/*
-$ats2phppre_stdin = STDIN;
-$ats2phppre_stdout = STDOUT;
-$ats2phppre_stderr = STDERR;
-*/
-//
-/* ****** ****** */
-
-/* end of [filebas_cats.php] */
-
-?>
-<?php
-
-/*
-******
-*
-* HX-2014-08:
-* for PHP code
-* translated from ATS
-*
-******
-*/
-
-/*
-******
-* beg of [PHPref_cats.php]
-******
-*/
-
-/* ****** ****** */
-
-class
-PHPref {
-  public $value ; // this is the payload
-} /* end of [class] */
-
-/* ****** ****** */
-//
-function
-PHPref_new($x0) {
-  $res = new PHPref;
-  $res->value = $x0; return $res;
-}
-function
-PHPref_make_elt($x0) { return PHPref_new($x0); }
-//
-/* ****** ****** */
-//
-function
-PHPref_get_elt($A) { return $A->value ; }
-//
-function
-PHPref_set_elt($A, $x) { $A->value = $x; return ; }
-//
-/* ****** ****** */
-
-/* end of [PHPref_cats.php] */
-
-?>
-<?php
-
-/*
-******
-*
-* HX-2014-08:
-* for PHP code
-* translated from ATS
-*
-******
-*/
-
-/*
-******
-* beg of [PHParref_cats.php]
-******
-*/
-
-/* ****** ****** */
-//
-function
-PHParray_nil() { return array(); }
-function
-PHParray_sing($x) { return array($x); }
-function
-PHParray_pair($x1, $x2) { return array($x1, $x2); }
-//
-/* ****** ****** */
-
-/* end of [PHParray_cats.php] */
-
-?>
-<?php
-
-/*
-******
-*
-* HX-2014-08:
-* for PHP code
-* translated from ATS
-*
-******
-*/
-
-/*
-******
-* beg of [PHParref_cats.php]
-******
-*/
-
-/* ****** ****** */
-
-class
-PHParref {
-  public $array ; // this is a PHParray
-} /* end of [class] */
-
-/* ****** ****** */
-//
-function
-PHParref_nil() {
-  $res = new PHParref; $res->array = array(); return $res;
-}
-//
-function
-PHParref_sing($x) {
-  $res = new PHParref; $res->array = array($x); return $res;
-}
-//
-function
-PHParref_pair($x1, $x2) {
-  $res = new PHParref; $res->array = array($x1, x2); return $res;
-}
-//
-/* ****** ****** */
-
-function
-PHParref_size($A) { return count($A->array) ; }
-function
-PHParref_length($A) { return count($A->array) ; }
-
-/* ****** ****** */
-//
-function
-PHParref_get_at($A, $i)
-{
-  return $A->array[$i] ;
-}
-//
-function
-PHParref_set_at($A, $i, $x)
-{
-  $A->array[$i] = $x; return ;
-}
-//
-/* ****** ****** */
-//
-function
-PHParref_unset($A, $k)
-  { unset($A->array[$k]); return; }
-//
-/* ****** ****** */
-//
-function
-PHParref_extend($A, $x) { $A->array[] = $x; return; }
-//
-/* ****** ****** */
-
-function
-PHParref_copy ($A)
-{
-  $A2 = new PHParref;
-  $A2->array = $A->array; return $A2;
-}
-
-/* ****** ****** */
-
-function
-PHParref_values($A)
-{
-  $A2 = new PHParref;
-  $A2->array = array_values($A->array); return $A2;
-}
-
-/* ****** ****** */
-
-/* end of [PHParref_cats.php] */
-
-?>
-<?php
-/*
-**
-** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-4-11: 17h: 2m
-**
-*/
-function
-_ats2phppre_list_patsfun_35__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_35($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_list_patsfun_39__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_39($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_list_patsfun_42__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_42($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_list_patsfun_46__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_46($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_list_patsfun_50__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_50($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_list_patsfun_54__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_54($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_list_patsfun_57__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_57($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_list_patsfun_61__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_61($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_list_patsfun_65__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_65($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_list_patsfun_69__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_69($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-function
-_ats2phppre_list_patsfun_73__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_73($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-function
-_ats2phppre_list_patsfun_77__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_77($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-function
-_ats2phppre_list_patsfun_81__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_81($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-function
-_ats2phppre_list_patsfun_86__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_86($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_list_patsfun_89__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_89($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-function
-_ats2phppre_list_patsfun_92__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_92($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-function
-_ats2phppre_list_patsfun_94__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_list_patsfun_94($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-
-function
-ats2phppre_list_make_elt($arg0, $arg1)
-{
-//
-  $tmpret2 = NULL;
-  $tmp7 = NULL;
-//
-  __patsflab_list_make_elt:
-  $tmp7 = NULL;
-  $tmpret2 = _ats2phppre_list_loop_3($arg1, $arg0, $tmp7);
-  return $tmpret2;
-} // end-of-function
-
-
-function
-_ats2phppre_list_loop_3($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret3 = NULL;
-  $tmp4 = NULL;
-  $tmp5 = NULL;
-  $tmp6 = NULL;
-//
-  __patsflab__ats2phppre_list_loop_3:
-  $tmp4 = ats2phppre_gt_int1_int1($arg0, 0);
-  if($tmp4) {
-    $tmp5 = ats2phppre_sub_int1_int1($arg0, 1);
-    $tmp6 = array($env0, $arg1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp5;
-    $apy1 = $tmp6;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_list_loop_3;
-    // ATStailcalseq_end
-  } else {
-    $tmpret3 = $arg1;
-  } // endif
-  return $tmpret3;
-} // end-of-function
-
-
-function
-ats2phppre_list_make_intrange_2($arg0, $arg1)
-{
-//
-  $tmpret8 = NULL;
-//
-  __patsflab_list_make_intrange_2:
-  $tmpret8 = ats2phppre_list_make_intrange_3($arg0, $arg1, 1);
-  return $tmpret8;
-} // end-of-function
-
-
-function
-ats2phppre_list_make_intrange_3($arg0, $arg1, $arg2)
-{
-//
-  $tmpret9 = NULL;
-  $tmp20 = NULL;
-  $tmp21 = NULL;
-  $tmp22 = NULL;
-  $tmp23 = NULL;
-  $tmp24 = NULL;
-  $tmp25 = NULL;
-  $tmp26 = NULL;
-  $tmp27 = NULL;
-  $tmp28 = NULL;
-  $tmp29 = NULL;
-  $tmp30 = NULL;
-  $tmp31 = NULL;
-  $tmp32 = NULL;
-  $tmp33 = NULL;
-  $tmp34 = NULL;
-  $tmp35 = NULL;
-  $tmp36 = NULL;
-  $tmp37 = NULL;
-  $tmp38 = NULL;
-  $tmp39 = NULL;
-  $tmp40 = NULL;
-//
-  __patsflab_list_make_intrange_3:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab6:
-    $tmp20 = ats2phppre_gt_int0_int0($arg2, 0);
-    if(!ATSCKpat_bool($tmp20, true)) goto __atstmplab7;
-    $tmp21 = ats2phppre_lt_int0_int0($arg0, $arg1);
-    if($tmp21) {
-      $tmp25 = ats2phppre_sub_int0_int0($arg1, $arg0);
-      $tmp24 = ats2phppre_add_int0_int0($tmp25, $arg2);
-      $tmp23 = ats2phppre_sub_int0_int0($tmp24, 1);
-      $tmp22 = ats2phppre_div_int0_int0($tmp23, $arg2);
-      $tmp28 = ats2phppre_sub_int0_int0($tmp22, 1);
-      $tmp27 = ats2phppre_mul_int0_int0($tmp28, $arg2);
-      $tmp26 = ats2phppre_add_int0_int0($arg0, $tmp27);
-      $tmp29 = NULL;
-      $tmpret9 = _ats2phppre_list_loop1_6($tmp22, $tmp26, $arg2, $tmp29);
-    } else {
-      $tmpret9 = NULL;
-    } // endif
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab7:
-    $tmp30 = ats2phppre_lt_int0_int0($arg2, 0);
-    if(!ATSCKpat_bool($tmp30, true)) goto __atstmplab8;
-    $tmp31 = ats2phppre_gt_int0_int0($arg0, $arg1);
-    if($tmp31) {
-      $tmp32 = ats2phppre_neg_int0($arg2);
-      $tmp36 = ats2phppre_sub_int0_int0($arg0, $arg1);
-      $tmp35 = ats2phppre_add_int0_int0($tmp36, $tmp32);
-      $tmp34 = ats2phppre_sub_int0_int0($tmp35, 1);
-      $tmp33 = ats2phppre_div_int0_int0($tmp34, $tmp32);
-      $tmp39 = ats2phppre_sub_int0_int0($tmp33, 1);
-      $tmp38 = ats2phppre_mul_int0_int0($tmp39, $tmp32);
-      $tmp37 = ats2phppre_sub_int0_int0($arg0, $tmp38);
-      $tmp40 = NULL;
-      $tmpret9 = _ats2phppre_list_loop2_7($tmp33, $tmp37, $tmp32, $tmp40);
-    } else {
-      $tmpret9 = NULL;
-    } // endif
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab8:
-    $tmpret9 = NULL;
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret9;
-} // end-of-function
-
-
-function
-_ats2phppre_list_loop1_6($arg0, $arg1, $arg2, $arg3)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
-  $apy3 = NULL;
-  $tmpret10 = NULL;
-  $tmp11 = NULL;
-  $tmp12 = NULL;
-  $tmp13 = NULL;
-  $tmp14 = NULL;
-//
-  __patsflab__ats2phppre_list_loop1_6:
-  $tmp11 = ats2phppre_gt_int0_int0($arg0, 0);
-  if($tmp11) {
-    $tmp12 = ats2phppre_sub_int0_int0($arg0, 1);
-    $tmp13 = ats2phppre_sub_int0_int0($arg1, $arg2);
-    $tmp14 = array($arg1, $arg3);
-    // ATStailcalseq_beg
-    $apy0 = $tmp12;
-    $apy1 = $tmp13;
-    $apy2 = $arg2;
-    $apy3 = $tmp14;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    $arg2 = $apy2;
-    $arg3 = $apy3;
-    goto __patsflab__ats2phppre_list_loop1_6;
-    // ATStailcalseq_end
-  } else {
-    $tmpret10 = $arg3;
-  } // endif
-  return $tmpret10;
-} // end-of-function
-
-
-function
-_ats2phppre_list_loop2_7($arg0, $arg1, $arg2, $arg3)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
-  $apy3 = NULL;
-  $tmpret15 = NULL;
-  $tmp16 = NULL;
-  $tmp17 = NULL;
-  $tmp18 = NULL;
-  $tmp19 = NULL;
-//
-  __patsflab__ats2phppre_list_loop2_7:
-  $tmp16 = ats2phppre_gt_int0_int0($arg0, 0);
-  if($tmp16) {
-    $tmp17 = ats2phppre_sub_int0_int0($arg0, 1);
-    $tmp18 = ats2phppre_add_int0_int0($arg1, $arg2);
-    $tmp19 = array($arg1, $arg3);
-    // ATStailcalseq_beg
-    $apy0 = $tmp17;
-    $apy1 = $tmp18;
-    $apy2 = $arg2;
-    $apy3 = $tmp19;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    $arg2 = $apy2;
-    $arg3 = $apy3;
-    goto __patsflab__ats2phppre_list_loop2_7;
-    // ATStailcalseq_end
-  } else {
-    $tmpret15 = $arg3;
-  } // endif
-  return $tmpret15;
-} // end-of-function
-
-
-function
-ats2phppre_list_length($arg0)
-{
-//
-  $tmpret52 = NULL;
-//
-  __patsflab_list_length:
-  $tmpret52 = _ats2phppre_list_loop_14($arg0, 0);
-  return $tmpret52;
-} // end-of-function
-
-
-function
-_ats2phppre_list_loop_14($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret53 = NULL;
-  $tmp55 = NULL;
-  $tmp56 = NULL;
-//
-  __patsflab__ats2phppre_list_loop_14:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab13:
-    if(ATSCKptriscons($arg0)) goto __atstmplab16;
-    __atstmplab14:
-    $tmpret53 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab15:
-    __atstmplab16:
-    $tmp55 = $arg0[1];
-    $tmp56 = ats2phppre_add_int1_int1($arg1, 1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp55;
-    $apy1 = $tmp56;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_list_loop_14;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret53;
-} // end-of-function
-
-
-function
-ats2phppre_list_last($arg0)
-{
-//
-  $apy0 = NULL;
-  $tmpret57 = NULL;
-  $tmp58 = NULL;
-  $tmp59 = NULL;
-//
-  __patsflab_list_last:
-  $tmp58 = $arg0[0];
-  $tmp59 = $arg0[1];
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab17:
-    if(ATSCKptriscons($tmp59)) goto __atstmplab20;
-    __atstmplab18:
-    $tmpret57 = $tmp58;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab19:
-    __atstmplab20:
-    // ATStailcalseq_beg
-    $apy0 = $tmp59;
-    $arg0 = $apy0;
-    goto __patsflab_list_last;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret57;
-} // end-of-function
-
-
-function
-ats2phppre_list_get_at($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret60 = NULL;
-  $tmp61 = NULL;
-  $tmp62 = NULL;
-  $tmp63 = NULL;
-  $tmp64 = NULL;
-//
-  __patsflab_list_get_at:
-  $tmp61 = ats2phppre_eq_int1_int1($arg1, 0);
-  if($tmp61) {
-    $tmp62 = $arg0[0];
-    $tmpret60 = $tmp62;
-  } else {
-    $tmp63 = $arg0[1];
-    $tmp64 = ats2phppre_sub_int1_int1($arg1, 1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp63;
-    $apy1 = $tmp64;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab_list_get_at;
-    // ATStailcalseq_end
-  } // endif
-  return $tmpret60;
-} // end-of-function
-
-
-function
-ats2phppre_list_snoc($arg0, $arg1)
-{
-//
-  $tmpret65 = NULL;
-  $tmp66 = NULL;
-  $tmp67 = NULL;
-//
-  __patsflab_list_snoc:
-  $tmp67 = NULL;
-  $tmp66 = array($arg1, $tmp67);
-  $tmpret65 = ats2phppre_list_append($arg0, $tmp66);
-  return $tmpret65;
-} // end-of-function
-
-
-function
-ats2phppre_list_extend($arg0, $arg1)
-{
-//
-  $tmpret68 = NULL;
-  $tmp69 = NULL;
-  $tmp70 = NULL;
-//
-  __patsflab_list_extend:
-  $tmp70 = NULL;
-  $tmp69 = array($arg1, $tmp70);
-  $tmpret68 = ats2phppre_list_append($arg0, $tmp69);
-  return $tmpret68;
-} // end-of-function
-
-
-function
-ats2phppre_list_append($arg0, $arg1)
-{
-//
-  $tmpret71 = NULL;
-  $tmp72 = NULL;
-  $tmp73 = NULL;
-  $tmp74 = NULL;
-//
-  __patsflab_list_append:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab21:
-    if(ATSCKptriscons($arg0)) goto __atstmplab24;
-    __atstmplab22:
-    $tmpret71 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab23:
-    __atstmplab24:
-    $tmp72 = $arg0[0];
-    $tmp73 = $arg0[1];
-    $tmp74 = ats2phppre_list_append($tmp73, $arg1);
-    $tmpret71 = array($tmp72, $tmp74);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret71;
-} // end-of-function
-
-
-function
-ats2phppre_mul_int_list($arg0, $arg1)
-{
-//
-  $tmpret75 = NULL;
-  $tmp80 = NULL;
-//
-  __patsflab_mul_int_list:
-  $tmp80 = NULL;
-  $tmpret75 = _ats2phppre_list_loop_21($arg1, $arg0, $tmp80);
-  return $tmpret75;
-} // end-of-function
-
-
-function
-_ats2phppre_list_loop_21($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret76 = NULL;
-  $tmp77 = NULL;
-  $tmp78 = NULL;
-  $tmp79 = NULL;
-//
-  __patsflab__ats2phppre_list_loop_21:
-  $tmp77 = ats2phppre_gt_int1_int1($arg0, 0);
-  if($tmp77) {
-    $tmp78 = ats2phppre_sub_int1_int1($arg0, 1);
-    $tmp79 = ats2phppre_list_append($env0, $arg1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp78;
-    $apy1 = $tmp79;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_list_loop_21;
-    // ATStailcalseq_end
-  } else {
-    $tmpret76 = $arg1;
-  } // endif
-  return $tmpret76;
-} // end-of-function
-
-
-function
-ats2phppre_list_reverse($arg0)
-{
-//
-  $tmpret81 = NULL;
-  $tmp82 = NULL;
-//
-  __patsflab_list_reverse:
-  $tmp82 = NULL;
-  $tmpret81 = ats2phppre_list_reverse_append($arg0, $tmp82);
-  return $tmpret81;
-} // end-of-function
-
-
-function
-ats2phppre_list_reverse_append($arg0, $arg1)
-{
-//
-  $tmpret83 = NULL;
-//
-  __patsflab_list_reverse_append:
-  $tmpret83 = _ats2phppre_list_loop_24($arg0, $arg1);
-  return $tmpret83;
-} // end-of-function
-
-
-function
-_ats2phppre_list_loop_24($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret84 = NULL;
-  $tmp85 = NULL;
-  $tmp86 = NULL;
-  $tmp87 = NULL;
-//
-  __patsflab__ats2phppre_list_loop_24:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab25:
-    if(ATSCKptriscons($arg0)) goto __atstmplab28;
-    __atstmplab26:
-    $tmpret84 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab27:
-    __atstmplab28:
-    $tmp85 = $arg0[0];
-    $tmp86 = $arg0[1];
-    $tmp87 = array($tmp85, $arg1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp86;
-    $apy1 = $tmp87;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_list_loop_24;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret84;
-} // end-of-function
-
-
-function
-ats2phppre_list_concat($arg0)
-{
-//
-  $tmpret88 = NULL;
-//
-  __patsflab_list_concat:
-  $tmpret88 = _ats2phppre_list_auxlst_26($arg0);
-  return $tmpret88;
-} // end-of-function
-
-
-function
-_ats2phppre_list_auxlst_26($arg0)
-{
-//
-  $tmpret89 = NULL;
-  $tmp90 = NULL;
-  $tmp91 = NULL;
-  $tmp92 = NULL;
-//
-  __patsflab__ats2phppre_list_auxlst_26:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab29:
-    if(ATSCKptriscons($arg0)) goto __atstmplab32;
-    __atstmplab30:
-    $tmpret89 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab31:
-    __atstmplab32:
-    $tmp90 = $arg0[0];
-    $tmp91 = $arg0[1];
-    $tmp92 = _ats2phppre_list_auxlst_26($tmp91);
-    $tmpret89 = ats2phppre_list_append($tmp90, $tmp92);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret89;
-} // end-of-function
-
-
-function
-ats2phppre_list_take($arg0, $arg1)
-{
-//
-  $tmpret93 = NULL;
-  $tmp94 = NULL;
-  $tmp95 = NULL;
-  $tmp96 = NULL;
-  $tmp97 = NULL;
-  $tmp98 = NULL;
-//
-  __patsflab_list_take:
-  $tmp94 = ats2phppre_gt_int1_int1($arg1, 0);
-  if($tmp94) {
-    $tmp95 = $arg0[0];
-    $tmp96 = $arg0[1];
-    $tmp98 = ats2phppre_sub_int1_int1($arg1, 1);
-    $tmp97 = ats2phppre_list_take($tmp96, $tmp98);
-    $tmpret93 = array($tmp95, $tmp97);
-  } else {
-    $tmpret93 = NULL;
-  } // endif
-  return $tmpret93;
-} // end-of-function
-
-
-function
-ats2phppre_list_drop($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret99 = NULL;
-  $tmp100 = NULL;
-  $tmp101 = NULL;
-  $tmp102 = NULL;
-//
-  __patsflab_list_drop:
-  $tmp100 = ats2phppre_gt_int1_int1($arg1, 0);
-  if($tmp100) {
-    $tmp101 = $arg0[1];
-    $tmp102 = ats2phppre_sub_int1_int1($arg1, 1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp101;
-    $apy1 = $tmp102;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab_list_drop;
-    // ATStailcalseq_end
-  } else {
-    $tmpret99 = $arg0;
-  } // endif
-  return $tmpret99;
-} // end-of-function
-
-
-function
-ats2phppre_list_split_at($arg0, $arg1)
-{
-//
-  $tmpret103 = NULL;
-  $tmp104 = NULL;
-  $tmp105 = NULL;
-//
-  __patsflab_list_split_at:
-  $tmp104 = ats2phppre_list_take($arg0, $arg1);
-  $tmp105 = ats2phppre_list_drop($arg0, $arg1);
-  $tmpret103 = array($tmp104, $tmp105);
-  return $tmpret103;
-} // end-of-function
-
-
-function
-ats2phppre_list_insert_at($arg0, $arg1, $arg2)
-{
-//
-  $tmpret106 = NULL;
-  $tmp107 = NULL;
-  $tmp108 = NULL;
-  $tmp109 = NULL;
-  $tmp110 = NULL;
-  $tmp111 = NULL;
-//
-  __patsflab_list_insert_at:
-  $tmp107 = ats2phppre_gt_int1_int1($arg1, 0);
-  if($tmp107) {
-    $tmp108 = $arg0[0];
-    $tmp109 = $arg0[1];
-    $tmp111 = ats2phppre_sub_int1_int1($arg1, 1);
-    $tmp110 = ats2phppre_list_insert_at($tmp109, $tmp111, $arg2);
-    $tmpret106 = array($tmp108, $tmp110);
-  } else {
-    $tmpret106 = array($arg2, $arg0);
-  } // endif
-  return $tmpret106;
-} // end-of-function
-
-
-function
-ats2phppre_list_remove_at($arg0, $arg1)
-{
-//
-  $tmpret112 = NULL;
-  $tmp113 = NULL;
-  $tmp114 = NULL;
-  $tmp115 = NULL;
-  $tmp116 = NULL;
-  $tmp117 = NULL;
-//
-  __patsflab_list_remove_at:
-  $tmp113 = $arg0[0];
-  $tmp114 = $arg0[1];
-  $tmp115 = ats2phppre_gt_int1_int1($arg1, 0);
-  if($tmp115) {
-    $tmp117 = ats2phppre_sub_int1_int1($arg1, 1);
-    $tmp116 = ats2phppre_list_remove_at($tmp114, $tmp117);
-    $tmpret112 = array($tmp113, $tmp116);
-  } else {
-    $tmpret112 = $tmp114;
-  } // endif
-  return $tmpret112;
-} // end-of-function
-
-
-function
-ats2phppre_list_takeout_at($arg0, $arg1)
-{
-//
-  $tmpret118 = NULL;
-  $tmp119 = NULL;
-  $tmp120 = NULL;
-  $tmp121 = NULL;
-  $tmp122 = NULL;
-  $tmp123 = NULL;
-  $tmp124 = NULL;
-  $tmp125 = NULL;
-  $tmp126 = NULL;
-//
-  __patsflab_list_takeout_at:
-  $tmp119 = $arg0[0];
-  $tmp120 = $arg0[1];
-  $tmp121 = ats2phppre_gt_int1_int1($arg1, 0);
-  if($tmp121) {
-    $tmp123 = ats2phppre_sub_int1_int1($arg1, 1);
-    $tmp122 = ats2phppre_list_takeout_at($tmp120, $tmp123);
-    $tmp124 = $tmp122[0];
-    $tmp125 = $tmp122[1];
-    $tmp126 = array($tmp119, $tmp125);
-    $tmpret118 = array($tmp124, $tmp126);
-  } else {
-    $tmpret118 = array($tmp119, $tmp120);
-  } // endif
-  return $tmpret118;
-} // end-of-function
-
-
-function
-ats2phppre_list_exists($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret127 = NULL;
-  $tmp128 = NULL;
-  $tmp129 = NULL;
-  $tmp130 = NULL;
-//
-  __patsflab_list_exists:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab33:
-    if(ATSCKptriscons($arg0)) goto __atstmplab36;
-    __atstmplab34:
-    $tmpret127 = false;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab35:
-    __atstmplab36:
-    $tmp128 = $arg0[0];
-    $tmp129 = $arg0[1];
-    $tmp130 = $arg1[0]($arg1, $tmp128);
-    if($tmp130) {
-      $tmpret127 = true;
-    } else {
-      // ATStailcalseq_beg
-      $apy0 = $tmp129;
-      $apy1 = $arg1;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      goto __patsflab_list_exists;
-      // ATStailcalseq_end
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret127;
-} // end-of-function
-
-
-function
-ats2phppre_list_exists_method($arg0)
-{
-//
-  $tmpret131 = NULL;
-//
-  __patsflab_list_exists_method:
-  $tmpret131 = _ats2phppre_list_patsfun_35__closurerize($arg0);
-  return $tmpret131;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_35($env0, $arg0)
-{
-//
-  $tmpret132 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_35:
-  $tmpret132 = ats2phppre_list_exists($env0, $arg0);
-  return $tmpret132;
-} // end-of-function
-
-
-function
-ats2phppre_list_iexists($arg0, $arg1)
-{
-//
-  $tmpret133 = NULL;
-//
-  __patsflab_list_iexists:
-  $tmpret133 = _ats2phppre_list_loop_37($arg1, 0, $arg0);
-  return $tmpret133;
-} // end-of-function
-
-
-function
-_ats2phppre_list_loop_37($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret134 = NULL;
-  $tmp135 = NULL;
-  $tmp136 = NULL;
-  $tmp137 = NULL;
-  $tmp138 = NULL;
-//
-  __patsflab__ats2phppre_list_loop_37:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab37:
-    if(ATSCKptriscons($arg1)) goto __atstmplab40;
-    __atstmplab38:
-    $tmpret134 = false;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab39:
-    __atstmplab40:
-    $tmp135 = $arg1[0];
-    $tmp136 = $arg1[1];
-    $tmp137 = $env0[0]($env0, $arg0, $tmp135);
-    if($tmp137) {
-      $tmpret134 = true;
-    } else {
-      $tmp138 = ats2phppre_add_int1_int1($arg0, 1);
-      // ATStailcalseq_beg
-      $apy0 = $tmp138;
-      $apy1 = $tmp136;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      goto __patsflab__ats2phppre_list_loop_37;
-      // ATStailcalseq_end
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret134;
-} // end-of-function
-
-
-function
-ats2phppre_list_iexists_method($arg0)
-{
-//
-  $tmpret139 = NULL;
-//
-  __patsflab_list_iexists_method:
-  $tmpret139 = _ats2phppre_list_patsfun_39__closurerize($arg0);
-  return $tmpret139;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_39($env0, $arg0)
-{
-//
-  $tmpret140 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_39:
-  $tmpret140 = ats2phppre_list_iexists($env0, $arg0);
-  return $tmpret140;
-} // end-of-function
-
-
-function
-ats2phppre_list_forall($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret141 = NULL;
-  $tmp142 = NULL;
-  $tmp143 = NULL;
-  $tmp144 = NULL;
-//
-  __patsflab_list_forall:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab41:
-    if(ATSCKptriscons($arg0)) goto __atstmplab44;
-    __atstmplab42:
-    $tmpret141 = true;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab43:
-    __atstmplab44:
-    $tmp142 = $arg0[0];
-    $tmp143 = $arg0[1];
-    $tmp144 = $arg1[0]($arg1, $tmp142);
-    if($tmp144) {
-      // ATStailcalseq_beg
-      $apy0 = $tmp143;
-      $apy1 = $arg1;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      goto __patsflab_list_forall;
-      // ATStailcalseq_end
-    } else {
-      $tmpret141 = false;
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret141;
-} // end-of-function
-
-
-function
-ats2phppre_list_forall_method($arg0)
-{
-//
-  $tmpret145 = NULL;
-//
-  __patsflab_list_forall_method:
-  $tmpret145 = _ats2phppre_list_patsfun_42__closurerize($arg0);
-  return $tmpret145;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_42($env0, $arg0)
-{
-//
-  $tmpret146 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_42:
-  $tmpret146 = ats2phppre_list_forall($env0, $arg0);
-  return $tmpret146;
-} // end-of-function
-
-
-function
-ats2phppre_list_iforall($arg0, $arg1)
-{
-//
-  $tmpret147 = NULL;
-//
-  __patsflab_list_iforall:
-  $tmpret147 = _ats2phppre_list_loop_44($arg1, 0, $arg0);
-  return $tmpret147;
-} // end-of-function
-
-
-function
-_ats2phppre_list_loop_44($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret148 = NULL;
-  $tmp149 = NULL;
-  $tmp150 = NULL;
-  $tmp151 = NULL;
-  $tmp152 = NULL;
-//
-  __patsflab__ats2phppre_list_loop_44:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab45:
-    if(ATSCKptriscons($arg1)) goto __atstmplab48;
-    __atstmplab46:
-    $tmpret148 = true;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab47:
-    __atstmplab48:
-    $tmp149 = $arg1[0];
-    $tmp150 = $arg1[1];
-    $tmp151 = $env0[0]($env0, $arg0, $tmp149);
-    if($tmp151) {
-      $tmp152 = ats2phppre_add_int1_int1($arg0, 1);
-      // ATStailcalseq_beg
-      $apy0 = $tmp152;
-      $apy1 = $tmp150;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      goto __patsflab__ats2phppre_list_loop_44;
-      // ATStailcalseq_end
-    } else {
-      $tmpret148 = false;
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret148;
-} // end-of-function
-
-
-function
-ats2phppre_list_iforall_method($arg0)
-{
-//
-  $tmpret153 = NULL;
-//
-  __patsflab_list_iforall_method:
-  $tmpret153 = _ats2phppre_list_patsfun_46__closurerize($arg0);
-  return $tmpret153;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_46($env0, $arg0)
-{
-//
-  $tmpret154 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_46:
-  $tmpret154 = ats2phppre_list_iforall($env0, $arg0);
-  return $tmpret154;
-} // end-of-function
-
-
-function
-ats2phppre_list_app($arg0, $arg1)
-{
-//
-//
-  __patsflab_list_app:
-  ats2phppre_list_foreach($arg0, $arg1);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_list_foreach($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmp157 = NULL;
-  $tmp158 = NULL;
-//
-  __patsflab_list_foreach:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab49:
-    if(ATSCKptriscons($arg0)) goto __atstmplab52;
-    __atstmplab50:
-    // ATSINSmove_void;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab51:
-    __atstmplab52:
-    $tmp157 = $arg0[0];
-    $tmp158 = $arg0[1];
-    $arg1[0]($arg1, $tmp157);
-    // ATStailcalseq_beg
-    $apy0 = $tmp158;
-    $apy1 = $arg1;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab_list_foreach;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_list_foreach_method($arg0)
-{
-//
-  $tmpret160 = NULL;
-//
-  __patsflab_list_foreach_method:
-  $tmpret160 = _ats2phppre_list_patsfun_50__closurerize($arg0);
-  return $tmpret160;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_50($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_list_patsfun_50:
-  ats2phppre_list_foreach($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_list_iforeach($arg0, $arg1)
-{
-//
-//
-  __patsflab_list_iforeach:
-  _ats2phppre_list_aux_52($arg1, 0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-_ats2phppre_list_aux_52($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmp164 = NULL;
-  $tmp165 = NULL;
-  $tmp167 = NULL;
-//
-  __patsflab__ats2phppre_list_aux_52:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab53:
-    if(ATSCKptriscons($arg1)) goto __atstmplab56;
-    __atstmplab54:
-    // ATSINSmove_void;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab55:
-    __atstmplab56:
-    $tmp164 = $arg1[0];
-    $tmp165 = $arg1[1];
-    $env0[0]($env0, $arg0, $tmp164);
-    $tmp167 = ats2phppre_add_int1_int1($arg0, 1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp167;
-    $apy1 = $tmp165;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_list_aux_52;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_list_iforeach_method($arg0)
-{
-//
-  $tmpret168 = NULL;
-//
-  __patsflab_list_iforeach_method:
-  $tmpret168 = _ats2phppre_list_patsfun_54__closurerize($arg0);
-  return $tmpret168;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_54($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_list_patsfun_54:
-  ats2phppre_list_iforeach($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_list_rforeach($arg0, $arg1)
-{
-//
-  $tmp171 = NULL;
-  $tmp172 = NULL;
-//
-  __patsflab_list_rforeach:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab57:
-    if(ATSCKptriscons($arg0)) goto __atstmplab60;
-    __atstmplab58:
-    // ATSINSmove_void;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab59:
-    __atstmplab60:
-    $tmp171 = $arg0[0];
-    $tmp172 = $arg0[1];
-    ats2phppre_list_rforeach($tmp172, $arg1);
-    $arg1[0]($arg1, $tmp171);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_list_rforeach_method($arg0)
-{
-//
-  $tmpret174 = NULL;
-//
-  __patsflab_list_rforeach_method:
-  $tmpret174 = _ats2phppre_list_patsfun_57__closurerize($arg0);
-  return $tmpret174;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_57($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_list_patsfun_57:
-  ats2phppre_list_rforeach($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_list_filter($arg0, $arg1)
-{
-//
-  $tmpret176 = NULL;
-//
-  __patsflab_list_filter:
-  $tmpret176 = _ats2phppre_list_aux_59($arg1, $arg0);
-  return $tmpret176;
-} // end-of-function
-
-
-function
-_ats2phppre_list_aux_59($env0, $arg0)
-{
-//
-  $apy0 = NULL;
-  $tmpret177 = NULL;
-  $tmp178 = NULL;
-  $tmp179 = NULL;
-  $tmp180 = NULL;
-  $tmp181 = NULL;
-//
-  __patsflab__ats2phppre_list_aux_59:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab61:
-    if(ATSCKptriscons($arg0)) goto __atstmplab64;
-    __atstmplab62:
-    $tmpret177 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab63:
-    __atstmplab64:
-    $tmp178 = $arg0[0];
-    $tmp179 = $arg0[1];
-    $tmp180 = $env0[0]($env0, $tmp178);
-    if($tmp180) {
-      $tmp181 = _ats2phppre_list_aux_59($env0, $tmp179);
-      $tmpret177 = array($tmp178, $tmp181);
-    } else {
-      // ATStailcalseq_beg
-      $apy0 = $tmp179;
-      $arg0 = $apy0;
-      goto __patsflab__ats2phppre_list_aux_59;
-      // ATStailcalseq_end
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret177;
-} // end-of-function
-
-
-function
-ats2phppre_list_filter_method($arg0)
-{
-//
-  $tmpret182 = NULL;
-//
-  __patsflab_list_filter_method:
-  $tmpret182 = _ats2phppre_list_patsfun_61__closurerize($arg0);
-  return $tmpret182;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_61($env0, $arg0)
-{
-//
-  $tmpret183 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_61:
-  $tmpret183 = ats2phppre_list_filter($env0, $arg0);
-  return $tmpret183;
-} // end-of-function
-
-
-function
-ats2phppre_list_map($arg0, $arg1)
-{
-//
-  $tmpret184 = NULL;
-//
-  __patsflab_list_map:
-  $tmpret184 = _ats2phppre_list_aux_63($arg1, $arg0);
-  return $tmpret184;
-} // end-of-function
-
-
-function
-_ats2phppre_list_aux_63($env0, $arg0)
-{
-//
-  $tmpret185 = NULL;
-  $tmp186 = NULL;
-  $tmp187 = NULL;
-  $tmp188 = NULL;
-  $tmp189 = NULL;
-//
-  __patsflab__ats2phppre_list_aux_63:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab65:
-    if(ATSCKptriscons($arg0)) goto __atstmplab68;
-    __atstmplab66:
-    $tmpret185 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab67:
-    __atstmplab68:
-    $tmp186 = $arg0[0];
-    $tmp187 = $arg0[1];
-    $tmp188 = $env0[0]($env0, $tmp186);
-    $tmp189 = _ats2phppre_list_aux_63($env0, $tmp187);
-    $tmpret185 = array($tmp188, $tmp189);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret185;
-} // end-of-function
-
-
-function
-ats2phppre_list_map_method($arg0, $arg1)
-{
-//
-  $tmpret190 = NULL;
-//
-  __patsflab_list_map_method:
-  $tmpret190 = _ats2phppre_list_patsfun_65__closurerize($arg0);
-  return $tmpret190;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_65($env0, $arg0)
-{
-//
-  $tmpret191 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_65:
-  $tmpret191 = ats2phppre_list_map($env0, $arg0);
-  return $tmpret191;
-} // end-of-function
-
-
-function
-ats2phppre_list_foldleft($arg0, $arg1, $arg2)
-{
-//
-  $tmpret192 = NULL;
-//
-  __patsflab_list_foldleft:
-  $tmpret192 = _ats2phppre_list_loop_67($arg2, $arg1, $arg0);
-  return $tmpret192;
-} // end-of-function
-
-
-function
-_ats2phppre_list_loop_67($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret193 = NULL;
-  $tmp194 = NULL;
-  $tmp195 = NULL;
-  $tmp196 = NULL;
-//
-  __patsflab__ats2phppre_list_loop_67:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab69:
-    if(ATSCKptriscons($arg1)) goto __atstmplab72;
-    __atstmplab70:
-    $tmpret193 = $arg0;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab71:
-    __atstmplab72:
-    $tmp194 = $arg1[0];
-    $tmp195 = $arg1[1];
-    $tmp196 = $env0[0]($env0, $arg0, $tmp194);
-    // ATStailcalseq_beg
-    $apy0 = $tmp196;
-    $apy1 = $tmp195;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_list_loop_67;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret193;
-} // end-of-function
-
-
-function
-ats2phppre_list_foldleft_method($arg0, $arg1)
-{
-//
-  $tmpret197 = NULL;
-//
-  __patsflab_list_foldleft_method:
-  $tmpret197 = _ats2phppre_list_patsfun_69__closurerize($arg0, $arg1);
-  return $tmpret197;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_69($env0, $env1, $arg0)
-{
-//
-  $tmpret198 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_69:
-  $tmpret198 = ats2phppre_list_foldleft($env0, $env1, $arg0);
-  return $tmpret198;
-} // end-of-function
-
-
-function
-ats2phppre_list_ifoldleft($arg0, $arg1, $arg2)
-{
-//
-  $tmpret199 = NULL;
-//
-  __patsflab_list_ifoldleft:
-  $tmpret199 = _ats2phppre_list_loop_71($arg2, 0, $arg1, $arg0);
-  return $tmpret199;
-} // end-of-function
-
-
-function
-_ats2phppre_list_loop_71($env0, $arg0, $arg1, $arg2)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
-  $tmpret200 = NULL;
-  $tmp201 = NULL;
-  $tmp202 = NULL;
-  $tmp203 = NULL;
-  $tmp204 = NULL;
-//
-  __patsflab__ats2phppre_list_loop_71:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab73:
-    if(ATSCKptriscons($arg2)) goto __atstmplab76;
-    __atstmplab74:
-    $tmpret200 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab75:
-    __atstmplab76:
-    $tmp201 = $arg2[0];
-    $tmp202 = $arg2[1];
-    $tmp203 = ats2phppre_add_int1_int1($arg0, 1);
-    $tmp204 = $env0[0]($env0, $arg0, $arg1, $tmp201);
-    // ATStailcalseq_beg
-    $apy0 = $tmp203;
-    $apy1 = $tmp204;
-    $apy2 = $tmp202;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    $arg2 = $apy2;
-    goto __patsflab__ats2phppre_list_loop_71;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret200;
-} // end-of-function
-
-
-function
-ats2phppre_list_ifoldleft_method($arg0, $arg1)
-{
-//
-  $tmpret205 = NULL;
-//
-  __patsflab_list_ifoldleft_method:
-  $tmpret205 = _ats2phppre_list_patsfun_73__closurerize($arg0, $arg1);
-  return $tmpret205;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_73($env0, $env1, $arg0)
-{
-//
-  $tmpret206 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_73:
-  $tmpret206 = ats2phppre_list_ifoldleft($env0, $env1, $arg0);
-  return $tmpret206;
-} // end-of-function
-
-
-function
-ats2phppre_list_foldright($arg0, $arg1, $arg2)
-{
-//
-  $tmpret207 = NULL;
-//
-  __patsflab_list_foldright:
-  $tmpret207 = _ats2phppre_list_aux_75($arg1, $arg0, $arg2);
-  return $tmpret207;
-} // end-of-function
-
-
-function
-_ats2phppre_list_aux_75($env0, $arg0, $arg1)
-{
-//
-  $tmpret208 = NULL;
-  $tmp209 = NULL;
-  $tmp210 = NULL;
-  $tmp211 = NULL;
-//
-  __patsflab__ats2phppre_list_aux_75:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab77:
-    if(ATSCKptriscons($arg0)) goto __atstmplab80;
-    __atstmplab78:
-    $tmpret208 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab79:
-    __atstmplab80:
-    $tmp209 = $arg0[0];
-    $tmp210 = $arg0[1];
-    $tmp211 = _ats2phppre_list_aux_75($env0, $tmp210, $arg1);
-    $tmpret208 = $env0[0]($env0, $tmp209, $tmp211);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret208;
-} // end-of-function
-
-
-function
-ats2phppre_list_foldright_method($arg0, $arg1)
-{
-//
-  $tmpret212 = NULL;
-//
-  __patsflab_list_foldright_method:
-  $tmpret212 = _ats2phppre_list_patsfun_77__closurerize($arg0, $arg1);
-  return $tmpret212;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_77($env0, $env1, $arg0)
-{
-//
-  $tmpret213 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_77:
-  $tmpret213 = ats2phppre_list_foldright($env0, $arg0, $env1);
-  return $tmpret213;
-} // end-of-function
-
-
-function
-ats2phppre_list_ifoldright($arg0, $arg1, $arg2)
-{
-//
-  $tmpret214 = NULL;
-//
-  __patsflab_list_ifoldright:
-  $tmpret214 = _ats2phppre_list_aux_79($arg1, 0, $arg0, $arg2);
-  return $tmpret214;
-} // end-of-function
-
-
-function
-_ats2phppre_list_aux_79($env0, $arg0, $arg1, $arg2)
-{
-//
-  $tmpret215 = NULL;
-  $tmp216 = NULL;
-  $tmp217 = NULL;
-  $tmp218 = NULL;
-  $tmp219 = NULL;
-//
-  __patsflab__ats2phppre_list_aux_79:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab81:
-    if(ATSCKptriscons($arg1)) goto __atstmplab84;
-    __atstmplab82:
-    $tmpret215 = $arg2;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab83:
-    __atstmplab84:
-    $tmp216 = $arg1[0];
-    $tmp217 = $arg1[1];
-    $tmp219 = ats2phppre_add_int1_int1($arg0, 1);
-    $tmp218 = _ats2phppre_list_aux_79($env0, $tmp219, $tmp217, $arg2);
-    $tmpret215 = $env0[0]($env0, $arg0, $tmp216, $tmp218);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret215;
-} // end-of-function
-
-
-function
-ats2phppre_list_ifoldright_method($arg0, $arg1)
-{
-//
-  $tmpret220 = NULL;
-//
-  __patsflab_list_ifoldright_method:
-  $tmpret220 = _ats2phppre_list_patsfun_81__closurerize($arg0, $arg1);
-  return $tmpret220;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_81($env0, $env1, $arg0)
-{
-//
-  $tmpret221 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_81:
-  $tmpret221 = ats2phppre_list_ifoldright($env0, $arg0, $env1);
-  return $tmpret221;
-} // end-of-function
-
-
-function
-ats2phppre_streamize_list_elt($arg0)
-{
-//
-  $tmpret224 = NULL;
-//
-  __patsflab_streamize_list_elt:
-  $tmpret224 = _ats2phppre_list_auxmain_85($arg0);
-  return $tmpret224;
-} // end-of-function
-
-
-function
-_ats2phppre_list_auxmain_85($arg0)
-{
-//
-  $tmpret225 = NULL;
-//
-  __patsflab__ats2phppre_list_auxmain_85:
-  $tmpret225 = ATSPMVllazyval(_ats2phppre_list_patsfun_86__closurerize($arg0));
-  return $tmpret225;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_86($env0, $arg0)
-{
-//
-  $tmpret226 = NULL;
-  $tmp227 = NULL;
-  $tmp228 = NULL;
-  $tmp229 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_86:
-  if($arg0) {
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab85:
-      if(ATSCKptriscons($env0)) goto __atstmplab88;
-      __atstmplab86:
-      $tmpret226 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab87:
-      __atstmplab88:
-      $tmp227 = $env0[0];
-      $tmp228 = $env0[1];
-      $tmp229 = _ats2phppre_list_auxmain_85($tmp228);
-      $tmpret226 = array($tmp227, $tmp229);
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-  } else {
-  } // endif
-  return $tmpret226;
-} // end-of-function
-
-
-function
-ats2phppre_streamize_list_zip($arg0, $arg1)
-{
-//
-  $tmpret230 = NULL;
-//
-  __patsflab_streamize_list_zip:
-  $tmpret230 = _ats2phppre_list_auxmain_88($arg0, $arg1);
-  return $tmpret230;
-} // end-of-function
-
-
-function
-_ats2phppre_list_auxmain_88($arg0, $arg1)
-{
-//
-  $tmpret231 = NULL;
-//
-  __patsflab__ats2phppre_list_auxmain_88:
-  $tmpret231 = ATSPMVllazyval(_ats2phppre_list_patsfun_89__closurerize($arg0, $arg1));
-  return $tmpret231;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_89($env0, $env1, $arg0)
-{
-//
-  $tmpret232 = NULL;
-  $tmp233 = NULL;
-  $tmp234 = NULL;
-  $tmp235 = NULL;
-  $tmp236 = NULL;
-  $tmp237 = NULL;
-  $tmp238 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_89:
-  if($arg0) {
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab89:
-      if(ATSCKptriscons($env0)) goto __atstmplab92;
-      __atstmplab90:
-      $tmpret232 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab91:
-      __atstmplab92:
-      $tmp233 = $env0[0];
-      $tmp234 = $env0[1];
-      // ATScaseofseq_beg
-      do {
-        // ATSbranchseq_beg
-        __atstmplab93:
-        if(ATSCKptriscons($env1)) goto __atstmplab96;
-        __atstmplab94:
-        $tmpret232 = NULL;
-        break;
-        // ATSbranchseq_end
-        // ATSbranchseq_beg
-        __atstmplab95:
-        __atstmplab96:
-        $tmp235 = $env1[0];
-        $tmp236 = $env1[1];
-        $tmp237 = array($tmp233, $tmp235);
-        $tmp238 = _ats2phppre_list_auxmain_88($tmp234, $tmp236);
-        $tmpret232 = array($tmp237, $tmp238);
-        break;
-        // ATSbranchseq_end
-      } while(0);
-      // ATScaseofseq_end
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-  } else {
-  } // endif
-  return $tmpret232;
-} // end-of-function
-
-
-function
-ats2phppre_streamize_list_cross($arg0, $arg1)
-{
-//
-  $tmpret239 = NULL;
-//
-  __patsflab_streamize_list_cross:
-  $tmpret239 = _ats2phppre_list_auxmain_93($arg0, $arg1);
-  return $tmpret239;
-} // end-of-function
-
-
-function
-_ats2phppre_list_auxone_91($arg0, $arg1)
-{
-//
-  $tmpret240 = NULL;
-//
-  __patsflab__ats2phppre_list_auxone_91:
-  $tmpret240 = ATSPMVllazyval(_ats2phppre_list_patsfun_92__closurerize($arg0, $arg1));
-  return $tmpret240;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_92($env0, $env1, $arg0)
-{
-//
-  $tmpret241 = NULL;
-  $tmp242 = NULL;
-  $tmp243 = NULL;
-  $tmp244 = NULL;
-  $tmp245 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_92:
-  if($arg0) {
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab97:
-      if(ATSCKptriscons($env1)) goto __atstmplab100;
-      __atstmplab98:
-      $tmpret241 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab99:
-      __atstmplab100:
-      $tmp242 = $env1[0];
-      $tmp243 = $env1[1];
-      $tmp244 = array($env0, $tmp242);
-      $tmp245 = _ats2phppre_list_auxone_91($env0, $tmp243);
-      $tmpret241 = array($tmp244, $tmp245);
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-  } else {
-  } // endif
-  return $tmpret241;
-} // end-of-function
-
-
-function
-_ats2phppre_list_auxmain_93($arg0, $arg1)
-{
-//
-  $tmpret246 = NULL;
-//
-  __patsflab__ats2phppre_list_auxmain_93:
-  $tmpret246 = ATSPMVllazyval(_ats2phppre_list_patsfun_94__closurerize($arg0, $arg1));
-  return $tmpret246;
-} // end-of-function
-
-
-function
-_ats2phppre_list_patsfun_94($env0, $env1, $arg0)
-{
-//
-  $tmpret247 = NULL;
-  $tmp248 = NULL;
-  $tmp249 = NULL;
-  $tmp250 = NULL;
-  $tmp251 = NULL;
-  $tmp252 = NULL;
-//
-  __patsflab__ats2phppre_list_patsfun_94:
-  if($arg0) {
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab101:
-      if(ATSCKptriscons($env0)) goto __atstmplab104;
-      __atstmplab102:
-      $tmpret247 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab103:
-      __atstmplab104:
-      $tmp248 = $env0[0];
-      $tmp249 = $env0[1];
-      $tmp251 = _ats2phppre_list_auxone_91($tmp248, $env1);
-      $tmp252 = _ats2phppre_list_auxmain_93($tmp249, $env1);
-      $tmp250 = ats2phppre_stream_vt_append($tmp251, $tmp252);
-      $tmpret247 = ATSPMVllazyval_eval($tmp250);
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-  } else {
-  } // endif
-  return $tmpret247;
-} // end-of-function
-
-/* ****** ****** */
-
-/* end-of-compilation-unit */
-?>
-<?php
-/*
-**
-** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-4-11: 17h: 2m
-**
-*/
-
-function
-ats2phppre_list_vt_length($arg0)
-{
-//
-  $tmpret2 = NULL;
-//
-  __patsflab_list_vt_length:
-  $tmpret2 = _ats2phppre_list_vt_loop_3($arg0, 0);
-  return $tmpret2;
-} // end-of-function
-
-
-function
-_ats2phppre_list_vt_loop_3($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret3 = NULL;
-  $tmp5 = NULL;
-  $tmp6 = NULL;
-//
-  __patsflab__ats2phppre_list_vt_loop_3:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab8:
-    if(ATSCKptriscons($arg0)) goto __atstmplab11;
-    __atstmplab9:
-    $tmpret3 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab10:
-    __atstmplab11:
-    $tmp5 = $arg0[1];
-    $tmp6 = ats2phppre_add_int1_int1($arg1, 1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp5;
-    $apy1 = $tmp6;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_list_vt_loop_3;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret3;
-} // end-of-function
-
-
-function
-ats2phppre_list_vt_snoc($arg0, $arg1)
-{
-//
-  $tmpret7 = NULL;
-  $tmp8 = NULL;
-  $tmp9 = NULL;
-//
-  __patsflab_list_vt_snoc:
-  $tmp9 = NULL;
-  $tmp8 = array($arg1, $tmp9);
-  $tmpret7 = ats2phppre_list_vt_append($arg0, $tmp8);
-  return $tmpret7;
-} // end-of-function
-
-
-function
-ats2phppre_list_vt_extend($arg0, $arg1)
-{
-//
-  $tmpret10 = NULL;
-  $tmp11 = NULL;
-  $tmp12 = NULL;
-//
-  __patsflab_list_vt_extend:
-  $tmp12 = NULL;
-  $tmp11 = array($arg1, $tmp12);
-  $tmpret10 = ats2phppre_list_vt_append($arg0, $tmp11);
-  return $tmpret10;
-} // end-of-function
-
-
-function
-ats2phppre_list_vt_append($arg0, $arg1)
-{
-//
-  $tmpret13 = NULL;
-//
-  __patsflab_list_vt_append:
-  $tmpret13 = _ats2phppre_list_vt_aux_7($arg0, $arg1);
-  return $tmpret13;
-} // end-of-function
-
-
-function
-_ats2phppre_list_vt_aux_7($arg0, $arg1)
-{
-//
-  $tmpret14 = NULL;
-  $tmp15 = NULL;
-  $tmp16 = NULL;
-  $tmp17 = NULL;
-//
-  __patsflab__ats2phppre_list_vt_aux_7:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab12:
-    if(ATSCKptriscons($arg0)) goto __atstmplab15;
-    __atstmplab13:
-    $tmpret14 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab14:
-    __atstmplab15:
-    $tmp15 = $arg0[0];
-    $tmp16 = $arg0[1];
-    // ATSINSfreecon($arg0);
-    $tmp17 = _ats2phppre_list_vt_aux_7($tmp16, $arg1);
-    $tmpret14 = array($tmp15, $tmp17);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret14;
-} // end-of-function
-
-
-function
-ats2phppre_list_vt_reverse($arg0)
-{
-//
-  $tmpret18 = NULL;
-  $tmp19 = NULL;
-//
-  __patsflab_list_vt_reverse:
-  $tmp19 = NULL;
-  $tmpret18 = ats2phppre_list_vt_reverse_append($arg0, $tmp19);
-  return $tmpret18;
-} // end-of-function
-
-
-function
-ats2phppre_list_vt_reverse_append($arg0, $arg1)
-{
-//
-  $tmpret20 = NULL;
-//
-  __patsflab_list_vt_reverse_append:
-  $tmpret20 = _ats2phppre_list_vt_loop_10($arg0, $arg1);
-  return $tmpret20;
-} // end-of-function
-
-
-function
-_ats2phppre_list_vt_loop_10($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret21 = NULL;
-  $tmp22 = NULL;
-  $tmp23 = NULL;
-  $tmp24 = NULL;
-//
-  __patsflab__ats2phppre_list_vt_loop_10:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab16:
-    if(ATSCKptriscons($arg0)) goto __atstmplab19;
-    __atstmplab17:
-    $tmpret21 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab18:
-    __atstmplab19:
-    $tmp22 = $arg0[0];
-    $tmp23 = $arg0[1];
-    // ATSINSfreecon($arg0);
-    $tmp24 = array($tmp22, $arg1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp23;
-    $apy1 = $tmp24;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_list_vt_loop_10;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret21;
-} // end-of-function
-
-/* ****** ****** */
-
-/* end-of-compilation-unit */
-?>
-<?php
-/*
-**
-** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-4-11: 17h: 2m
-**
-*/
-
-function
-ats2phppre_option_some($arg0)
-{
-//
-  $tmpret0 = NULL;
-//
-  __patsflab_option_some:
-  $tmpret0 = array($arg0);
-  return $tmpret0;
-} // end-of-function
-
-
-function
-ats2phppre_option_none()
-{
-//
-  $tmpret1 = NULL;
-//
-  __patsflab_option_none:
-  $tmpret1 = NULL;
-  return $tmpret1;
-} // end-of-function
-
-
-function
-ats2phppre_option_unsome($arg0)
-{
-//
-  $tmpret2 = NULL;
-  $tmp3 = NULL;
-//
-  __patsflab_option_unsome:
-  $tmp3 = $arg0[0];
-  $tmpret2 = $tmp3;
-  return $tmpret2;
-} // end-of-function
-
-
-function
-ats2phppre_option_is_some($arg0)
-{
-//
-  $tmpret4 = NULL;
-//
-  __patsflab_option_is_some:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab0:
-    if(ATSCKptrisnull($arg0)) goto __atstmplab3;
-    __atstmplab1:
-    $tmpret4 = true;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab2:
-    __atstmplab3:
-    $tmpret4 = false;
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret4;
-} // end-of-function
-
-
-function
-ats2phppre_option_is_none($arg0)
-{
-//
-  $tmpret5 = NULL;
-//
-  __patsflab_option_is_none:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab4:
-    if(ATSCKptriscons($arg0)) goto __atstmplab7;
-    __atstmplab5:
-    $tmpret5 = true;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab6:
-    __atstmplab7:
-    $tmpret5 = false;
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret5;
-} // end-of-function
-
-/* ****** ****** */
-
-/* end-of-compilation-unit */
-?>
-<?php
-/*
-**
-** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-4-11: 17h: 2m
-**
-*/
-function
-_ats2jspre_stream_patsfun_6__closurerize($env0)
-{
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_6($cenv[1]); }, $env0);
-}
-
-function
-_ats2jspre_stream_patsfun_17__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_17($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-function
-_ats2jspre_stream_patsfun_23__closurerize($env0, $env1)
-{
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_23($cenv[1], $cenv[2]); }, $env0, $env1);
-}
-
-function
-_ats2jspre_stream_patsfun_25__closurerize($env0)
-{
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_25($cenv[1]); }, $env0);
-}
-
-function
-_ats2jspre_stream_patsfun_27__closurerize($env0, $env1)
-{
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_27($cenv[1], $cenv[2]); }, $env0, $env1);
-}
-
-function
-_ats2jspre_stream_patsfun_29__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_29($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2jspre_stream_patsfun_31__closurerize($env0, $env1)
-{
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_31($cenv[1], $cenv[2]); }, $env0, $env1);
-}
-
-function
-_ats2jspre_stream_patsfun_33__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_33($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2jspre_stream_patsfun_36__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_36($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2jspre_stream_patsfun_39__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_39($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2jspre_stream_patsfun_42__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_42($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2jspre_stream_patsfun_46__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2jspre_stream_patsfun_46($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2jspre_stream_patsfun_49__closurerize($env0, $env1)
-{
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_49($cenv[1], $cenv[2]); }, $env0, $env1);
-}
-
-function
-_ats2jspre_stream_patsfun_52__closurerize($env0, $env1, $env2, $env3)
-{
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_52($cenv[1], $cenv[2], $cenv[3], $cenv[4]); }, $env0, $env1, $env2, $env3);
-}
-
-function
-_ats2jspre_stream_patsfun_53__closurerize($env0, $env1)
-{
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_53($cenv[1], $cenv[2]); }, $env0, $env1);
-}
-
-function
-_ats2jspre_stream_patsfun_56__closurerize($env0)
-{
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_56($cenv[1]); }, $env0);
-}
-
-function
-_ats2jspre_stream_patsfun_58__closurerize($env0)
-{
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_58($cenv[1]); }, $env0);
-}
-
-function
-_ats2jspre_stream_patsfun_60__closurerize($env0, $env1)
-{
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_60($cenv[1], $cenv[2]); }, $env0, $env1);
-}
-
-function
-_ats2jspre_stream_patsfun_65__closurerize($env0)
-{
-  return array(function($cenv, $arg0, $arg1) { return _ats2jspre_stream_patsfun_65($cenv[1], $arg0, $arg1); }, $env0);
-}
-
-function
-_ats2jspre_stream_patsfun_67__closurerize($env0)
-{
-  return array(function($cenv, $arg0, $arg1) { return _ats2jspre_stream_patsfun_67($cenv[1], $arg0, $arg1); }, $env0);
-}
-
-function
-_ats2jspre_stream_patsfun_70__closurerize($env0, $env1)
-{
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_70($cenv[1], $cenv[2]); }, $env0, $env1);
-}
-
-function
-_ats2jspre_stream_patsfun_72__closurerize($env0, $env1)
-{
-  return array(function($cenv) { return _ats2jspre_stream_patsfun_72($cenv[1], $cenv[2]); }, $env0, $env1);
-}
-
-
-function
-ats2phppre_stream_make_list($arg0)
-{
-//
-  $tmpret7 = NULL;
-//
-  __patsflab_stream_make_list:
-  $tmpret7 = ATSPMVlazyval(_ats2jspre_stream_patsfun_6__closurerize($arg0));
-  return $tmpret7;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_6($env0)
-{
-//
-  $tmpret8 = NULL;
-  $tmp9 = NULL;
-  $tmp10 = NULL;
-  $tmp11 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_6:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab0:
-    if(ATSCKptriscons($env0)) goto __atstmplab3;
-    __atstmplab1:
-    $tmpret8 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab2:
-    __atstmplab3:
-    $tmp9 = $env0[0];
-    $tmp10 = $env0[1];
-    $tmp11 = ats2phppre_stream_make_list($tmp10);
-    $tmpret8 = array($tmp9, $tmp11);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret8;
-} // end-of-function
-
-
-function
-ats2phppre_stream_make_list0($arg0)
-{
-//
-  $tmpret12 = NULL;
-//
-  __patsflab_stream_make_list0:
-  $tmpret12 = ats2phppre_stream_make_list($arg0);
-  return $tmpret12;
-} // end-of-function
-
-
-function
-ats2phppre_stream_nth_opt($arg0, $arg1)
-{
-//
-  $tmpret13 = NULL;
-//
-  __patsflab_stream_nth_opt:
-  $tmpret13 = _ats2jspre_stream_loop_9($arg0, $arg1);
-  return $tmpret13;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_loop_9($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret14 = NULL;
-  $tmp15 = NULL;
-  $tmp16 = NULL;
-  $tmp17 = NULL;
-  $tmp18 = NULL;
-  $tmp19 = NULL;
-//
-  __patsflab__ats2jspre_stream_loop_9:
-  $tmp15 = ATSPMVlazyval_eval($arg0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab4:
-    if(ATSCKptriscons($tmp15)) goto __atstmplab7;
-    __atstmplab5:
-    $tmpret14 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab6:
-    __atstmplab7:
-    $tmp16 = $tmp15[0];
-    $tmp17 = $tmp15[1];
-    $tmp18 = ats2phppre_gt_int1_int1($arg1, 0);
-    if($tmp18) {
-      $tmp19 = ats2phppre_pred_int1($arg1);
-      // ATStailcalseq_beg
-      $apy0 = $tmp17;
-      $apy1 = $tmp19;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      goto __patsflab__ats2jspre_stream_loop_9;
-      // ATStailcalseq_end
-    } else {
-      $tmpret14 = array($tmp16);
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret14;
-} // end-of-function
-
-
-function
-ats2phppre_stream_length($arg0)
-{
-//
-  $tmpret20 = NULL;
-//
-  __patsflab_stream_length:
-  $tmpret20 = _ats2jspre_stream_loop_11($arg0, 0);
-  return $tmpret20;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_loop_11($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret21 = NULL;
-  $tmp22 = NULL;
-  $tmp24 = NULL;
-  $tmp25 = NULL;
-//
-  __patsflab__ats2jspre_stream_loop_11:
-  $tmp22 = ATSPMVlazyval_eval($arg0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab8:
-    if(ATSCKptriscons($tmp22)) goto __atstmplab11;
-    __atstmplab9:
-    $tmpret21 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab10:
-    __atstmplab11:
-    $tmp24 = $tmp22[1];
-    $tmp25 = ats2phppre_add_int1_int1($arg1, 1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp24;
-    $apy1 = $tmp25;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2jspre_stream_loop_11;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret21;
-} // end-of-function
-
-
-function
-ats2phppre_stream2list($arg0)
-{
-//
-  $tmpret26 = NULL;
-//
-  __patsflab_stream2list:
-  $tmpret26 = _ats2jspre_stream_aux_13($arg0);
-  return $tmpret26;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_aux_13($arg0)
-{
-//
-  $tmpret27 = NULL;
-  $tmp28 = NULL;
-  $tmp29 = NULL;
-  $tmp30 = NULL;
-  $tmp31 = NULL;
-//
-  __patsflab__ats2jspre_stream_aux_13:
-  $tmp28 = ATSPMVlazyval_eval($arg0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab12:
-    if(ATSCKptriscons($tmp28)) goto __atstmplab15;
-    __atstmplab13:
-    $tmpret27 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab14:
-    __atstmplab15:
-    $tmp29 = $tmp28[0];
-    $tmp30 = $tmp28[1];
-    $tmp31 = _ats2jspre_stream_aux_13($tmp30);
-    $tmpret27 = array($tmp29, $tmp31);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret27;
-} // end-of-function
-
-
-function
-ats2phppre_stream2list_rev($arg0)
-{
-//
-  $tmpret32 = NULL;
-  $tmp38 = NULL;
-//
-  __patsflab_stream2list_rev:
-  $tmp38 = NULL;
-  $tmpret32 = _ats2jspre_stream_loop_15($arg0, $tmp38);
-  return $tmpret32;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_loop_15($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret33 = NULL;
-  $tmp34 = NULL;
-  $tmp35 = NULL;
-  $tmp36 = NULL;
-  $tmp37 = NULL;
-//
-  __patsflab__ats2jspre_stream_loop_15:
-  $tmp34 = ATSPMVlazyval_eval($arg0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab16:
-    if(ATSCKptriscons($tmp34)) goto __atstmplab19;
-    __atstmplab17:
-    $tmpret33 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab18:
-    __atstmplab19:
-    $tmp35 = $tmp34[0];
-    $tmp36 = $tmp34[1];
-    $tmp37 = array($tmp35, $arg1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp36;
-    $apy1 = $tmp37;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2jspre_stream_loop_15;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret33;
-} // end-of-function
-
-
-function
-ats2phppre_stream_takeLte($arg0, $arg1)
-{
-//
-  $tmpret39 = NULL;
-//
-  __patsflab_stream_takeLte:
-  $tmpret39 = ATSPMVllazyval(_ats2jspre_stream_patsfun_17__closurerize($arg0, $arg1));
-  return $tmpret39;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_17($env0, $env1, $arg0)
-{
-//
-  $tmpret40 = NULL;
-  $tmp41 = NULL;
-  $tmp42 = NULL;
-  $tmp43 = NULL;
-  $tmp44 = NULL;
-  $tmp45 = NULL;
-  $tmp46 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_17:
-  if($arg0) {
-    $tmp41 = ats2phppre_gt_int1_int1($env1, 0);
-    if($tmp41) {
-      $tmp42 = ATSPMVlazyval_eval($env0); 
-      // ATScaseofseq_beg
-      do {
-        // ATSbranchseq_beg
-        __atstmplab20:
-        if(ATSCKptriscons($tmp42)) goto __atstmplab23;
-        __atstmplab21:
-        $tmpret40 = NULL;
-        break;
-        // ATSbranchseq_end
-        // ATSbranchseq_beg
-        __atstmplab22:
-        __atstmplab23:
-        $tmp43 = $tmp42[0];
-        $tmp44 = $tmp42[1];
-        $tmp46 = ats2phppre_sub_int1_int1($env1, 1);
-        $tmp45 = ats2phppre_stream_takeLte($tmp44, $tmp46);
-        $tmpret40 = array($tmp43, $tmp45);
-        break;
-        // ATSbranchseq_end
-      } while(0);
-      // ATScaseofseq_end
-    } else {
-      $tmpret40 = NULL;
-    } // endif
-  } else {
-  } // endif
-  return $tmpret40;
-} // end-of-function
-
-
-function
-ats2phppre_stream_take_opt($arg0, $arg1)
-{
-//
-  $tmpret47 = NULL;
-  $tmp56 = NULL;
-//
-  __patsflab_stream_take_opt:
-  $tmp56 = NULL;
-  $tmpret47 = _ats2jspre_stream_auxmain_19($arg1, $arg0, 0, $tmp56);
-  return $tmpret47;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_auxmain_19($env0, $arg0, $arg1, $arg2)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
-  $tmpret48 = NULL;
-  $tmp49 = NULL;
-  $tmp50 = NULL;
-  $tmp51 = NULL;
-  $tmp52 = NULL;
-  $tmp53 = NULL;
-  $tmp54 = NULL;
-  $tmp55 = NULL;
-//
-  __patsflab__ats2jspre_stream_auxmain_19:
-  $tmp49 = ats2phppre_lt_int1_int1($arg1, $env0);
-  if($tmp49) {
-    $tmp50 = ATSPMVlazyval_eval($arg0); 
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab24:
-      if(ATSCKptriscons($tmp50)) goto __atstmplab27;
-      __atstmplab25:
-      $tmpret48 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab26:
-      __atstmplab27:
-      $tmp51 = $tmp50[0];
-      $tmp52 = $tmp50[1];
-      $tmp53 = ats2phppre_add_int1_int1($arg1, 1);
-      $tmp54 = array($tmp51, $arg2);
-      // ATStailcalseq_beg
-      $apy0 = $tmp52;
-      $apy1 = $tmp53;
-      $apy2 = $tmp54;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      $arg2 = $apy2;
-      goto __patsflab__ats2jspre_stream_auxmain_19;
-      // ATStailcalseq_end
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-  } else {
-    $tmp55 = ats2phppre_list_reverse($arg2);
-    $tmpret48 = array($tmp55);
-  } // endif
-  return $tmpret48;
-} // end-of-function
-
-
-function
-ats2phppre_stream_drop_opt($arg0, $arg1)
-{
-//
-  $tmpret57 = NULL;
-//
-  __patsflab_stream_drop_opt:
-  $tmpret57 = _ats2jspre_stream_auxmain_21($arg1, $arg0, 0);
-  return $tmpret57;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_auxmain_21($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret58 = NULL;
-  $tmp59 = NULL;
-  $tmp60 = NULL;
-  $tmp62 = NULL;
-  $tmp63 = NULL;
-//
-  __patsflab__ats2jspre_stream_auxmain_21:
-  $tmp59 = ats2phppre_lt_int1_int1($arg1, $env0);
-  if($tmp59) {
-    $tmp60 = ATSPMVlazyval_eval($arg0); 
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab28:
-      if(ATSCKptriscons($tmp60)) goto __atstmplab31;
-      __atstmplab29:
-      $tmpret58 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab30:
-      __atstmplab31:
-      $tmp62 = $tmp60[1];
-      $tmp63 = ats2phppre_add_int1_int1($arg1, 1);
-      // ATStailcalseq_beg
-      $apy0 = $tmp62;
-      $apy1 = $tmp63;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      goto __patsflab__ats2jspre_stream_auxmain_21;
-      // ATStailcalseq_end
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-  } else {
-    $tmpret58 = array($arg0);
-  } // endif
-  return $tmpret58;
-} // end-of-function
-
-
-function
-ats2phppre_stream_append($arg0, $arg1)
-{
-//
-  $tmpret64 = NULL;
-//
-  __patsflab_stream_append:
-  $tmpret64 = ATSPMVlazyval(_ats2jspre_stream_patsfun_23__closurerize($arg0, $arg1));
-  return $tmpret64;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_23($env0, $env1)
-{
-//
-  $tmpret65 = NULL;
-  $tmp66 = NULL;
-  $tmp67 = NULL;
-  $tmp68 = NULL;
-  $tmp69 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_23:
-  $tmp66 = ATSPMVlazyval_eval($env0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab32:
-    if(ATSCKptriscons($tmp66)) goto __atstmplab35;
-    __atstmplab33:
-    $tmpret65 = ATSPMVlazyval_eval($env1); 
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab34:
-    __atstmplab35:
-    $tmp67 = $tmp66[0];
-    $tmp68 = $tmp66[1];
-    $tmp69 = ats2phppre_stream_append($tmp68, $env1);
-    $tmpret65 = array($tmp67, $tmp69);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret65;
-} // end-of-function
-
-
-function
-ats2phppre_stream_concat($arg0)
-{
-//
-  $tmpret70 = NULL;
-//
-  __patsflab_stream_concat:
-  $tmpret70 = ATSPMVlazyval(_ats2jspre_stream_patsfun_25__closurerize($arg0));
-  return $tmpret70;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_25($env0)
-{
-//
-  $tmpret71 = NULL;
-  $tmp72 = NULL;
-  $tmp73 = NULL;
-  $tmp74 = NULL;
-  $tmp75 = NULL;
-  $tmp76 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_25:
-  $tmp72 = ATSPMVlazyval_eval($env0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab36:
-    if(ATSCKptriscons($tmp72)) goto __atstmplab39;
-    __atstmplab37:
-    $tmpret71 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab38:
-    __atstmplab39:
-    $tmp73 = $tmp72[0];
-    $tmp74 = $tmp72[1];
-    $tmp76 = ats2phppre_stream_concat($tmp74);
-    $tmp75 = ats2phppre_stream_append($tmp73, $tmp76);
-    $tmpret71 = ATSPMVlazyval_eval($tmp75); 
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret71;
-} // end-of-function
-
-
-function
-ats2phppre_stream_map_cloref($arg0, $arg1)
-{
-//
-  $tmpret77 = NULL;
-//
-  __patsflab_stream_map_cloref:
-  $tmpret77 = ATSPMVlazyval(_ats2jspre_stream_patsfun_27__closurerize($arg0, $arg1));
-  return $tmpret77;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_27($env0, $env1)
-{
-//
-  $tmpret78 = NULL;
-  $tmp79 = NULL;
-  $tmp80 = NULL;
-  $tmp81 = NULL;
-  $tmp82 = NULL;
-  $tmp83 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_27:
-  $tmp79 = ATSPMVlazyval_eval($env0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab40:
-    if(ATSCKptriscons($tmp79)) goto __atstmplab43;
-    __atstmplab41:
-    $tmpret78 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab42:
-    __atstmplab43:
-    $tmp80 = $tmp79[0];
-    $tmp81 = $tmp79[1];
-    $tmp82 = $env1[0]($env1, $tmp80);
-    $tmp83 = ats2phppre_stream_map_cloref($tmp81, $env1);
-    $tmpret78 = array($tmp82, $tmp83);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret78;
-} // end-of-function
-
-
-function
-ats2phppre_stream_map_method($arg0, $arg1)
-{
-//
-  $tmpret84 = NULL;
-//
-  __patsflab_stream_map_method:
-  $tmpret84 = _ats2jspre_stream_patsfun_29__closurerize($arg0);
-  return $tmpret84;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_29($env0, $arg0)
-{
-//
-  $tmpret85 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_29:
-  $tmpret85 = ats2phppre_stream_map_cloref($env0, $arg0);
-  return $tmpret85;
-} // end-of-function
-
-
-function
-ats2phppre_stream_filter_cloref($arg0, $arg1)
-{
-//
-  $tmpret86 = NULL;
-//
-  __patsflab_stream_filter_cloref:
-  $tmpret86 = ATSPMVlazyval(_ats2jspre_stream_patsfun_31__closurerize($arg0, $arg1));
-  return $tmpret86;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_31($env0, $env1)
-{
-//
-  $tmpret87 = NULL;
-  $tmp88 = NULL;
-  $tmp89 = NULL;
-  $tmp90 = NULL;
-  $tmp91 = NULL;
-  $tmp92 = NULL;
-  $tmp93 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_31:
-  $tmp88 = ATSPMVlazyval_eval($env0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab44:
-    if(ATSCKptriscons($tmp88)) goto __atstmplab47;
-    __atstmplab45:
-    $tmpret87 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab46:
-    __atstmplab47:
-    $tmp89 = $tmp88[0];
-    $tmp90 = $tmp88[1];
-    $tmp91 = $env1[0]($env1, $tmp89);
-    if($tmp91) {
-      $tmp92 = ats2phppre_stream_filter_cloref($tmp90, $env1);
-      $tmpret87 = array($tmp89, $tmp92);
-    } else {
-      $tmp93 = ats2phppre_stream_filter_cloref($tmp90, $env1);
-      $tmpret87 = ATSPMVlazyval_eval($tmp93); 
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret87;
-} // end-of-function
-
-
-function
-ats2phppre_stream_filter_method($arg0)
-{
-//
-  $tmpret94 = NULL;
-//
-  __patsflab_stream_filter_method:
-  $tmpret94 = _ats2jspre_stream_patsfun_33__closurerize($arg0);
-  return $tmpret94;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_33($env0, $arg0)
-{
-//
-  $tmpret95 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_33:
-  $tmpret95 = ats2phppre_stream_filter_cloref($env0, $arg0);
-  return $tmpret95;
-} // end-of-function
-
-
-function
-ats2phppre_stream_forall_cloref($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret96 = NULL;
-  $tmp97 = NULL;
-  $tmp98 = NULL;
-  $tmp99 = NULL;
-  $tmp100 = NULL;
-//
-  __patsflab_stream_forall_cloref:
-  $tmp97 = ATSPMVlazyval_eval($arg0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab48:
-    if(ATSCKptriscons($tmp97)) goto __atstmplab51;
-    __atstmplab49:
-    $tmpret96 = true;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab50:
-    __atstmplab51:
-    $tmp98 = $tmp97[0];
-    $tmp99 = $tmp97[1];
-    $tmp100 = $arg1[0]($arg1, $tmp98);
-    if($tmp100) {
-      // ATStailcalseq_beg
-      $apy0 = $tmp99;
-      $apy1 = $arg1;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      goto __patsflab_stream_forall_cloref;
-      // ATStailcalseq_end
-    } else {
-      $tmpret96 = false;
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret96;
-} // end-of-function
-
-
-function
-ats2phppre_stream_forall_method($arg0)
-{
-//
-  $tmpret101 = NULL;
-//
-  __patsflab_stream_forall_method:
-  $tmpret101 = _ats2jspre_stream_patsfun_36__closurerize($arg0);
-  return $tmpret101;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_36($env0, $arg0)
-{
-//
-  $tmpret102 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_36:
-  $tmpret102 = ats2phppre_stream_forall_cloref($env0, $arg0);
-  return $tmpret102;
-} // end-of-function
-
-
-function
-ats2phppre_stream_exists_cloref($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret103 = NULL;
-  $tmp104 = NULL;
-  $tmp105 = NULL;
-  $tmp106 = NULL;
-  $tmp107 = NULL;
-//
-  __patsflab_stream_exists_cloref:
-  $tmp104 = ATSPMVlazyval_eval($arg0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab52:
-    if(ATSCKptriscons($tmp104)) goto __atstmplab55;
-    __atstmplab53:
-    $tmpret103 = false;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab54:
-    __atstmplab55:
-    $tmp105 = $tmp104[0];
-    $tmp106 = $tmp104[1];
-    $tmp107 = $arg1[0]($arg1, $tmp105);
-    if($tmp107) {
-      $tmpret103 = true;
-    } else {
-      // ATStailcalseq_beg
-      $apy0 = $tmp106;
-      $apy1 = $arg1;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      goto __patsflab_stream_exists_cloref;
-      // ATStailcalseq_end
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret103;
-} // end-of-function
-
-
-function
-ats2phppre_stream_exists_method($arg0)
-{
-//
-  $tmpret108 = NULL;
-//
-  __patsflab_stream_exists_method:
-  $tmpret108 = _ats2jspre_stream_patsfun_39__closurerize($arg0);
-  return $tmpret108;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_39($env0, $arg0)
-{
-//
-  $tmpret109 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_39:
-  $tmpret109 = ats2phppre_stream_exists_cloref($env0, $arg0);
-  return $tmpret109;
-} // end-of-function
-
-
-function
-ats2phppre_stream_foreach_cloref($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmp111 = NULL;
-  $tmp112 = NULL;
-  $tmp113 = NULL;
-//
-  __patsflab_stream_foreach_cloref:
-  $tmp111 = ATSPMVlazyval_eval($arg0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab56:
-    if(ATSCKptriscons($tmp111)) goto __atstmplab59;
-    __atstmplab57:
-    // ATSINSmove_void;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab58:
-    __atstmplab59:
-    $tmp112 = $tmp111[0];
-    $tmp113 = $tmp111[1];
-    $arg1[0]($arg1, $tmp112);
-    // ATStailcalseq_beg
-    $apy0 = $tmp113;
-    $apy1 = $arg1;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab_stream_foreach_cloref;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_stream_foreach_method($arg0)
-{
-//
-  $tmpret115 = NULL;
-//
-  __patsflab_stream_foreach_method:
-  $tmpret115 = _ats2jspre_stream_patsfun_42__closurerize($arg0);
-  return $tmpret115;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_42($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2jspre_stream_patsfun_42:
-  ats2phppre_stream_foreach_cloref($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_stream_iforeach_cloref($arg0, $arg1)
-{
-//
-//
-  __patsflab_stream_iforeach_cloref:
-  _ats2jspre_stream_loop_44($arg1, 0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_loop_44($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmp119 = NULL;
-  $tmp120 = NULL;
-  $tmp121 = NULL;
-  $tmp123 = NULL;
-//
-  __patsflab__ats2jspre_stream_loop_44:
-  $tmp119 = ATSPMVlazyval_eval($arg1); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab60:
-    if(ATSCKptriscons($tmp119)) goto __atstmplab63;
-    __atstmplab61:
-    // ATSINSmove_void;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab62:
-    __atstmplab63:
-    $tmp120 = $tmp119[0];
-    $tmp121 = $tmp119[1];
-    $env0[0]($env0, $arg0, $tmp120);
-    $tmp123 = ats2phppre_add_int1_int1($arg0, 1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp123;
-    $apy1 = $tmp121;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2jspre_stream_loop_44;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_stream_iforeach_method($arg0)
-{
-//
-  $tmpret124 = NULL;
-//
-  __patsflab_stream_iforeach_method:
-  $tmpret124 = _ats2jspre_stream_patsfun_46__closurerize($arg0);
-  return $tmpret124;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_46($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2jspre_stream_patsfun_46:
-  ats2phppre_stream_iforeach_cloref($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_stream_tabulate_cloref($arg0)
-{
-//
-  $tmpret126 = NULL;
-//
-  __patsflab_stream_tabulate_cloref:
-  $tmpret126 = _ats2jspre_stream_auxmain_48($arg0, 0);
-  return $tmpret126;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_auxmain_48($env0, $arg0)
-{
-//
-  $tmpret127 = NULL;
-//
-  __patsflab__ats2jspre_stream_auxmain_48:
-  $tmpret127 = ATSPMVlazyval(_ats2jspre_stream_patsfun_49__closurerize($env0, $arg0));
-  return $tmpret127;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_49($env0, $env1)
-{
-//
-  $tmpret128 = NULL;
-  $tmp129 = NULL;
-  $tmp130 = NULL;
-  $tmp131 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_49:
-  $tmp129 = $env0[0]($env0, $env1);
-  $tmp131 = ats2phppre_add_int1_int1($env1, 1);
-  $tmp130 = _ats2jspre_stream_auxmain_48($env0, $tmp131);
-  $tmpret128 = array($tmp129, $tmp130);
+  $tmpret128 = _ats2phppre_ML_list0_aux_70($arg0, $arg1);
   return $tmpret128;
 } // end-of-function
 
 
 function
-ats2phppre_cross_stream_list($arg0, $arg1)
-{
-//
-  $tmpret132 = NULL;
-//
-  __patsflab_cross_stream_list:
-  $tmpret132 = ATSPMVlazyval(_ats2jspre_stream_patsfun_53__closurerize($arg0, $arg1));
-  return $tmpret132;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_auxmain_51($arg0, $arg1, $arg2, $arg3)
-{
-//
-  $tmpret133 = NULL;
-//
-  __patsflab__ats2jspre_stream_auxmain_51:
-  $tmpret133 = ATSPMVlazyval(_ats2jspre_stream_patsfun_52__closurerize($arg0, $arg1, $arg2, $arg3));
-  return $tmpret133;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_52($env0, $env1, $env2, $env3)
-{
-//
-  $tmpret134 = NULL;
-  $tmp135 = NULL;
-  $tmp136 = NULL;
-  $tmp137 = NULL;
-  $tmp138 = NULL;
-  $tmp139 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_52:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab64:
-    if(ATSCKptriscons($env3)) goto __atstmplab67;
-    __atstmplab65:
-    $tmp137 = ats2phppre_cross_stream_list($env1, $env2);
-    $tmpret134 = ATSPMVlazyval_eval($tmp137); 
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab66:
-    __atstmplab67:
-    $tmp135 = $env3[0];
-    $tmp136 = $env3[1];
-    $tmp138 = array($env0, $tmp135);
-    $tmp139 = _ats2jspre_stream_auxmain_51($env0, $env1, $env2, $tmp136);
-    $tmpret134 = array($tmp138, $tmp139);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret134;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_53($env0, $env1)
-{
-//
-  $tmpret140 = NULL;
-  $tmp141 = NULL;
-  $tmp142 = NULL;
-  $tmp143 = NULL;
-  $tmp144 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_53:
-  $tmp141 = ATSPMVlazyval_eval($env0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab68:
-    if(ATSCKptriscons($tmp141)) goto __atstmplab71;
-    __atstmplab69:
-    $tmpret140 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab70:
-    if(ATSCKptrisnull($tmp141)) ATSINScaseof_fail("/home/hwxi/Research/ATS-Postiats/contrib/libatscc/ATS2-0.3.2/DATS/stream.dats: 6907(line=451, offs=1) -- 6999(line=453, offs=50)");
-    __atstmplab71:
-    $tmp142 = $tmp141[0];
-    $tmp143 = $tmp141[1];
-    $tmp144 = _ats2jspre_stream_auxmain_51($tmp142, $tmp143, $env1, $env1);
-    $tmpret140 = ATSPMVlazyval_eval($tmp144); 
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret140;
-} // end-of-function
-
-
-function
-ats2phppre_cross_stream_list0($arg0, $arg1)
-{
-//
-  $tmpret145 = NULL;
-//
-  __patsflab_cross_stream_list0:
-  $tmpret145 = ats2phppre_cross_stream_list($arg0, $arg1);
-  return $tmpret145;
-} // end-of-function
-
-
-function
-ats2phppre_stream2cloref_exn($arg0)
-{
-//
-  $tmpret146 = NULL;
-  $tmp147 = NULL;
-//
-  __patsflab_stream2cloref_exn:
-  $tmp147 = ats2phppre_ref($arg0);
-  $tmpret146 = _ats2jspre_stream_patsfun_56__closurerize($tmp147);
-  return $tmpret146;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_56($env0)
-{
-//
-  $tmpret148 = NULL;
-  $tmp149 = NULL;
-  $tmp150 = NULL;
-  $tmp151 = NULL;
-  $tmp152 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_56:
-  $tmp149 = ats2phppre_ref_get_elt($env0);
-  $tmp150 = ATSPMVlazyval_eval($tmp149); 
-  if(ATSCKptrisnull($tmp150)) ATSINScaseof_fail("/home/hwxi/Research/ATS-Postiats/contrib/libatscc/ATS2-0.3.2/DATS/stream.dats: 7300(line=479, offs=5) -- 7324(line=479, offs=29)");
-  $tmp151 = $tmp150[0];
-  $tmp152 = $tmp150[1];
-  ats2phppre_ref_set_elt($env0, $tmp152);
-  $tmpret148 = $tmp151;
-  return $tmpret148;
-} // end-of-function
-
-
-function
-ats2phppre_stream2cloref_opt($arg0)
-{
-//
-  $tmpret154 = NULL;
-  $tmp155 = NULL;
-//
-  __patsflab_stream2cloref_opt:
-  $tmp155 = ats2phppre_ref($arg0);
-  $tmpret154 = _ats2jspre_stream_patsfun_58__closurerize($tmp155);
-  return $tmpret154;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_58($env0)
-{
-//
-  $tmpret156 = NULL;
-  $tmp157 = NULL;
-  $tmp158 = NULL;
-  $tmp159 = NULL;
-  $tmp160 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_58:
-  $tmp157 = ats2phppre_ref_get_elt($env0);
-  $tmp158 = ATSPMVlazyval_eval($tmp157); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab72:
-    if(ATSCKptriscons($tmp158)) goto __atstmplab75;
-    __atstmplab73:
-    $tmpret156 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab74:
-    __atstmplab75:
-    $tmp159 = $tmp158[0];
-    $tmp160 = $tmp158[1];
-    ats2phppre_ref_set_elt($env0, $tmp160);
-    $tmpret156 = array($tmp159);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret156;
-} // end-of-function
-
-
-function
-ats2phppre_stream2cloref_last($arg0, $arg1)
-{
-//
-  $tmpret162 = NULL;
-  $tmp163 = NULL;
-  $tmp164 = NULL;
-//
-  __patsflab_stream2cloref_last:
-  $tmp163 = ats2phppre_ref($arg0);
-  $tmp164 = ats2phppre_ref($arg1);
-  $tmpret162 = _ats2jspre_stream_patsfun_60__closurerize($tmp163, $tmp164);
-  return $tmpret162;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_60($env0, $env1)
-{
-//
-  $tmpret165 = NULL;
-  $tmp166 = NULL;
-  $tmp167 = NULL;
-  $tmp168 = NULL;
-  $tmp169 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_60:
-  $tmp166 = ats2phppre_ref_get_elt($env0);
-  $tmp167 = ATSPMVlazyval_eval($tmp166); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab76:
-    if(ATSCKptriscons($tmp167)) goto __atstmplab79;
-    __atstmplab77:
-    $tmpret165 = ats2phppre_ref_get_elt($env1);
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab78:
-    __atstmplab79:
-    $tmp168 = $tmp167[0];
-    $tmp169 = $tmp167[1];
-    ats2phppre_ref_set_elt($env0, $tmp169);
-    ats2phppre_ref_set_elt($env1, $tmp168);
-    $tmpret165 = $tmp168;
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret165;
-} // end-of-function
-
-
-function
-ats2phppre_stream_take_while_cloref($arg0, $arg1)
-{
-//
-  $tmpret172 = NULL;
-  $tmp173 = NULL;
-  $tmp174 = NULL;
-  $tmp175 = NULL;
-  $tmp176 = NULL;
-//
-  __patsflab_stream_take_while_cloref:
-  $tmp173 = ats2phppre_stream_rtake_while_cloref($arg0, $arg1);
-  $tmp174 = $tmp173[0];
-  $tmp175 = $tmp173[1];
-  $tmp176 = ats2phppre_list_reverse($tmp175);
-  $tmpret172 = array($tmp174, $tmp176);
-  return $tmpret172;
-} // end-of-function
-
-
-function
-ats2phppre_stream_rtake_while_cloref($arg0, $arg1)
-{
-//
-  $tmpret177 = NULL;
-  $tmp185 = NULL;
-//
-  __patsflab_stream_rtake_while_cloref:
-  $tmp185 = NULL;
-  $tmpret177 = _ats2jspre_stream_loop_63($arg1, $arg0, 0, $tmp185);
-  return $tmpret177;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_loop_63($env0, $arg0, $arg1, $arg2)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
-  $tmpret178 = NULL;
-  $tmp179 = NULL;
-  $tmp180 = NULL;
-  $tmp181 = NULL;
-  $tmp182 = NULL;
-  $tmp183 = NULL;
-  $tmp184 = NULL;
-//
-  __patsflab__ats2jspre_stream_loop_63:
-  $tmp179 = ATSPMVlazyval_eval($arg0); 
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab80:
-    if(ATSCKptriscons($tmp179)) goto __atstmplab83;
-    __atstmplab81:
-    $tmpret178 = array($arg0, $arg2);
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab82:
-    __atstmplab83:
-    $tmp180 = $tmp179[0];
-    $tmp181 = $tmp179[1];
-    $tmp182 = $env0[0]($env0, $arg1, $tmp180);
-    if($tmp182) {
-      $tmp183 = ats2phppre_add_int1_int1($arg1, 1);
-      $tmp184 = array($tmp180, $arg2);
-      // ATStailcalseq_beg
-      $apy0 = $tmp181;
-      $apy1 = $tmp183;
-      $apy2 = $tmp184;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      $arg2 = $apy2;
-      goto __patsflab__ats2jspre_stream_loop_63;
-      // ATStailcalseq_end
-    } else {
-      $tmpret178 = array($arg0, $arg2);
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret178;
-} // end-of-function
-
-
-function
-ats2phppre_stream_take_until_cloref($arg0, $arg1)
-{
-//
-  $tmpret186 = NULL;
-//
-  __patsflab_stream_take_until_cloref:
-  $tmpret186 = ats2phppre_stream_take_while_cloref($arg0, _ats2jspre_stream_patsfun_65__closurerize($arg1));
-  return $tmpret186;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_65($env0, $arg0, $arg1)
-{
-//
-  $tmpret187 = NULL;
-  $tmp188 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_65:
-  $tmp188 = $env0[0]($env0, $arg0, $arg1);
-  $tmpret187 = atspre_neg_bool0($tmp188);
-  return $tmpret187;
-} // end-of-function
-
-
-function
-ats2phppre_stream_rtake_until_cloref($arg0, $arg1)
-{
-//
-  $tmpret189 = NULL;
-//
-  __patsflab_stream_rtake_until_cloref:
-  $tmpret189 = ats2phppre_stream_rtake_while_cloref($arg0, _ats2jspre_stream_patsfun_67__closurerize($arg1));
-  return $tmpret189;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_67($env0, $arg0, $arg1)
-{
-//
-  $tmpret190 = NULL;
-  $tmp191 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_67:
-  $tmp191 = $env0[0]($env0, $arg0, $arg1);
-  $tmpret190 = atspre_neg_bool0($tmp191);
-  return $tmpret190;
-} // end-of-function
-
-
-function
-ats2phppre_stream_list_xprod2($arg0, $arg1)
-{
-//
-  $tmpret192 = NULL;
-//
-  __patsflab_stream_list_xprod2:
-  $tmpret192 = _ats2jspre_stream_auxlst_71($arg0, $arg1);
-  return $tmpret192;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_aux_69($arg0, $arg1)
-{
-//
-  $tmpret193 = NULL;
-//
-  __patsflab__ats2jspre_stream_aux_69:
-  $tmpret193 = ATSPMVlazyval(_ats2jspre_stream_patsfun_70__closurerize($arg0, $arg1));
-  return $tmpret193;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_70($env0, $env1)
-{
-//
-  $tmpret194 = NULL;
-  $tmp195 = NULL;
-  $tmp196 = NULL;
-  $tmp197 = NULL;
-  $tmp198 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_70:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab84:
-    if(ATSCKptriscons($env1)) goto __atstmplab87;
-    __atstmplab85:
-    $tmpret194 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab86:
-    __atstmplab87:
-    $tmp195 = $env1[0];
-    $tmp196 = $env1[1];
-    $tmp197 = array($env0, $tmp195);
-    $tmp198 = _ats2jspre_stream_aux_69($env0, $tmp196);
-    $tmpret194 = array($tmp197, $tmp198);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret194;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_auxlst_71($arg0, $arg1)
-{
-//
-  $tmpret199 = NULL;
-//
-  __patsflab__ats2jspre_stream_auxlst_71:
-  $tmpret199 = ATSPMVlazyval(_ats2jspre_stream_patsfun_72__closurerize($arg0, $arg1));
-  return $tmpret199;
-} // end-of-function
-
-
-function
-_ats2jspre_stream_patsfun_72($env0, $env1)
-{
-//
-  $tmpret200 = NULL;
-  $tmp201 = NULL;
-  $tmp202 = NULL;
-  $tmp203 = NULL;
-  $tmp204 = NULL;
-  $tmp205 = NULL;
-//
-  __patsflab__ats2jspre_stream_patsfun_72:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab88:
-    if(ATSCKptriscons($env0)) goto __atstmplab91;
-    __atstmplab89:
-    $tmpret200 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab90:
-    __atstmplab91:
-    $tmp201 = $env0[0];
-    $tmp202 = $env0[1];
-    $tmp204 = _ats2jspre_stream_aux_69($tmp201, $env1);
-    $tmp205 = _ats2jspre_stream_auxlst_71($tmp202, $env1);
-    $tmp203 = ats2phppre_stream_append($tmp204, $tmp205);
-    $tmpret200 = ATSPMVlazyval_eval($tmp203); 
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret200;
-} // end-of-function
-
-/* ****** ****** */
-
-/* end-of-compilation-unit */
-?>
-<?php
-/*
-**
-** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-4-11: 17h: 2m
-**
-*/
-function
-_ats2phppre_stream_vt_patsfun_7__closurerize($env0)
-{
-  return array(function($cenv) { return _ats2phppre_stream_vt_patsfun_7($cenv[1]); }, $env0);
-}
-
-function
-_ats2phppre_stream_vt_patsfun_10__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_10($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-function
-_ats2phppre_stream_vt_patsfun_19__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_19($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-function
-_ats2phppre_stream_vt_patsfun_22__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_22($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_stream_vt_patsfun_25__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_25($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-function
-_ats2phppre_stream_vt_patsfun_27__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_27($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_stream_vt_patsfun_30__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_30($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-function
-_ats2phppre_stream_vt_patsfun_32__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_32($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_stream_vt_patsfun_36__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_36($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_stream_vt_patsfun_40__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_40($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_stream_vt_patsfun_44__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_44($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_stream_vt_patsfun_48__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_48($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_stream_vt_patsfun_52__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_52($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_stream_vt_patsfun_55__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_stream_vt_patsfun_55($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-
-function
-ats2phppre_stream_vt_free($arg0)
-{
-//
-//
-  __patsflab_stream_vt_free:
-  atspre_lazy_vt_free($arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt2t($arg0)
-{
-//
-  $tmpret6 = NULL;
-//
-  __patsflab_stream_vt2t:
-  $tmpret6 = _ats2phppre_stream_vt_aux_6($arg0);
-  return $tmpret6;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_aux_6($arg0)
-{
-//
-  $tmpret7 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_aux_6:
-  $tmpret7 = ATSPMVlazyval(_ats2phppre_stream_vt_patsfun_7__closurerize($arg0));
-  return $tmpret7;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_7($env0)
-{
-//
-  $tmpret8 = NULL;
-  $tmp9 = NULL;
-  $tmp10 = NULL;
-  $tmp11 = NULL;
-  $tmp12 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_patsfun_7:
-  $tmp9 = ATSPMVllazyval_eval($env0);
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab0:
-    if(ATSCKptriscons($tmp9)) goto __atstmplab3;
-    __atstmplab1:
-    $tmpret8 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab2:
-    __atstmplab3:
-    $tmp10 = $tmp9[0];
-    $tmp11 = $tmp9[1];
-    // ATSINSfreecon($tmp9);
-    $tmp12 = _ats2phppre_stream_vt_aux_6($tmp11);
-    $tmpret8 = array($tmp10, $tmp12);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret8;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_takeLte($arg0, $arg1)
-{
-//
-  $tmpret13 = NULL;
-//
-  __patsflab_stream_vt_takeLte:
-  $tmpret13 = _ats2phppre_stream_vt_auxmain_9($arg0, $arg1);
-  return $tmpret13;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_auxmain_9($arg0, $arg1)
-{
-//
-  $tmpret14 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_auxmain_9:
-  $tmpret14 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_10__closurerize($arg0, $arg1));
-  return $tmpret14;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_10($env0, $env1, $arg0)
-{
-//
-  $tmpret15 = NULL;
-  $tmp16 = NULL;
-  $tmp17 = NULL;
-  $tmp18 = NULL;
-  $tmp19 = NULL;
-  $tmp20 = NULL;
-  $tmp21 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_patsfun_10:
-  if($arg0) {
-    $tmp16 = ats2phppre_gt_int1_int1($env1, 0);
-    if($tmp16) {
-      $tmp17 = ATSPMVllazyval_eval($env0);
-      // ATScaseofseq_beg
-      do {
-        // ATSbranchseq_beg
-        __atstmplab4:
-        if(ATSCKptriscons($tmp17)) goto __atstmplab7;
-        __atstmplab5:
-        $tmpret15 = NULL;
-        break;
-        // ATSbranchseq_end
-        // ATSbranchseq_beg
-        __atstmplab6:
-        __atstmplab7:
-        $tmp18 = $tmp17[0];
-        $tmp19 = $tmp17[1];
-        // ATSINSfreecon($tmp17);
-        $tmp21 = ats2phppre_sub_int1_int1($env1, 1);
-        $tmp20 = _ats2phppre_stream_vt_auxmain_9($tmp19, $tmp21);
-        $tmpret15 = array($tmp18, $tmp20);
-        break;
-        // ATSbranchseq_end
-      } while(0);
-      // ATScaseofseq_end
-    } else {
-      atspre_lazy_vt_free($env0);
-      $tmpret15 = NULL;
-    } // endif
-  } else {
-    atspre_lazy_vt_free($env0);
-  } // endif
-  return $tmpret15;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_length($arg0)
-{
-//
-  $tmpret24 = NULL;
-//
-  __patsflab_stream_vt_length:
-  $tmpret24 = _ats2phppre_stream_vt_loop_12($arg0, 0);
-  return $tmpret24;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_loop_12($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret25 = NULL;
-  $tmp26 = NULL;
-  $tmp28 = NULL;
-  $tmp29 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_loop_12:
-  $tmp26 = ATSPMVllazyval_eval($arg0);
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab8:
-    if(ATSCKptriscons($tmp26)) goto __atstmplab11;
-    __atstmplab9:
-    $tmpret25 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab10:
-    __atstmplab11:
-    $tmp28 = $tmp26[1];
-    // ATSINSfreecon($tmp26);
-    $tmp29 = ats2phppre_add_int1_int1($arg1, 1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp28;
-    $apy1 = $tmp29;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_stream_vt_loop_12;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret25;
-} // end-of-function
-
-
-function
-ats2phppre_stream2list_vt($arg0)
-{
-//
-  $tmpret30 = NULL;
-//
-  __patsflab_stream2list_vt:
-  $tmpret30 = _ats2phppre_stream_vt_aux_14($arg0);
-  return $tmpret30;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_aux_14($arg0)
-{
-//
-  $tmpret31 = NULL;
-  $tmp32 = NULL;
-  $tmp33 = NULL;
-  $tmp34 = NULL;
-  $tmp35 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_aux_14:
-  $tmp32 = ATSPMVllazyval_eval($arg0);
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab12:
-    if(ATSCKptriscons($tmp32)) goto __atstmplab15;
-    __atstmplab13:
-    $tmpret31 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab14:
-    __atstmplab15:
-    $tmp33 = $tmp32[0];
-    $tmp34 = $tmp32[1];
-    // ATSINSfreecon($tmp32);
-    $tmp35 = _ats2phppre_stream_vt_aux_14($tmp34);
-    $tmpret31 = array($tmp33, $tmp35);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret31;
-} // end-of-function
-
-
-function
-ats2phppre_stream2list_vt_rev($arg0)
-{
-//
-  $tmpret36 = NULL;
-  $tmp42 = NULL;
-//
-  __patsflab_stream2list_vt_rev:
-  $tmp42 = NULL;
-  $tmpret36 = _ats2phppre_stream_vt_loop_16($arg0, $tmp42);
-  return $tmpret36;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_loop_16($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret37 = NULL;
-  $tmp38 = NULL;
-  $tmp39 = NULL;
-  $tmp40 = NULL;
-  $tmp41 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_loop_16:
-  $tmp38 = ATSPMVllazyval_eval($arg0);
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab16:
-    if(ATSCKptriscons($tmp38)) goto __atstmplab19;
-    __atstmplab17:
-    $tmpret37 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab18:
-    __atstmplab19:
-    $tmp39 = $tmp38[0];
-    $tmp40 = $tmp38[1];
-    // ATSINSfreecon($tmp38);
-    $tmp41 = array($tmp39, $arg1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp40;
-    $apy1 = $tmp41;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_stream_vt_loop_16;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret37;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_append($arg0, $arg1)
-{
-//
-  $tmpret43 = NULL;
-//
-  __patsflab_stream_vt_append:
-  $tmpret43 = _ats2phppre_stream_vt_auxmain_18($arg0, $arg1);
-  return $tmpret43;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_auxmain_18($arg0, $arg1)
-{
-//
-  $tmpret44 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_auxmain_18:
-  $tmpret44 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_19__closurerize($arg0, $arg1));
-  return $tmpret44;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_19($env0, $env1, $arg0)
-{
-//
-  $tmpret45 = NULL;
-  $tmp46 = NULL;
-  $tmp47 = NULL;
-  $tmp48 = NULL;
-  $tmp49 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_patsfun_19:
-  if($arg0) {
-    $tmp46 = ATSPMVllazyval_eval($env0);
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab20:
-      if(ATSCKptriscons($tmp46)) goto __atstmplab23;
-      __atstmplab21:
-      $tmpret45 = ATSPMVllazyval_eval($env1);
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab22:
-      __atstmplab23:
-      $tmp47 = $tmp46[0];
-      $tmp48 = $tmp46[1];
-      // ATSINSfreecon($tmp46);
-      $tmp49 = _ats2phppre_stream_vt_auxmain_18($tmp48, $env1);
-      $tmpret45 = array($tmp47, $tmp49);
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-  } else {
-    atspre_lazy_vt_free($env0);
-    atspre_lazy_vt_free($env1);
-  } // endif
-  return $tmpret45;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_concat($arg0)
-{
-//
-  $tmpret52 = NULL;
-//
-  __patsflab_stream_vt_concat:
-  $tmpret52 = _ats2phppre_stream_vt_auxmain_21($arg0);
-  return $tmpret52;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_auxmain_21($arg0)
-{
-//
-  $tmpret53 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_auxmain_21:
-  $tmpret53 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_22__closurerize($arg0));
-  return $tmpret53;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_22($env0, $arg0)
-{
-//
-  $tmpret54 = NULL;
-  $tmp55 = NULL;
-  $tmp56 = NULL;
-  $tmp57 = NULL;
-  $tmp58 = NULL;
-  $tmp59 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_patsfun_22:
-  if($arg0) {
-    $tmp55 = ATSPMVllazyval_eval($env0);
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab24:
-      if(ATSCKptriscons($tmp55)) goto __atstmplab27;
-      __atstmplab25:
-      $tmpret54 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab26:
-      __atstmplab27:
-      $tmp56 = $tmp55[0];
-      $tmp57 = $tmp55[1];
-      // ATSINSfreecon($tmp55);
-      $tmp59 = _ats2phppre_stream_vt_auxmain_21($tmp57);
-      $tmp58 = ats2phppre_stream_vt_append($tmp56, $tmp59);
-      $tmpret54 = ATSPMVllazyval_eval($tmp58);
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-  } else {
-    atspre_lazy_vt_free($env0);
-  } // endif
-  return $tmpret54;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_map_cloref($arg0, $arg1)
-{
-//
-  $tmpret61 = NULL;
-//
-  __patsflab_stream_vt_map_cloref:
-  $tmpret61 = _ats2phppre_stream_vt_auxmain_24($arg1, $arg0);
-  return $tmpret61;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_auxmain_24($env0, $arg0)
-{
-//
-  $tmpret62 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_auxmain_24:
-  $tmpret62 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_25__closurerize($env0, $arg0));
-  return $tmpret62;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_25($env0, $env1, $arg0)
-{
-//
-  $tmpret63 = NULL;
-  $tmp64 = NULL;
-  $tmp65 = NULL;
-  $tmp66 = NULL;
-  $tmp67 = NULL;
-  $tmp68 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_patsfun_25:
-  if($arg0) {
-    $tmp64 = ATSPMVllazyval_eval($env1);
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab28:
-      if(ATSCKptriscons($tmp64)) goto __atstmplab31;
-      __atstmplab29:
-      $tmpret63 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab30:
-      __atstmplab31:
-      $tmp65 = $tmp64[0];
-      $tmp66 = $tmp64[1];
-      // ATSINSfreecon($tmp64);
-      $tmp67 = $env0[0]($env0, $tmp65);
-      $tmp68 = _ats2phppre_stream_vt_auxmain_24($env0, $tmp66);
-      $tmpret63 = array($tmp67, $tmp68);
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-  } else {
-    atspre_lazy_vt_free($env1);
-  } // endif
-  return $tmpret63;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_map_method($arg0, $arg1)
-{
-//
-  $tmpret70 = NULL;
-//
-  __patsflab_stream_vt_map_method:
-  $tmpret70 = _ats2phppre_stream_vt_patsfun_27__closurerize($arg0);
-  return $tmpret70;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_27($env0, $arg0)
-{
-//
-  $tmpret71 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_patsfun_27:
-  $tmpret71 = ats2phppre_stream_vt_map_cloref($env0, $arg0);
-  return $tmpret71;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_filter_cloref($arg0, $arg1)
-{
-//
-  $tmpret72 = NULL;
-//
-  __patsflab_stream_vt_filter_cloref:
-  $tmpret72 = _ats2phppre_stream_vt_auxmain_29($arg1, $arg0);
-  return $tmpret72;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_auxmain_29($env0, $arg0)
-{
-//
-  $tmpret73 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_auxmain_29:
-  $tmpret73 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_30__closurerize($env0, $arg0));
-  return $tmpret73;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_30($env0, $env1, $arg0)
-{
-//
-  $tmpret74 = NULL;
-  $tmp75 = NULL;
-  $tmp76 = NULL;
-  $tmp77 = NULL;
-  $tmp78 = NULL;
-  $tmp79 = NULL;
-  $tmp80 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_patsfun_30:
-  if($arg0) {
-    $tmp75 = ATSPMVllazyval_eval($env1);
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab32:
-      if(ATSCKptriscons($tmp75)) goto __atstmplab35;
-      __atstmplab33:
-      $tmpret74 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab34:
-      __atstmplab35:
-      $tmp76 = $tmp75[0];
-      $tmp77 = $tmp75[1];
-      // ATSINSfreecon($tmp75);
-      $tmp78 = $env0[0]($env0, $tmp76);
-      if($tmp78) {
-        $tmp79 = _ats2phppre_stream_vt_auxmain_29($env0, $tmp77);
-        $tmpret74 = array($tmp76, $tmp79);
-      } else {
-        $tmp80 = _ats2phppre_stream_vt_auxmain_29($env0, $tmp77);
-        $tmpret74 = ATSPMVllazyval_eval($tmp80);
-      } // endif
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-  } else {
-    atspre_lazy_vt_free($env1);
-  } // endif
-  return $tmpret74;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_filter_method($arg0)
-{
-//
-  $tmpret82 = NULL;
-//
-  __patsflab_stream_vt_filter_method:
-  $tmpret82 = _ats2phppre_stream_vt_patsfun_32__closurerize($arg0);
-  return $tmpret82;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_32($env0, $arg0)
-{
-//
-  $tmpret83 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_patsfun_32:
-  $tmpret83 = ats2phppre_stream_vt_filter_cloref($env0, $arg0);
-  return $tmpret83;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_exists_cloref($arg0, $arg1)
-{
-//
-  $tmpret84 = NULL;
-//
-  __patsflab_stream_vt_exists_cloref:
-  $tmpret84 = _ats2phppre_stream_vt_loop_34($arg1, $arg0);
-  return $tmpret84;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_loop_34($env0, $arg0)
-{
-//
-  $apy0 = NULL;
-  $tmpret85 = NULL;
-  $tmp86 = NULL;
-  $tmp87 = NULL;
-  $tmp88 = NULL;
-  $tmp89 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_loop_34:
-  $tmp86 = ATSPMVllazyval_eval($arg0);
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab36:
-    if(ATSCKptriscons($tmp86)) goto __atstmplab39;
-    __atstmplab37:
-    $tmpret85 = false;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab38:
-    __atstmplab39:
-    $tmp87 = $tmp86[0];
-    $tmp88 = $tmp86[1];
-    // ATSINSfreecon($tmp86);
-    $tmp89 = $env0[0]($env0, $tmp87);
-    if($tmp89) {
-      atspre_lazy_vt_free($tmp88);
-      $tmpret85 = true;
-    } else {
-      // ATStailcalseq_beg
-      $apy0 = $tmp88;
-      $arg0 = $apy0;
-      goto __patsflab__ats2phppre_stream_vt_loop_34;
-      // ATStailcalseq_end
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret85;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_exists_method($arg0)
-{
-//
-  $tmpret91 = NULL;
-//
-  __patsflab_stream_vt_exists_method:
-  $tmpret91 = _ats2phppre_stream_vt_patsfun_36__closurerize($arg0);
-  return $tmpret91;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_36($env0, $arg0)
-{
-//
-  $tmpret92 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_patsfun_36:
-  $tmpret92 = ats2phppre_stream_vt_exists_cloref($env0, $arg0);
-  return $tmpret92;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_forall_cloref($arg0, $arg1)
-{
-//
-  $tmpret93 = NULL;
-//
-  __patsflab_stream_vt_forall_cloref:
-  $tmpret93 = _ats2phppre_stream_vt_loop_38($arg1, $arg0);
-  return $tmpret93;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_loop_38($env0, $arg0)
-{
-//
-  $apy0 = NULL;
-  $tmpret94 = NULL;
-  $tmp95 = NULL;
-  $tmp96 = NULL;
-  $tmp97 = NULL;
-  $tmp98 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_loop_38:
-  $tmp95 = ATSPMVllazyval_eval($arg0);
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab40:
-    if(ATSCKptriscons($tmp95)) goto __atstmplab43;
-    __atstmplab41:
-    $tmpret94 = true;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab42:
-    __atstmplab43:
-    $tmp96 = $tmp95[0];
-    $tmp97 = $tmp95[1];
-    // ATSINSfreecon($tmp95);
-    $tmp98 = $env0[0]($env0, $tmp96);
-    if($tmp98) {
-      // ATStailcalseq_beg
-      $apy0 = $tmp97;
-      $arg0 = $apy0;
-      goto __patsflab__ats2phppre_stream_vt_loop_38;
-      // ATStailcalseq_end
-    } else {
-      atspre_lazy_vt_free($tmp97);
-      $tmpret94 = false;
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret94;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_forall_method($arg0)
-{
-//
-  $tmpret100 = NULL;
-//
-  __patsflab_stream_vt_forall_method:
-  $tmpret100 = _ats2phppre_stream_vt_patsfun_40__closurerize($arg0);
-  return $tmpret100;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_40($env0, $arg0)
-{
-//
-  $tmpret101 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_patsfun_40:
-  $tmpret101 = ats2phppre_stream_vt_forall_cloref($env0, $arg0);
-  return $tmpret101;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_foreach_cloref($arg0, $arg1)
-{
-//
-//
-  __patsflab_stream_vt_foreach_cloref:
-  _ats2phppre_stream_vt_loop_42($arg1, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_loop_42($env0, $arg0)
-{
-//
-  $apy0 = NULL;
-  $tmp104 = NULL;
-  $tmp105 = NULL;
-  $tmp106 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_loop_42:
-  $tmp104 = ATSPMVllazyval_eval($arg0);
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab44:
-    if(ATSCKptriscons($tmp104)) goto __atstmplab47;
-    __atstmplab45:
-    // ATSINSmove_void;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab46:
-    __atstmplab47:
-    $tmp105 = $tmp104[0];
-    $tmp106 = $tmp104[1];
-    // ATSINSfreecon($tmp104);
-    $env0[0]($env0, $tmp105);
-    // ATStailcalseq_beg
-    $apy0 = $tmp106;
-    $arg0 = $apy0;
-    goto __patsflab__ats2phppre_stream_vt_loop_42;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_foreach_method($arg0)
-{
-//
-  $tmpret108 = NULL;
-//
-  __patsflab_stream_vt_foreach_method:
-  $tmpret108 = _ats2phppre_stream_vt_patsfun_44__closurerize($arg0);
-  return $tmpret108;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_44($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_stream_vt_patsfun_44:
-  ats2phppre_stream_vt_foreach_cloref($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_iforeach_cloref($arg0, $arg1)
-{
-//
-//
-  __patsflab_stream_vt_iforeach_cloref:
-  _ats2phppre_stream_vt_loop_46($arg1, 0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_loop_46($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmp112 = NULL;
-  $tmp113 = NULL;
-  $tmp114 = NULL;
-  $tmp116 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_loop_46:
-  $tmp112 = ATSPMVllazyval_eval($arg1);
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab48:
-    if(ATSCKptriscons($tmp112)) goto __atstmplab51;
-    __atstmplab49:
-    // ATSINSmove_void;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab50:
-    __atstmplab51:
-    $tmp113 = $tmp112[0];
-    $tmp114 = $tmp112[1];
-    // ATSINSfreecon($tmp112);
-    $env0[0]($env0, $arg0, $tmp113);
-    $tmp116 = ats2phppre_add_int1_int1($arg0, 1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp116;
-    $apy1 = $tmp114;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_stream_vt_loop_46;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_iforeach_method($arg0)
-{
-//
-  $tmpret117 = NULL;
-//
-  __patsflab_stream_vt_iforeach_method:
-  $tmpret117 = _ats2phppre_stream_vt_patsfun_48__closurerize($arg0);
-  return $tmpret117;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_48($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_stream_vt_patsfun_48:
-  ats2phppre_stream_vt_iforeach_cloref($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_rforeach_cloref($arg0, $arg1)
-{
-//
-//
-  __patsflab_stream_vt_rforeach_cloref:
-  _ats2phppre_stream_vt_auxmain_50($arg1, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_auxmain_50($env0, $arg0)
-{
-//
-  $tmp121 = NULL;
-  $tmp122 = NULL;
-  $tmp123 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_auxmain_50:
-  $tmp121 = ATSPMVllazyval_eval($arg0);
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab52:
-    if(ATSCKptriscons($tmp121)) goto __atstmplab55;
-    __atstmplab53:
-    // ATSINSmove_void;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab54:
-    __atstmplab55:
-    $tmp122 = $tmp121[0];
-    $tmp123 = $tmp121[1];
-    // ATSINSfreecon($tmp121);
-    _ats2phppre_stream_vt_auxmain_50($env0, $tmp123);
-    $env0[0]($env0, $tmp122);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_rforeach_method($arg0)
-{
-//
-  $tmpret125 = NULL;
-//
-  __patsflab_stream_vt_rforeach_method:
-  $tmpret125 = _ats2phppre_stream_vt_patsfun_52__closurerize($arg0);
-  return $tmpret125;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_52($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_stream_vt_patsfun_52:
-  ats2phppre_stream_vt_rforeach_cloref($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_stream_vt_tabulate_cloref($arg0)
-{
-//
-  $tmpret127 = NULL;
-//
-  __patsflab_stream_vt_tabulate_cloref:
-  $tmpret127 = _ats2phppre_stream_vt_auxmain_54($arg0, 0);
-  return $tmpret127;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_auxmain_54($env0, $arg0)
-{
-//
-  $tmpret128 = NULL;
-//
-  __patsflab__ats2phppre_stream_vt_auxmain_54:
-  $tmpret128 = ATSPMVllazyval(_ats2phppre_stream_vt_patsfun_55__closurerize($env0, $arg0));
-  return $tmpret128;
-} // end-of-function
-
-
-function
-_ats2phppre_stream_vt_patsfun_55($env0, $env1, $arg0)
+_ats2phppre_ML_list0_aux_70($arg0, $arg1)
 {
 //
   $tmpret129 = NULL;
   $tmp130 = NULL;
   $tmp131 = NULL;
   $tmp132 = NULL;
+  $tmp133 = NULL;
+  $tmp134 = NULL;
+  $tmp135 = NULL;
 //
-  __patsflab__ats2phppre_stream_vt_patsfun_55:
-  if($arg0) {
-    $tmp130 = $env0[0]($env0, $env1);
-    $tmp132 = ats2phppre_add_int1_int1($env1, 1);
-    $tmp131 = _ats2phppre_stream_vt_auxmain_54($env0, $tmp132);
-    $tmpret129 = array($tmp130, $tmp131);
-  } else {
-  } // endif
+  __patsflab__ats2phppre_ML_list0_aux_70:
+  // ATScaseofseq_beg
+  do {
+    // ATSbranchseq_beg
+    __atstmplab50:
+    if(ATSCKptriscons($arg0)) goto __atstmplab53;
+    __atstmplab51:
+    $tmpret129 = NULL;
+    break;
+    // ATSbranchseq_end
+    // ATSbranchseq_beg
+    __atstmplab52:
+    __atstmplab53:
+    $tmp130 = $arg0[0];
+    $tmp131 = $arg0[1];
+    // ATScaseofseq_beg
+    do {
+      // ATSbranchseq_beg
+      __atstmplab54:
+      if(ATSCKptriscons($arg1)) goto __atstmplab57;
+      __atstmplab55:
+      $tmpret129 = NULL;
+      break;
+      // ATSbranchseq_end
+      // ATSbranchseq_beg
+      __atstmplab56:
+      __atstmplab57:
+      $tmp132 = $arg1[0];
+      $tmp133 = $arg1[1];
+      $tmp134 = array($tmp130, $tmp132);
+      $tmp135 = _ats2phppre_ML_list0_aux_70($tmp131, $tmp133);
+      $tmpret129 = array($tmp134, $tmp135);
+      break;
+      // ATSbranchseq_end
+    } while(0);
+    // ATScaseofseq_end
+    break;
+    // ATSbranchseq_end
+  } while(0);
+  // ATScaseofseq_end
   return $tmpret129;
-} // end-of-function
-
-/* ****** ****** */
-
-/* end-of-compilation-unit */
-?>
-<?php
-/*
-**
-** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-4-11: 17h: 2m
-**
-*/
-function
-_ats2phppre_intrange_patsfun_4__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_4($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_intrange_patsfun_9__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_9($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_intrange_patsfun_11__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_11($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_intrange_patsfun_13__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_13($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_intrange_patsfun_16__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_16($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-function
-_ats2phppre_intrange_patsfun_20__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_20($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_intrange_patsfun_23__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_23($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_intrange_patsfun_26__closurerize($env0, $env1, $env2)
-{
-  return array(function($cenv) { return _ats2phppre_intrange_patsfun_26($cenv[1], $cenv[2], $cenv[3]); }, $env0, $env1, $env2);
-}
-
-function
-_ats2phppre_intrange_patsfun_28__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_28($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_intrange_patsfun_31__closurerize($env0, $env1, $env2)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_31($cenv[1], $cenv[2], $cenv[3], $arg0); }, $env0, $env1, $env2);
-}
-
-function
-_ats2phppre_intrange_patsfun_33__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_33($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_intrange_patsfun_40__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_40($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_intrange_patsfun_44__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_44($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_intrange_patsfun_48__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_48($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_intrange_patsfun_52__closurerize($env0, $env1, $env2)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_intrange_patsfun_52($cenv[1], $cenv[2], $cenv[3], $arg0); }, $env0, $env1, $env2);
-}
-
-
-function
-ats2phppre_int_repeat_lazy($arg0, $arg1)
-{
-//
-  $tmp1 = NULL;
-//
-  __patsflab_int_repeat_lazy:
-  $tmp1 = ats2phppre_lazy2cloref($arg1);
-  ats2phppre_int_repeat_cloref($arg0, $tmp1);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_int_repeat_cloref($arg0, $arg1)
-{
-//
-//
-  __patsflab_int_repeat_cloref:
-  _ats2phppre_intrange_loop_2($arg0, $arg1);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_loop_2($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmp4 = NULL;
-  $tmp6 = NULL;
-//
-  __patsflab__ats2phppre_intrange_loop_2:
-  $tmp4 = ats2phppre_gt_int0_int0($arg0, 0);
-  if($tmp4) {
-    $arg1[0]($arg1);
-    $tmp6 = ats2phppre_sub_int0_int0($arg0, 1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp6;
-    $apy1 = $arg1;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_intrange_loop_2;
-    // ATStailcalseq_end
-  } else {
-    // ATSINSmove_void;
-  } // endif
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_int_repeat_method($arg0)
-{
-//
-  $tmpret7 = NULL;
-//
-  __patsflab_int_repeat_method:
-  $tmpret7 = _ats2phppre_intrange_patsfun_4__closurerize($arg0);
-  return $tmpret7;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_4($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_intrange_patsfun_4:
-  ats2phppre_int_repeat_cloref($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_int_exists_cloref($arg0, $arg1)
-{
-//
-  $tmpret9 = NULL;
-//
-  __patsflab_int_exists_cloref:
-  $tmpret9 = ats2phppre_intrange_exists_cloref(0, $arg0, $arg1);
-  return $tmpret9;
-} // end-of-function
-
-
-function
-ats2phppre_int_forall_cloref($arg0, $arg1)
-{
-//
-  $tmpret10 = NULL;
-//
-  __patsflab_int_forall_cloref:
-  $tmpret10 = ats2phppre_intrange_forall_cloref(0, $arg0, $arg1);
-  return $tmpret10;
-} // end-of-function
-
-
-function
-ats2phppre_int_foreach_cloref($arg0, $arg1)
-{
-//
-//
-  __patsflab_int_foreach_cloref:
-  ats2phppre_intrange_foreach_cloref(0, $arg0, $arg1);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_int_exists_method($arg0)
-{
-//
-  $tmpret12 = NULL;
-//
-  __patsflab_int_exists_method:
-  $tmpret12 = _ats2phppre_intrange_patsfun_9__closurerize($arg0);
-  return $tmpret12;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_9($env0, $arg0)
-{
-//
-  $tmpret13 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_9:
-  $tmpret13 = ats2phppre_int_exists_cloref($env0, $arg0);
-  return $tmpret13;
-} // end-of-function
-
-
-function
-ats2phppre_int_forall_method($arg0)
-{
-//
-  $tmpret14 = NULL;
-//
-  __patsflab_int_forall_method:
-  $tmpret14 = _ats2phppre_intrange_patsfun_11__closurerize($arg0);
-  return $tmpret14;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_11($env0, $arg0)
-{
-//
-  $tmpret15 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_11:
-  $tmpret15 = ats2phppre_int_forall_cloref($env0, $arg0);
-  return $tmpret15;
-} // end-of-function
-
-
-function
-ats2phppre_int_foreach_method($arg0)
-{
-//
-  $tmpret16 = NULL;
-//
-  __patsflab_int_foreach_method:
-  $tmpret16 = _ats2phppre_intrange_patsfun_13__closurerize($arg0);
-  return $tmpret16;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_13($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_intrange_patsfun_13:
-  ats2phppre_int_foreach_cloref($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_int_foldleft_cloref($arg0, $arg1, $arg2)
-{
-//
-  $tmpret18 = NULL;
-//
-  __patsflab_int_foldleft_cloref:
-  $tmpret18 = ats2phppre_intrange_foldleft_cloref(0, $arg0, $arg1, $arg2);
-  return $tmpret18;
-} // end-of-function
-
-
-function
-ats2phppre_int_foldleft_method($arg0, $arg1)
-{
-//
-  $tmpret19 = NULL;
-//
-  __patsflab_int_foldleft_method:
-  $tmpret19 = _ats2phppre_intrange_patsfun_16__closurerize($arg0, $arg1);
-  return $tmpret19;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_16($env0, $env1, $arg0)
-{
-//
-  $tmpret20 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_16:
-  $tmpret20 = ats2phppre_int_foldleft_cloref($env0, $env1, $arg0);
-  return $tmpret20;
-} // end-of-function
-
-
-function
-ats2phppre_int_list_map_cloref($arg0, $arg1)
-{
-//
-  $tmpret21 = NULL;
-//
-  __patsflab_int_list_map_cloref:
-  $tmpret21 = _ats2phppre_intrange_aux_18($arg0, $arg1, 0);
-  return $tmpret21;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_aux_18($env0, $env1, $arg0)
-{
-//
-  $tmpret22 = NULL;
-  $tmp23 = NULL;
-  $tmp24 = NULL;
-  $tmp25 = NULL;
-  $tmp26 = NULL;
-//
-  __patsflab__ats2phppre_intrange_aux_18:
-  $tmp23 = ats2phppre_lt_int1_int1($arg0, $env0);
-  if($tmp23) {
-    $tmp24 = $env1[0]($env1, $arg0);
-    $tmp26 = ats2phppre_add_int1_int1($arg0, 1);
-    $tmp25 = _ats2phppre_intrange_aux_18($env0, $env1, $tmp26);
-    $tmpret22 = array($tmp24, $tmp25);
-  } else {
-    $tmpret22 = NULL;
-  } // endif
-  return $tmpret22;
-} // end-of-function
-
-
-function
-ats2phppre_int_list_map_method($arg0, $arg1)
-{
-//
-  $tmpret27 = NULL;
-//
-  __patsflab_int_list_map_method:
-  $tmpret27 = _ats2phppre_intrange_patsfun_20__closurerize($arg0);
-  return $tmpret27;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_20($env0, $arg0)
-{
-//
-  $tmpret28 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_20:
-  $tmpret28 = ats2phppre_int_list_map_cloref($env0, $arg0);
-  return $tmpret28;
-} // end-of-function
-
-
-function
-ats2phppre_int_list0_map_cloref($arg0, $arg1)
-{
-//
-  $tmpret29 = NULL;
-  $tmp30 = NULL;
-  $tmp31 = NULL;
-//
-  __patsflab_int_list0_map_cloref:
-  $tmp30 = ats2phppre_gte_int1_int1($arg0, 0);
-  if($tmp30) {
-    $tmp31 = ats2phppre_int_list_map_cloref($arg0, $arg1);
-    $tmpret29 = $tmp31;
-  } else {
-    $tmpret29 = NULL;
-  } // endif
-  return $tmpret29;
-} // end-of-function
-
-
-function
-ats2phppre_int_list0_map_method($arg0, $arg1)
-{
-//
-  $tmpret32 = NULL;
-//
-  __patsflab_int_list0_map_method:
-  $tmpret32 = _ats2phppre_intrange_patsfun_23__closurerize($arg0);
-  return $tmpret32;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_23($env0, $arg0)
-{
-//
-  $tmpret33 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_23:
-  $tmpret33 = ats2phppre_int_list0_map_cloref($env0, $arg0);
-  return $tmpret33;
-} // end-of-function
-
-
-function
-ats2phppre_int_stream_map_cloref($arg0, $arg1)
-{
-//
-  $tmpret34 = NULL;
-//
-  __patsflab_int_stream_map_cloref:
-  $tmpret34 = _ats2phppre_intrange_aux_25($arg0, $arg1, 0);
-  return $tmpret34;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_aux_25($env0, $env1, $arg0)
-{
-//
-  $tmpret35 = NULL;
-//
-  __patsflab__ats2phppre_intrange_aux_25:
-  $tmpret35 = ATSPMVlazyval(_ats2phppre_intrange_patsfun_26__closurerize($env0, $env1, $arg0));
-  return $tmpret35;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_26($env0, $env1, $env2)
-{
-//
-  $tmpret36 = NULL;
-  $tmp37 = NULL;
-  $tmp38 = NULL;
-  $tmp39 = NULL;
-  $tmp40 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_26:
-  $tmp37 = ats2phppre_lt_int1_int1($env2, $env0);
-  if($tmp37) {
-    $tmp38 = $env1[0]($env1, $env2);
-    $tmp40 = ats2phppre_add_int1_int1($env2, 1);
-    $tmp39 = _ats2phppre_intrange_aux_25($env0, $env1, $tmp40);
-    $tmpret36 = array($tmp38, $tmp39);
-  } else {
-    $tmpret36 = NULL;
-  } // endif
-  return $tmpret36;
-} // end-of-function
-
-
-function
-ats2phppre_int_stream_map_method($arg0, $arg1)
-{
-//
-  $tmpret41 = NULL;
-//
-  __patsflab_int_stream_map_method:
-  $tmpret41 = _ats2phppre_intrange_patsfun_28__closurerize($arg0);
-  return $tmpret41;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_28($env0, $arg0)
-{
-//
-  $tmpret42 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_28:
-  $tmpret42 = ats2phppre_int_stream_map_cloref($env0, $arg0);
-  return $tmpret42;
-} // end-of-function
-
-
-function
-ats2phppre_int_stream_vt_map_cloref($arg0, $arg1)
-{
-//
-  $tmpret43 = NULL;
-//
-  __patsflab_int_stream_vt_map_cloref:
-  $tmpret43 = _ats2phppre_intrange_aux_30($arg0, $arg1, 0);
-  return $tmpret43;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_aux_30($env0, $env1, $arg0)
-{
-//
-  $tmpret44 = NULL;
-//
-  __patsflab__ats2phppre_intrange_aux_30:
-  $tmpret44 = ATSPMVllazyval(_ats2phppre_intrange_patsfun_31__closurerize($env0, $env1, $arg0));
-  return $tmpret44;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_31($env0, $env1, $env2, $arg0)
-{
-//
-  $tmpret45 = NULL;
-  $tmp46 = NULL;
-  $tmp47 = NULL;
-  $tmp48 = NULL;
-  $tmp49 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_31:
-  if($arg0) {
-    $tmp46 = ats2phppre_lt_int1_int1($env2, $env0);
-    if($tmp46) {
-      $tmp47 = $env1[0]($env1, $env2);
-      $tmp49 = ats2phppre_add_int1_int1($env2, 1);
-      $tmp48 = _ats2phppre_intrange_aux_30($env0, $env1, $tmp49);
-      $tmpret45 = array($tmp47, $tmp48);
-    } else {
-      $tmpret45 = NULL;
-    } // endif
-  } else {
-  } // endif
-  return $tmpret45;
-} // end-of-function
-
-
-function
-ats2phppre_int_stream_vt_map_method($arg0, $arg1)
-{
-//
-  $tmpret50 = NULL;
-//
-  __patsflab_int_stream_vt_map_method:
-  $tmpret50 = _ats2phppre_intrange_patsfun_33__closurerize($arg0);
-  return $tmpret50;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_33($env0, $arg0)
-{
-//
-  $tmpret51 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_33:
-  $tmpret51 = ats2phppre_int_stream_vt_map_cloref($env0, $arg0);
-  return $tmpret51;
-} // end-of-function
-
-
-function
-ats2phppre_int2_exists_cloref($arg0, $arg1, $arg2)
-{
-//
-  $tmpret52 = NULL;
-//
-  __patsflab_int2_exists_cloref:
-  $tmpret52 = ats2phppre_intrange2_exists_cloref(0, $arg0, 0, $arg1, $arg2);
-  return $tmpret52;
-} // end-of-function
-
-
-function
-ats2phppre_int2_forall_cloref($arg0, $arg1, $arg2)
-{
-//
-  $tmpret53 = NULL;
-//
-  __patsflab_int2_forall_cloref:
-  $tmpret53 = ats2phppre_intrange2_forall_cloref(0, $arg0, 0, $arg1, $arg2);
-  return $tmpret53;
-} // end-of-function
-
-
-function
-ats2phppre_int2_foreach_cloref($arg0, $arg1, $arg2)
-{
-//
-//
-  __patsflab_int2_foreach_cloref:
-  ats2phppre_intrange2_foreach_cloref(0, $arg0, 0, $arg1, $arg2);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_intrange_exists_cloref($arg0, $arg1, $arg2)
-{
-//
-  $tmpret55 = NULL;
-//
-  __patsflab_intrange_exists_cloref:
-  $tmpret55 = _ats2phppre_intrange_loop_38($arg0, $arg1, $arg2);
-  return $tmpret55;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_loop_38($arg0, $arg1, $arg2)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
-  $tmpret56 = NULL;
-  $tmp57 = NULL;
-  $tmp58 = NULL;
-  $tmp59 = NULL;
-//
-  __patsflab__ats2phppre_intrange_loop_38:
-  $tmp57 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp57) {
-    $tmp58 = $arg2[0]($arg2, $arg0);
-    if($tmp58) {
-      $tmpret56 = true;
-    } else {
-      $tmp59 = ats2phppre_add_int0_int0($arg0, 1);
-      // ATStailcalseq_beg
-      $apy0 = $tmp59;
-      $apy1 = $arg1;
-      $apy2 = $arg2;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      $arg2 = $apy2;
-      goto __patsflab__ats2phppre_intrange_loop_38;
-      // ATStailcalseq_end
-    } // endif
-  } else {
-    $tmpret56 = false;
-  } // endif
-  return $tmpret56;
-} // end-of-function
-
-
-function
-ats2phppre_intrange_exists_method($arg0)
-{
-//
-  $tmpret60 = NULL;
-//
-  __patsflab_intrange_exists_method:
-  $tmpret60 = _ats2phppre_intrange_patsfun_40__closurerize($arg0);
-  return $tmpret60;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_40($env0, $arg0)
-{
-//
-  $tmpret61 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_40:
-  $tmpret61 = ats2phppre_intrange_exists_cloref($env0[0], $env0[1], $arg0);
-  return $tmpret61;
-} // end-of-function
-
-
-function
-ats2phppre_intrange_forall_cloref($arg0, $arg1, $arg2)
-{
-//
-  $tmpret62 = NULL;
-//
-  __patsflab_intrange_forall_cloref:
-  $tmpret62 = _ats2phppre_intrange_loop_42($arg0, $arg1, $arg2);
-  return $tmpret62;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_loop_42($arg0, $arg1, $arg2)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
-  $tmpret63 = NULL;
-  $tmp64 = NULL;
-  $tmp65 = NULL;
-  $tmp66 = NULL;
-//
-  __patsflab__ats2phppre_intrange_loop_42:
-  $tmp64 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp64) {
-    $tmp65 = $arg2[0]($arg2, $arg0);
-    if($tmp65) {
-      $tmp66 = ats2phppre_add_int0_int0($arg0, 1);
-      // ATStailcalseq_beg
-      $apy0 = $tmp66;
-      $apy1 = $arg1;
-      $apy2 = $arg2;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      $arg2 = $apy2;
-      goto __patsflab__ats2phppre_intrange_loop_42;
-      // ATStailcalseq_end
-    } else {
-      $tmpret63 = false;
-    } // endif
-  } else {
-    $tmpret63 = true;
-  } // endif
-  return $tmpret63;
-} // end-of-function
-
-
-function
-ats2phppre_intrange_forall_method($arg0)
-{
-//
-  $tmpret67 = NULL;
-//
-  __patsflab_intrange_forall_method:
-  $tmpret67 = _ats2phppre_intrange_patsfun_44__closurerize($arg0);
-  return $tmpret67;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_44($env0, $arg0)
-{
-//
-  $tmpret68 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_44:
-  $tmpret68 = ats2phppre_intrange_forall_cloref($env0[0], $env0[1], $arg0);
-  return $tmpret68;
-} // end-of-function
-
-
-function
-ats2phppre_intrange_foreach_cloref($arg0, $arg1, $arg2)
-{
-//
-//
-  __patsflab_intrange_foreach_cloref:
-  _ats2phppre_intrange_loop_46($arg0, $arg1, $arg2);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_loop_46($arg0, $arg1, $arg2)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
-  $tmp71 = NULL;
-  $tmp73 = NULL;
-//
-  __patsflab__ats2phppre_intrange_loop_46:
-  $tmp71 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp71) {
-    $arg2[0]($arg2, $arg0);
-    $tmp73 = ats2phppre_add_int0_int0($arg0, 1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp73;
-    $apy1 = $arg1;
-    $apy2 = $arg2;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    $arg2 = $apy2;
-    goto __patsflab__ats2phppre_intrange_loop_46;
-    // ATStailcalseq_end
-  } else {
-    // ATSINSmove_void;
-  } // endif
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_intrange_foreach_method($arg0)
-{
-//
-  $tmpret74 = NULL;
-//
-  __patsflab_intrange_foreach_method:
-  $tmpret74 = _ats2phppre_intrange_patsfun_48__closurerize($arg0);
-  return $tmpret74;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_48($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_intrange_patsfun_48:
-  ats2phppre_intrange_foreach_cloref($env0[0], $env0[1], $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_intrange_foldleft_cloref($arg0, $arg1, $arg2, $arg3)
-{
-//
-  $tmpret76 = NULL;
-//
-  __patsflab_intrange_foldleft_cloref:
-  $tmpret76 = _ats2phppre_intrange_loop_50($arg3, $arg0, $arg1, $arg2, $arg3);
-  return $tmpret76;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_loop_50($env0, $arg0, $arg1, $arg2, $arg3)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
-  $apy3 = NULL;
-  $tmpret77 = NULL;
-  $tmp78 = NULL;
-  $tmp79 = NULL;
-  $tmp80 = NULL;
-//
-  __patsflab__ats2phppre_intrange_loop_50:
-  $tmp78 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp78) {
-    $tmp79 = ats2phppre_add_int0_int0($arg0, 1);
-    $tmp80 = $arg3[0]($arg3, $arg2, $arg0);
-    // ATStailcalseq_beg
-    $apy0 = $tmp79;
-    $apy1 = $arg1;
-    $apy2 = $tmp80;
-    $apy3 = $env0;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    $arg2 = $apy2;
-    $arg3 = $apy3;
-    goto __patsflab__ats2phppre_intrange_loop_50;
-    // ATStailcalseq_end
-  } else {
-    $tmpret77 = $arg2;
-  } // endif
-  return $tmpret77;
-} // end-of-function
-
-
-function
-ats2phppre_intrange_foldleft_method($arg0, $arg1)
-{
-//
-  $tmp81 = NULL;
-  $tmp82 = NULL;
-  $tmpret83 = NULL;
-//
-  __patsflab_intrange_foldleft_method:
-  $tmp81 = $arg0[0];
-  $tmp82 = $arg0[1];
-  $tmpret83 = _ats2phppre_intrange_patsfun_52__closurerize($tmp81, $tmp82, $arg1);
-  return $tmpret83;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_patsfun_52($env0, $env1, $env2, $arg0)
-{
-//
-  $tmpret84 = NULL;
-//
-  __patsflab__ats2phppre_intrange_patsfun_52:
-  $tmpret84 = ats2phppre_intrange_foldleft_cloref($env0, $env1, $env2, $arg0);
-  return $tmpret84;
-} // end-of-function
-
-
-function
-ats2phppre_intrange2_exists_cloref($arg0, $arg1, $arg2, $arg3, $arg4)
-{
-//
-  $tmpret85 = NULL;
-//
-  __patsflab_intrange2_exists_cloref:
-  $tmpret85 = _ats2phppre_intrange_loop1_54($arg2, $arg3, $arg4, $arg0, $arg1, $arg2, $arg3, $arg4);
-  return $tmpret85;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_loop1_54($env0, $env1, $env2, $arg0, $arg1, $arg2, $arg3, $arg4)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
-  $apy3 = NULL;
-  $apy4 = NULL;
-  $tmpret86 = NULL;
-  $tmp87 = NULL;
-  $a2rg0 = NULL;
-  $a2rg1 = NULL;
-  $a2rg2 = NULL;
-  $a2rg3 = NULL;
-  $a2rg4 = NULL;
-  $a2py0 = NULL;
-  $a2py1 = NULL;
-  $a2py2 = NULL;
-  $a2py3 = NULL;
-  $a2py4 = NULL;
-  $tmpret88 = NULL;
-  $tmp89 = NULL;
-  $tmp90 = NULL;
-  $tmp91 = NULL;
-  $tmp92 = NULL;
-//
-  __patsflab__ats2phppre_intrange_loop1_54:
-  $tmp87 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp87) {
-    // ATStailcalseq_beg
-    $a2py0 = $arg0;
-    $a2py1 = $arg1;
-    $a2py2 = $arg2;
-    $a2py3 = $arg3;
-    $a2py4 = $env2;
-    $a2rg0 = $a2py0;
-    $a2rg1 = $a2py1;
-    $a2rg2 = $a2py2;
-    $a2rg3 = $a2py3;
-    $a2rg4 = $a2py4;
-    goto __patsflab__ats2phppre_intrange_loop2_55;
-    // ATStailcalseq_end
-  } else {
-    $tmpret86 = false;
-  } // endif
-  return $tmpret86;
-//
-  __patsflab__ats2phppre_intrange_loop2_55:
-  $tmp89 = ats2phppre_lt_int0_int0($a2rg2, $a2rg3);
-  if($tmp89) {
-    $tmp90 = $a2rg4[0]($a2rg4, $a2rg0, $a2rg2);
-    if($tmp90) {
-      $tmpret88 = true;
-    } else {
-      $tmp91 = ats2phppre_add_int0_int0($a2rg2, 1);
-      // ATStailcalseq_beg
-      $a2py0 = $a2rg0;
-      $a2py1 = $a2rg1;
-      $a2py2 = $tmp91;
-      $a2py3 = $a2rg3;
-      $a2py4 = $a2rg4;
-      $a2rg0 = $a2py0;
-      $a2rg1 = $a2py1;
-      $a2rg2 = $a2py2;
-      $a2rg3 = $a2py3;
-      $a2rg4 = $a2py4;
-      goto __patsflab__ats2phppre_intrange_loop2_55;
-      // ATStailcalseq_end
-    } // endif
-  } else {
-    $tmp92 = ats2phppre_add_int0_int0($a2rg0, 1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp92;
-    $apy1 = $a2rg1;
-    $apy2 = $env0;
-    $apy3 = $env1;
-    $apy4 = $a2rg4;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    $arg2 = $apy2;
-    $arg3 = $apy3;
-    $arg4 = $apy4;
-    goto __patsflab__ats2phppre_intrange_loop1_54;
-    // ATStailcalseq_end
-  } // endif
-  return $tmpret88;
-} // end-of-function
-
-
-function
-ats2phppre_intrange2_forall_cloref($arg0, $arg1, $arg2, $arg3, $arg4)
-{
-//
-  $tmpret93 = NULL;
-//
-  __patsflab_intrange2_forall_cloref:
-  $tmpret93 = _ats2phppre_intrange_loop1_57($arg2, $arg3, $arg0, $arg1, $arg2, $arg3, $arg4);
-  return $tmpret93;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_loop1_57($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
-  $apy3 = NULL;
-  $apy4 = NULL;
-  $tmpret94 = NULL;
-  $tmp95 = NULL;
-  $a2rg0 = NULL;
-  $a2rg1 = NULL;
-  $a2rg2 = NULL;
-  $a2rg3 = NULL;
-  $a2rg4 = NULL;
-  $a2py0 = NULL;
-  $a2py1 = NULL;
-  $a2py2 = NULL;
-  $a2py3 = NULL;
-  $a2py4 = NULL;
-  $tmpret96 = NULL;
-  $tmp97 = NULL;
-  $tmp98 = NULL;
-  $tmp99 = NULL;
-  $tmp100 = NULL;
-//
-  __patsflab__ats2phppre_intrange_loop1_57:
-  $tmp95 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp95) {
-    // ATStailcalseq_beg
-    $a2py0 = $arg0;
-    $a2py1 = $arg1;
-    $a2py2 = $arg2;
-    $a2py3 = $arg3;
-    $a2py4 = $arg4;
-    $a2rg0 = $a2py0;
-    $a2rg1 = $a2py1;
-    $a2rg2 = $a2py2;
-    $a2rg3 = $a2py3;
-    $a2rg4 = $a2py4;
-    goto __patsflab__ats2phppre_intrange_loop2_58;
-    // ATStailcalseq_end
-  } else {
-    $tmpret94 = true;
-  } // endif
-  return $tmpret94;
-//
-  __patsflab__ats2phppre_intrange_loop2_58:
-  $tmp97 = ats2phppre_lt_int0_int0($a2rg2, $a2rg3);
-  if($tmp97) {
-    $tmp98 = $a2rg4[0]($a2rg4, $a2rg0, $a2rg2);
-    if($tmp98) {
-      $tmp99 = ats2phppre_add_int0_int0($a2rg2, 1);
-      // ATStailcalseq_beg
-      $a2py0 = $a2rg0;
-      $a2py1 = $a2rg1;
-      $a2py2 = $tmp99;
-      $a2py3 = $a2rg3;
-      $a2py4 = $a2rg4;
-      $a2rg0 = $a2py0;
-      $a2rg1 = $a2py1;
-      $a2rg2 = $a2py2;
-      $a2rg3 = $a2py3;
-      $a2rg4 = $a2py4;
-      goto __patsflab__ats2phppre_intrange_loop2_58;
-      // ATStailcalseq_end
-    } else {
-      $tmpret96 = false;
-    } // endif
-  } else {
-    $tmp100 = ats2phppre_add_int0_int0($a2rg0, 1);
-    // ATStailcalseq_beg
-    $apy0 = $tmp100;
-    $apy1 = $a2rg1;
-    $apy2 = $env0;
-    $apy3 = $env1;
-    $apy4 = $a2rg4;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    $arg2 = $apy2;
-    $arg3 = $apy3;
-    $arg4 = $apy4;
-    goto __patsflab__ats2phppre_intrange_loop1_57;
-    // ATStailcalseq_end
-  } // endif
-  return $tmpret96;
-} // end-of-function
-
-
-function
-ats2phppre_intrange2_foreach_cloref($arg0, $arg1, $arg2, $arg3, $arg4)
-{
-//
-//
-  __patsflab_intrange2_foreach_cloref:
-  _ats2phppre_intrange_loop1_60($arg2, $arg3, $arg0, $arg1, $arg2, $arg3, $arg4);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-_ats2phppre_intrange_loop1_60($env0, $env1, $arg0, $arg1, $arg2, $arg3, $arg4)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $apy2 = NULL;
-  $apy3 = NULL;
-  $apy4 = NULL;
-  $tmp103 = NULL;
-  $a2rg0 = NULL;
-  $a2rg1 = NULL;
-  $a2rg2 = NULL;
-  $a2rg3 = NULL;
-  $a2rg4 = NULL;
-  $a2py0 = NULL;
-  $a2py1 = NULL;
-  $a2py2 = NULL;
-  $a2py3 = NULL;
-  $a2py4 = NULL;
-  $tmp105 = NULL;
-  $tmp107 = NULL;
-  $tmp108 = NULL;
-//
-  __patsflab__ats2phppre_intrange_loop1_60:
-  $tmp103 = ats2phppre_lt_int0_int0($arg0, $arg1);
-  if($tmp103) {
-    // ATStailcalseq_beg
-    $a2py0 = $arg0;
-    $a2py1 = $arg1;
-    $a2py2 = $arg2;
-    $a2py3 = $arg3;
-    $a2py4 = $arg4;
-    $a2rg0 = $a2py0;
-    $a2rg1 = $a2py1;
-    $a2rg2 = $a2py2;
-    $a2rg3 = $a2py3;
-    $a2rg4 = $a2py4;
-    goto __patsflab__ats2phppre_intrange_loop2_61;
-    // ATStailcalseq_end
-  } else {
-    // ATSINSmove_void;
-  } // endif
-  return/*_void*/;
-//
-  __patsflab__ats2phppre_intrange_loop2_61:
-  $tmp105 = ats2phppre_lt_int0_int0($a2rg2, $a2rg3);
-  if($tmp105) {
-    $a2rg4[0]($a2rg4, $a2rg0, $a2rg2);
-    $tmp107 = ats2phppre_add_int0_int0($a2rg2, 1);
-    // ATStailcalseq_beg
-    $a2py0 = $a2rg0;
-    $a2py1 = $a2rg1;
-    $a2py2 = $tmp107;
-    $a2py3 = $a2rg3;
-    $a2py4 = $a2rg4;
-    $a2rg0 = $a2py0;
-    $a2rg1 = $a2py1;
-    $a2rg2 = $a2py2;
-    $a2rg3 = $a2py3;
-    $a2rg4 = $a2py4;
-    goto __patsflab__ats2phppre_intrange_loop2_61;
-    // ATStailcalseq_end
-  } else {
-    $tmp108 = ats2phppre_succ_int0($a2rg0);
-    // ATStailcalseq_beg
-    $apy0 = $tmp108;
-    $apy1 = $a2rg1;
-    $apy2 = $env0;
-    $apy3 = $env1;
-    $apy4 = $a2rg4;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    $arg2 = $apy2;
-    $arg3 = $apy3;
-    $arg4 = $apy4;
-    goto __patsflab__ats2phppre_intrange_loop1_60;
-    // ATStailcalseq_end
-  } // endif
-  return/*_void*/;
-} // end-of-function
-
-/* ****** ****** */
-
-/* end-of-compilation-unit */
-?>
-<?php
-/*
-**
-** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-4-11: 17h: 2m
-**
-*/
-function
-_ats2phppre_arrayref_patsfun_8__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_arrayref_patsfun_8($cenv[1], $arg0); }, $env0);
-}
-
-
-function
-ats2phppre_arrayref_exists_cloref($arg0, $arg1, $arg2)
-{
-//
-  $tmpret0 = NULL;
-//
-  __patsflab_arrayref_exists_cloref:
-  $tmpret0 = ats2phppre_int_exists_cloref($arg1, $arg2);
-  return $tmpret0;
-} // end-of-function
-
-
-function
-ats2phppre_arrayref_forall_cloref($arg0, $arg1, $arg2)
-{
-//
-  $tmpret1 = NULL;
-//
-  __patsflab_arrayref_forall_cloref:
-  $tmpret1 = ats2phppre_int_forall_cloref($arg1, $arg2);
-  return $tmpret1;
-} // end-of-function
-
-
-function
-ats2phppre_arrayref_foreach_cloref($arg0, $arg1, $arg2)
-{
-//
-//
-  __patsflab_arrayref_foreach_cloref:
-  ats2phppre_int_foreach_cloref($arg1, $arg2);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_arrszref_make_elt($arg0, $arg1)
-{
-//
-  $tmpret3 = NULL;
-  $tmp4 = NULL;
-//
-  __patsflab_arrszref_make_elt:
-  $tmp4 = ats2phppre_arrayref_make_elt($arg0, $arg1);
-  $tmpret3 = ats2phppre_arrszref_make_arrayref($tmp4, $arg0);
-  return $tmpret3;
-} // end-of-function
-
-
-function
-ats2phppre_arrszref_exists_cloref($arg0, $arg1)
-{
-//
-  $tmpret5 = NULL;
-  $tmp6 = NULL;
-//
-  __patsflab_arrszref_exists_cloref:
-  $tmp6 = ats2phppre_arrszref_size($arg0);
-  $tmpret5 = ats2phppre_int_exists_cloref($tmp6, $arg1);
-  return $tmpret5;
-} // end-of-function
-
-
-function
-ats2phppre_arrszref_forall_cloref($arg0, $arg1)
-{
-//
-  $tmpret7 = NULL;
-  $tmp8 = NULL;
-//
-  __patsflab_arrszref_forall_cloref:
-  $tmp8 = ats2phppre_arrszref_size($arg0);
-  $tmpret7 = ats2phppre_int_forall_cloref($tmp8, $arg1);
-  return $tmpret7;
-} // end-of-function
-
-
-function
-ats2phppre_arrszref_foreach_cloref($arg0, $arg1)
-{
-//
-  $tmp10 = NULL;
-//
-  __patsflab_arrszref_foreach_cloref:
-  $tmp10 = ats2phppre_arrszref_size($arg0);
-  ats2phppre_int_foreach_cloref($tmp10, $arg1);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_arrszref_foreach_method($arg0)
-{
-//
-  $tmpret11 = NULL;
-//
-  __patsflab_arrszref_foreach_method:
-  $tmpret11 = _ats2phppre_arrayref_patsfun_8__closurerize($arg0);
-  return $tmpret11;
-} // end-of-function
-
-
-function
-_ats2phppre_arrayref_patsfun_8($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_arrayref_patsfun_8:
-  ats2phppre_arrszref_foreach_cloref($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_arrayref_make_elt($arg0, $arg1)
-{
-//
-  $tmpret13 = NULL;
-  $tmp14 = NULL;
-//
-  __patsflab_arrayref_make_elt:
-  $tmp14 = ats2phppre_PHParref_make_elt($arg0, $arg1);
-  $tmpret13 = $tmp14;
-  return $tmpret13;
-} // end-of-function
-
-
-function
-ats2phppre_arrayref_get_at($arg0, $arg1)
-{
-//
-  $tmpret15 = NULL;
-//
-  __patsflab_arrayref_get_at:
-  $tmpret15 = ats2phppre_PHParref_get_at($arg0, $arg1);
-  return $tmpret15;
-} // end-of-function
-
-
-function
-ats2phppre_arrayref_set_at($arg0, $arg1, $arg2)
-{
-//
-//
-  __patsflab_arrayref_set_at:
-  ats2phppre_PHParref_set_at($arg0, $arg1, $arg2);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_arrszref_make_arrayref($arg0, $arg1)
-{
-//
-  $tmpret17 = NULL;
-//
-  __patsflab_arrszref_make_arrayref:
-  $tmpret17 = $arg0;
-  return $tmpret17;
-} // end-of-function
-
-
-function
-ats2phppre_arrszref_size($arg0)
-{
-//
-  $tmpret18 = NULL;
-//
-  __patsflab_arrszref_size:
-  $tmpret18 = ats2phppre_PHParref_length($arg0);
-  return $tmpret18;
-} // end-of-function
-
-
-function
-ats2phppre_arrszref_get_at($arg0, $arg1)
-{
-//
-  $tmpret19 = NULL;
-//
-  __patsflab_arrszref_get_at:
-  $tmpret19 = ats2phppre_PHParref_get_at($arg0, $arg1);
-  return $tmpret19;
-} // end-of-function
-
-
-function
-ats2phppre_arrszref_set_at($arg0, $arg1, $arg2)
-{
-//
-//
-  __patsflab_arrszref_set_at:
-  ats2phppre_PHParref_set_at($arg0, $arg1, $arg2);
-  return/*_void*/;
-} // end-of-function
-
-/* ****** ****** */
-
-/* end-of-compilation-unit */
-?>
-<?php
-/*
-**
-** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-4-11: 17h: 2m
-**
-*/
-
-function
-ats2phppre_ref($arg0)
-{
-//
-  $tmpret0 = NULL;
-//
-  __patsflab_ref:
-  $tmpret0 = ats2phppre_ref_make_elt($arg0);
-  return $tmpret0;
-} // end-of-function
-
-
-function
-ats2phppre_ref_make_elt($arg0)
-{
-//
-  $tmpret1 = NULL;
-  $tmp2 = NULL;
-//
-  __patsflab_ref_make_elt:
-  $tmp2 = PHPref_new($arg0);
-  $tmpret1 = $tmp2;
-  return $tmpret1;
-} // end-of-function
-
-
-function
-ats2phppre_ref_get_elt($arg0)
-{
-//
-  $tmpret3 = NULL;
-//
-  __patsflab_ref_get_elt:
-  $tmpret3 = PHPref_get_elt($arg0);
-  return $tmpret3;
-} // end-of-function
-
-
-function
-ats2phppre_ref_set_elt($arg0, $arg1)
-{
-//
-//
-  __patsflab_ref_set_elt:
-  PHPref_set_elt($arg0, $arg1);
-  return/*_void*/;
-} // end-of-function
-
-/* ****** ****** */
-
-/* end-of-compilation-unit */
-?>
-<?php
-/*
-**
-** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-4-11: 17h: 2m
-**
-*/
-
-function
-slistref_make_nil()
-{
-//
-  $tmpret0 = NULL;
-  $tmp1 = NULL;
-//
-  __patsflab_slistref_make_nil:
-  $tmp1 = NULL;
-  $tmpret0 = ats2phppre_ref($tmp1);
-  return $tmpret0;
-} // end-of-function
-
-
-function
-slistref_length($arg0)
-{
-//
-  $tmpret2 = NULL;
-  $tmp3 = NULL;
-//
-  __patsflab_slistref_length:
-  $tmp3 = ats2phppre_ref_get_elt($arg0);
-  $tmpret2 = ats2phppre_list_length($tmp3);
-  return $tmpret2;
-} // end-of-function
-
-
-function
-slistref_push($arg0, $arg1)
-{
-//
-  $tmp5 = NULL;
-  $tmp6 = NULL;
-//
-  __patsflab_slistref_push:
-  $tmp6 = ats2phppre_ref_get_elt($arg0);
-  $tmp5 = array($arg1, $tmp6);
-  ats2phppre_ref_set_elt($arg0, $tmp5);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-slistref_pop_opt($arg0)
-{
-//
-  $tmpret7 = NULL;
-  $tmp8 = NULL;
-  $tmp9 = NULL;
-  $tmp10 = NULL;
-//
-  __patsflab_slistref_pop_opt:
-  $tmp8 = ats2phppre_ref_get_elt($arg0);
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab0:
-    if(ATSCKptriscons($tmp8)) goto __atstmplab3;
-    __atstmplab1:
-    $tmpret7 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab2:
-    __atstmplab3:
-    $tmp9 = $tmp8[0];
-    $tmp10 = $tmp8[1];
-    ats2phppre_ref_set_elt($arg0, $tmp10);
-    $tmpret7 = array($tmp9);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret7;
-} // end-of-function
-
-
-function
-slistref_foldleft($arg0, $arg1, $arg2)
-{
-//
-  $tmpret12 = NULL;
-  $tmp13 = NULL;
-//
-  __patsflab_slistref_foldleft:
-  $tmp13 = ats2phppre_ref_get_elt($arg0);
-  $tmpret12 = ats2phppre_list_foldleft($tmp13, $arg1, $arg2);
-  return $tmpret12;
-} // end-of-function
-
-
-function
-slistref_foldright($arg0, $arg1, $arg2)
-{
-//
-  $tmpret14 = NULL;
-  $tmp15 = NULL;
-//
-  __patsflab_slistref_foldright:
-  $tmp15 = ats2phppre_ref_get_elt($arg0);
-  $tmpret14 = ats2phppre_list_foldright($tmp15, $arg1, $arg2);
-  return $tmpret14;
-} // end-of-function
-
-/* ****** ****** */
-
-/* end-of-compilation-unit */
-?>
-<?php
-/*
-**
-** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-4-11: 17h: 2m
-**
-*/
-
-function
-ats2phppre_qlistref_make_nil()
-{
-//
-  $tmpret0 = NULL;
-  $tmp1 = NULL;
-  $tmp2 = NULL;
-  $tmp3 = NULL;
-  $tmp4 = NULL;
-//
-  __patsflab_qlistref_make_nil:
-  $tmp2 = NULL;
-  $tmp1 = ats2phppre_ref($tmp2);
-  $tmp4 = NULL;
-  $tmp3 = ats2phppre_ref($tmp4);
-  $tmpret0 = array($tmp1, $tmp3);
-  return $tmpret0;
-} // end-of-function
-
-
-function
-ats2phppre_qlistref_length($arg0)
-{
-//
-  $tmpret5 = NULL;
-  $tmp6 = NULL;
-  $tmp7 = NULL;
-  $tmp8 = NULL;
-  $tmp9 = NULL;
-  $tmp10 = NULL;
-  $tmp11 = NULL;
-//
-  __patsflab_qlistref_length:
-  $tmp6 = $arg0[0];
-  $tmp7 = $arg0[1];
-  $tmp9 = ats2phppre_ref_get_elt($tmp6);
-  $tmp8 = ats2phppre_list_length($tmp9);
-  $tmp11 = ats2phppre_ref_get_elt($tmp7);
-  $tmp10 = ats2phppre_list_length($tmp11);
-  $tmpret5 = ats2phppre_add_int1_int1($tmp8, $tmp10);
-  return $tmpret5;
-} // end-of-function
-
-
-function
-ats2phppre_qlistref_enqueue($arg0, $arg1)
-{
-//
-  $tmp13 = NULL;
-  $tmp14 = NULL;
-  $tmp15 = NULL;
-  $tmp16 = NULL;
-//
-  __patsflab_qlistref_enqueue:
-  $tmp13 = $arg0[0];
-  $tmp14 = $arg0[1];
-  $tmp16 = ats2phppre_ref_get_elt($tmp13);
-  $tmp15 = array($arg1, $tmp16);
-  ats2phppre_ref_set_elt($tmp13, $tmp15);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_qlistref_dequeue_opt($arg0)
-{
-//
-  $tmpret17 = NULL;
-  $tmp18 = NULL;
-  $tmp19 = NULL;
-  $tmp20 = NULL;
-  $tmp21 = NULL;
-  $tmp22 = NULL;
-  $tmp23 = NULL;
-  $tmp25 = NULL;
-  $tmp26 = NULL;
-  $tmp27 = NULL;
-//
-  __patsflab_qlistref_dequeue_opt:
-  $tmp18 = $arg0[0];
-  $tmp19 = $arg0[1];
-  $tmp20 = ats2phppre_ref_get_elt($tmp19);
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab0:
-    if(ATSCKptriscons($tmp20)) goto __atstmplab3;
-    __atstmplab1:
-    $tmp23 = ats2phppre_ref_get_elt($tmp18);
-    $tmp25 = NULL;
-    ats2phppre_ref_set_elt($tmp18, $tmp25);
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab4:
-      if(ATSCKptriscons($tmp23)) goto __atstmplab7;
-      __atstmplab5:
-      $tmpret17 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab6:
-      __atstmplab7:
-      $tmp26 = $tmp23[0];
-      $tmp27 = $tmp23[1];
-      ats2phppre_ref_set_elt($tmp19, $tmp27);
-      $tmpret17 = array($tmp26);
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab2:
-    __atstmplab3:
-    $tmp21 = $tmp20[0];
-    $tmp22 = $tmp20[1];
-    ats2phppre_ref_set_elt($tmp19, $tmp22);
-    $tmpret17 = array($tmp21);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret17;
-} // end-of-function
-
-
-function
-ats2phppre_qlistref_foldleft($arg0, $arg1, $arg2)
-{
-//
-  $tmpret30 = NULL;
-  $tmp31 = NULL;
-  $tmp32 = NULL;
-  $tmp41 = NULL;
-  $tmp42 = NULL;
-  $tmp43 = NULL;
-//
-  __patsflab_qlistref_foldleft:
-  $tmp31 = $arg0[0];
-  $tmp32 = $arg0[1];
-  $tmp41 = ats2phppre_ref_get_elt($tmp31);
-  $tmp43 = ats2phppre_ref_get_elt($tmp32);
-  $tmp42 = _ats2phppre_qlistref_auxl_5($arg2, $arg1, $tmp43);
-  $tmpret30 = _ats2phppre_qlistref_auxr_6($arg2, $tmp41, $tmp42);
-  return $tmpret30;
-} // end-of-function
-
-
-function
-_ats2phppre_qlistref_auxl_5($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret33 = NULL;
-  $tmp34 = NULL;
-  $tmp35 = NULL;
-  $tmp36 = NULL;
-//
-  __patsflab__ats2phppre_qlistref_auxl_5:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab8:
-    if(ATSCKptriscons($arg1)) goto __atstmplab11;
-    __atstmplab9:
-    $tmpret33 = $arg0;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab10:
-    __atstmplab11:
-    $tmp34 = $arg1[0];
-    $tmp35 = $arg1[1];
-    $tmp36 = $env0[0]($env0, $arg0, $tmp34);
-    // ATStailcalseq_beg
-    $apy0 = $tmp36;
-    $apy1 = $tmp35;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_qlistref_auxl_5;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret33;
-} // end-of-function
-
-
-function
-_ats2phppre_qlistref_auxr_6($env0, $arg0, $arg1)
-{
-//
-  $tmpret37 = NULL;
-  $tmp38 = NULL;
-  $tmp39 = NULL;
-  $tmp40 = NULL;
-//
-  __patsflab__ats2phppre_qlistref_auxr_6:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab12:
-    if(ATSCKptriscons($arg0)) goto __atstmplab15;
-    __atstmplab13:
-    $tmpret37 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab14:
-    __atstmplab15:
-    $tmp38 = $arg0[0];
-    $tmp39 = $arg0[1];
-    $tmp40 = _ats2phppre_qlistref_auxr_6($env0, $tmp39, $arg1);
-    $tmpret37 = $env0[0]($env0, $tmp40, $tmp38);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret37;
-} // end-of-function
-
-
-function
-ats2phppre_qlistref_foldright($arg0, $arg1, $arg2)
-{
-//
-  $tmpret44 = NULL;
-  $tmp45 = NULL;
-  $tmp46 = NULL;
-  $tmp55 = NULL;
-  $tmp56 = NULL;
-  $tmp57 = NULL;
-//
-  __patsflab_qlistref_foldright:
-  $tmp45 = $arg0[0];
-  $tmp46 = $arg0[1];
-  $tmp55 = ats2phppre_ref_get_elt($tmp46);
-  $tmp57 = ats2phppre_ref_get_elt($tmp45);
-  $tmp56 = _ats2phppre_qlistref_auxl_8($arg1, $arg2, $tmp57);
-  $tmpret44 = _ats2phppre_qlistref_auxr_9($arg1, $tmp55, $tmp56);
-  return $tmpret44;
-} // end-of-function
-
-
-function
-_ats2phppre_qlistref_auxl_8($env0, $arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret47 = NULL;
-  $tmp48 = NULL;
-  $tmp49 = NULL;
-  $tmp50 = NULL;
-//
-  __patsflab__ats2phppre_qlistref_auxl_8:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab16:
-    if(ATSCKptriscons($arg1)) goto __atstmplab19;
-    __atstmplab17:
-    $tmpret47 = $arg0;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab18:
-    __atstmplab19:
-    $tmp48 = $arg1[0];
-    $tmp49 = $arg1[1];
-    $tmp50 = $env0[0]($env0, $tmp48, $arg0);
-    // ATStailcalseq_beg
-    $apy0 = $tmp50;
-    $apy1 = $tmp49;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_qlistref_auxl_8;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret47;
-} // end-of-function
-
-
-function
-_ats2phppre_qlistref_auxr_9($env0, $arg0, $arg1)
-{
-//
-  $tmpret51 = NULL;
-  $tmp52 = NULL;
-  $tmp53 = NULL;
-  $tmp54 = NULL;
-//
-  __patsflab__ats2phppre_qlistref_auxr_9:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab20:
-    if(ATSCKptriscons($arg0)) goto __atstmplab23;
-    __atstmplab21:
-    $tmpret51 = $arg1;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab22:
-    __atstmplab23:
-    $tmp52 = $arg0[0];
-    $tmp53 = $arg0[1];
-    $tmp54 = _ats2phppre_qlistref_auxr_9($env0, $tmp53, $arg1);
-    $tmpret51 = $env0[0]($env0, $tmp52, $tmp54);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret51;
-} // end-of-function
-
-/* ****** ****** */
-
-/* end-of-compilation-unit */
-?>
-<?php
-/*
-**
-** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-4-11: 17h: 2m
-**
-*/
-function
-_ats2phppre_ML_list0_patsfun_29__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_29($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_ML_list0_patsfun_32__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_32($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_ML_list0_patsfun_35__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_35($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_ML_list0_patsfun_38__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_38($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_ML_list0_patsfun_42__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_42($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_ML_list0_patsfun_45__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_45($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_ML_list0_patsfun_48__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_48($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_ML_list0_patsfun_51__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_51($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_ML_list0_patsfun_54__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_54($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_ML_list0_patsfun_58__closurerize($env0)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_58($cenv[1], $arg0); }, $env0);
-}
-
-function
-_ats2phppre_ML_list0_patsfun_64__closurerize($env0, $env1)
-{
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_list0_patsfun_64($cenv[1], $cenv[2], $arg0); }, $env0, $env1);
-}
-
-
-function
-ats2phppre_ML_list0_head_opt($arg0)
-{
-//
-  $tmpret7 = NULL;
-  $tmp8 = NULL;
-//
-  __patsflab_list0_head_opt:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab6:
-    if(ATSCKptriscons($arg0)) goto __atstmplab9;
-    __atstmplab7:
-    $tmpret7 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab8:
-    __atstmplab9:
-    $tmp8 = $arg0[0];
-    $tmpret7 = array($tmp8);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret7;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_tail_opt($arg0)
-{
-//
-  $tmpret10 = NULL;
-  $tmp12 = NULL;
-//
-  __patsflab_list0_tail_opt:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab10:
-    if(ATSCKptriscons($arg0)) goto __atstmplab13;
-    __atstmplab11:
-    $tmpret10 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab12:
-    __atstmplab13:
-    $tmp12 = $arg0[1];
-    $tmpret10 = array($tmp12);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret10;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_length($arg0)
-{
-//
-  $tmpret13 = NULL;
-//
-  __patsflab_list0_length:
-  $tmpret13 = ats2phppre_list_length($arg0);
-  return $tmpret13;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_last_opt($arg0)
-{
-//
-  $tmpret14 = NULL;
-  $tmp18 = NULL;
-  $tmp19 = NULL;
-  $tmp20 = NULL;
-//
-  __patsflab_list0_last_opt:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab18:
-    if(ATSCKptriscons($arg0)) goto __atstmplab21;
-    __atstmplab19:
-    $tmpret14 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab20:
-    __atstmplab21:
-    $tmp18 = $arg0[0];
-    $tmp19 = $arg0[1];
-    $tmp20 = _ats2phppre_ML_list0_loop_8($tmp18, $tmp19);
-    $tmpret14 = array($tmp20);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret14;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_loop_8($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret15 = NULL;
-  $tmp16 = NULL;
-  $tmp17 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_loop_8:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab14:
-    if(ATSCKptriscons($arg1)) goto __atstmplab17;
-    __atstmplab15:
-    $tmpret15 = $arg0;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab16:
-    __atstmplab17:
-    $tmp16 = $arg1[0];
-    $tmp17 = $arg1[1];
-    // ATStailcalseq_beg
-    $apy0 = $tmp16;
-    $apy1 = $tmp17;
-    $arg0 = $apy0;
-    $arg1 = $apy1;
-    goto __patsflab__ats2phppre_ML_list0_loop_8;
-    // ATStailcalseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret15;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_get_at_opt($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret21 = NULL;
-  $tmp22 = NULL;
-  $tmp23 = NULL;
-  $tmp24 = NULL;
-  $tmp25 = NULL;
-//
-  __patsflab_list0_get_at_opt:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab22:
-    if(ATSCKptriscons($arg0)) goto __atstmplab25;
-    __atstmplab23:
-    $tmpret21 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab24:
-    __atstmplab25:
-    $tmp22 = $arg0[0];
-    $tmp23 = $arg0[1];
-    $tmp24 = ats2phppre_gt_int1_int1($arg1, 0);
-    if($tmp24) {
-      $tmp25 = ats2phppre_sub_int1_int1($arg1, 1);
-      // ATStailcalseq_beg
-      $apy0 = $tmp23;
-      $apy1 = $tmp25;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      goto __patsflab_list0_get_at_opt;
-      // ATStailcalseq_end
-    } else {
-      $tmpret21 = array($tmp22);
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret21;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_make_elt($arg0, $arg1)
-{
-//
-  $tmpret26 = NULL;
-  $tmp27 = NULL;
-  $tmp28 = NULL;
-//
-  __patsflab_list0_make_elt:
-  $tmp27 = ats2phppre_gte_int1_int1($arg0, 0);
-  if($tmp27) {
-    $tmp28 = ats2phppre_list_make_elt($arg0, $arg1);
-    $tmpret26 = $tmp28;
-  } else {
-    $tmpret26 = NULL;
-  } // endif
-  return $tmpret26;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_make_intrange_2($arg0, $arg1)
-{
-//
-  $tmpret29 = NULL;
-  $tmp30 = NULL;
-//
-  __patsflab_list0_make_intrange_2:
-  $tmp30 = ats2phppre_list_make_intrange_2($arg0, $arg1);
-  $tmpret29 = $tmp30;
-  return $tmpret29;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_make_intrange_3($arg0, $arg1, $arg2)
-{
-//
-  $tmpret31 = NULL;
-  $tmp32 = NULL;
-//
-  __patsflab_list0_make_intrange_3:
-  $tmp32 = ats2phppre_list_make_intrange_3($arg0, $arg1, $arg2);
-  $tmpret31 = $tmp32;
-  return $tmpret31;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_snoc($arg0, $arg1)
-{
-//
-  $tmpret44 = NULL;
-  $tmp45 = NULL;
-//
-  __patsflab_list0_snoc:
-  $tmp45 = ats2phppre_list_snoc($arg0, $arg1);
-  $tmpret44 = $tmp45;
-  return $tmpret44;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_extend($arg0, $arg1)
-{
-//
-  $tmpret46 = NULL;
-  $tmp47 = NULL;
-//
-  __patsflab_list0_extend:
-  $tmp47 = ats2phppre_list_extend($arg0, $arg1);
-  $tmpret46 = $tmp47;
-  return $tmpret46;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_append($arg0, $arg1)
-{
-//
-  $tmpret48 = NULL;
-  $tmp49 = NULL;
-//
-  __patsflab_list0_append:
-  $tmp49 = ats2phppre_list_append($arg0, $arg1);
-  $tmpret48 = $tmp49;
-  return $tmpret48;
-} // end-of-function
-
-
-function
-ats2phppre_ML_mul_int_list0($arg0, $arg1)
-{
-//
-  $tmpret50 = NULL;
-  $tmp51 = NULL;
-//
-  __patsflab_mul_int_list0:
-  $tmp51 = ats2phppre_mul_int_list($arg0, $arg1);
-  $tmpret50 = $tmp51;
-  return $tmpret50;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_reverse($arg0)
-{
-//
-  $tmpret52 = NULL;
-  $tmp53 = NULL;
-//
-  __patsflab_list0_reverse:
-  $tmp53 = ats2phppre_list_reverse($arg0);
-  $tmpret52 = $tmp53;
-  return $tmpret52;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_reverse_append($arg0, $arg1)
-{
-//
-  $tmpret54 = NULL;
-  $tmp55 = NULL;
-//
-  __patsflab_list0_reverse_append:
-  $tmp55 = ats2phppre_list_reverse_append($arg0, $arg1);
-  $tmpret54 = $tmp55;
-  return $tmpret54;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_concat($arg0)
-{
-//
-  $tmpret56 = NULL;
-  $tmp57 = NULL;
-//
-  __patsflab_list0_concat:
-  $tmp57 = ats2phppre_list_concat($arg0);
-  $tmpret56 = $tmp57;
-  return $tmpret56;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_remove_at_opt($arg0, $arg1)
-{
-//
-  $tmpret58 = NULL;
-//
-  __patsflab_list0_remove_at_opt:
-  $tmpret58 = _ats2phppre_ML_list0_aux_26($arg0, 0);
-  return $tmpret58;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_aux_26($arg0, $arg1)
-{
-//
-  $tmpret59 = NULL;
-  $tmp60 = NULL;
-  $tmp61 = NULL;
-  $tmp62 = NULL;
-  $tmp63 = NULL;
-  $tmp64 = NULL;
-  $tmp65 = NULL;
-  $tmp66 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_aux_26:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab30:
-    if(ATSCKptriscons($arg0)) goto __atstmplab33;
-    __atstmplab31:
-    $tmpret59 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab32:
-    __atstmplab33:
-    $tmp60 = $arg0[0];
-    $tmp61 = $arg0[1];
-    $tmp62 = ats2phppre_gt_int1_int1($arg1, 0);
-    if($tmp62) {
-      $tmp64 = ats2phppre_sub_int1_int1($arg1, 1);
-      $tmp63 = _ats2phppre_ML_list0_aux_26($tmp61, $tmp64);
-      // ATScaseofseq_beg
-      do {
-        // ATSbranchseq_beg
-        __atstmplab34:
-        if(ATSCKptriscons($tmp63)) goto __atstmplab37;
-        __atstmplab35:
-        $tmpret59 = NULL;
-        break;
-        // ATSbranchseq_end
-        // ATSbranchseq_beg
-        __atstmplab36:
-        __atstmplab37:
-        $tmp65 = $tmp63[0];
-        // ATSINSfreecon($tmp63);
-        $tmp66 = array($tmp60, $tmp65);
-        $tmpret59 = array($tmp66);
-        break;
-        // ATSbranchseq_end
-      } while(0);
-      // ATScaseofseq_end
-    } else {
-      $tmpret59 = array($tmp61);
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret59;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_exists($arg0, $arg1)
-{
-//
-  $tmpret67 = NULL;
-//
-  __patsflab_list0_exists:
-  $tmpret67 = ats2phppre_list_exists($arg0, $arg1);
-  return $tmpret67;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_exists_method($arg0)
-{
-//
-  $tmpret68 = NULL;
-//
-  __patsflab_list0_exists_method:
-  $tmpret68 = _ats2phppre_ML_list0_patsfun_29__closurerize($arg0);
-  return $tmpret68;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_patsfun_29($env0, $arg0)
-{
-//
-  $tmpret69 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_patsfun_29:
-  $tmpret69 = ats2phppre_ML_list0_exists($env0, $arg0);
-  return $tmpret69;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_iexists($arg0, $arg1)
-{
-//
-  $tmpret70 = NULL;
-//
-  __patsflab_list0_iexists:
-  $tmpret70 = ats2phppre_list_iexists($arg0, $arg1);
-  return $tmpret70;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_iexists_method($arg0)
-{
-//
-  $tmpret71 = NULL;
-//
-  __patsflab_list0_iexists_method:
-  $tmpret71 = _ats2phppre_ML_list0_patsfun_32__closurerize($arg0);
-  return $tmpret71;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_patsfun_32($env0, $arg0)
-{
-//
-  $tmpret72 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_patsfun_32:
-  $tmpret72 = ats2phppre_ML_list0_iexists($env0, $arg0);
-  return $tmpret72;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_forall($arg0, $arg1)
-{
-//
-  $tmpret73 = NULL;
-//
-  __patsflab_list0_forall:
-  $tmpret73 = ats2phppre_list_forall($arg0, $arg1);
-  return $tmpret73;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_forall_method($arg0)
-{
-//
-  $tmpret74 = NULL;
-//
-  __patsflab_list0_forall_method:
-  $tmpret74 = _ats2phppre_ML_list0_patsfun_35__closurerize($arg0);
-  return $tmpret74;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_patsfun_35($env0, $arg0)
-{
-//
-  $tmpret75 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_patsfun_35:
-  $tmpret75 = ats2phppre_ML_list0_forall($env0, $arg0);
-  return $tmpret75;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_iforall($arg0, $arg1)
-{
-//
-  $tmpret76 = NULL;
-//
-  __patsflab_list0_iforall:
-  $tmpret76 = ats2phppre_list_iforall($arg0, $arg1);
-  return $tmpret76;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_iforall_method($arg0)
-{
-//
-  $tmpret77 = NULL;
-//
-  __patsflab_list0_iforall_method:
-  $tmpret77 = _ats2phppre_ML_list0_patsfun_38__closurerize($arg0);
-  return $tmpret77;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_patsfun_38($env0, $arg0)
-{
-//
-  $tmpret78 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_patsfun_38:
-  $tmpret78 = ats2phppre_ML_list0_iforall($env0, $arg0);
-  return $tmpret78;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_app($arg0, $arg1)
-{
-//
-//
-  __patsflab_list0_app:
-  ats2phppre_ML_list0_foreach($arg0, $arg1);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_foreach($arg0, $arg1)
-{
-//
-//
-  __patsflab_list0_foreach:
-  ats2phppre_list_foreach($arg0, $arg1);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_foreach_method($arg0)
-{
-//
-  $tmpret81 = NULL;
-//
-  __patsflab_list0_foreach_method:
-  $tmpret81 = _ats2phppre_ML_list0_patsfun_42__closurerize($arg0);
-  return $tmpret81;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_patsfun_42($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_ML_list0_patsfun_42:
-  ats2phppre_ML_list0_foreach($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_iforeach($arg0, $arg1)
-{
-//
-//
-  __patsflab_list0_iforeach:
-  ats2phppre_list_iforeach($arg0, $arg1);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_iforeach_method($arg0)
-{
-//
-  $tmpret84 = NULL;
-//
-  __patsflab_list0_iforeach_method:
-  $tmpret84 = _ats2phppre_ML_list0_patsfun_45__closurerize($arg0);
-  return $tmpret84;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_patsfun_45($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_ML_list0_patsfun_45:
-  ats2phppre_ML_list0_iforeach($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_rforeach($arg0, $arg1)
-{
-//
-//
-  __patsflab_list0_rforeach:
-  ats2phppre_list_rforeach($arg0, $arg1);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_rforeach_method($arg0)
-{
-//
-  $tmpret87 = NULL;
-//
-  __patsflab_list0_rforeach_method:
-  $tmpret87 = _ats2phppre_ML_list0_patsfun_48__closurerize($arg0);
-  return $tmpret87;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_patsfun_48($env0, $arg0)
-{
-//
-//
-  __patsflab__ats2phppre_ML_list0_patsfun_48:
-  ats2phppre_ML_list0_rforeach($env0, $arg0);
-  return/*_void*/;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_filter($arg0, $arg1)
-{
-//
-  $tmpret89 = NULL;
-  $tmp90 = NULL;
-//
-  __patsflab_list0_filter:
-  $tmp90 = ats2phppre_list_filter($arg0, $arg1);
-  $tmpret89 = $tmp90;
-  return $tmpret89;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_filter_method($arg0)
-{
-//
-  $tmpret91 = NULL;
-//
-  __patsflab_list0_filter_method:
-  $tmpret91 = _ats2phppre_ML_list0_patsfun_51__closurerize($arg0);
-  return $tmpret91;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_patsfun_51($env0, $arg0)
-{
-//
-  $tmpret92 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_patsfun_51:
-  $tmpret92 = ats2phppre_ML_list0_filter($env0, $arg0);
-  return $tmpret92;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_map($arg0, $arg1)
-{
-//
-  $tmpret93 = NULL;
-  $tmp94 = NULL;
-//
-  __patsflab_list0_map:
-  $tmp94 = ats2phppre_list_map($arg0, $arg1);
-  $tmpret93 = $tmp94;
-  return $tmpret93;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_map_method($arg0, $arg1)
-{
-//
-  $tmpret95 = NULL;
-//
-  __patsflab_list0_map_method:
-  $tmpret95 = _ats2phppre_ML_list0_patsfun_54__closurerize($arg0);
-  return $tmpret95;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_patsfun_54($env0, $arg0)
-{
-//
-  $tmpret96 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_patsfun_54:
-  $tmpret96 = ats2phppre_ML_list0_map($env0, $arg0);
-  return $tmpret96;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_mapcons($arg0, $arg1)
-{
-//
-  $tmpret97 = NULL;
-  $tmp98 = NULL;
-  $tmp99 = NULL;
-  $tmp100 = NULL;
-  $tmp101 = NULL;
-//
-  __patsflab_list0_mapcons:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab38:
-    if(ATSCKptriscons($arg1)) goto __atstmplab41;
-    __atstmplab39:
-    $tmpret97 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab40:
-    __atstmplab41:
-    $tmp98 = $arg1[0];
-    $tmp99 = $arg1[1];
-    $tmp100 = array($arg0, $tmp98);
-    $tmp101 = ats2phppre_ML_list0_mapcons($arg0, $tmp99);
-    $tmpret97 = array($tmp100, $tmp101);
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret97;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_find_opt($arg0, $arg1)
-{
-//
-  $apy0 = NULL;
-  $apy1 = NULL;
-  $tmpret102 = NULL;
-  $tmp103 = NULL;
-  $tmp104 = NULL;
-  $tmp105 = NULL;
-//
-  __patsflab_list0_find_opt:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab42:
-    if(ATSCKptriscons($arg0)) goto __atstmplab45;
-    __atstmplab43:
-    $tmpret102 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab44:
-    __atstmplab45:
-    $tmp103 = $arg0[0];
-    $tmp104 = $arg0[1];
-    $tmp105 = $arg1[0]($arg1, $tmp103);
-    if($tmp105) {
-      $tmpret102 = array($tmp103);
-    } else {
-      // ATStailcalseq_beg
-      $apy0 = $tmp104;
-      $apy1 = $arg1;
-      $arg0 = $apy0;
-      $arg1 = $apy1;
-      goto __patsflab_list0_find_opt;
-      // ATStailcalseq_end
-    } // endif
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret102;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_find_opt_method($arg0)
-{
-//
-  $tmpret106 = NULL;
-//
-  __patsflab_list0_find_opt_method:
-  $tmpret106 = _ats2phppre_ML_list0_patsfun_58__closurerize($arg0);
-  return $tmpret106;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_patsfun_58($env0, $arg0)
-{
-//
-  $tmpret107 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_patsfun_58:
-  $tmpret107 = ats2phppre_ML_list0_find_opt($env0, $arg0);
-  return $tmpret107;
-} // end-of-function
-
-
-function
-ats2phppre_ML_list0_zip($arg0, $arg1)
-{
-//
-  $tmpret108 = NULL;
-//
-  __patsflab_list0_zip:
-  $tmpret108 = _ats2phppre_ML_list0_aux_60($arg0, $arg1);
-  return $tmpret108;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_list0_aux_60($arg0, $arg1)
-{
-//
-  $tmpret109 = NULL;
-  $tmp110 = NULL;
-  $tmp111 = NULL;
-  $tmp112 = NULL;
-  $tmp113 = NULL;
-  $tmp114 = NULL;
-  $tmp115 = NULL;
-//
-  __patsflab__ats2phppre_ML_list0_aux_60:
-  // ATScaseofseq_beg
-  do {
-    // ATSbranchseq_beg
-    __atstmplab46:
-    if(ATSCKptriscons($arg0)) goto __atstmplab49;
-    __atstmplab47:
-    $tmpret109 = NULL;
-    break;
-    // ATSbranchseq_end
-    // ATSbranchseq_beg
-    __atstmplab48:
-    __atstmplab49:
-    $tmp110 = $arg0[0];
-    $tmp111 = $arg0[1];
-    // ATScaseofseq_beg
-    do {
-      // ATSbranchseq_beg
-      __atstmplab50:
-      if(ATSCKptriscons($arg1)) goto __atstmplab53;
-      __atstmplab51:
-      $tmpret109 = NULL;
-      break;
-      // ATSbranchseq_end
-      // ATSbranchseq_beg
-      __atstmplab52:
-      __atstmplab53:
-      $tmp112 = $arg1[0];
-      $tmp113 = $arg1[1];
-      $tmp114 = array($tmp110, $tmp112);
-      $tmp115 = _ats2phppre_ML_list0_aux_60($tmp111, $tmp113);
-      $tmpret109 = array($tmp114, $tmp115);
-      break;
-      // ATSbranchseq_end
-    } while(0);
-    // ATScaseofseq_end
-    break;
-    // ATSbranchseq_end
-  } while(0);
-  // ATScaseofseq_end
-  return $tmpret109;
 } // end-of-function
 
 
@@ -18325,58 +12018,58 @@ function
 ats2phppre_ML_list0_zipwith($arg0, $arg1, $arg2)
 {
 //
-  $tmpret116 = NULL;
+  $tmpret136 = NULL;
 //
   __patsflab_list0_zipwith:
-  $tmpret116 = _ats2phppre_ML_list0_aux_62($arg0, $arg1, $arg2);
-  return $tmpret116;
+  $tmpret136 = _ats2phppre_ML_list0_aux_72($arg0, $arg1, $arg2);
+  return $tmpret136;
 } // end-of-function
 
 
 function
-_ats2phppre_ML_list0_aux_62($arg0, $arg1, $arg2)
+_ats2phppre_ML_list0_aux_72($arg0, $arg1, $arg2)
 {
 //
-  $tmpret117 = NULL;
-  $tmp118 = NULL;
-  $tmp119 = NULL;
-  $tmp120 = NULL;
-  $tmp121 = NULL;
-  $tmp122 = NULL;
-  $tmp123 = NULL;
+  $tmpret137 = NULL;
+  $tmp138 = NULL;
+  $tmp139 = NULL;
+  $tmp140 = NULL;
+  $tmp141 = NULL;
+  $tmp142 = NULL;
+  $tmp143 = NULL;
 //
-  __patsflab__ats2phppre_ML_list0_aux_62:
+  __patsflab__ats2phppre_ML_list0_aux_72:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab54:
-    if(ATSCKptriscons($arg0)) goto __atstmplab57;
-    __atstmplab55:
-    $tmpret117 = NULL;
+    __atstmplab58:
+    if(ATSCKptriscons($arg0)) goto __atstmplab61;
+    __atstmplab59:
+    $tmpret137 = NULL;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab56:
-    __atstmplab57:
-    $tmp118 = $arg0[0];
-    $tmp119 = $arg0[1];
+    __atstmplab60:
+    __atstmplab61:
+    $tmp138 = $arg0[0];
+    $tmp139 = $arg0[1];
     // ATScaseofseq_beg
     do {
       // ATSbranchseq_beg
-      __atstmplab58:
-      if(ATSCKptriscons($arg1)) goto __atstmplab61;
-      __atstmplab59:
-      $tmpret117 = NULL;
+      __atstmplab62:
+      if(ATSCKptriscons($arg1)) goto __atstmplab65;
+      __atstmplab63:
+      $tmpret137 = NULL;
       break;
       // ATSbranchseq_end
       // ATSbranchseq_beg
-      __atstmplab60:
-      __atstmplab61:
-      $tmp120 = $arg1[0];
-      $tmp121 = $arg1[1];
-      $tmp122 = $arg2[0]($arg2, $tmp118, $tmp120);
-      $tmp123 = _ats2phppre_ML_list0_aux_62($tmp119, $tmp121, $arg2);
-      $tmpret117 = array($tmp122, $tmp123);
+      __atstmplab64:
+      __atstmplab65:
+      $tmp140 = $arg1[0];
+      $tmp141 = $arg1[1];
+      $tmp142 = $arg2[0]($arg2, $tmp138, $tmp140);
+      $tmp143 = _ats2phppre_ML_list0_aux_72($tmp139, $tmp141, $arg2);
+      $tmpret137 = array($tmp142, $tmp143);
       break;
       // ATSbranchseq_end
     } while(0);
@@ -18385,7 +12078,7 @@ _ats2phppre_ML_list0_aux_62($arg0, $arg1, $arg2)
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret117;
+  return $tmpret137;
 } // end-of-function
 
 
@@ -18393,23 +12086,23 @@ function
 ats2phppre_ML_list0_zipwith_method($arg0, $arg1)
 {
 //
-  $tmpret124 = NULL;
+  $tmpret144 = NULL;
 //
   __patsflab_list0_zipwith_method:
-  $tmpret124 = _ats2phppre_ML_list0_patsfun_64__closurerize($arg0, $arg1);
-  return $tmpret124;
+  $tmpret144 = _ats2phppre_ML_list0_patsfun_74__closurerize($arg0, $arg1);
+  return $tmpret144;
 } // end-of-function
 
 
 function
-_ats2phppre_ML_list0_patsfun_64($env0, $env1, $arg0)
+_ats2phppre_ML_list0_patsfun_74($env0, $env1, $arg0)
 {
 //
-  $tmpret125 = NULL;
+  $tmpret145 = NULL;
 //
-  __patsflab__ats2phppre_ML_list0_patsfun_64:
-  $tmpret125 = ats2phppre_ML_list0_zipwith($env0, $env1, $arg0);
-  return $tmpret125;
+  __patsflab__ats2phppre_ML_list0_patsfun_74:
+  $tmpret145 = ats2phppre_ML_list0_zipwith($env0, $env1, $arg0);
+  return $tmpret145;
 } // end-of-function
 
 
@@ -18417,53 +12110,53 @@ function
 ats2phppre_ML_list0_foldleft($arg0, $arg1, $arg2)
 {
 //
-  $tmpret126 = NULL;
+  $tmpret146 = NULL;
 //
   __patsflab_list0_foldleft:
-  $tmpret126 = _ats2phppre_ML_list0_aux_66($arg2, $arg1, $arg0);
-  return $tmpret126;
+  $tmpret146 = _ats2phppre_ML_list0_aux_76($arg2, $arg1, $arg0);
+  return $tmpret146;
 } // end-of-function
 
 
 function
-_ats2phppre_ML_list0_aux_66($env0, $arg0, $arg1)
+_ats2phppre_ML_list0_aux_76($env0, $arg0, $arg1)
 {
 //
   $apy0 = NULL;
   $apy1 = NULL;
-  $tmpret127 = NULL;
-  $tmp128 = NULL;
-  $tmp129 = NULL;
-  $tmp130 = NULL;
+  $tmpret147 = NULL;
+  $tmp148 = NULL;
+  $tmp149 = NULL;
+  $tmp150 = NULL;
 //
-  __patsflab__ats2phppre_ML_list0_aux_66:
+  __patsflab__ats2phppre_ML_list0_aux_76:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab62:
-    if(ATSCKptriscons($arg1)) goto __atstmplab65;
-    __atstmplab63:
-    $tmpret127 = $arg0;
+    __atstmplab66:
+    if(ATSCKptriscons($arg1)) goto __atstmplab69;
+    __atstmplab67:
+    $tmpret147 = $arg0;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab64:
-    __atstmplab65:
-    $tmp128 = $arg1[0];
-    $tmp129 = $arg1[1];
-    $tmp130 = $env0[0]($env0, $arg0, $tmp128);
+    __atstmplab68:
+    __atstmplab69:
+    $tmp148 = $arg1[0];
+    $tmp149 = $arg1[1];
+    $tmp150 = $env0[0]($env0, $arg0, $tmp148);
     // ATStailcalseq_beg
-    $apy0 = $tmp130;
-    $apy1 = $tmp129;
+    $apy0 = $tmp150;
+    $apy1 = $tmp149;
     $arg0 = $apy0;
     $arg1 = $apy1;
-    goto __patsflab__ats2phppre_ML_list0_aux_66;
+    goto __patsflab__ats2phppre_ML_list0_aux_76;
     // ATStailcalseq_end
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret127;
+  return $tmpret147;
 } // end-of-function
 
 
@@ -18471,45 +12164,45 @@ function
 ats2phppre_ML_list0_foldright($arg0, $arg1, $arg2)
 {
 //
-  $tmpret131 = NULL;
+  $tmpret151 = NULL;
 //
   __patsflab_list0_foldright:
-  $tmpret131 = _ats2phppre_ML_list0_aux_68($arg1, $arg2, $arg0, $arg2);
-  return $tmpret131;
+  $tmpret151 = _ats2phppre_ML_list0_aux_78($arg1, $arg2, $arg0, $arg2);
+  return $tmpret151;
 } // end-of-function
 
 
 function
-_ats2phppre_ML_list0_aux_68($env0, $env1, $arg0, $arg1)
+_ats2phppre_ML_list0_aux_78($env0, $env1, $arg0, $arg1)
 {
 //
-  $tmpret132 = NULL;
-  $tmp133 = NULL;
-  $tmp134 = NULL;
-  $tmp135 = NULL;
+  $tmpret152 = NULL;
+  $tmp153 = NULL;
+  $tmp154 = NULL;
+  $tmp155 = NULL;
 //
-  __patsflab__ats2phppre_ML_list0_aux_68:
+  __patsflab__ats2phppre_ML_list0_aux_78:
   // ATScaseofseq_beg
   do {
     // ATSbranchseq_beg
-    __atstmplab66:
-    if(ATSCKptriscons($arg0)) goto __atstmplab69;
-    __atstmplab67:
-    $tmpret132 = $arg1;
+    __atstmplab70:
+    if(ATSCKptriscons($arg0)) goto __atstmplab73;
+    __atstmplab71:
+    $tmpret152 = $arg1;
     break;
     // ATSbranchseq_end
     // ATSbranchseq_beg
-    __atstmplab68:
-    __atstmplab69:
-    $tmp133 = $arg0[0];
-    $tmp134 = $arg0[1];
-    $tmp135 = _ats2phppre_ML_list0_aux_68($env0, $env1, $tmp134, $env1);
-    $tmpret132 = $env0[0]($env0, $tmp133, $tmp135);
+    __atstmplab72:
+    __atstmplab73:
+    $tmp153 = $arg0[0];
+    $tmp154 = $arg0[1];
+    $tmp155 = _ats2phppre_ML_list0_aux_78($env0, $env1, $tmp154, $env1);
+    $tmpret152 = $env0[0]($env0, $tmp153, $tmp155);
     break;
     // ATSbranchseq_end
   } while(0);
   // ATScaseofseq_end
-  return $tmpret132;
+  return $tmpret152;
 } // end-of-function
 
 
@@ -18517,13 +12210,27 @@ function
 ats2phppre_ML_list0_sort_2($arg0, $arg1)
 {
 //
-  $tmpret138 = NULL;
-  $tmp139 = NULL;
+  $tmpret158 = NULL;
+  $tmp159 = NULL;
 //
   __patsflab_list0_sort_2:
-  $tmp139 = ats2phppre_list_sort_2($arg0, $arg1);
-  $tmpret138 = $tmp139;
-  return $tmpret138;
+  $tmp159 = ats2phppre_list_sort_2($arg0, $arg1);
+  $tmpret158 = $tmp159;
+  return $tmpret158;
+} // end-of-function
+
+
+function
+ats2phppre_ML_list0_mergesort($arg0, $arg1)
+{
+//
+  $tmpret160 = NULL;
+  $tmp161 = NULL;
+//
+  __patsflab_list0_mergesort:
+  $tmp161 = ats2phppre_list_mergesort($arg0, $arg1);
+  $tmpret160 = $tmp161;
+  return $tmpret160;
 } // end-of-function
 
 
@@ -18531,11 +12238,11 @@ function
 ats2phppre_ML_streamize_list0_zip($arg0, $arg1)
 {
 //
-  $tmpret140 = NULL;
+  $tmpret162 = NULL;
 //
   __patsflab_streamize_list0_zip:
-  $tmpret140 = ats2phppre_streamize_list_zip($arg0, $arg1);
-  return $tmpret140;
+  $tmpret162 = ats2phppre_streamize_list_zip($arg0, $arg1);
+  return $tmpret162;
 } // end-of-function
 
 
@@ -18543,11 +12250,11 @@ function
 ats2phppre_ML_streamize_list0_cross($arg0, $arg1)
 {
 //
-  $tmpret141 = NULL;
+  $tmpret163 = NULL;
 //
   __patsflab_streamize_list0_cross:
-  $tmpret141 = ats2phppre_streamize_list_cross($arg0, $arg1);
-  return $tmpret141;
+  $tmpret163 = ats2phppre_streamize_list_cross($arg0, $arg1);
+  return $tmpret163;
 } // end-of-function
 
 /* ****** ****** */
@@ -18558,25 +12265,25 @@ ats2phppre_ML_streamize_list0_cross($arg0, $arg1)
 /*
 **
 ** The PHP code is generated by atscc2php
-** The starting compilation time is: 2017-4-11: 17h: 2m
+** The starting compilation time is: 2018-6-23: 17h:12m
 **
 */
 function
-_ats2phppre_ML_array0_patsfun_7__closurerize($env0)
+_ats2phppre_ML_array0_patsfun_8__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_array0_patsfun_7($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_ML_array0_patsfun_8($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_ML_array0_patsfun_10__closurerize($env0)
+_ats2phppre_ML_array0_patsfun_11__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_array0_patsfun_10($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_ML_array0_patsfun_11($cenv[1], $arg0); }, $env0);
 }
 
 function
-_ats2phppre_ML_array0_patsfun_14__closurerize($env0)
+_ats2phppre_ML_array0_patsfun_17__closurerize($env0)
 {
-  return array(function($cenv, $arg0) { return _ats2phppre_ML_array0_patsfun_14($cenv[1], $arg0); }, $env0);
+  return array(function($cenv, $arg0) { return _ats2phppre_ML_array0_patsfun_17($cenv[1], $arg0); }, $env0);
 }
 
 
@@ -18605,14 +12312,26 @@ ats2phppre_ML_array0_size($arg0)
 
 
 function
-ats2phppre_ML_array0_get_at($arg0, $arg1)
+ats2phppre_ML_array0_length($arg0)
 {
 //
   $tmpret2 = NULL;
 //
-  __patsflab_array0_get_at:
-  $tmpret2 = ats2phppre_arrszref_get_at($arg0, $arg1);
+  __patsflab_array0_length:
+  $tmpret2 = ats2phppre_arrszref_size($arg0);
   return $tmpret2;
+} // end-of-function
+
+
+function
+ats2phppre_ML_array0_get_at($arg0, $arg1)
+{
+//
+  $tmpret3 = NULL;
+//
+  __patsflab_array0_get_at:
+  $tmpret3 = ats2phppre_arrszref_get_at($arg0, $arg1);
+  return $tmpret3;
 } // end-of-function
 
 
@@ -18631,23 +12350,23 @@ function
 ats2phppre_ML_array0_exch_at($arg0, $arg1, $arg2)
 {
 //
-  $tmpret4 = NULL;
+  $tmpret5 = NULL;
 //
   __patsflab_array0_exch_at:
-  $tmpret4 = ats2phppre_arrszref_exch_at($arg0, $arg1, $arg2);
-  return $tmpret4;
+  $tmpret5 = ats2phppre_arrszref_exch_at($arg0, $arg1, $arg2);
+  return $tmpret5;
 } // end-of-function
 
 
 function
-ats2phppre_ML_array0_exists_cloref($arg0, $arg1)
+ats2phppre_ML_array0_exists($arg0, $arg1)
 {
 //
-  $tmpret5 = NULL;
+  $tmpret6 = NULL;
 //
-  __patsflab_array0_exists_cloref:
-  $tmpret5 = ats2phppre_arrszref_exists_cloref($arg0, $arg1);
-  return $tmpret5;
+  __patsflab_array0_exists:
+  $tmpret6 = ats2phppre_arrszref_exists_cloref($arg0, $arg1);
+  return $tmpret6;
 } // end-of-function
 
 
@@ -18655,35 +12374,35 @@ function
 ats2phppre_ML_array0_exists_method($arg0)
 {
 //
-  $tmpret6 = NULL;
-//
-  __patsflab_array0_exists_method:
-  $tmpret6 = _ats2phppre_ML_array0_patsfun_7__closurerize($arg0);
-  return $tmpret6;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_array0_patsfun_7($env0, $arg0)
-{
-//
   $tmpret7 = NULL;
 //
-  __patsflab__ats2phppre_ML_array0_patsfun_7:
-  $tmpret7 = ats2phppre_ML_array0_exists_cloref($env0, $arg0);
+  __patsflab_array0_exists_method:
+  $tmpret7 = _ats2phppre_ML_array0_patsfun_8__closurerize($arg0);
   return $tmpret7;
 } // end-of-function
 
 
 function
-ats2phppre_ML_array0_forall_cloref($arg0, $arg1)
+_ats2phppre_ML_array0_patsfun_8($env0, $arg0)
 {
 //
   $tmpret8 = NULL;
 //
-  __patsflab_array0_forall_cloref:
-  $tmpret8 = ats2phppre_arrszref_forall_cloref($arg0, $arg1);
+  __patsflab__ats2phppre_ML_array0_patsfun_8:
+  $tmpret8 = ats2phppre_ML_array0_exists($env0, $arg0);
   return $tmpret8;
+} // end-of-function
+
+
+function
+ats2phppre_ML_array0_forall($arg0, $arg1)
+{
+//
+  $tmpret9 = NULL;
+//
+  __patsflab_array0_forall:
+  $tmpret9 = ats2phppre_arrszref_forall_cloref($arg0, $arg1);
+  return $tmpret9;
 } // end-of-function
 
 
@@ -18691,43 +12410,91 @@ function
 ats2phppre_ML_array0_forall_method($arg0)
 {
 //
-  $tmpret9 = NULL;
-//
-  __patsflab_array0_forall_method:
-  $tmpret9 = _ats2phppre_ML_array0_patsfun_10__closurerize($arg0);
-  return $tmpret9;
-} // end-of-function
-
-
-function
-_ats2phppre_ML_array0_patsfun_10($env0, $arg0)
-{
-//
   $tmpret10 = NULL;
 //
-  __patsflab__ats2phppre_ML_array0_patsfun_10:
-  $tmpret10 = ats2phppre_ML_array0_forall_cloref($env0, $arg0);
+  __patsflab_array0_forall_method:
+  $tmpret10 = _ats2phppre_ML_array0_patsfun_11__closurerize($arg0);
   return $tmpret10;
 } // end-of-function
 
 
 function
-ats2phppre_ML_array0_app_cloref($arg0, $arg1)
+_ats2phppre_ML_array0_patsfun_11($env0, $arg0)
+{
+//
+  $tmpret11 = NULL;
+//
+  __patsflab__ats2phppre_ML_array0_patsfun_11:
+  $tmpret11 = ats2phppre_ML_array0_forall($env0, $arg0);
+  return $tmpret11;
+} // end-of-function
+
+
+function
+array0_find_index($arg0, $arg1)
+{
+//
+  $tmpret12 = NULL;
+  $tmp17 = NULL;
+//
+  __patsflab_array0_find_index:
+  $tmp17 = ats2phppre_ML_array0_size($arg0);
+  $tmpret12 = _ats2phppre_ML_array0_loop_13($arg1, 0, $tmp17);
+  return $tmpret12;
+} // end-of-function
+
+
+function
+_ats2phppre_ML_array0_loop_13($env0, $arg0, $arg1)
+{
+//
+  $apy0 = NULL;
+  $apy1 = NULL;
+  $tmpret13 = NULL;
+  $tmp14 = NULL;
+  $tmp15 = NULL;
+  $tmp16 = NULL;
+//
+  __patsflab__ats2phppre_ML_array0_loop_13:
+  $tmp14 = ats2phppre_lt_int0_int0($arg0, $arg1);
+  if($tmp14) {
+    $tmp15 = $env0[0]($env0, $arg0);
+    if($tmp15) {
+      $tmpret13 = $arg0;
+    } else {
+      $tmp16 = ats2phppre_add_int1_int1($arg0, 1);
+      // ATStailcalseq_beg
+      $apy0 = $tmp16;
+      $apy1 = $arg1;
+      $arg0 = $apy0;
+      $arg1 = $apy1;
+      goto __patsflab__ats2phppre_ML_array0_loop_13;
+      // ATStailcalseq_end
+    } // endif
+  } else {
+    $tmpret13 = ats2phppre_neg_int1(1);
+  } // endif
+  return $tmpret13;
+} // end-of-function
+
+
+function
+ats2phppre_ML_array0_app($arg0, $arg1)
 {
 //
 //
-  __patsflab_array0_app_cloref:
-  ats2phppre_ML_array0_foreach_cloref($arg0, $arg1);
+  __patsflab_array0_app:
+  ats2phppre_ML_array0_foreach($arg0, $arg1);
   return/*_void*/;
 } // end-of-function
 
 
 function
-ats2phppre_ML_array0_foreach_cloref($arg0, $arg1)
+ats2phppre_ML_array0_foreach($arg0, $arg1)
 {
 //
 //
-  __patsflab_array0_foreach_cloref:
+  __patsflab_array0_foreach:
   ats2phppre_arrszref_foreach_cloref($arg0, $arg1);
   return/*_void*/;
 } // end-of-function
@@ -18737,22 +12504,286 @@ function
 ats2phppre_ML_array0_foreach_method($arg0)
 {
 //
-  $tmpret13 = NULL;
+  $tmpret20 = NULL;
 //
   __patsflab_array0_foreach_method:
-  $tmpret13 = _ats2phppre_ML_array0_patsfun_14__closurerize($arg0);
-  return $tmpret13;
+  $tmpret20 = _ats2phppre_ML_array0_patsfun_17__closurerize($arg0);
+  return $tmpret20;
 } // end-of-function
 
 
 function
-_ats2phppre_ML_array0_patsfun_14($env0, $arg0)
+_ats2phppre_ML_array0_patsfun_17($env0, $arg0)
 {
 //
 //
-  __patsflab__ats2phppre_ML_array0_patsfun_14:
-  ats2phppre_ML_array0_foreach_cloref($env0, $arg0);
+  __patsflab__ats2phppre_ML_array0_patsfun_17:
+  ats2phppre_ML_array0_foreach($env0, $arg0);
   return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_ML_array0_tabulate($arg0, $arg1)
+{
+//
+  $tmpret22 = NULL;
+  $tmp23 = NULL;
+  $tmp24 = NULL;
+//
+  __patsflab_array0_tabulate:
+  $tmp24 = ats2phppre_gte_int1_int1($arg0, 0);
+  if($tmp24) {
+    $tmp23 = $arg0;
+  } else {
+    $tmp23 = 0;
+  } // endif
+  $tmpret22 = ats2phppre_arrszref_tabulate_cloref($tmp23, $arg1);
+  return $tmpret22;
+} // end-of-function
+
+/* ****** ****** */
+
+/* end-of-compilation-unit */
+?>
+<?php
+/*
+**
+** The PHP code is generated by atscc2php
+** The starting compilation time is: 2018-6-23: 17h:12m
+**
+*/
+/* ****** ****** */
+
+/* end-of-compilation-unit */
+?>
+<?php
+/*
+**
+** The PHP code is generated by atscc2php
+** The starting compilation time is: 2018-6-23: 17h:12m
+**
+*/
+function
+_ats2phppre_ML_matrix0_patsfun_9__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_ML_matrix0_patsfun_9($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_ML_matrix0_patsfun_11__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_ML_matrix0_patsfun_11($cenv[1], $arg0); }, $env0);
+}
+
+function
+_ats2phppre_ML_matrix0_patsfun_13__closurerize($env0)
+{
+  return array(function($cenv, $arg0) { return _ats2phppre_ML_matrix0_patsfun_13($cenv[1], $arg0); }, $env0);
+}
+
+
+function
+ats2phppre_ML_matrix0_make_elt($arg0, $arg1, $arg2)
+{
+//
+  $tmpret0 = NULL;
+//
+  __patsflab_matrix0_make_elt:
+  $tmpret0 = ats2phppre_mtrxszref_make_elt($arg0, $arg1, $arg2);
+  return $tmpret0;
+} // end-of-function
+
+
+function
+ats2phppre_ML_matrix0_nrow($arg0)
+{
+//
+  $tmpret1 = NULL;
+//
+  __patsflab_matrix0_nrow:
+  $tmpret1 = ats2phppre_mtrxszref_get_nrow($arg0);
+  return $tmpret1;
+} // end-of-function
+
+
+function
+ats2phppre_ML_matrix0_ncol($arg0)
+{
+//
+  $tmpret2 = NULL;
+//
+  __patsflab_matrix0_ncol:
+  $tmpret2 = ats2phppre_mtrxszref_get_ncol($arg0);
+  return $tmpret2;
+} // end-of-function
+
+
+function
+ats2phppre_ML_matrix0_get_at($arg0, $arg1, $arg2)
+{
+//
+  $tmpret3 = NULL;
+//
+  __patsflab_matrix0_get_at:
+  $tmpret3 = ats2phppre_mtrxszref_get_at($arg0, $arg1, $arg2);
+  return $tmpret3;
+} // end-of-function
+
+
+function
+ats2phppre_ML_matrix0_set_at($arg0, $arg1, $arg2, $arg3)
+{
+//
+//
+  __patsflab_matrix0_set_at:
+  ats2phppre_mtrxszref_set_at($arg0, $arg1, $arg2, $arg3);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_ML_matrix0_foreach($arg0, $arg1)
+{
+//
+//
+  __patsflab_matrix0_foreach:
+  ats2phppre_mtrxszref_foreach_cloref($arg0, $arg1);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_ML_matrix0_foreach_row($arg0, $arg1)
+{
+//
+//
+  __patsflab_matrix0_foreach_row:
+  ats2phppre_mtrxszref_foreach_row_cloref($arg0, $arg1);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_ML_matrix0_foreach_col($arg0, $arg1)
+{
+//
+//
+  __patsflab_matrix0_foreach_col:
+  ats2phppre_mtrxszref_foreach_col_cloref($arg0, $arg1);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_ML_matrix0_foreach_method($arg0)
+{
+//
+  $tmpret8 = NULL;
+//
+  __patsflab_matrix0_foreach_method:
+  $tmpret8 = _ats2phppre_ML_matrix0_patsfun_9__closurerize($arg0);
+  return $tmpret8;
+} // end-of-function
+
+
+function
+_ats2phppre_ML_matrix0_patsfun_9($env0, $arg0)
+{
+//
+//
+  __patsflab__ats2phppre_ML_matrix0_patsfun_9:
+  ats2phppre_ML_matrix0_foreach($env0, $arg0);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_ML_matrix0_foreach_row_method($arg0)
+{
+//
+  $tmpret10 = NULL;
+//
+  __patsflab_matrix0_foreach_row_method:
+  $tmpret10 = _ats2phppre_ML_matrix0_patsfun_11__closurerize($arg0);
+  return $tmpret10;
+} // end-of-function
+
+
+function
+_ats2phppre_ML_matrix0_patsfun_11($env0, $arg0)
+{
+//
+//
+  __patsflab__ats2phppre_ML_matrix0_patsfun_11:
+  ats2phppre_ML_matrix0_foreach_row($env0, $arg0);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_ML_matrix0_foreach_col_method($arg0)
+{
+//
+  $tmpret12 = NULL;
+//
+  __patsflab_matrix0_foreach_col_method:
+  $tmpret12 = _ats2phppre_ML_matrix0_patsfun_13__closurerize($arg0);
+  return $tmpret12;
+} // end-of-function
+
+
+function
+_ats2phppre_ML_matrix0_patsfun_13($env0, $arg0)
+{
+//
+//
+  __patsflab__ats2phppre_ML_matrix0_patsfun_13:
+  ats2phppre_ML_matrix0_foreach_col($env0, $arg0);
+  return/*_void*/;
+} // end-of-function
+
+
+function
+ats2phppre_ML_matrix0_tabulate($arg0, $arg1, $arg2)
+{
+//
+  $tmpret14 = NULL;
+//
+  __patsflab_matrix0_tabulate:
+  $tmpret14 = ats2phppre_mtrxszref_tabulate_cloref($arg0, $arg1, $arg2);
+  return $tmpret14;
+} // end-of-function
+
+
+function
+ats2phppre_ML_cbind_matrix0_matrix0($arg0, $arg1)
+{
+//
+  $tmpret15 = NULL;
+  $tmp16 = NULL;
+  $tmp17 = NULL;
+  $tmp18 = NULL;
+  $tmp19 = NULL;
+  $tmp21 = NULL;
+  $tmp22 = NULL;
+  $tmp23 = NULL;
+  $tmp24 = NULL;
+  $tmp25 = NULL;
+//
+  __patsflab_cbind_matrix0_matrix0:
+  $tmp16 = ats2phppre_mtrxszref_get_nrow($arg0);
+  $tmp17 = ats2phppre_mtrxszref_get_nrow($arg1);
+  $tmp18 = ats2phppre_mtrxszref_get_ncol($arg0);
+  $tmp19 = ats2phppre_mtrxszref_get_ncol($arg1);
+  $tmp21 = ats2phppre_eq_int1_int1($tmp16, $tmp17);
+  ats2phppre_assert_errmsg_bool1($tmp21, "/home/hwxi/Research/ATS-Postiats/contrib/libatscc/ATS2-0.3.2/DATS/ML/matrix0.dats: 1506(line=92, offs=10) -- 1524(line=92, offs=28)");
+  $tmp22 = ats2phppre_mtrxszref_get_matrixref($arg0);
+  $tmp23 = ats2phppre_mtrxszref_get_matrixref($arg1);
+  $tmp24 = ats2phppre_cbind_matrixref_matrixref($tmp22, $tmp23, $tmp16, $tmp18, $tmp19);
+  $tmp25 = ats2phppre_add_int1_int1($tmp18, $tmp19);
+  $tmpret15 = ats2phppre_mtrxszref_make_matrixref($tmp24, $tmp16, $tmp25);
+  return $tmpret15;
 } // end-of-function
 
 /* ****** ****** */

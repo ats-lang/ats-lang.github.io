@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/prelude/CATS/CODEGEN/fprintf.atxt
-** Time of generation: Wed Dec 14 18:44:56 2016
+** Time of generation: Wed Oct 10 21:08:57 2018
 */
 
 /* ****** ****** */
@@ -564,6 +564,12 @@ atspre_fprint_strptr
 #define atspre_fprint_strbuf atspre_fprint_strptr
 #define atspre_print_strbuf(x) atspre_fprint_strbuf(stdout, (x))
 #define atspre_prerr_strbuf(x) atspre_fprint_strbuf(stderr, (x))
+
+/* ****** ****** */
+
+#define atspre_fprint_strnptr atspre_fprint_strptr
+#define atspre_print_strnptr(x) atspre_fprint_strbuf(stdout, (x))
+#define atspre_prerr_strnptr(x) atspre_fprint_strbuf(stderr, (x))
 
 /* ****** ****** */
 

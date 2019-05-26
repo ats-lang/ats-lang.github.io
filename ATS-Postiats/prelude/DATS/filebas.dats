@@ -27,17 +27,17 @@
 
 (* ****** ****** *)
 
-(*
-** Source:
-** $PATSHOME/prelude/DATS/CODEGEN/filebas.atxt
-** Time of generation: Sat Apr 15 18:08:10 2017
-*)
+(* Author: Hongwei Xi *)
+(* Start time: Feburary, 2012 *)
+(* Authoremail: hwxiATcsDOTbuDOTedu *)
 
 (* ****** ****** *)
 
-(* Author: Hongwei Xi *)
-(* Authoremail: hwxi AT cs DOT bu DOT edu *)
-(* Start time: Feburary, 2012 *)
+(*
+** Source:
+** $PATSHOME/prelude/DATS/CODEGEN/filebas.atxt
+** Time of generation: Wed Oct 10 21:08:49 2018
+*)
 
 (* ****** ****** *)
 
@@ -76,6 +76,7 @@ staload STAT = "libats/libc/SATS/sys/stat.sats"
 // this is just Unix convention
 //
 implement{} dirsep_get () = '/'
+implement{} dirsep_gets () = "/"
 implement{} dirname_self () = "."
 implement{} dirname_parent () = ".."
 //
@@ -83,26 +84,37 @@ implement{} dirname_parent () = ".."
 
 implement
 {}(*tmp*)
-filename_get_ext (name) = let
+filename_get_ext
+  (name) = let
+//
+val sep = dirsep_get<>()
 //
 #define NUL '\000'
 overload + with add_ptr_bsz
 //
-fun loop
+fun
+loop
 (
   p1: ptr, p2: ptr, c0: char
 ) : ptr = let
-  val c = $UN.ptr0_get<char> (p1)
+  val c1 =
+  $UN.ptr0_get<char>(p1)
 in
-  if c != NUL then let
+  if (c1 != NUL) then let
     val p1 = p1 + i2sz(1)
   in
-    if c != c0 then loop (p1, p2, c0) else loop (p1, p1, c0)
+    if
+    (c1 != sep)
+    then (
+      if c1 != c0
+        then loop(p1, p2, c0) else loop(p1, p1, c0)
+      // end of [if]
+    ) else loop(p1, the_null_ptr, c0)
   end else p2 // end of [if]
 end // end of [loop]
 //
 val p1 = string2ptr(name)
-val p2 = $effmask_all (loop (p1, the_null_ptr, '.'))
+val p2 = $effmask_all(loop(p1, the_null_ptr, '.'))
 //
 in
   $UN.castvwtp0{vStrptr0}(p2)
@@ -515,7 +527,14 @@ fileref_get2_file_charlst
 end // end of [local]
 
 (* ****** ****** *)
-
+//
+implement
+fileref_put_string
+  (out, cs) =
+(
+  fileref_puts(out, cs)
+)
+//
 implement
 fileref_put_charlst
   (out, cs) = let
@@ -527,25 +546,25 @@ fun loop
 in
 //
 case+ cs of
-| list_cons (c, cs) => let
-    val () = fileref_putc (out, c) in loop (out, cs)
+| list_nil() => ()
+| list_cons(c, cs) => let
+    val () = fileref_putc(out, c) in loop(out, cs)
   end // end of [list_cons]
-| list_nil ((*void*)) => ()
 //
 end // end of [loop]
 //
 in
-  loop (out, cs)
+  loop(out, cs)
 end // end of [fileref_put_charlst]
-
+//
 (* ****** ****** *)
 //
 implement
 {}(*tmp*)
-fileref_get_line_string$bufsize () = 64
+fileref_get_line_string$bufsize() = 64
 implement
 {}(*tmp*)
-fileref_get_file_string$bufsize () = 1024
+fileref_get_file_string$bufsize() = 1024
 //
 (* ****** ****** *)
 
@@ -555,11 +574,11 @@ fileref_get_line_string
   (inp) = let
 //
 var nlen: int // uninitialized
-val line = fileref_get_line_string_main (inp, nlen)
-prval () = lemma_strnptr_param (line)
+val line = fileref_get_line_string_main(inp, nlen)
+prval () = lemma_strnptr_param(line)
 //
 in
-  strnptr2strptr (line)
+  strnptr2strptr(line)
 end // end of [fileref_get_line_string]
 
 (* ****** ****** *)
@@ -569,29 +588,39 @@ implement
 fileref_get_line_string_main
   (inp, nlen) = let
 //
-val bsz =
-fileref_get_line_string$bufsize ()
+val
+bsz =
+fileref_get_line_string$bufsize<>()
 //
-val [l:addr,n:int] str = $extfcall
+val
+[l:addr,n:int]
+str = $extfcall
 ( Strnptr0
-, "atspre_fileref_get_line_string_main2", bsz, inp, addr@(nlen)
+, "atspre_fileref_get_line_string_main2"
+, bsz, inp, addr@(nlen)
 )
 //
-prval () = lemma_strnptr_param (str)
+prval () =
+  lemma_strnptr_param(str)
 //
-extern
-praxi
-__assert {l:addr} (pf: !int? @ l >> int (n) @ l): void
-prval () = __assert (view@(nlen)) 
+prval () =
+  __assert(view@(nlen)) where
+{
+extern praxi
+__assert{l:addr}(pf: !int? @ l >> int (n) @ l): void
+}
 //
-val isnot = strnptr_isnot_null (str)
+val isnot = strnptr_isnot_null(str)
 //
 in
 //
-if isnot then str else let
-  val (
-  ) = exit_errmsg_void (1, "[fileref_get_line_string] failed.")
-  val () = assert (nlen >= 0) // HX: for TC // deadcode at run-time
+if
+isnot
+then str else let
+  val () =
+  exit_errmsg_void
+  (1, "[fileref_get_line_string_main] failed.")
+  val () = assert (nlen >= 0) // HX: for TC // deadcode
 in
   str // HX: [str]=null is not returned
 end (* end of [if] *)
@@ -616,31 +645,39 @@ fun loop
   val iseof = fileref_is_eof (inp)
 in
 //
-if iseof then let
-  val () = (res := list_vt_nil ())
+if
+iseof
+then let
+  val () =
+  (res := list_vt_nil())
 in
   // nothing
 end else let
-  val line =
-    fileref_get_line_string (inp)
+  val
+  line =
+  fileref_get_line_string(inp)
   val () =
   (
-    res := list_vt_cons{line}{0}(line, _)
+    res :=
+    list_vt_cons{line}{0}(line, _)
   )
-  val+list_vt_cons (_, res1) = res
-  val () = loop (inp, res1)
-  prval () = fold@ (res)
+  val+
+  list_vt_cons(_, res1) = res
+  val () = loop(inp, res1) // tail-call
+  prval ((*folded*)) = fold@ (res)
 in
   // nothing
 end // end of [if]
 //
 end // end of [loop]
 //
-var res: lines
-val () = loop (inp, res)
 //
 in
-  res
+//
+let
+var res: lines
+val ((*void*)) = loop(inp, res) in res end
+//
 end // end of [fileref_get_lines_stringlst]
 
 (* ****** ****** *)
@@ -660,7 +697,9 @@ fun loop
 #define CNUL '\000'
 //
 val nw =
-$extfcall(size_t, "atslib_libats_libc_fread", p1, 1, n1, inp)
+$extfcall
+( size_t
+, "atslib_libats_libc_fread", p1, 1, n1, inp)
 //
 in (* in-of-let *)
 //
@@ -668,14 +707,15 @@ if
 (nw > 0)
 then let
   val n1 = n1 - nw
-  val p1 = add_ptr_bsz (p1, nw)
+  val p1 = add_ptr_bsz(p1, nw)
 in
   if n1 > 0 then
-    loop (inp, p0, n0, p1, n1) else loop2 (inp, p0, n0)
+    loop(inp, p0, n0, p1, n1) else loop2(inp, p0, n0)
   // end of [if]
 end // end of [then]
 else let
-  val () = $UN.ptr0_set<char> (p1, CNUL) in $UN.castvwtp0{Strptr1}(p0)
+  val () =
+  $UN.ptr0_set<char>(p1, CNUL) in $UN.castvwtp0{Strptr1}(p0)
 end // end of [else]
 //
 end // end of [loop]
@@ -689,25 +729,26 @@ and loop2
   val (pf, pfgc | p0_) = malloc_gc (bsz2)
   val p0_ = $UN.castvwtp0{ptr}((pf, pfgc | p0_))
 //
-  val _(*ptr*) =
-  $extfcall(ptr, "atslib_libats_libc_memcpy", p0_, p0, n0)
+  val _ptr_ =
+  $extfcall
+  (ptr, "atslib_libats_libc_memcpy", p0_, p0, n0)
 //
-  val () = strptr_free ($UN.castvwtp0{Strptr1}(p0))
   val n0_ = pred(g0ofg1(bsz2))
-  val p1_ = add_ptr_bsz (p0_, n0)
+  val p1_ = add_ptr_bsz(p0_, n0)
+  val ((*freed*)) = strptr_free($UN.castvwtp0{Strptr1}(p0))
 in
-  loop (inp, p0_, n0_, p1_, bsz)
+  loop(inp, p0_, n0_, p1_, bsz)
 end // end of [loop2]
 //
 val bsz =
-  fileref_get_file_string$bufsize ()
+  fileref_get_file_string$bufsize<>()
 val bsz = i2sz(bsz)
 val (pf, pfgc | p0_) = malloc_gc (bsz)
 val p0_ = $UN.castvwtp0{ptr}((pf, pfgc | p0_))
 val n0_ = pred(bsz)
 //
 in
-  loop (inp, p0_, n0_, p0_, n0_)
+  loop(inp, p0_, n0_, p0_, n0_)
 end // end of [fileref_get_file_string]
 
 (* ****** ****** *)
@@ -719,53 +760,60 @@ atspre_fileref_get_line_string_main2
 (
   atstype_int bsz0
 , atstype_ptr filp0
-, atstype_ref nlen // int *nlen
+, atstype_ref nlen0 // int *nlen
 )
 {
 //
   int bsz = bsz0 ;
+  int ofs1 = 0, ofs2 = 0;
+  int *nlen = (int*)nlen0;
   FILE *filp = (FILE*)filp0 ;
-  int ofs = 0, ofs2 ;
-  char *buf, *buf2, *pres ;
-  buf = atspre_malloc_gc(bsz) ;
+  char *buf1, *buf2, *pres ;
+//
+  buf1 = atspre_malloc_gc(bsz) ;
 //
   while (1) {
-    buf2 = buf+ofs ;
-    pres = fgets(buf2, bsz-ofs, filp) ;
+    buf2 = buf1+ofs1 ;
+    pres = fgets(buf2, bsz-ofs1, filp) ;
     if (!pres)
     {
       if (feof(filp))
       {
-        *buf2 = '\000' ;
-        *(int*)nlen = ofs ; return buf ;
+        *buf2 = '\0' ;
+        *nlen = ofs1 ; return buf1 ;
       } else {
-        atspre_mfree_gc(buf) ;
-        *(int*)nlen = -1 ; return (char*)0 ;
+        atspre_mfree_gc(buf1) ;
+        *nlen = -1 ; return (char*)0 ;
       } // end of [if]
     }
-    ofs2 = strlen(buf2) ;
-    if (ofs2==0) return buf ;
-    ofs += ofs2 ; // HX: ofs > 0
 //
+    ofs2 = strlen(buf2) ;
+//
+    if
+    (ofs2 > 0) ofs1 += ofs2 ; else return buf1;
+//
+// HX: ofs1 > 0 holds at this point
 // HX: the newline symbol needs to be trimmed:
 //
-    if (buf[ofs-1]=='\n')
-    {
-      buf[ofs-1] = '\0'; *(int*)nlen = ofs-1 ; return buf ;
-    }
+    if(
+    buf1[ofs1-1]=='\n'
+    ) {
+    buf1[ofs1-1] = '\0'; *nlen = ofs1-1 ; return buf1 ;
+    } // end of [if]
 //
 // HX: there is room // so there are no more chars:
 //
-    if (ofs+1 < bsz) { *(int*)nlen = ofs ; return buf ; }
+    if (ofs1+1 < bsz) { ( *nlen = ofs1 ) ; return buf1 ; }
 //
-// HX: there is no room // so another call to [fgets] is needed:
+// HX: there is no room // another call to [fgets] is needed:
 //
     bsz *= 2 ;
-    buf2 = buf ; buf = atspre_malloc_gc(bsz) ; memcpy(buf, buf2, ofs) ;
-    atspre_mfree_gc(buf2) ;
+    buf2 = buf1 ;
+    buf1 = atspre_malloc_gc(bsz) ;
+    memcpy(buf1, buf2, ofs1) ; atspre_mfree_gc(buf2) ;
   } // end of [while]
 //
-  return buf ; // HX: deadcode
+  return buf1 ; // HX: this is really deadcode
 //
 } // end of [atspre_fileref_get_line_string_main2]
 %}
@@ -774,7 +822,7 @@ atspre_fileref_get_line_string_main2
 
 implement
 {}(*tmp*)
-fileref_get_word (inp) = let
+fileref_get_word(inp) = let
 //
 vtypedef
 res = List0_vt(charNZ)
@@ -900,24 +948,29 @@ fun loop
 | inp: FILEref, bufp: ptr(l), bsz: size_t(n), env: &env
 ) : void = let
 //
-val bsz2 = fread (bufp, i2sz(1), bsz, inp)
-prval [n2:int] EQINT() = g1uint_get_index (bsz2)
+val
+bsz2 = fread(bufp, i2sz(1), bsz, inp)
+//
+prval
+[n2:int] EQINT() = g1uint_get_index(bsz2)
 //
 in
 //
 if bsz2 > 0 then
 {
-  val A = $UN.cast{arrayref(char,n2)}(bufp)
-  val () = fileref_foreach$fworkv<env> (A, bsz2, env)
+  val A =
+    $UN.cast{arrayref(char,n2)}(bufp)
+  val () =
+    fileref_foreach$fworkv<env>(A, bsz2, env)
   val ((*void*)) = loop (pf | inp, bufp, bsz, env)
 } (* end of [if] *)
 //
 end // end of [loop]
 //
-val bsz = fileref_foreach$bufsize<> ()
-val (pf1, pf2 | bufp) = memory$alloc<> (bsz)
-val ((*void*)) = loop (pf1 | inp, bufp, bsz, env)
-val ((*void*)) = memory$free<> (pf1, pf2 | bufp)
+val bsz = fileref_foreach$bufsize<>((*void*))
+val (pf1, pf2 | bufp) = memory$alloc<>( bsz )
+val ((*void*)) = loop(pf1 | inp, bufp, bsz, env)
+val ((*void*)) = memory$free<>(pf1, pf2 | bufp)
 //
 in
   // nothing
@@ -964,33 +1017,93 @@ auxmain
 (
   inp
 : FILEref
-) : stream_vt(elt)= $ldelay
+) : stream_vt(elt) = $ldelay
 (
 //
 let
   val c0 = fileref_getc(inp)
 in
-  if c0 >= 0
-    then (
-      stream_vt_cons(int2char0(c0), auxmain(inp))
-    ) else (
+  if
+  (c0 >= 0)
+  then
+  (
+    stream_vt_cons
+    (int2char0(c0), auxmain(inp))
+  ) else
+  (
+    stream_vt_nil((*void*)) where
+    {
 (*
-      fileref_close(inp); // HX: FILEref is not freed!
+      //
+      // HX:
+      // FILEref should be kept!
+      //
+      val () = fileref_close(inp)
+      //
 *)
-      stream_vt_nil((*void*))
-    ) (* else *)
-  // end of [[if]
-end : stream_vt_con(elt)
+    }
+  ) (* end-of-else *) // end-of-if
+end : stream_vt_con(elt) // end of [let]
 //
 (*
 ,
 //
-fileref_close(inp) // HX-2016-09-12: FILEref is not freed!
+fileref_close(inp) // HX: [inp] should be kept!
 //
 *)
 ) (* end of [auxmain] *)
 //
 } (* end of [streamize_fileref_char] *)
+
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+streamize_fileptr_char
+  (inp) = let
+//
+typedef elt = char
+//
+fun
+auxmain
+(
+  inp
+: FILEref
+) : stream_vt(elt) = $ldelay
+(
+//
+let
+  val c0 = fileref_getc(inp)
+in
+  if
+  (c0 >= 0)
+  then
+  (
+    stream_vt_cons
+    (int2char0(c0), auxmain(inp))
+  ) else
+  (
+    stream_vt_nil((*void*)) where
+    {
+      //
+      // HX:
+      // [inp] should be freed!
+      //
+      val () = fileref_close(inp)
+      //
+    }
+  ) (* end-of-else *) // end-of-if
+end : stream_vt_con(elt) // end of [let]
+//
+,
+//
+fileref_close(inp) // HX: [inp] should be freed!
+//
+) (* end of [auxmain] *)
+//
+in
+  auxmain($UN.castvwtp0{FILEref}(inp))
+end (* end of [streamize_fileptr_char] *)
 
 (* ****** ****** *)
 
@@ -1004,20 +1117,24 @@ vtypedef elt = Strptr1
 //
 fun
 auxmain
-(
-  inp
-: FILEref
-) : stream_vt(elt)= $ldelay
+(inp: FILEref):
+stream_vt(elt) = $ldelay
 (
 //
 let
-  val iseof = fileref_is_eof(inp)
+//
+val
+iseof = fileref_is_eof(inp)
+//
 in
   if iseof
     then let
 (*
+    //
+    // HX: [inp] is kept!
+    //
       val () =
-        fileref_close(inp) // HX: FILEref is not freed!
+        fileref_close(inp)
       // end of [val]
 *)
     in
@@ -1030,17 +1147,69 @@ in
     in
       stream_vt_cons(line, auxmain(inp))
     end // end of [else]
-end : stream_vt_con(elt)
+end : stream_vt_con(elt) // end of [let]
 //
 (*
 ,
 //
-fileref_close(inp) // HX-2016-09-12: FILEref is not freed!
+fileref_close(inp) // HX: [inp] should be kept!
 //
 *)
 ) (* end of [auxmain] *)
 //
 } (* end of [streamize_fileref_line] *)
+
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+streamize_fileptr_line
+  (inp) = auxmain(inp) where
+{
+//
+vtypedef elt = Strptr1
+//
+fun
+auxmain
+(inp: FILEref):
+stream_vt(elt) = $ldelay
+(
+//
+let
+//
+val
+iseof = fileref_is_eof(inp)
+//
+in
+  if iseof
+    then let
+    //
+    // HX: [inp] is freed!
+    //
+      val () =
+        fileref_close(inp)
+      // end of [val]
+    in
+      stream_vt_nil((*void*))
+    end // end of [then]
+    else let
+      val line =
+        fileref_get_line_string(inp)
+      // end of [val]
+    in
+      stream_vt_cons(line, auxmain(inp))
+    end // end of [else]
+end : stream_vt_con(elt) // end of [let]
+//
+,
+//
+fileref_close(inp) // HX: [inp] should be freed!
+//
+) (* end of [auxmain] *)
+//
+val inp = $UN.castvwtp0{FILEref}(inp)
+//
+} (* end of [streamize_fileptr_line] *)
 
 (* ****** ****** *)
 

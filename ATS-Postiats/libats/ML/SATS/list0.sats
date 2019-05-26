@@ -28,8 +28,8 @@
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: gmmhwxiATgmailDOTcom *)
 (* Start time: May, 2012 *)
+(* Authoremail: gmmhwxiATgmailDOTcom *)
 
 (* ****** ****** *)
 //
@@ -64,16 +64,32 @@ typedef NSH(a:type) = a // for commenting purpose
 (* ****** ****** *)
 //
 #define
-list0_sing(x) list0_cons(x, list0_nil())
+list0_sing(x)
+list0_cons(x, list0_nil())
 //
 #define
 list0_pair(x1, x2)
-list0_cons(x1, list0_cons (x2, list0_nil()))
+list0_cons(x1, list0_cons(x2, list0_nil()))
 //
 (* ****** ****** *)
 //
 castfn
-list0_cast{x:t0p} (xs: list0(INV(x))):<> list0(x)
+list0_cast{x:t0p}
+  (xs: list0(INV(x))):<> list0(x)
+//
+(* ****** ****** *)
+//
+castfn
+g0ofg1_list
+  {a:t@ype}
+  (List(INV(a))):<> list0(a)
+castfn
+g1ofg0_list
+  {a:t@ype}
+  (list0(INV(a))):<> List0(a)
+//
+overload g0ofg1 with g0ofg1_list
+overload g1ofg0 with g1ofg0_list
 //
 (* ****** ****** *)
 //
@@ -86,32 +102,56 @@ list0_of_list_vt
 //
 (* ****** ****** *)
 //
-castfn
-g0ofg1_list{a:t@ype}(List(INV(a))):<> list0(a)
-castfn
-g0ofg1_list_vt{a:t@ype}(List_vt(INV(a))):<> list0(a)
+fun{a:t0p}
+list0_tuple_0(): list0(a)
 //
-overload g0ofg1 with g0ofg1_list
-overload g0ofg1 with g0ofg1_list_vt
+fun{a:t0p}
+list0_tuple_1(x0: a): list0(a)
+fun{a:t0p}
+list0_tuple_2(x0: a, x1: a): list0(a)
+fun{a:t0p}
+list0_tuple_3(x0: a, x1: a, x2: a): list0(a)
+//
+fun{a:t0p}
+list0_tuple_4
+  (x0: a, x1: a, x2: a, x3: a): list0(a)
+fun{a:t0p}
+list0_tuple_5
+  (x0: a, x1: a, x2: a, x3: a, x4: a): list0(a)
+fun{a:t0p}
+list0_tuple_6
+  (x0: a, x1: a, x2: a, x3: a, x4: a, x5: a): list0(a)
 //
 (* ****** ****** *)
 //
-castfn
-g1ofg0_list{a:t@ype}(list0(INV(a))):<> List0(a)
+symintr list0_tuple
 //
-overload g1ofg0 with g1ofg0_list
+overload
+list0_tuple with list0_tuple_0
+overload
+list0_tuple with list0_tuple_1
+overload
+list0_tuple with list0_tuple_2
+overload
+list0_tuple with list0_tuple_3
+overload
+list0_tuple with list0_tuple_4
+overload
+list0_tuple with list0_tuple_5
+overload
+list0_tuple with list0_tuple_6
 //
 (* ****** ****** *)
 
 fun{a:t0p}
-list0_make_sing (x: a):<> list0(a)
+list0_make_sing(x: a):<> list0(a)
 fun{a:t0p}
-list0_make_pair (x1: a, x2: a):<> list0(a)
+list0_make_pair(x1: a, x2: a):<> list0(a)
 
 (* ****** ****** *)
 
 fun{a:t0p}
-list0_make_elt (n: int, x: a):<!exn> list0(a)
+list0_make_elt(n: int, x: a):<!exn> list0(a)
 
 (* ****** ****** *)
 //
@@ -134,8 +174,10 @@ list0_make_intrange_lrd
 //
 symintr list0_make_intrange
 //
-overload list0_make_intrange with list0_make_intrange_lr
-overload list0_make_intrange with list0_make_intrange_lrd
+overload
+list0_make_intrange with list0_make_intrange_lr
+overload
+list0_make_intrange with list0_make_intrange_lrd
 //
 (* ****** ****** *)
 //
@@ -162,6 +204,7 @@ list0_length
   (xs: list0(INV(a))):<> intGte(0)
 //
 overload length with list0_length of 0
+overload .length with list0_length of 0
 //
 (* ****** ****** *)
 //
@@ -187,13 +230,11 @@ list0_tail_opt
 //
 overload head with list0_head_exn of 0
 overload tail with list0_tail_exn of 0
-//
-overload .head with list0_head_exn of 0
-overload .tail with list0_tail_exn of 0
-//
 overload head_opt with list0_head_opt of 0
 overload tail_opt with list0_tail_opt of 0
 //
+overload .head with list0_head_exn of 0
+overload .tail with list0_tail_exn of 0
 overload .head_opt with list0_head_opt of 0
 overload .tail_opt with list0_tail_opt of 0
 //
@@ -201,36 +242,44 @@ overload .tail_opt with list0_tail_opt of 0
 //
 fun
 {a:t0p}
-list0_last_exn(xs: list0(INV(a))):<!exn> (a)
+list0_last_exn
+  (xs: list0(INV(a))):<!exn> (a)
 fun
 {a:t0p}
-list0_last_opt(xs: list0(INV(a))):<> Option_vt(a)
+list0_last_opt
+  (xs: list0(INV(a))):<> Option_vt(a)
 //
 (* ****** ****** *)
 //
 fun
 {a:t0p}
-list0_init_exn(xs: list0(INV(a))):<!exn> list0(a)
+list0_init_exn
+(xs: list0(INV(a))):<!exn> list0(a)
 fun
 {a:t0p}
-list0_init_opt(xs: list0(INV(a))):<!exn> Option_vt(list0(a))
+list0_init_opt
+(xs: list0(INV(a))):<!exn> Option_vt(list0(a))
 //
 (* ****** ****** *)
 //
 fun{a:t0p}
 list0_nth_exn
-  (xs: list0(INV(a)), i: int):<!exn> (a)
+(xs: list0(INV(a)), i0: int):<!exn> (a)
 fun{a:t0p}
 list0_nth_opt
-  (xs: list0(INV(a)), i: int):<> Option_vt(a)
+(xs: list0(INV(a)), i0: int):<> Option_vt(a)
 //
 (* ****** ****** *)
 //
 fun{a:t0p}
 list0_get_at_exn
-  (xs: list0(INV(a)), i0: int):<!exn> (a)
+(xs: list0(INV(a)), i0: int):<!exn> (a)
+fun{a:t0p}
+list0_get_at_opt
+(xs: list0(INV(a)), i0: int):<> Option_vt(a)
 //
-overload [] with list0_get_at_exn
+overload
+[] with list0_get_at_exn // ListSubscriptExn
 //
 (* ****** ****** *)
 //
@@ -239,7 +288,16 @@ list0_fset_at_exn
   (list0(INV(a)), i0: int, x0: a):<!exn> list0(a)
 fun{a:t0p}
 list0_fset_at_opt
-  (list0(INV(a)), i0: int, x0: a):<!exn> Option_vt(list0(a))
+  (list0(INV(a)), i0: int, x0: a):<> Option_vt(list0(a))
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+list0_fexch_at_exn
+  (list0(INV(a)), i0: int, x0: &a >> a):<!exnwrt> list0(a)
+fun{a:t0p}
+list0_fexch_at_opt
+  (list0(INV(a)), i0: int, x0: &a >> a):<!wrt> Option_vt(list0(a))
 //
 (* ****** ****** *)
 //
@@ -280,7 +338,7 @@ overload fprint with fprint_listlist0_sep
 fun{a:t0p}
 list0_insert_at_exn
 (
-  SHR(list0(INV(a))), i: int, x: a
+  SHR(list0(INV(a))), i: int, x: (a)
 ) :<!exn> list0(a) // endfun
 
 (* ****** ****** *)
@@ -293,7 +351,7 @@ list0_remove_at_exn
 fun{a:t0p}
 list0_takeout_at_exn
 (
-  xs: SHR(list0(INV(a))), i: int, x: &a? >> a
+xs: SHR(list0(INV(a))), i: int, x: &a? >> a
 ) :<!exnwrt> list0(a) // end-of-function
 //
 overload remove_at with list0_remove_at_exn
@@ -301,13 +359,17 @@ overload takeout_at with list0_takeout_at_exn
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 list0_append
 (
-  xs: NSH(list0(INV(a))), ys: SHR(list0(a))
+xs: NSH(list0(INV(a))), ys: SHR(list0(a))
 ) :<> list0(a)
 //
 overload + with list0_append
+//
+overload append with list0_append
+overload .append with list0_append
 //
 (* ****** ****** *)
 //
@@ -318,9 +380,13 @@ list0_extend
 //
 macdef list0_snoc = list0_extend
 //
+overload extend with list0_extend
+overload .extend with list0_extend
+//
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 mul_int_list0
 (
   m0: intGte(0), xs: NSH(list0(INV(a)))
@@ -333,6 +399,7 @@ list0_reverse
   (xs: list0(INV(a))):<> list0(a)
 //
 overload reverse with list0_reverse
+overload .reverse with list0_reverse
 //
 fun{a:t0p}
 list0_reverse_append
@@ -343,6 +410,7 @@ macdef
 list0_revapp = list0_reverse_append
 //
 overload revapp with list0_reverse_append
+overload .revapp with list0_reverse_append
 //
 (* ****** ****** *)
 //
@@ -365,26 +433,36 @@ list0_drop_exn
 // end of [list0_drop_exn]
 
 (* ****** ****** *)
-
+//
+fun
+{a:t0p}
+{res:t0p}
+list0_cata
+( xs: list0(INV(a))
+, f_nil: cfun0(res), f_cons: cfun2(a, list0(a), res)
+) : (res) // end of [list0_cata]
+//
+(* ****** ****** *)
+//
 fun
 {a:t0p}
 list0_app
 (
-  xs: list0(INV(a)), fwork: cfun(a, void)
+xs: list0(INV(a)), fwork: cfun(a, void)
 ) : void // end of [list0_app]
-
+//
 (* ****** ****** *)
 //
 fun{a:t0p}
 list0_foreach
 (
-  xs: list0(INV(a)), fwork: cfun(a, void)
+xs: list0(INV(a)), fwork: cfun(a, void)
 ) : void // end of [list0_foreach]
 //
 fun{a:t0p}
 list0_foreach_method
 (
-  xs: list0(INV(a))) (fwork: cfun(a, void)
+xs: list0(INV(a))) (fwork: cfun(a, void)
 ) : void // end of [list0_foreach_method]
 //
 overload .foreach with list0_foreach_method
@@ -394,13 +472,13 @@ overload .foreach with list0_foreach_method
 fun{a:t0p}
 list0_rforeach
 (
-  xs: list0(INV(a)), fwork: cfun(a, void)
+xs: list0(INV(a)), fwork: cfun(a, void)
 ) : void // end of [list0_rforeach]
 //
 fun{a:t0p}
 list0_rforeach_method
 (
-  xs: list0(INV(a))) (fwork: cfun(a, void)
+xs: list0(INV(a))) (fwork: cfun(a, void)
 ) : void // end of [list0_rforeach_method]
 //
 overload .rforeach with list0_rforeach_method
@@ -410,13 +488,13 @@ overload .rforeach with list0_rforeach_method
 fun{a:t0p}
 list0_iforeach
 (
-  list0(INV(a)), fwork: cfun2(intGte(0), a, void)
+xs: list0(INV(a)), fwork: cfun2(intGte(0), a, void)
 ) : intGte(0)(*length*) // end of [list0_iforeach]
 //
 fun{a:t0p}
 list0_iforeach_method
 (
-  list0(INV(a))) (fwork: cfun2(intGte(0), a, void)
+xs: list0(INV(a)))(fwork: cfun2(intGte(0), a, void)
 ) : intGte(0)(*length*) // end of [list0_iforeach_method]
 //
 overload .iforeach with list0_iforeach_method
@@ -445,12 +523,16 @@ list0_foreach2_eq
 fun{
 res:t0p}{a:t0p
 } list0_foldleft
-  (list0(INV(a)), ini: res, fopr: cfun2(res, a, res)): res
+(
+xs: list0(INV(a)), ini: res, fopr: cfun2(res, a, res)
+) : res // end of [list0_foldleft]
 //
 fun{
 res:t0p}{a:t0p
 } list0_foldleft_method
-  (list0(INV(a)), TYPE(res))(ini: res, fopr: cfun2(res, a, res)): res
+(
+xs: list0(INV(a)), TYPE(res))(ini: res, fopr: cfun2(res, a, res)
+) : res // end of [list0_foldleft_method]
 //
 overload .foldleft with list0_foldleft_method
 //
@@ -459,22 +541,26 @@ overload .foldleft with list0_foldleft_method
 fun{
 res:t0p}{a:t0p
 } list0_ifoldleft
-  (list0(INV(a)), ini: res, fopr: cfun3(res, int, a, res)): res
-// end of [list0_ifoldleft]
+(
+xs: list0(INV(a)), ini: res, fopr: cfun3(res, int, a, res)
+) : res // end of [list0_ifoldleft]
 //
 fun{
 res:t0p}{a:t0p
 } list0_ifoldleft_method
-  (list0(INV(a)), TYPE(res))(ini: res, fopr: cfun3(res, int, a, res)): res
-// end of [list0_ifoldleft_method]
+(
+xs: list0(INV(a)), TYPE(res))(ini: res, fopr: cfun3(res, int, a, res)
+) : res // end of [list0_ifoldleft_method]
 //
 overload .ifoldleft with list0_ifoldleft_method
 //
 (* ****** ****** *)
 
-fun{
-res:t0p}{a1,a2:t0p
-} list0_foldleft2 (
+fun
+{res:t0p}
+{a1,a2:t0p}
+list0_foldleft2
+(
   xs1: list0(INV(a1))
 , xs2: list0(INV(a2))
 , ini: res, fopr: cfun3(res, a1, a2, res)
@@ -485,12 +571,16 @@ res:t0p}{a1,a2:t0p
 fun{
 a:t0p}{res:t0p
 } list0_foldright
-  (xs: list0(INV(a)), fopr: cfun2(a, res, res), snk: res): res
+(
+xs: list0(INV(a)), fopr: cfun2(a, res, res), snk: res
+) : res // end of [list0_foldright]
 //
 fun{
 a:t0p}{res:t0p
 } list0_foldright_method
-  (list0(INV(a)), TYPE(res)) (fopr: cfun2(a, res, res), snk: res): res
+(
+xs: list0(INV(a)), TYPE(res))(fopr: cfun2(a, res, res), snk: res
+) : res // end of [list0_foldright_method]
 //
 overload .foldright with list0_foldright_method
 //
@@ -547,6 +637,15 @@ list0_exists2
 , pred: cfun2(a1, a2, bool)
 ) : bool // end of [list0_exists2]
 //
+fun
+{a1,a2:t0p}
+list0_exists2_eq
+(
+  xs1: list0(INV(a1))
+, xs2: list0(INV(a2))
+, pred: cfun2(a1, a2, bool), sgn: &int? >> int
+) : bool // end of [list0_exists2_eq]
+//
 (* ****** ****** *)
 //
 fun
@@ -594,7 +693,7 @@ list0_forall2_eq
 (
   xs1: list0(INV(a1))
 , xs2: list0(INV(a2))
-, p: cfun2(a1, a2, bool), sgn: &int? >> int
+, pred: cfun2(a1, a2, bool), sgn: &int? >> int
 ) : bool // end of [list0_forall2_eq]
 //
 (* ****** ****** *)
@@ -607,25 +706,33 @@ list0_equal
 , xs2: list0(INV(a)), eqfn: cfun2(a, a, bool)
 ) : bool // end of [list0_equal]
 
+fun
+{a:t0p}
+list0_compare
+(
+  xs1: list0(INV(a))
+, xs2: list0(INV(a)), cmpfn: cfun2(a, a, int)
+) : (int) // end of [list0_compare]
+
 (* ****** ****** *)
 //
 fun
 {a:t0p}
 list0_find_exn
-  (xs: list0(INV(a)), pred: cfun(a, bool)): (a)
+(xs: list0(INV(a)), pred: cfun(a, bool)): (a)
 fun
 {a:t0p}
 list0_find_opt
-  (xs: list0(INV(a)), pred: cfun(a, bool)): Option_vt(a)
+(xs: list0(INV(a)), pred: cfun(a, bool)): Option_vt(a)
 //
 fun
 {a:t0p}
 list0_find_exn_method
-  (xs: list0(INV(a)))(pred: cfun(a, bool)): (a)
+(xs: list0(INV(a)))(pred: cfun(a, bool)): (a)
 fun
 {a:t0p}
 list0_find_opt_method
-  (xs: list0(INV(a)))(pred: cfun(a, bool)): Option_vt(a)
+(xs: list0(INV(a)))(pred: cfun(a, bool)): Option_vt(a)
 //
 overload .find with list0_find_exn_method
 overload .find_opt with list0_find_opt_method
@@ -636,8 +743,47 @@ fun
 {a:t0p}
 list0_find_index
 (
-  xs: list0(INV(a)), pred: cfun(a, bool)
+xs: list0(INV(a)), pred: cfun(a, bool)
 ) : intGte(~1) // end of [list0_find_index]
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+list0_find_suffix
+(
+xs: list0(INV(a)), pred: cfun(list0(a), bool)
+) : list0(a) // end of [list0_find_suffix]
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+list0_skip_while
+(
+xs: list0(INV(a)), pred: cfun(a, bool)
+) : list0(a) // end of [list0_skip_while]
+fun
+{a:t0p}
+list0_skip_until
+(
+xs: list0(INV(a)), pred: cfun(a, bool)
+) : list0(a) // end of [list0_skip_until]
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+list0_take_while
+(
+xs: list0(INV(a)), pred: cfun(a, bool)
+) : list0(a) // end of [list0_take_while]
+fun
+{a:t0p}
+list0_take_until
+(
+xs: list0(INV(a)), pred: cfun(a, bool)
+) : list0(a) // end of [list0_take_until]
 //
 (* ****** ****** *)
 //
@@ -645,23 +791,26 @@ fun{
 a,b:t0p
 } list0_assoc_exn
 (
-  list0 @(INV(a), b), x0: a, eq: cfun(a, a, bool)
+  list0@(INV(a), b), x0: a, eq: cfun(a, a, bool)
 ) : (b) // end-of-function
 fun{
 a,b:t0p
 } list0_assoc_opt
 (
-  list0 @(INV(a), b), x0: a, eq: cfun(a, a, bool)
+  list0@(INV(a), b), x0: a, eq: cfun(a, a, bool)
 ) : Option_vt (b) // end-of-function
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 list0_filter
-  (list0(INV(a)), pred: cfun(a, bool)): list0(a)
-fun{a:t0p}
+(xs: list0(INV(a)), pred: cfun(a, bool)): list0(a)
+//
+fun
+{a:t0p}
 list0_filter_method
-  (list0(INV(a)))(pred: cfun(a, bool)): list0(a)
+(xs: list0(INV(a)))(pred: cfun(a, bool)): list0(a)
 //
 overload .filter with list0_filter_method
 //
@@ -672,16 +821,16 @@ fun
 {b:t0p}
 list0_map
 (
-  xs: list0(INV(a)), fopr: cfun(a, b)
-) : list0(b) // end-of-function
+xs: list0(INV(a)), fopr: cfun(a, b)
+) : list0(b) // end of [list0_map]
 //
 fun
 {a:t0p}
 {b:t0p}
 list0_mapopt
 (
-  xs: list0(INV(a)), fopr: cfun(a, Option_vt(b))
-) : list0(b) // end-of-function
+xs: list0(INV(a)), fopr: cfun(a, Option_vt(b))
+) : list0(b) // end of [list0_mapopt]
 //
 (* ****** ****** *)
 //
@@ -690,7 +839,7 @@ fun
 {b:t0p}
 list0_map_method
 (
-  list0(INV(a)), TYPE(b))(fopr: cfun(a, b)
+xs: list0(INV(a)), TYPE(b))(fopr: cfun(a, b)
 ) : list0(b) // end-of-function
 //
 fun
@@ -698,7 +847,7 @@ fun
 {b:t0p}
 list0_mapopt_method
 (
-  list0(INV(a)), TYPE(b))(fopr: cfun(a, Option_vt(b))
+xs: list0(INV(a)), TYPE(b))(fopr: cfun(a, Option_vt(b))
 ) : list0(b) // end-of-function
 //
 overload .map with list0_map_method
@@ -706,34 +855,80 @@ overload .mapopt with list0_mapopt_method
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 list0_mapcons
-  (x0: a, xss: list0(list0(INV(a)))): list0(list0(a))
+(x0: a, xss: list0(list0(INV(a)))): list0(list0(a))
 //
 overload * with list0_mapcons
 //
 (* ****** ****** *)
 //
-fun{
-a:t0p}{b:t0p
-} list0_imap
-  (list0(INV(a)), fopr: cfun2(int, a, b)): list0(b)
-fun{
-a:t0p}{b:t0p
-} list0_imap_method
-  (list0(INV(a)), TYPE(b))(fopr: cfun2(int, a, b)): list0(b)
+fun
+{a:t0p}
+{b:t0p}
+list0_mapjoin
+(
+xs: list0(INV(a)), fopr: cfun(a, list0(b))
+) : list0(b) // end-of-function
 //
-overload .imap with list0_imap_method
+fun
+{a:t0p}
+{b:t0p}
+list0_mapjoin_method
+(
+xs: list0(INV(a)))(fopr: cfun(a, list0(b))
+) : list0(b) // end of [list0_mapjoin_method]
+//
+overload .mapjoin with list0_mapjoin_method
 //
 (* ****** ****** *)
-
+//
+fun
+{a:t0p}
+{b:t0p}
+list0_imap
+(list0(INV(a)), fopr: cfun2(int, a, b)): list0(b)
+fun
+{a:t0p}
+{b:t0p}
+list0_imapopt
+(list0(INV(a)), fopr: cfun2(int, a, Option_vt(b))): list0(b)
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+{b:t0p}
+list0_imap_method
+(list0(INV(a)), TYPE(b))(fopr: cfun2(int, a, b)): list0(b)
+fun
+{a:t0p}
+{b:t0p}
+list0_imapopt_method
+(list0(INV(a)), TYPE(b))(fopr: cfun2(int, a, Option_vt(b))): list0(b)
+//
+overload .imap with list0_imap_method
+overload .imapopt with list0_imapopt_method
+//
+(* ****** ****** *)
+//
 fun{
-a1,a2:t0p}{b:t0p
+a1,
+a2:t0p}{b:t0p
 } list0_map2
 (
   list0(INV(a1)), list0(INV(a2)), fopr: cfun2(a1, a2, b)
 ) : list0(b) // end of [list0_map2]
-
+//
+fun{
+a1,
+a2:t0p}{b:t0p
+} list0_imap2
+(
+  list0(INV(a1)), list0(INV(a2)), fopr: cfun3(int, a1, a2, b)
+) : list0(b) // end of [list0_imap2]
+//
 (* ****** ****** *)
 //
 fun{a:t0p}
@@ -785,55 +980,76 @@ x,y:t0p}{z:t0p
 //
 fun
 {x:t0p}
-list0_foreach_choose2
+list0_choose2_foreach
 (
   list0(INV(x)), fwork: cfun2(x, x, void)
 ) : void // end-of-function
 fun
 {x:t0p}
-list0_foreach_choose2_method
+list0_choose2_foreach_method
 (
   list0(INV(x))) (fwork: cfun2(x, x, void)
 ) : void // end-of-function
 //
-overload .foreach_choose2 with list0_foreach_choose2_method
+overload
+.choose2_foreach with list0_choose2_foreach_method
 //
 (* ****** ****** *)
 //
 fun{
 x,y:t0p
-} list0_foreach_xprod2
-(
-  list0(INV(x)), list0(INV(y)), fwork: cfun2(x, y, void)
+} list0_xprod2_foreach
+( list0(INV(x))
+, list0(INV(y)), fwork: cfun2(x, y, void)
 ) : void // end-of-function
 fun
 {x,y:t0p}
-list0_foreach_xprod2_method
+list0_xprod2_foreach_method
 (
-  list0(INV(x)), list0(INV(y)))(fwork: cfun2(x, y, void)
+  list0(INV(x))
+, list0(INV(y)))(fwork: cfun2(x, y, void)
 ) : void // end-of-function
 //
 fun{
 x,y:t0p
-} list0_iforeach_xprod2
+} list0_xprod2_iforeach
 (
-  list0(INV(x)), list0(INV(y)), fwork: cfun4(intGte(0), x, intGte(0), y, void)
+  list0(INV(x))
+, list0(INV(y))
+, fwork: cfun4(intGte(0), x, intGte(0), y, void)
 ) : void // end-of-function
 fun
 {x,y:t0p}
-list0_iforeach_xprod2_method
+list0_xprod2_iforeach_method
 (
-  list0(INV(x)), list0(INV(y)))(fwork: cfun4(intGte(0), x, intGte(0), y, void)
+  list0(INV(x)), list0(INV(y))
+)
+(
+  fwork: cfun4(intGte(0), x, intGte(0), y, void)
 ) : void // end-of-function
 //
-overload .foreach_xprod2 with list0_foreach_xprod2_method
-overload .iforeach_xprod2 with list0_iforeach_xprod2_method
+overload
+.xprod2_foreach with list0_xprod2_foreach_method
+overload
+.xprod2_iforeach with list0_xprod2_iforeach_method
 //
 (* ****** ****** *)
 //
 fun{a:t0p}
 streamize_list0_elt
   (list0(INV(a))):<!wrt> stream_vt(a)
+//
+fun{a:t0p}
+un_streamize_list0_elt
+  (stream_vt(INV(a))):<!wrt> list0(a)
+//
+(* ****** ****** *)
+//
+fun{a:t0p}
+streamize_list0_suffix
+  (list0(INV(a))):<!wrt> stream_vt(list0(a))
+//
+(* ****** ****** *)
 //
 fun{a:t0p}
 streamize_list0_choose2
@@ -858,30 +1074,32 @@ streamize_list0_nchoose_rest
 fun
 {a,b:t0p}
 streamize_list0_zip
-  (list0(INV(a)), list0(INV(b))):<!wrt> stream_vt(@(a, b))
+( list0(INV(a))
+, list0(INV(b))):<!wrt> stream_vt(@(a, b))
 fun
 {a,b:t0p}
 streamize_list0_cross
-  (list0(INV(a)), list0(INV(b))):<!wrt> stream_vt(@(a, b))
+( list0(INV(a))
+, list0(INV(b))):<!wrt> stream_vt(@(a, b))
 //
 (* ****** ****** *)
 //
 fun{a:t0p}
 list0_is_ordered
-  (xs: list0(INV(a)), cmp:  (a, a) -<cloref> int): bool
+(xs: list0(INV(a)), cmp:  (a, a) -<cloref> int): bool
 //
 (* ****** ****** *)
 
 fun{a:t0p}
 list0_mergesort
-  (NSH(list0(INV(a))), cmp: (a, a) -<cloref> int):<> list0(a)
+(NSH(list0(INV(a))), cmp: (a, a) -<cloref> int):<> list0(a)
 // end of [list0_mergesort]
 
 (* ****** ****** *)
 
 fun{a:t0p}
 list0_quicksort
-  (NSH(list0(INV(a))), cmp: (a, a) -<cloref> int):<> list0(a)
+(NSH(list0(INV(a))), cmp: (a, a) -<cloref> int):<> list0(a)
 // end of [list0_quicksort]
 
 (* ****** ****** *)

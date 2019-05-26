@@ -37,21 +37,29 @@
   
 (* ****** ****** *)
 
-staload UN = "prelude/SATS/unsafe.sats"
-staload _(*UN*) = "prelude/DATS/unsafe.dats"
+staload
+UN = "prelude/SATS/unsafe.sats"
+staload
+_(*UN*) = "prelude/DATS/unsafe.dats"
 
 
 (* ****** ****** *)
 
-staload _(*INT*) = "prelude/DATS/integer.dats"
-staload _(*INT*) = "prelude/DATS/integer_size.dats"
+staload
+_(*INT*) = "prelude/DATS/integer.dats"
+staload
+_(*INT*) = "prelude/DATS/integer_size.dats"
 
 (* ****** ****** *)
 
-staload _(*STRING*) = "prelude/DATS/string.dats"
-staload _(*STRING*) = "prelude/DATS/strptr.dats"
-staload _(*STREAM*) = "prelude/DATS/stream.dats"
-staload _(*STREAM*) = "prelude/DATS/stream_vt.dats"
+staload
+_(*STRING*) = "prelude/DATS/string.dats"
+staload
+_(*STRPTR*) = "prelude/DATS/strptr.dats"
+staload
+_(*STREAM*) = "prelude/DATS/stream.dats"
+staload
+_(*STREAM_VT*) = "prelude/DATS/stream_vt.dats"
 
 (* ****** ****** *)
 //
@@ -121,7 +129,8 @@ end // end of [else]
 //
 end // end of [loop]
 //
-val dirp = $DIR.opendir(dirname)
+val dirp =
+  $DIR.opendir(dirname)
 //
 in
 //
@@ -148,13 +157,13 @@ then let
 //
 in
 //
-g0ofg1_list_vt(res2)
+  g0ofg1_list(list_vt2t(res2))
 //
 end // end of [then]
 else let
-  prval() = $DIR.DIRptr_free_null(dirp)
-in
-  list0_nil((*void*))
+  prval() =
+    $DIR.DIRptr_free_null(dirp) in list0_nil()
+  // end of [prval]
 end // end of [else]
 //
 end // end of [dirname_get_fnamelst]
@@ -175,16 +184,16 @@ if
 $DIR.DIRptr2ptr(dirp) > 0
 then $DIR.streamize_DIRptr_dirent<>(dirp)
 else let
-  prval() = $DIR.DIRptr_free_null(dirp) in stream_vt_make_nil()
+  prval() =
+  $DIR.DIRptr_free_null(dirp) in stream_vt_make_nil()
 end // end of [else]
 ) : stream_vt(dirent)
 //
 in
 //
-stream_vt_map_cloptr
-(
-  ents
-, lam(ent) => strptr2string($DIR.dirent_get_d_name_gc(ent))
+stream_vt_map_cloptr<dirent><string>
+( ents
+, lam(ent) =>strptr2string($DIR.dirent_get_d_name_gc<>(ent))
 ) (* end of [stream_vt_map_cloptr] *)
 //
 end // end of [streamize_dirname_fname]

@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/prelude/CATS/CODEGEN/float.atxt
-** Time of generation: Wed Dec 14 18:44:55 2016
+** Time of generation: Wed Oct 10 21:08:56 2018
 */
 
 /* ****** ****** */
@@ -176,7 +176,7 @@ atstype_ldouble
 atspre_g0float_pred_ldouble (atstype_ldouble f) { return (f-1) ; }
 
 /* ****** ****** */
-
+//
 //
 ATSinline()
 atstype_float
@@ -259,7 +259,7 @@ atspre_g0float_mod_ldouble
   (atstype_ldouble f1, atstype_ldouble f2) { return fmodl(f1, f2) ; }
 //
 /* ****** ****** */
-
+//
 //
 ATSinline()
 atstype_bool
@@ -439,7 +439,7 @@ atspre_g0float_max_ldouble
 // end of [atspre_g0float_max_ldouble]
 
 /* ****** ****** */
-
+//
 //
 ATSinline()
 atstype_float
@@ -505,7 +505,7 @@ atspre_div_int_ldouble
 // end of [atspre_div_int_ldouble]
 //
 /* ****** ****** */
-
+//
 //
 ATSinline()
 atstype_float
@@ -569,6 +569,136 @@ atstype_ldouble
 atspre_div_ldouble_int
   (atstype_ldouble f1, atstype_int i2) { return (f1 / ((atstype_ldouble)i2)) ; }
 // end of [atspre_div_ldouble_int]
+//
+/* ****** ****** */
+//
+//
+ATSinline()
+atstype_bool
+atspre_lt_int_float
+  (atstype_int i1, atstype_float f2) { return (((atstype_float)i1) < f2) ; }
+// end of [atspre_lt_int_float]
+ATSinline()
+atstype_bool
+atspre_lte_int_float
+  (atstype_int i1, atstype_float f2) { return (((atstype_float)i1) <= f2) ; }
+// end of [atspre_lte_int_float]
+ATSinline()
+atstype_bool
+atspre_gt_int_float
+  (atstype_int i1, atstype_float f2) { return (((atstype_float)i1) > f2) ; }
+// end of [atspre_gt_int_float]
+ATSinline()
+atstype_bool
+atspre_gte_int_float
+  (atstype_int i1, atstype_float f2) { return (((atstype_float)i1) >= f2) ; }
+// end of [atspre_gte_int_float]
+ATSinline()
+atstype_bool
+atspre_eq_int_float
+  (atstype_int i1, atstype_float f2) { return (((atstype_float)i1) == f2) ; }
+// end of [atspre_eq_int_float]
+ATSinline()
+atstype_bool
+atspre_neq_int_float
+  (atstype_int i1, atstype_float f2) { return (((atstype_float)i1) != f2) ; }
+// end of [atspre_neq_int_float]
+//
+ATSinline()
+atstype_bool
+atspre_lt_int_double
+  (atstype_int i1, atstype_double f2) { return (((atstype_double)i1) < f2) ; }
+// end of [atspre_lt_int_double]
+ATSinline()
+atstype_bool
+atspre_lte_int_double
+  (atstype_int i1, atstype_double f2) { return (((atstype_double)i1) <= f2) ; }
+// end of [atspre_lte_int_double]
+ATSinline()
+atstype_bool
+atspre_gt_int_double
+  (atstype_int i1, atstype_double f2) { return (((atstype_double)i1) > f2) ; }
+// end of [atspre_gt_int_double]
+ATSinline()
+atstype_bool
+atspre_gte_int_double
+  (atstype_int i1, atstype_double f2) { return (((atstype_double)i1) >= f2) ; }
+// end of [atspre_gte_int_double]
+ATSinline()
+atstype_bool
+atspre_eq_int_double
+  (atstype_int i1, atstype_double f2) { return (((atstype_double)i1) == f2) ; }
+// end of [atspre_eq_int_double]
+ATSinline()
+atstype_bool
+atspre_neq_int_double
+  (atstype_int i1, atstype_double f2) { return (((atstype_double)i1) != f2) ; }
+// end of [atspre_neq_int_double]
+//
+/* ****** ****** */
+//
+//
+ATSinline()
+atstype_bool
+atspre_lt_float_int
+  (atstype_float f1, atstype_int i2) { return (f1 < ((atstype_float)i2)) ; }
+// end of [atspre_lt_float_int]
+ATSinline()
+atstype_bool
+atspre_lte_float_int
+  (atstype_float f1, atstype_int i2) { return (f1 <= ((atstype_float)i2)) ; }
+// end of [atspre_lte_float_int]
+ATSinline()
+atstype_bool
+atspre_gt_float_int
+  (atstype_float f1, atstype_int i2) { return (f1 > ((atstype_float)i2)) ; }
+// end of [atspre_gt_float_int]
+ATSinline()
+atstype_bool
+atspre_gte_float_int
+  (atstype_float f1, atstype_int i2) { return (f1 >= ((atstype_float)i2)) ; }
+// end of [atspre_gte_float_int]
+ATSinline()
+atstype_bool
+atspre_eq_float_int
+  (atstype_float f1, atstype_int i2) { return (f1 == ((atstype_float)i2)) ; }
+// end of [atspre_eq_float_int]
+ATSinline()
+atstype_bool
+atspre_neq_float_int
+  (atstype_float f1, atstype_int i2) { return (f1 != ((atstype_float)i2)) ; }
+// end of [atspre_neq_float_int]
+//
+ATSinline()
+atstype_bool
+atspre_lt_double_int
+  (atstype_double f1, atstype_int i2) { return (f1 < ((atstype_double)i2)) ; }
+// end of [atspre_lt_double_int]
+ATSinline()
+atstype_bool
+atspre_lte_double_int
+  (atstype_double f1, atstype_int i2) { return (f1 <= ((atstype_double)i2)) ; }
+// end of [atspre_lte_double_int]
+ATSinline()
+atstype_bool
+atspre_gt_double_int
+  (atstype_double f1, atstype_int i2) { return (f1 > ((atstype_double)i2)) ; }
+// end of [atspre_gt_double_int]
+ATSinline()
+atstype_bool
+atspre_gte_double_int
+  (atstype_double f1, atstype_int i2) { return (f1 >= ((atstype_double)i2)) ; }
+// end of [atspre_gte_double_int]
+ATSinline()
+atstype_bool
+atspre_eq_double_int
+  (atstype_double f1, atstype_int i2) { return (f1 == ((atstype_double)i2)) ; }
+// end of [atspre_eq_double_int]
+ATSinline()
+atstype_bool
+atspre_neq_double_int
+  (atstype_double f1, atstype_int i2) { return (f1 != ((atstype_double)i2)) ; }
+// end of [atspre_neq_double_int]
 //
 /* ****** ****** */
 

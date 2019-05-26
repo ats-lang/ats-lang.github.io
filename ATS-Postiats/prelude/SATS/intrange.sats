@@ -35,7 +35,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/intrange.atxt
-** Time of generation: Sun Nov 20 21:18:18 2016
+** Time of generation: Fri Nov 30 08:45:21 2018
 *)
 
 (* ****** ****** *)
@@ -46,53 +46,39 @@
 (* ****** ****** *)
 //
 fun{}
-intrange_foreach (l: int, r: int): int
-fun{env:vt0p}
-intrange_foreach_env (l: int, r: int, env: &(env) >> _): int
-//
-fun{env:vt0p}
-intrange_foreach$cont (i: int, env: &env): bool
-fun{env:vt0p}
-intrange_foreach$fwork (i: int, env: &(env) >> _): void
+intrange_forall
+  (l: int, r: int): bool
+fun{}
+intrange_forall$pred(i: int):<> bool
 //
 (* ****** ****** *)
-
+//
 fun{}
-int_foreach_cloref
-(
-  n: int, fwork: (int) -<cloref1> void
-) : int // end of [int_foreach_cloref]
-fun{}
-intrange_foreach_cloref
-(
-  l: int, r: int, fwork: (int) -<cloref1> void
-) : int // end of [intrange_foreach_cloref]
-
+intrange_foreach
+  (l: int, r: int): (int)
+fun{env:vt0p}
+intrange_foreach_env
+  (l: int, r: int, env: &(env) >> _): int
+//
+fun{env:vt0p}
+intrange_foreach$cont(i: int, env: &env): bool
+fun{env:vt0p}
+intrange_foreach$fwork(i: int, env: &(env) >> _): void
+//
 (* ****** ****** *)
 //
 fun{}
-intrange_rforeach (l: int, r: int): int
+intrange_rforeach
+  (l: int, r: int): (int)
 fun{env:vt0p}
-intrange_rforeach_env (l: int, r: int, env: &(env) >> _): int
+intrange_rforeach_env
+  (l: int, r: int, env: &(env) >> _): int
 //
 fun{env:vt0p}
-intrange_rforeach$cont (i: int, env: &env): bool
+intrange_rforeach$cont(i: int, env: &env): bool
 fun{env:vt0p}
-intrange_rforeach$fwork (i: int, env: &(env) >> _): void
+intrange_rforeach$fwork(i: int, env: &(env) >> _): void
 //
-(* ****** ****** *)
-
-fun{}
-int_rforeach_cloref
-(
-  n: int, fwork: (int) -<cloref1> void
-) : int // end of [int_rforeach_cloref]
-fun{}
-intrange_rforeach_cloref
-(
-  l: int, r: int, fwork: (int) -<cloref1> void
-) : int // end of [intrange_rforeach_cloref]
-
 (* ****** ****** *)
 //
 fun{}
@@ -110,6 +96,8 @@ intrange2_foreach$fwork (i: int, j: int, env: &env >> _): void
 //
 fun{}
 streamize_intrange_l(m: int): stream_vt(int)
+fun{}
+streamize_intrange_0r(n: int): stream_vt(int)
 fun{}
 streamize_intrange_lr(m: int, n: int): stream_vt(int)
 //

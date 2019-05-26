@@ -60,7 +60,10 @@ print_stropt with $UTL.print_stropt
 staload
 LOC = "./pats_location.sats"
 //
+(* ****** ****** *)
+//
 staload SYM = "./pats_symbol.sats"
+//
 typedef symbol = $SYM.symbol
 overload = with $SYM.eq_symbol_symbol
 //
@@ -119,7 +122,8 @@ val len = string_length(dir)
 in
 //
 if
-strncmp(given, dir, len) = 0
+strncmp
+(given, dir, len) = 0
 then 0(*loc*)
 else
 (
@@ -169,7 +173,7 @@ case+ 0 of
 | _ when c = c1 =>
     if n > 1 then loop(p1, n-1, c0, c1) else p1
 | _ (* !=c0,c1 *) =>
-    if c != '\000' then loop (p1, n, c0, c1) else null
+    if c != '\000' then loop(p1, n, c0, c1) else null
 //
 end (* end of [loop] *)
 //
@@ -242,16 +246,19 @@ fprint_filename (out, fil) =
 
 implement
 print_filename_full
-  (fil) = fprint_filename_full (stdout_ref, fil)
+  (fil) =
+  fprint_filename_full(stdout_ref, fil)
 implement
 prerr_filename_full
-  (fil) = fprint_filename_full (stderr_ref, fil)
+  (fil) =
+  fprint_filename_full(stderr_ref, fil)
 implement
 fprint_filename_full
   (out, fil) = let
-  val fname = $SYM.symbol_get_name (fil.filename_fullname)
+  val fname =
+  $SYM.symbol_get_name(fil.filename_fullname)
 in
-  fprint_string (out, fname)
+  fprint_string(out, fname)
 end // end of [fprint_filename_full]
 
 (* ****** ****** *)
@@ -263,14 +270,14 @@ fprint2_filename_full
 val given =
   fil.filename_givename
 val ngurl =
-  givename_get_ngurl (given)
+  givename_get_ngurl(given)
 val fname =
-  $SYM.symbol_get_name (fil.filename_fullname)
+  $SYM.symbol_get_name(fil.filename_fullname)
 //
 in
 //
 if ngurl < 0
-  then fprint_string (out, fname)
+  then fprint_string(out, fname)
   else fprintf(out, "%s(%s)", @(fname, given))
 // end of [if]
 //
@@ -513,6 +520,28 @@ dirs_process{n:nat}
 *)
 in
   case+ dirs of
+  | ~list_vt_nil
+      () => let
+      fun
+      loop{i,j:nat}
+      (
+        pardir: string
+      , npar: int(i), res: list_vt(strptr1, j)
+      ) : list_vt (strptr1, i+j) =
+        if npar > 0 then let
+          val dir =
+            string1_of_string (pardir)
+          // end of [val]
+          val n = string1_length(dir)
+          val dir = string_make_substring(dir, 0, n)
+          val dir = strptr_of_strbuf(dir)
+        in
+          loop(pardir, npar - 1, list_vt_cons(dir, res))
+        end else res // end of [if]
+      // end of [loop]
+    in
+      loop(pardir, npar, res)
+    end (* end of [list_vt_nil] *)
   | ~list_vt_cons
       (dir, dirs) => (
       if (p2s)dir = curdir then let
@@ -531,28 +560,6 @@ in
         end (* end of [if] *)
       ) // end of [if]
     ) (* end of [list_vt_cons] *)
-  | ~list_vt_nil () => let
-      fun
-      loop{i,j:nat}
-      (
-        pardir: string
-      , npar: int i, res: list_vt (strptr1, j)
-      ) : list_vt (strptr1, i+j) =
-        if npar > 0 then let
-          val dir =
-            string1_of_string (pardir)
-          // end of [val]
-          val n = string1_length (dir)
-          val dir = string_make_substring (dir, 0, n)
-          val dir = strptr_of_strbuf (dir)
-        in
-          loop (pardir, npar - 1, list_vt_cons (dir, res))
-        end else res
-        (* end of [if] *)
-      // end of [loop]
-    in
-      loop (pardir, npar, res)
-    end (* end of [list_vt_nil] *)
 end // end of [dirs_process]
 //
 val dirsep = theDirSep_get()
@@ -622,15 +629,15 @@ isrel
 then let
   val cwd = $UNISTD.getcwd0()
   val fname =
-    filename_append((p2s)cwd, pname)
+    filename_dirbase((p2s)cwd, pname)
   // end of [val]
-  val () = strptr_free(cwd)
+  val _freed_ = strptr_free(cwd)
   val fname_nf = path_normalize((p2s)fname)
-  val () = strptr_free(fname)
+  val _freed_ = strptr_free(fname)
 in
   fname_nf
 end // end of [then]
-else pname // HX: the path [pname] is absolute
+else pname // HX: [pname] is absolute
 //
 end // end of [partname_fullize]
 
@@ -643,7 +650,7 @@ local
 assume
 the_filenamelst_push_v = unit_v
 //
-vtypedef filenamelst = List_vt filename
+vtypedef filenamelst = List_vt(filename)
 //
 val
 the_filename =
@@ -696,8 +703,7 @@ end // end of [filename_occurs]
 in (* in of [local] *)
 //
 implement
-filename_get_current
-  ((*void*)) = !the_filename
+filename_get_current((*void*)) = !the_filename
 //
 (* ****** ****** *)
 
@@ -857,8 +863,8 @@ local
 assume
 the_pathlst_push_v = unit_v
 //
-val the_pathlst = ref_make_elt<pathlst_vt> (list_vt_nil)
-val the_prepathlst = ref_make_elt<pathlst_vt> (list_vt_nil)
+val the_pathlst = ref_make_elt<pathlst_vt>(list_vt_nil)
+val the_prepathlst = ref_make_elt<pathlst_vt>(list_vt_nil)
 //
 in (* in of [local] *)
 
@@ -994,7 +1000,7 @@ val ((*void*)) = !p := xs
 (* ****** ****** *)
 
 implement
-the_prepathlst_push (x) = let
+the_prepathlst_push(x) = let
 //
 val
 (
@@ -1002,7 +1008,7 @@ val
 ) = ref_get_view_ptr(the_prepathlst)
 //
 in
-  !p := list_vt_cons (x, !p)
+  !p := list_vt_cons(x, !p)
 end // end of [the_prepathlst_push]
 
 (* ****** ****** *)
@@ -1062,7 +1068,7 @@ aux2_try
 //
   val
   partname =
-  filename_append(path, given)
+  filename_dirbase(path, given)
 //
 (*
   val () =
@@ -1127,15 +1133,33 @@ val paths = the_pathlst_get()
 //
 val (ans) =
 //
-// HX: search the current directory first
+// HX:
+// search the current directory first
 //
 (
-  aux2_try
-  (
-    path, $UN.castvwtp1{pathlst}(paths), given
-  ) (* aux2_try *)
+aux2_try
+( path
+, $UN.castvwtp1{pathlst}(paths), given
+) (* aux2_try *)
 )
 // end of [val]
+//
+// HX-2018-01-11:
+// calling the_pathlst_set is
+// needed for the_pathlst being linear
+//
+(*
+//
+val () =
+println!
+("aux_try_pathlst: given = ", given)
+val () =
+(
+print("aux_try_pathlst: ans = "); print_stropt(ans); println!()
+)
+//
+*)
+//
 val ((*void*)) = the_pathlst_set(paths)
 //
 } (* end of [aux_try_pathlst] *)
@@ -1146,10 +1170,30 @@ aux_try_prepathlst
   given: string
 ) : Stropt = ans where
 {
-  val paths = the_prepathlst_get()
-  val ans =
-    aux_try($UN.castvwtp1{pathlst}(paths), given)
-  val () = the_prepathlst_set (paths)
+//
+val
+paths = the_prepathlst_get()
+//
+val
+(ans) =
+aux_try
+($UN.castvwtp1{pathlst}(paths), given)
+// end of [val]
+//
+(*
+//
+val () =
+println!
+("aux_try_prepathlst: given = ", given)
+val () =
+(
+print("aux_try_prepathlst: ans = "); print_stropt(ans); println!()
+)
+//
+*)
+//
+val () = the_prepathlst_set(paths) // HX: linearity
+//
 } (* end of [aux_try_prepathlst] *)
 
 (* ****** ****** *)
@@ -1181,7 +1225,7 @@ aux2_tryloc
 //
 val
 partname =
-filename_append(path, given)
+filename_dirbase(path, given)
 //
 (*
 val () =
@@ -1310,6 +1354,10 @@ case+ knd of
   )
 //
 | _ (*external*) => let
+(*
+    val
+    opt = stropt_none(*void*)
+*)
     val
     opt = aux_try_pathlst(given)
   in
@@ -1664,7 +1712,7 @@ patsopt_filename_merge
 } // end of [patsopt_filename_merge]
 
 ats_ptr_type
-patsopt_filename_append
+patsopt_filename_dirbase
 (
   ats_ptr_type dir, ats_ptr_type bas
 ) {
@@ -1685,7 +1733,7 @@ patsopt_filename_append
   dirbas[n] = '\000' ;
 //
   return dirbas ;
-} /* end of [patsopt_filename_append] */
+} /* end of [patsopt_filename_dirbase] */
 
 %} // end of [%{$]
 

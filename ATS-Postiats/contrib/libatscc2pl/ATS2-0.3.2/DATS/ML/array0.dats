@@ -1,6 +1,6 @@
 (*
 ** For writing ATS code
-** that translates into Perl
+** that translates into Perl5
 *)
 
 (* ****** ****** *)

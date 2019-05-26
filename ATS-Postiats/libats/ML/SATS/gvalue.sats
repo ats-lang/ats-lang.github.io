@@ -33,10 +33,13 @@
 (* Starting time: December, 2015 *)
 
 (* ****** ****** *)
-
-#define ATS_PACKNAME "ATSLIB.libats.ML"
-#define ATS_EXTERN_PREFIX "atslib_ML_" // prefix for external names
-
+//
+#define
+ATS_PACKNAME "ATSLIB.libats.ML"
+//
+#define
+ATS_EXTERN_PREFIX "atslib_ML_" // prefix for external names
+//
 (* ****** ****** *)
 
 staload "libats/ML/SATS/basis.sats"
@@ -174,6 +177,8 @@ overload print with print_gvalue
 overload prerr with prerr_gvalue
 overload fprint with fprint_gvalue
 //
+(* ****** ****** *)
+//
 fun
 fprint_gvlist : fprint_type(gvlist)
 fun
@@ -190,45 +195,68 @@ overload fprint with fprint_gvhashtbl of 20
 //
 (* ****** ****** *)
 //
-fun gvalue_nil(): gvalue
+fun{}
+gvalue_nil(): gvalue
 //
-fun gvalue_int(int): gvalue
+fun{}
+gvalue_int(int): gvalue
 //
-fun gvalue_ptr(ptr): gvalue
+fun{}
+gvalue_ptr(ptr): gvalue
 //
-fun gvalue_bool(bool): gvalue
-fun gvalue_char(char): gvalue
+fun{}
+gvalue_bool(bool): gvalue
+fun{}
+gvalue_char(char): gvalue
 //
-fun gvalue_float(double): gvalue
-fun gvalue_string(string): gvalue
+fun{}
+gvalue_float(double): gvalue
+fun{}
+gvalue_string(string): gvalue
 //
 (* ****** ****** *)
 //
-fun gvalue_ref(gvref): gvalue
+fun{}
+gvalue_box{a:type}(x: a): gvalue
 //
-fun gvalue_list(xs: gvlist): gvalue
+(* ****** ****** *)
 //
-fun gvalue_array(xs: gvarray): gvalue
+fun{}
+gvalue_ref(gvref): gvalue
 //
-fun gvalue_hashtbl(kxs: gvhashtbl): gvalue
+fun{}
+gvalue_list(xs: gvlist): gvalue
+//
+fun{}
+gvalue_array(xs: gvarray): gvalue
+//
+fun{}
+gvalue_hashtbl(kxs: gvhashtbl): gvalue
+//
+(* ****** ****** *)
+//
+fun{}
+gvalue_is_nil(gvalue): bool
+fun{}
+gvalue_isnot_nil(gvalue): bool
+//
+overload iseqz with gvalue_is_nil
+overload isneqz with gvalue_isnot_nil
 //
 (* ****** ****** *)
 //
 fun
-gvref_make_elt
-  (x0: gvalue): gvref
+gvref_make_elt(ini: gvalue): gvref
 //
 (* ****** ****** *)
 //
 fun
-gvarray_make_nil
-  (asz: intGte(0)): gvarray
+gvarray_make_nil(asz: intGte(0)): gvarray
 //
 (* ****** ****** *)
 //
 fun
-gvdynarr_make_nil
-  (cap: intGte(1)): gvdynarr
+gvdynarr_make_nil(cap: intGte(1)): gvdynarr
 //
 (* ****** ****** *)
 //

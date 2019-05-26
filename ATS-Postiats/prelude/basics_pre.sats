@@ -383,6 +383,17 @@ stadef <> = neq_addr_addr (* for backward compatibility *)
 //
 (* ****** ****** *)
 //
+// HX-2017-11-07:
+//
+abstype types_nil
+abstype types_cons(vt@ype+, type+)
+(*
+stacst types_nil : types
+stacst types_cons : (vt@ype+, types+) -> types
+*)
+//
+(* ****** ****** *)
+//
 // HX-2013-09:
 // for supporting inheritance in OOP
 //
@@ -410,22 +421,32 @@ gterel_cls_cls
 //
 stacst
 sizeof_t0ype_int : t@ype -> int = "ext#"
+//
 stadef
-sizeof(a:viewt@ype): int = sizeof_t0ype_int (a?)
+sizeof(a:vt@ype): int = sizeof_t0ype_int(a?)
 //
 (* ****** ****** *)
 
-sortdef nat = { i:int | i >= 0 } // natural numbers
-sortdef pos = { i:int | i > 0 }
-sortdef neg = { i:int | i < 0 }
-sortdef npos = { i:int | i <= 0 } // non-positive integers
-
+sortdef nat = { i:int | i >= 0 }
 sortdef nat1 = { n:nat | n < 1 } // for 0
 sortdef nat2 = { n:nat | n < 2 } // for 0, 1
 sortdef nat3 = { n:nat | n < 3 } // for 0, 1, 2
 sortdef nat4 = { n:nat | n < 4 } // for 0, 1, 2, 3
 
+sortdef pos = { i:int | i >  0 } // positive ints
+sortdef neg = { i:int | i <  0 } // negative ints
+sortdef npos = { i:int | i <= 0 } // non-positive ints
+sortdef nneg = { i:int | i >= 0 } // non-negative ints
+
+(* ****** ****** *)
+
 sortdef sgn = { i:int | ~1 <= i; i <= 1 }
+
+(* ****** ****** *)
+
+sortdef igz = { i:int | i > 0 }
+sortdef igez = { i:int | i >= 0 }
+sortdef ilez = { i:int | i <= 0 }
 
 sortdef agz = { l:addr | l > null }
 sortdef agez = { l:addr | l >= null }
@@ -596,8 +617,8 @@ stadef WR = WRITE
 
 (* ****** ****** *)
 //
-vtypedef READ (a:vt@ype) = a // HX: used as a comment
-vtypedef WRITE (a:vt@ype) = a // HX: used as a comment (rarely)
+vtypedef READ(a:vt@ype) = a // HX: used as a comment
+vtypedef WRITE(a:vt@ype) = a // HX: used as a comment (rarely)
 //
 (*
 vtypedef SHARED (a:vt@ype) = a // HX: used as a comment
@@ -606,26 +627,29 @@ vtypedef NSHARED (a:vt@ype) = a // HX: used as a comment (rarely)
 //
 (* ****** ****** *)
 //
-absprop invar_prop_prop (a:prop)
-absview invar_view_view (a:view)
+absprop
+invar_prop_prop(a:prop)
+absview
+invar_view_view(a:view)
 //
 abst@ype // S2Einvar
-invar_t0ype_t0ype (a:t@ype) = a
+invar_t0ype_t0ype(a:t@ype) = a
 absvt@ype // S2Einvar
-invar_vt0ype_vt0ype (a:vt@ype) = a
+invar_vt0ype_vt0ype(a:vt@ype) = a
 //
 // HX: this order is significant
 // 
 viewdef
-INV (a: view) = invar_view_view (a)
+INV(a:view) = invar_view_view(a)
 propdef
-INV (a: prop) = invar_prop_prop (a)
-//
-vtypedef INV
-  (a:vt@ype) = invar_vt0ype_vt0ype (a)
+INV(a:prop) = invar_prop_prop(a)
 //
 vtypedef
-INV (a: t@ype) = invar_t0ype_t0ype (a)
+INV
+(a:vt@ype) = invar_vt0ype_vt0ype(a)
+//
+typedef
+INV(a:t@ype) = invar_t0ype_t0ype(a)
 //
 (* ****** ****** *)
 (*

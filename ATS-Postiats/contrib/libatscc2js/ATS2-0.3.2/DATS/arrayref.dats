@@ -71,6 +71,32 @@ ats2jspre_arrayref_make_elt
   return A;
 }
 //
+function
+ats2jspre_arrayref_uninitized
+  ( asz )
+{
+  var A = new Array(asz); return A;
+}
+//
+%} // end of [%{^]
+
+(* ****** ****** *)
+
+%{^
+//
+function
+ats2jspre_arrayref_tabulate_cloref
+  (n, fopr)
+{
+  var A, i;
+  A = new Array(n);
+  for (i = 0; i < n; i += 1)
+  {
+    A[i] = ats2jspre_cloref1_app(fopr, i);
+  }
+  return A;
+}
+//
 %} // end of [%{^]
 
 (* ****** ****** *)
@@ -95,9 +121,19 @@ end // end of [arrayref_set_at]
 //
 (* ****** ****** *)
 //
+typedef
+arrayref
+(a:vt0p) = [n:nat] arrayref(a, n)
+//
+implement
+arrszref_get_arrayref
+  {a}(A) = $UN.cast{arrayref(a)}(A)
+//
+(* ****** ****** *)
+//
 implement
 arrszref_make_arrayref
-  {a}(A, n) = $UN.cast{arrszref(a)}(A)
+  {a}(A, asz) = $UN.cast{arrszref(a)}(A)
 //
 (* ****** ****** *)
 //

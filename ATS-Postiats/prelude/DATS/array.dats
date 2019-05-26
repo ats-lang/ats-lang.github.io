@@ -30,23 +30,24 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/array.atxt
-** Time of generation: Sun Nov 20 21:18:28 2016
+** Time of generation: Wed Oct 10 21:08:52 2018
 *)
 
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: hwxi AT cs DOT bu DOT edu *)
 (* Start time: Feburary, 2012 *)
+(* Authoremail: hwxiATcsDOTbuDOTedu *)
 
 (* ****** ****** *)
 
-staload UN = "prelude/SATS/unsafe.sats"
-staload IT = "prelude/SATS/giterator.sats"
+staload
+UN = "prelude/SATS/unsafe.sats"
 
 (* ****** ****** *)
 
-macdef castvwtp_trans = $UN.castvwtp0 // former name
+macdef
+castvwtp_trans = $UN.castvwtp0 // former name
 
 (* ****** ****** *)
 
@@ -56,7 +57,7 @@ array_getref_at
   (A, i) = let
 //
 val p =
-  ptr0_add_guint<a> (addr@(A), i) in $UN.cast{cPtr1(a)}(p)
+  ptr0_add_guint<a>(addr@(A), i) in $UN.cast{cPtr1(a)}(p)
 //
 end // end of [array_getref_at]
 
@@ -65,12 +66,12 @@ end // end of [array_getref_at]
 implement
 {a}{tk}(*tmp*)
 array_get_at_gint (A, i) = let
-  val p = ptr0_add_gint<a> (addr@(A), i) in $UN.ptr0_get<a> (p)
+  val p = ptr0_add_gint<a>(addr@(A), i) in $UN.ptr0_get<a>(p)
 end // end of [array_get_at_gint]
 implement
 {a}{tk}(*tmp*)
 array_get_at_guint (A, i) = let
-  val p = ptr0_add_guint<a> (addr@(A), i) in $UN.ptr0_get<a> (p)
+  val p = ptr0_add_guint<a>(addr@(A), i) in $UN.ptr0_get<a>(p)
 end // end of [array_get_at_guint]
 
 (* ****** ****** *)
@@ -78,12 +79,12 @@ end // end of [array_get_at_guint]
 implement
 {a}{tk}(*tmp*)
 array_set_at_gint (A, i, x) = let
-  val p = ptr0_add_gint<a> (addr@(A), i) in $UN.ptr0_set<a> (p, x)
+  val p = ptr0_add_gint<a>(addr@(A), i) in $UN.ptr0_set<a>(p, x)
 end // end of [array_set_at_uint]
 implement
 {a}{tk}(*tmp*)
 array_set_at_guint (A, i, x) = let
-  val p = ptr0_add_guint<a> (addr@(A), i) in $UN.ptr0_set<a> (p, x)
+  val p = ptr0_add_guint<a>(addr@(A), i) in $UN.ptr0_set<a>(p, x)
 end // end of [array_set_at_guint]
 
 (* ****** ****** *)
@@ -91,12 +92,12 @@ end // end of [array_set_at_guint]
 implement
 {a}{tk}(*tmp*)
 array_exch_at_gint (A, i, x) = let
-  val p = ptr0_add_gint<a> (addr@(A), i) in $UN.ptr0_exch<a> (p, x)
+  val p = ptr0_add_gint<a>(addr@(A), i) in $UN.ptr0_exch<a>(p, x)
 end // end of [array_exch_at_gint]
 implement
 {a}{tk}(*tmp*)
 array_exch_at_guint (A, i, x) = let
-  val p = ptr0_add_guint<a> (addr@(A), i) in $UN.ptr0_exch<a> (p, x)
+  val p = ptr0_add_guint<a>(addr@(A), i) in $UN.ptr0_exch<a>(p, x)
 end // end of [array_exch_at_guint]
 
 (* ****** ****** *)
@@ -115,22 +116,22 @@ loop
 if
 p1 < p2
 then let
-  val x = $UN.ptr0_get<a> (p1)
+  val x = $UN.ptr0_get<a>(p1)
   val () =
-  $UN.ptr0_set<a> (p1, $UN.ptr0_get<a> (p2))
-  val () = $UN.ptr0_set<a> (p2, x)
+  $UN.ptr0_set<a>(p1, $UN.ptr0_get<a>(p2))
+  val () = $UN.ptr0_set<a>(p2, x)
 in
-  loop (ptr0_succ<a> (p1), ptr0_pred<a> (p2))
+  loop(ptr0_succ<a>(p1), ptr0_pred<a>(p2))
 end // end of [then]
 else () // end of [else]
 ) (* end of [loop] *)
 //
 val pA = addr@A
-val pi = ptr_add<a> (pA, i)
-val pj = ptr_add<a> (pA, j)
+val pi = ptr_add<a>(pA, i)
+val pj = ptr_add<a>(pA, j)
 //
 in
-  $effmask_all(loop (pi, ptr0_pred<a> (pj)))
+  $effmask_all(loop(pi, ptr0_pred<a>(pj)))
 end // end of [array_subreverse]
 
 (* ****** ****** *)
@@ -149,12 +150,12 @@ in
 //
 if i != j then let
   val p0 = addr@(A)
-  val pi = ptr0_add_guint<a> (p0, i)
+  val pi = ptr0_add_guint<a>(p0, i)
   val pj =
-    g1ofg0_ptr(ptr0_add_guint<a> (p0, j))
+    g1ofg0_ptr(ptr0_add_guint<a>(p0, j))
   // end of [val]
   val (pf, fpf | pj) = $UN.ptr_vtake{a}(pj)
-  val () = $UN.ptr0_exch<a> (pi, !pj)
+  val () = $UN.ptr0_exch<a>(pi, !pj)
   prval ((*returned*)) = fpf(pf)
 in
   // nothing
@@ -182,25 +183,25 @@ if i < j then
 {
 //
 val p0 =
-  ptr_add<a> (addr@(A), i)
+  ptr_add<a>(addr@(A), i)
 val p1 =
-  ptr_add<a> (addr@(A), j)
+  ptr_add<a>(addr@(A), j)
 //
-val A1 = $UN.ptr0_get<a> (p1)
+val A1 = $UN.ptr0_get<a>(p1)
 val _(*ptr*) = memmove (ptr_succ<a>(p0), p0, (j-i)*sizeof<a>)
-val ((*void*)) = $UN.ptr0_set<a> (p0, A1)
+val ((*void*)) = $UN.ptr0_set<a>(p0, A1)
 //
 } else if i > j then
 {
 //
 val p0 =
-  ptr_add<a> (addr@(A), j)
+  ptr_add<a>(addr@(A), j)
 val p1 =
-  ptr_add<a> (addr@(A), i)
+  ptr_add<a>(addr@(A), i)
 //
-val A0 = $UN.ptr0_get<a> (p0)
+val A0 = $UN.ptr0_get<a>(p0)
 val _(*ptr*) = memmove (p0, ptr_succ<a>(p0), (i-j)*sizeof<a>)
-val ((*void*)) = $UN.ptr0_set<a> (p1, A0)
+val ((*void*)) = $UN.ptr0_set<a>(p1, A0)
 //
 } else ((*void*)) // end of [if]
 //
@@ -216,7 +217,7 @@ array_ptr_takeout
     array_v_takeout{a}{l}{n}{i}(pf)
   // end of [prval]
 in
-  (pf, fpf | ptr1_add_guint<a> (p, i))
+  (pf, fpf | ptr1_add_guint<a>(p, i))
 end // end of [array_ptr_takeout]
 
 (* ****** ****** *)
@@ -232,7 +233,7 @@ val
   pf, pfgc | p
 ) = malloc_gc (asz * sizeof<a>)
 prval pf =
-__assert (pf) where
+__assert(pf) where
 {
 extern praxi __assert
   (pf: b0ytes (n*sizeof(a)) @ l): array_v (a?, l, n)
@@ -252,7 +253,7 @@ array_ptr_free
   (pf, pfgc | p) = let
 //
 prval pf =
-__assert (pf) where
+__assert(pf) where
 {
 //
 extern praxi __assert
@@ -261,27 +262,34 @@ extern praxi __assert
 } // end of [where] // end of [prval]
 //
 in
-  mfree_gc (pf, pfgc | p)
+  mfree_gc(pf, pfgc | p)
 end // end of [array_ptr_free]
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 array_ptr_tabulate
   (asz) = let
 //
 val
 (
   pf, pfgc | p
-) = array_ptr_alloc<a> (asz)
+) = array_ptr_alloc<a>(asz)
 //
 local
-implement{a}
+implement
+{a2}(*tmp*)
 array_initize$init
   (i, x) =
-  (x := array_tabulate$fopr<a>(i))
+(
+x :=
+array_tabulate$fopr<a2>(i)
+)
 in (*in of [local]*)
-val () = array_initize<a> (!p, asz)
+//
+val () = array_initize<a>(!p, asz)
+//
 end // end of [local]
 //
 in
@@ -290,7 +298,8 @@ end // end of [array_ptr_tabulate]
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 fprint_array_int
   (out, A, asz) = let
 //
@@ -300,7 +309,8 @@ in
   fprint_array_size (out, A, i2sz(asz))
 end // end of [fprint_array_int]
 
-implement{a}
+implement
+{a}(*tmp*)
 fprint_array_size
   (out, A, asz) = let
 //
@@ -310,10 +320,10 @@ implement
 array_foreach$fwork<a><tenv>
   (x, env) = let
   val n = env
-  val () = if n > 0 then fprint_array$sep<> (out)
+  val () = if n > 0 then fprint_array$sep<>(out)
   val () = env := n + 1
 in
-  fprint_ref<a> (out, x)
+  fprint_ref<a>(out, x)
 end // end of [array_foreach$fwork]
 //
 var env: tenv = 0
@@ -325,20 +335,22 @@ end // end of [fprint_array_size]
 
 (* ****** ****** *)
 
-implement{}
-fprint_array$sep (out) = fprint (out, ", ")
+implement
+{}(*tmp*)
+fprint_array$sep(out) = fprint(out, ", ")
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 fprint_array_sep
   (out, A, asz, sep) = let
 //
 implement
-fprint_array$sep<> (out) = fprint (out, sep)
+fprint_array$sep<>(out) = fprint (out, sep)
 //
 in
-  fprint_array<a> (out, A, asz)
+  fprint_array<a>(out, A, asz)
 end // end of [fprint_array_sep]
 
 (* ****** ****** *)
@@ -371,7 +383,8 @@ end // end of [array_copy]
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 array_copy_from_list
   (A, xs) = let
 //
@@ -393,7 +406,7 @@ fun loop
       prval
       (pf1, pf2) = array_v_uncons(pf)
       val () = !p0 := x
-      val () = loop (pf2 | ptr1_succ<a> (p0), xs)
+      val () = loop(pf2 | ptr1_succ<a>(p0), xs)
       prval () = (pf := array_v_cons(pf1, pf2))
     in
       // nothing
@@ -401,12 +414,13 @@ fun loop
 ) (* end of [loop] *)
 //
 in
-  loop (view@(A) | addr@(A), xs)
+  loop(view@(A) | addr@(A), xs)
 end // end of [array_copy_from_list]
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 array_copy_from_list_vt
   (A, xs) = let
 //
@@ -432,7 +446,7 @@ fun loop
       (pf1, pf2) = array_v_uncons(pf)
       val () = !p0 := x
       val () =
-        loop(pf2 | ptr1_succ<a> (p0), xs)
+        loop(pf2 | ptr1_succ<a>(p0), xs)
       // end of [val]
       prval () = pf := array_v_cons(pf1, pf2)
     in
@@ -441,12 +455,13 @@ fun loop
 ) (* end of [loop] *)
 //
 in
-  loop (view@(A) | addr@(A), xs)
+  loop(view@(A) | addr@(A), xs)
 end // end of [array_copy_from_list_vt]
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 array_copy_to_list_vt
   (A, n) = res where {
 //
@@ -468,8 +483,8 @@ then let
   val () =
     res := list_vt_cons{a}{0}(!p0, _)
   // end of [val]
-  val+list_vt_cons (_, res1) = res
-  val () = loop(pf2 | ptr1_succ<a> (p0), pred(nz), res1)
+  val+list_vt_cons(_, res1) = res
+  val () = loop(pf2 | ptr1_succ<a>(p0), pred(nz), res1)
   prval () = (pf := array_v_cons(pf1, pf2))
   prval () = fold@ (res)
 in
@@ -482,7 +497,7 @@ end // end of [if]
 ) (* end of [loop] *)
 //
 var res: ptr
-val () = loop (view@(A) | addr@(A), n, res)
+val () = loop(view@(A) | addr@(A), n, res)
 //
 } // end of [array_copy_to_list_vt]
 
@@ -526,9 +541,9 @@ then let
   prval
   (
     pf1, pf2
-  ) = array_v_uncons (pf)
+  ) = array_v_uncons(pf)
   val cont =
-    array_foreach$cont<a><env> (!p0, env)
+    array_foreach$cont<a><env>(!p0, env)
   // end of [val]
 in
   if cont then let
@@ -550,7 +565,7 @@ end // end of [loop]
 //
 val p0 = addr@(A)
 //
-val nz = loop (view@(A) | p0, asz, env)
+val nz = loop(view@(A) | p0, asz, env)
 //
 in
   asz - nz
@@ -572,61 +587,16 @@ array_foreach$fwork (x, env) = ((*void*))
 
 implement
 {a}(*tmp*)
-array_foreach_fun
-  {n}{fe}
-  (A, asz, fwork) = let
-//
-typedef
-tfun =
-  (!unit_v | &a, !ptr) -<fun,fe> void
-// end of [typedef]
-//
-prval pfu = unit_v ()
-//
-var env: ptr = the_null_ptr
-val fwork = $UN.cast{tfun}(fwork)
-val ((*void*)) =
-  array_foreach_funenv<a> (pfu | A, asz, fwork, env)
-//
-prval ((*freed*)) = unit_v_elim (pfu)
-//
-in
-  // nothing
-end // end of [array_foreach_fun]
-
-implement
-{a}(*tmp*)
-array_foreach_cloref
-  {n}{fe}
-  (A, asz, fwork) = let
-//
-  viewdef v = unit_v
-  typedef vt = (&a) -<cloref,fe> void
-//
-  fun app .<>.
-    (pf: !v | x: &a, env: !vt):<fe> void = env (x)
-  // end of [fun]
-  var env = fwork
-  prval pfu = unit_v ()
-  val ((*void*)) =
-    array_foreach_funenv<a>{v}{vt}(pfu | A, asz, app, env)
-  // end of [val]
-  prval ((*freed*)) = unit_v_elim (pfu)
-in
-  // nothing
-end // end of [array_foreach_cloref]
-
-(* ****** ****** *)
-
-implement
-{a}(*tmp*)
 array_foreach_funenv
   {v}{vt}
 (
-  pf | A, asz, f, env
+  pf | A0, asz, fwork, env
 ) =
 (
-  array_foreach_funenv_tsz{a}{v}{vt}(pf | A, asz, sizeof<a>, f, env)
+//
+array_foreach_funenv_tsz
+  {a}{v}{vt}(pf | A0, asz, sizeof<a>, fwork, env)
+//
 ) (* end of [array_foreach_funenv] *)
 
 (* ****** ****** *)
@@ -680,25 +650,25 @@ then let
 in
   if cont then let
     val () =
-      array_foreach2$fwork<a1,a2><env> (!p1, !p2, env)
+      array_foreach2$fwork<a1,a2><env>(!p1, !p2, env)
     val res =
       loop (
         pf12, pf22
       | ptr1_succ<a1>(p1), ptr1_succ<a2>(p2), pred(nz), env
       ) (* loop *)
-    prval () = pf1 := array_v_cons (pf11, pf12)
-    prval () = pf2 := array_v_cons (pf21, pf22)
+    prval () = pf1 := array_v_cons(pf11, pf12)
+    prval () = pf2 := array_v_cons(pf21, pf22)
   in
     res
   end else let
-    prval () = pf1 := array_v_cons (pf11, pf12)
-    prval () = pf2 := array_v_cons (pf21, pf22) in (nz)
+    prval () = pf1 := array_v_cons(pf11, pf12)
+    prval () = pf2 := array_v_cons(pf21, pf22) in (nz)
   end (* end of [if] *)
 end else nz(*0*)
 //
 end // end of [loop]
 //
-val nz = loop (view@(A1), view@(A2) | addr@(A1), addr@(A2), asz, env)
+val nz = loop(view@(A1), view@(A2) | addr@(A1), addr@(A2), asz, env)
 //
 in
   asz - nz
@@ -754,7 +724,7 @@ if
 then let
   prval (
     pf1, pf2
-  ) = array_v_uncons (pf)
+  ) = array_v_uncons(pf)
   val cont =
     array_iforeach$cont<a><env>(i0, !p0, env)
   // end of [val
@@ -763,12 +733,12 @@ in
     val () =
       array_iforeach$fwork<a><env>(i0, !p0, env)
     val res =
-      loop (pf2 | ptr1_succ<a>(p0), pred(nz), succ(i0), env)
+      loop(pf2 | ptr1_succ<a>(p0), pred(nz), succ(i0), env)
     prval () = pf := array_v_cons{a}(pf1, pf2)
   in
     res
   end else let
-    prval () = pf := array_v_cons (pf1, pf2) in (nz)
+    prval () = pf := array_v_cons(pf1, pf2) in (nz)
   end (* end of [if] *)
 end // end of [then]
 else nz(*0*) // end of [else]
@@ -795,7 +765,8 @@ array_iforeach$fwork (i, x, env) = ((*void*))
 //
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 array_rforeach
   (A, asz) = let
   var env: void = ()
@@ -834,8 +805,8 @@ then let
   prval
   (
     pf1, pf2
-  ) = array_v_unextend (pf)
-  val p1 = ptr1_pred<a> (pz)
+  ) = array_v_unextend(pf)
+  val p1 = ptr1_pred<a>(pz)
   val (pf2 | p1) = viewptr_match(pf2 | p1)
   val cont = array_rforeach$cont<a><env>(!p1, env)
 in
@@ -843,7 +814,7 @@ in
     val () =
     array_rforeach$fwork<a><env>(!p1, env)
     val res = loop(pf1 | p1, pred(nz), env)
-    prval () = pf := array_v_extend (pf1, pf2)
+    prval () = pf := array_v_extend(pf1, pf2)
   in
     res
   end else let
@@ -854,9 +825,9 @@ end else nz(*0*) // end of [if]
 end // end of [loop]
 //
 val pz =
-  ptr1_add_guint<a> (addr@(A), asz)
+  ptr1_add_guint<a>(addr@(A), asz)
 //
-val n0 = loop (view@(A) | pz, asz, env)
+val n0 = loop(view@(A) | pz, asz, env)
 //
 in
   asz - n0
@@ -897,10 +868,10 @@ then let
   (pf1, pf2) = array_v_uncons(pf)
 //
   val () =
-    array_initize$init<a> (i0, !p0)
+    array_initize$init<a>(i0, !p0)
   // end of [val]
   val () =
-    loop(pf2 | ptr1_succ<a> (p0), pred(nz), succ(i0))
+    loop(pf2 | ptr1_succ<a>(p0), pred(nz), succ(i0))
   // end of [val]
 //
   prval () = pf := array_v_cons{a}(pf1, pf2)
@@ -917,26 +888,29 @@ end // end of [if]
 prval() = lemma_g1uint_param(asz)
 //
 in
-  loop (view@ (A) | addr@(A), asz, g0int2uint(0))
+  loop(view@ (A) | addr@(A), asz, g0int2uint(0))
 end // end of [array_initize]
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 array_initize_elt
   (A, asz, elt) = let
 //
-implement{a2}
+implement
+{a2}(*tmp*)
 array_initize$init
   (i, xi) = xi := $UN.castvwtp0{a2}(elt)
 //
 in
-  $effmask_all (array_initize<a> (A, asz))
+  $effmask_all (array_initize<a>(A, asz))
 end // end of [array_initize_elt]
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 array_initize_list
   {n} (A, asz, xs) = let
 //
@@ -966,11 +940,11 @@ p0 < p1
   // end of [val]
   val+list_cons(x, xs) = xs
   val () =
-    $UN.ptr0_set<a> (p0, x)
+    $UN.ptr0_set<a>(p0, x)
   // end of [val]
-  val p0 = ptr_succ<a> (p0)
+  val p0 = ptr_succ<a>(p0)
 in
-  loop (p0, p1, xs)
+  loop(p0, p1, xs)
 end else () // end of [if]
 //
 end // end of [loop]
@@ -978,8 +952,8 @@ end // end of [loop]
 prval() = lemma_list_param(xs)
 //
 val p0 = addr@(A)
-val p1 = ptr_add<a> (p0, asz)
-val () = $effmask_all(loop (p0, p1, xs))
+val p1 = ptr_add<a>(p0, asz)
+val () = $effmask_all(loop(p0, p1, xs))
 //
 prval() =
 __assert(A) where
@@ -997,7 +971,8 @@ end // end of [array_initize_list]
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 array_initize_rlist
   {n} (A, asz, xs) = let
 //
@@ -1024,10 +999,10 @@ if pz > p0 then let
     $UN.cast{list1}(xs)
   // end of [val]
   val+list_cons(x, xs) = xs
-  val pz = ptr_pred<a> (pz)
-  val () = $UN.ptr0_set<a> (pz, x)
+  val pz = ptr_pred<a>(pz)
+  val () = $UN.ptr0_set<a>(pz, x)
 in
-  loop (pz, p0, xs)
+  loop(pz, p0, xs)
 end else () // end of [if]
 //
 end // end of [loop]
@@ -1035,7 +1010,7 @@ end // end of [loop]
 prval() = lemma_list_param(xs)
 //
 val p0 = addr@(A)
-val pz = ptr_add<a> (p0, asz)
+val pz = ptr_add<a>(p0, asz)
 val () = $effmask_all(loop(pz, p0, xs))
 //
 prval() =
@@ -1052,7 +1027,8 @@ end // end of [array_initize_rlist]
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 array_initize_list_vt
   {n} (A, asz, xs) = let
 //
@@ -1076,11 +1052,11 @@ if p0 < p1 then let
   val xs =
     $UN.castvwtp0{list1}(xs)
   // end of [val]
-  val+~list_vt_cons (x, xs) = xs
-  val () = $UN.ptr0_set<a> (p0, x)
-  val p0 = ptr_succ<a> (p0)
+  val+~list_vt_cons(x, xs) = xs
+  val () = $UN.ptr0_set<a>(p0, x)
+  val p0 = ptr_succ<a>(p0)
 in
-  loop (p0, p1, xs)
+  loop(p0, p1, xs)
 end else let
   prval () = $UN.cast2void (xs) in (*nothing*)
 end // end of [if]
@@ -1090,7 +1066,7 @@ end // end of [loop]
 prval () = lemma_list_vt_param (xs)
 //
 val p0 = addr@(A)
-val p1 = ptr_add<a> (p0, asz)
+val p1 = ptr_add<a>(p0, asz)
 val () = $effmask_all(loop(p0, p1, xs))
 //
 prval() =
@@ -1109,7 +1085,8 @@ end // end of [array_initize_list_vt]
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 array_initize_rlist_vt
   {n} (A, asz, xs) = let
 //
@@ -1134,10 +1111,10 @@ if pz > p0 then let
     $UN.castvwtp0{list1}(xs)
   // end of [val]
   val+~list_vt_cons(x, xs) = xs
-  val pz = ptr_pred<a> (pz)
-  val () = $UN.ptr0_set<a> (pz, x)
+  val pz = ptr_pred<a>(pz)
+  val () = $UN.ptr0_set<a>(pz, x)
 in
-  loop (pz, p0, xs)
+  loop(pz, p0, xs)
 end else let
   prval () = $UN.cast2void (xs) in (*nothing*)
 end // end of [if]
@@ -1147,7 +1124,7 @@ end // end of [loop]
 prval() = lemma_list_vt_param(xs)
 //
 val p0 = addr@(A)
-val pz = ptr_add<a> (p0, asz)
+val pz = ptr_add<a>(p0, asz)
 val () = $effmask_all(loop(pz, p0, xs))
 //
 prval() =
@@ -1166,7 +1143,8 @@ end // end of [array_initize_rlist_vt]
 
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 array_uninitize
   (A, asz) = let
 //
@@ -1193,9 +1171,9 @@ then let
   (pf1, pf2) = array_v_uncons(pf)
 //
   val () =
-    array_uninitize$clear<a> (i0, !p0)
+    array_uninitize$clear<a>(i0, !p0)
   val () =
-    loop (pf2 | ptr_succ<a> (p0), pred(nz), succ(i0))
+    loop(pf2 | ptr_succ<a>(p0), pred(nz), succ(i0))
 //
   prval () = (pf := array_v_cons(pf1, pf2))
 //
@@ -1213,7 +1191,7 @@ prval() = lemma_array_param(A)
 //
 prval pf = view@ (A)
 //
-val () = loop (pf | addr@(A), asz, i2sz(0))
+val () = loop(pf | addr@(A), asz, i2sz(0))
 //
 prval () = view@ (A) := pf
 //
@@ -1228,9 +1206,9 @@ implement
 array_mapto
   {n}(A, B, n) = let
 //
-val pa = addr@ (A)
-val pa2 = ptr_add<a> (pa, n)
-val pb = addr@ (B)
+val pa = addr@(A)
+val pa2 = ptr_add<a>(pa, n)
+val pb = addr@(B)
 //
 fun loop{la,lb:addr}
 (
@@ -1241,14 +1219,14 @@ if pa < pa2 then let
   val (pfa, fpfa | pa) = $UN.ptr_vtake{a}(pa)
   val (pfb, fpfb | pb) = $UN.ptr_vtake{b?}(pb)
   val () = array_mapto$fwork<a><b> (!pa, !pb)
-  prval () = fpfa (pfa)
-  prval () = fpfb ($UN.castview0{(b?)@lb}(pfb))
+  prval () = fpfa(pfa)
+  prval () = fpfb($UN.castview0{(b?)@lb}(pfb))
 in
-  loop (ptr_succ<a> (pa), pa2, ptr_succ<b> (pb))
+  loop(ptr_succ<a>(pa), pa2, ptr_succ<b> (pb))
 end (* end of [if] *)
 )
 //
-val () = loop (pa, pa2, pb)
+val () = loop(pa, pa2, pb)
 prval [lb:addr] EQADDR () = ptr_get_index (pb)
 prval () = view@(B) := $UN.castview0{array_v (b, lb, n)}(view@(B))
 //
@@ -1263,12 +1241,14 @@ implement
 array_map2to
   {n}(A, B, C, n) = let
 //
-val pa = addr@ (A)
-val pa2 = ptr_add<a> (pa, n)
-val pb = addr@ (B)
-val pc = addr@ (C)
+val pa = addr@(A)
+val pa2 = ptr_add<a>(pa, n)
+val pb = addr@(B)
+val pc = addr@(C)
 //
-fun loop{la,lb,lc:addr}
+fun
+loop
+{la,lb,lc:addr}
 (
   pa: ptr la, pa2: ptr, pb: ptr lb, pc: ptr lc
 ) : void =
@@ -1277,16 +1257,16 @@ if pa < pa2 then let
   val (pfa, fpfa | pa) = $UN.ptr_vtake{a}(pa)
   val (pfb, fpfb | pb) = $UN.ptr_vtake{b}(pb)
   val (pfc, fpfc | pc) = $UN.ptr_vtake{c?}(pc)
-  val () = array_map2to$fwork<a,b><c> (!pa, !pb, !pc)
-  prval () = fpfa (pfa)
-  prval () = fpfb (pfb)
-  prval () = fpfc ($UN.castview0{(c?)@lc}(pfc))
+  val () = array_map2to$fwork<a,b><c>(!pa, !pb, !pc)
+  prval () = fpfa(pfa)
+  prval () = fpfb(pfb)
+  prval () = fpfc($UN.castview0{(c?)@lc}(pfc))
 in
-  loop (ptr_succ<a> (pa), pa2, ptr_succ<b> (pb), ptr_succ<c> (pc))
+  loop(ptr_succ<a>(pa), pa2, ptr_succ<b>(pb), ptr_succ<c>(pc))
 end (* end of [if] *)
 )
 //
-val () = loop (pa, pa2, pb, pc)
+val () = loop(pa, pa2, pb, pc)
 //
 prval [lc:addr] EQADDR() = ptr_get_index (pc)
 prval () = view@(C) := $UN.castview0{array_v (c, lc, n)}(view@(C))
@@ -1294,34 +1274,6 @@ prval () = view@(C) := $UN.castview0{array_v (c, lc, n)}(view@(C))
 in
   // nothing
 end (* end of [array_map2to] *)
-
-(* ****** ****** *)
-
-(*
-implement
-{a}(*tmp*)
-array_bsearch
-  (A, n) = $effmask_all let
-//
-val itr =
-  $IT.giter_make_array(view@(A) | addr@(A), n)
-// end of [val]
-//
-implement
-$IT.giter_bsearch$ford<a>(x) = array_bsearch$ford<a> (x)
-//
-val () = $IT.giter_bsearch(itr, n)
-//
-val ofs = $IT.giter_get_fofs (itr)
-//
-val (pf | ()) = $IT.giter_free_array (itr)
-//
-prval((*returned*)) = view@ (A) := pf
-//
-in
-  ofs
-end // end of [array_bsearch]
-*)
 
 (* ****** ****** *)
 
@@ -1357,7 +1309,7 @@ then let
   $UN.ptr0_exch<a>
     (ptr0_add_guint<a>(p0, i), !p0)
   // end of [if]
-  val () = loop (pf2 | ptr1_succ<a>(p0), pred(nz))
+  val () = loop(pf2 | ptr1_succ<a>(p0), pred(nz))
 //
   prval((*returned*)) = pf := array_v_cons(pf1, pf2)
 in
@@ -1367,7 +1319,7 @@ end else ((*void*)) // end of [if]
 end // end of [loop]
 //
 in
-  loop (view@ (A) | addr@ (A), asz)
+  loop(view@ (A) | addr@(A), asz)
 end // end of [array_permute]
 
 (* ****** ****** *)

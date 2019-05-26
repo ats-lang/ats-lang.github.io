@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/string.atxt
-** Time of generation: Wed Jan  4 13:58:15 2017
+** Time of generation: Fri Nov 30 08:45:19 2018
 *)
 
 (* ****** ****** *)
@@ -313,10 +313,10 @@ string_make_rlistlen_vt
 //
 fun{}
 string_make_stream
-  {n:int}(cs: stream(charNZ)):<!wrt> Strptr1
+  (cs: stream(charNZ)):<!wrt> Strptr1
 fun{}
 string_make_stream_vt
-  {n:int}(cs: stream_vt(charNZ)):<!wrt> Strptr1
+  (cs: stream_vt(charNZ)):<!wrt> Strptr1
 //
 fun{}
 string_make_stream$bufsize
@@ -378,13 +378,13 @@ strcspn{n:int} // complement spanning
 
 (* ****** ****** *)
 
-fun{
-} string_index{n:int}
+fun{}
+string_index{n:int}
   (str: string(n), c0: charNZ):<> ssizeBtw(~1, n)
 // end of [string_index]
 
-fun{
-} string_rindex{n:int}
+fun{}
+string_rindex{n:int}
   (str: string(n), c0: charNZ):<> ssizeBtw(~1, n)
 // end of [string_rindex]
 
@@ -536,10 +536,6 @@ string_tabulate$fopr(size_t): charNZ
 fun{}
 string_tabulate{n:int}(n: size_t(n)): strnptr(n)
 //
-fun{}
-string_tabulate_cloref{n:int}
-  (n: size_t(n), f: (sizeLt(n)) -<cloref1> charNZ): strnptr(n)
-//
 (* ****** ****** *)
 //
 fun{}
@@ -554,25 +550,29 @@ string_iforall$pred(i: int, c: char): bool
 //
 (* ****** ****** *)
 //
-fun{env:vt0p}
-string_foreach$cont(c: char, env: &env): bool
-fun{env:vt0p}
-string_foreach$fwork(c: char, env: &(env) >> _): void
-//
 fun{
-} string_foreach {n:int} (str: string(n)): sizeLte(n)
+env:vt0p
+} string_foreach$cont(c: char, env: &env): bool
+fun{
+env:vt0p
+} string_foreach$fwork(c: char, env: &(env) >> _): void
+//
+fun{}
+string_foreach{n:int}(str: string(n)): sizeLte(n)
 fun{
 env:vt0p
 } string_foreach_env
-  {n:int} (str: string(n), env: &(env) >> _): sizeLte(n)
+  {n:int}(str: string(n), env: &(env) >> _): sizeLte(n)
 // end of [string_foreach_env]
 //
 (* ****** ****** *)
 //
-fun{env:vt0p}
-string_rforeach$cont(c: char, env: &env): bool
-fun{env:vt0p}
-string_rforeach$fwork(c: char, env: &(env) >> _): void
+fun{
+env:vt0p
+} string_rforeach$cont(c: char, env: &env): bool
+fun{
+env:vt0p
+} string_rforeach$fwork(c: char, env: &(env) >> _): void
 //
 fun{}
 string_rforeach{n:int}(str: string(n)): sizeLte(n)
@@ -586,6 +586,8 @@ env:vt0p
 //
 fun{}
 streamize_string_char(string): stream_vt(charNZ)
+fun{}
+un_streamize_string_char(stream_vt(charNZ)): Strptr1
 //
 (* ****** ****** *)
 //
@@ -593,12 +595,12 @@ streamize_string_char(string): stream_vt(charNZ)
 ** HX:
 ** [stropt_none] is just the null pointer
 *)
-fun stropt_none((*void*)): stropt(~1) = "mac#%"
+fun stropt_none((*void*)):<> stropt(~1) = "mac#%"
 //
 (* ****** ****** *)
 //
-castfn stropt0_some(x: SHR(string)): Stropt1
-castfn stropt1_some{n:int}(x: SHR(string(n))): stropt(n)
+castfn stropt0_some(x: SHR(string)):<> Stropt1
+castfn stropt1_some{n:int}(x: SHR(string(n))):<> stropt(n)
 //
 symintr stropt_some
 overload stropt_some with stropt0_some of 0

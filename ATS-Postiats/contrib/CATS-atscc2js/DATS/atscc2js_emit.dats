@@ -420,7 +420,14 @@ d0e0.d0exp_node of
 | ATSSELcon _ => emit_SELcon (out, d0e0)
 | ATSSELrecsin _ => emit_SELrecsin (out, d0e0)
 | ATSSELboxrec _ => emit_SELboxrec (out, d0e0)
+//
+// AS-2018-08-18:
+// For supporting native records:
+//
+| ATSSELfltrec _ => emit_SELfltrec (out, d0e0)
+(*
 | ATSSELfltrec _ => emit_text (out, "ATSSELfltrec(...)")
+*)
 //
 | ATSextfcall
     (_fun, _arg) => {
@@ -588,6 +595,26 @@ in
 end // end of [emit_SELboxrec]
 
 (* ****** ****** *)
+
+implement
+emit_SELfltrec
+  (out, d0e) = let
+//
+val-
+ATSSELfltrec
+(d0rec, s0e, id) = d0e.d0exp_node
+//
+val () =
+  emit_d0exp (out, d0rec)
+//
+val () = emit_DOT (out)
+val () = emit_i0de (out, id)
+//
+in
+  // nothing
+end // end of [emit_SELfltrec]
+
+(* ****** ****** *)
 //
 implement
 emit_COMMENT_line
@@ -649,17 +676,20 @@ aux0_envlst
 ) : void =
 (
 case+ s0es of
-| list_nil () => ()
+| list_nil
+    ((*void*)) => ()
 | list_cons
     (s0e, s0es) => let
     val () =
-    if n0+i > 0 then emit_text (out, ", ")
+    if n0+i > 0
+      then emit_text(out, ", ")
+    // end of [if]
     val () =
     (
-      emit_text (out, "env"); emit_int (out, i)
+      emit_text(out, "env"); emit_int(out, i)
     ) (* end of [val] *)
   in
-    aux0_envlst (out, s0es, n0, i+1)
+    aux0_envlst(out, s0es, n0, i+1)
   end // end of [list_cons]
 ) (* end of [aux0_envlst] *)
 
@@ -681,8 +711,8 @@ case+ s0es of
     // end of [if]
     val () =
     (
-      emit_text (out, "cenv");
-      emit_LBRACKET (out); emit_int (out, i+1); emit_RBRACKET (out)
+      emit_text(out, "cenv");
+      emit_LBRACKET(out); emit_int(out, i+1); emit_RBRACKET(out)
     ) (* end of [val] *)
   in
     aux1_envlst (out, s0es, i+1)

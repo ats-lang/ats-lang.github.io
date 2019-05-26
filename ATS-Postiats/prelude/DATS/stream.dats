@@ -28,15 +28,15 @@
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: gmhwxiATgmailDOTcom *)
 (* Start time: July, 2012 *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
 
 (* ****** ****** *)
 
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/list.atxt
-** Time of generation: Sat Apr 22 15:55:14 2017
+** Time of generation: Fri Feb 15 23:45:47 2019
 *)
 
 (* ****** ****** *)
@@ -97,7 +97,7 @@ in
       (x, xs) => let
       val () =
       res := list_vt_cons{a}{0}(x, _)
-      val+list_vt_cons (_, res1) = res
+      val+list_vt_cons(_, res1) = res
       val ((*void*)) = loop (xs, res1)
     in
       fold@ (res)
@@ -419,31 +419,38 @@ in (* in of [local] *)
 
 implement
 {a}(*tmp*)
-stream_filter (xs) =
-  $delay(stream_filter_con<a>(xs))
+stream_filter(xs) =
+$delay
+(
+stream_filter_con<a>(xs)
+)
 // end of [stream_filter]
 
 implement
 {a}(*tmp*)
 stream_filter_fun
-  (xs, p) = let
+  (xs, p0) = let
 //
 implement{a2}
-stream_filter$pred (x) = p($UN.cast{a}(x))
+stream_filter$pred
+  (x) = p0($UN.cast{a}(x))
 //
 in
-  stream_filter (xs)
+  stream_filter<a>(xs)
 end // end of [stream_filter_fun]
 
 implement
 {a}(*tmp*)
-stream_filter_cloref (xs, p) = let
+stream_filter_cloref
+  (xs, p0) = let
 //
-implement{a2}
-stream_filter$pred (x) = p($UN.cast{a}(x))
+implement
+{a2}(*tmp*)
+stream_filter$pred
+  (x) = p0($UN.cast{a}(x))
 //
 in
-  stream_filter (xs)
+  stream_filter<a>(xs)
 end // end of [stream_filter_cloref]
 
 end // end of [local]
@@ -452,24 +459,28 @@ end // end of [local]
 
 implement
 {a}{b}
-stream_map
-  (xs) = let
+stream_map(xs) =
+  auxmain(xs) where
+{
 //
-fun aux
+fun
+auxmain
 (
-  xs: stream (a)
-) :<!laz> stream (b) = $delay
+xs: stream(a)
+) :<!laz> stream(b) = $delay
 (
 case+ !xs of
-| stream_nil() => stream_nil()
-| stream_cons(x, xs) =>
-    stream_cons{b}(stream_map$fopr<a><b>(x), aux(xs))
-  // end of [stream_cons]
-) : stream_con (b) // end of [$delay]
+| stream_nil() =>
+  stream_nil()
+| stream_cons(x, xs) => let
+    val y =
+    stream_map$fopr<a><b>(x)
+  in
+    stream_cons{b}(y, auxmain(xs))
+  end // end of [stream_cons]
+) : stream_con(b) // end of [$delay]
 //
-in
-  aux (xs)
-end // end of [stream_map]
+} (* end of [stream_map] *)
 
 implement
 {a}{b}
@@ -478,7 +489,9 @@ stream_map_fun
 //
 implement
 {a2}{b2}
-stream_map$fopr (x) = $UN.cast{b2}(f($UN.cast{a}(x)))
+stream_map$fopr(x) =
+$UN.cast{b2}
+  (f($UN.cast{a}(x)))
 //
 in
   stream_map<a><b>(xs)
@@ -491,7 +504,9 @@ stream_map_cloref
 //
 implement
 {a2}{b2}
-stream_map$fopr (x) = $UN.cast{b2}(f($UN.cast{a}(x)))
+stream_map$fopr(x) =
+$UN.cast{b2}
+  (f($UN.cast{a}(x)))
 //
 in
   stream_map<a><b>(xs)
@@ -501,12 +516,14 @@ end // end of [stream_map_cloref]
 
 implement
 {a}{b}
-stream_imap
-  (xs) = let
+stream_imap(xs) =
+  auxmain(0, xs) where
+{
 //
-fun aux
+fun
+auxmain
 (
-  i: intGte(0), xs: stream (a)
+ i: intGte(0), xs: stream(a)
 ) :<!laz> stream (b) = $delay
 (
 case+ !xs of
@@ -517,13 +534,11 @@ case+ !xs of
       stream_imap$fopr<a><b>(i, x)
     // end of [val]
   in
-    stream_cons{b}(y, aux(succ(i), xs))
+    stream_cons{b}(y, auxmain(succ(i), xs))
   end // end of [stream_cons]
 ) : stream_con (b) // end of [$delay]
 //
-in
-  aux (0, xs)
-end // end of [stream_imap]
+} (* end of [stream_imap] *)
 
 implement
 {a}{b}
@@ -533,7 +548,11 @@ stream_imap_fun
 implement
 {a2}{b2}
 stream_imap$fopr
-  (i, x) = $UN.cast{b2}(f(i, $UN.cast{a}(x)))
+  (i, x) =
+(
+$UN.cast{b2}
+(f(i, $UN.cast{a}(x)))
+)
 //
 in
   stream_imap<a><b>(xs)
@@ -547,7 +566,11 @@ stream_imap_cloref
 implement
 {a2}{b2}
 stream_imap$fopr
-  (i, x) = $UN.cast{b2}(f(i, $UN.cast{a}(x)))
+  (i, x) =
+(
+$UN.cast{b2}
+(f(i, $UN.cast{a}(x)))
+)
 //
 in
   stream_imap<a><b>(xs)
@@ -564,25 +587,27 @@ in (* in of [local] *)
 implement
 {a1,a2}{b}
 stream_map2
+(xs1, xs2) = $delay
 (
-  xs1, xs2
-) = $delay (
 (
 case+ !xs1 of
-| x1 :: xs1 =>
+| stream_nil() =>
+  stream_nil()
+| stream_cons(x1, xs1) =>
   (
   case+ !xs2 of
-  | x2 :: xs2 => let
+  | stream_nil() =>
+    stream_nil()
+  | stream_cons(x2, xs2) => let
       val y =
-        stream_map2$fopr<a1,a2><b>(x1, x2)
-      // end of [val]
+      stream_map2$fopr<a1,a2><b>(x1, x2)
     in
-      stream_cons{b}(y, stream_map2<a1,a2><b>(xs1, xs2))
-    end // end of [::]
-  | stream_nil() => stream_nil()
-  ) // end of [::]
-| stream_nil() => stream_nil()
-) : stream_con (b)
+      stream_cons{b}
+        (y, stream_map2<a1,a2><b>(xs1, xs2))
+      // stream_cons
+    end // stream_cons
+  ) // end of [stream_cons]
+) : stream_con(b)
 ) // end of [stream_map2]
 
 end // end of [local]
@@ -594,8 +619,15 @@ stream_map2_fun
 //
 implement
 {a12,a22}{b2}
-stream_map2$fopr (x1, x2) =
-  $UN.cast{b2}(f($UN.cast{a1}(x1), $UN.cast{a2}(x2)))
+stream_map2$fopr
+  (x1, x2) = let
+//
+val x1 = $UN.cast{a1}(x1)
+val x2 = $UN.cast{a2}(x2)
+//
+in
+  $UN.cast{b2}(f(x1, x2))
+end // [stream_map2$fopr]
 //
 in
   stream_map2<a1,a2><b>(xs1, xs2)
@@ -629,14 +661,11 @@ auxmain
 ) :<!laz> stream(res) = $delay
 (
 case+ !xs of
-| stream_nil
-    () => stream_nil()
-  // end of [stream_nil]
-| stream_cons
-    (x, xs) =>
+| stream_nil() =>
+  stream_nil()
+| stream_cons(x, xs) =>
   stream_cons{res}
-    (stream_scan$fopr<res><x>(ini, x), auxmain(xs, ini))
-  // end of [stream_cons]
+  (stream_scan$fopr<res><x>(ini, x), auxmain(xs, ini))
 ) // end of [$delay] // end of [auxmain]
 //
 in
@@ -677,6 +706,72 @@ end // end of [stream_scan_cloref]
 
 (* ****** ****** *)
 
+implement
+{a,b}//tmp
+stream_zip
+  (xs, ys) =
+(
+  auxmain(xs, ys)
+) where
+{
+fun
+auxmain:
+$d2ctype
+(stream_zip<a,b>) =
+lam(xs, ys) => $delay
+(
+case+ !xs of
+| stream_nil() =>
+  stream_nil()
+| stream_cons(x0, xs) =>
+  (
+  case+ !ys of
+  | stream_nil() =>
+    stream_nil()
+  | stream_cons(y0, ys) =>
+    stream_cons((x0, y0), auxmain(xs, ys))
+  )
+) (* end of [auxmain] *)
+} (* end of [stream_zip] *)
+
+(* ****** ****** *)
+
+implement
+{a,b}//tmp
+stream_cross
+  (xs, ys) =
+(
+  auxmain(xs, ys)
+) where
+{
+fun
+auxmain:
+$d2ctype
+(stream_cross<a,b>) =
+lam(xs, ys) => $delay
+(
+case+ !xs of
+| stream_nil() =>
+  stream_nil()
+| stream_cons(x0, xs) => !
+  (
+    stream_append(xys, auxmain(xs, ys))
+  ) where
+  {
+    val xys =
+    (
+    stream_map<b><(a,b)>(ys)
+    ) where
+    {
+      implement
+      stream_map$fopr<b><(a,b)>(y) = @(x0, y)
+    }
+  }
+) (* end of [auxmain] *)
+} (* end of [stream_cross] *)
+
+(* ****** ****** *)
+
 local
 
 #define :: stream_cons
@@ -700,23 +795,34 @@ xs10, xs20
 ) => $delay
 (
 case+ !xs10 of
-| x1 :: xs1 =>
+| stream_nil
+    ((*_*)) => !xs20
+| stream_cons
+    (x1, xs1) =>
   (
   case+ !xs20 of
-  | x2 :: xs2 => let
+  | stream_nil
+      ((*_*)) =>
+    stream_cons{a}(x1, xs1)
+  | stream_cons
+      (x2, xs2) => let
       val sgn =
-        stream_merge$cmp<a>(x1, x2)
+      stream_merge$cmp<a>
+        (x1, x2)
       // end of [val]
     in
-      if sgn <= 0 then
-        stream_cons{a}(x1, auxmain(xs1, xs20))
+      if
+      (sgn <= 0)
+      then
+      stream_cons{a}
+        (x1, auxmain(xs1, xs20))
+      // end of [then]
       else
-        stream_cons{a}(x2, auxmain(xs10, xs2))
-      // end of [if]
+      stream_cons{a}
+        (x2, auxmain(xs10, xs2))
+      // end of [else]
     end // end of [::]
-  | stream_nil() => stream_cons{a}(x1, xs1)
   ) (* end of [::] *)
-| stream_nil() => !xs20
 ) (* end of [auxmain] *)
 //
 in
@@ -726,6 +832,14 @@ end // end of [stream_merge]
 end // end of [local]
 
 (* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+stream_merge$cmp
+  (x1, x2) =
+  gcompare_val_val<a>(x1, x2)
+//
+(* ****** ****** *)
 
 implement
 {a}(*tmp*)
@@ -734,7 +848,7 @@ stream_merge_fun
 //
 implement{a2}
 stream_merge$cmp(x1, x2) =
-  cmp ($UN.cast{a}(x1), $UN.cast{a}(x2))
+  cmp($UN.cast{a}(x1), $UN.cast{a}(x2))
 //
 in
   stream_merge<a>(xs1, xs2)
@@ -747,19 +861,12 @@ stream_merge_cloref
 //
 implement{a2}
 stream_merge$cmp(x1, x2) =
-  cmp ($UN.cast{a}(x1), $UN.cast{a}(x2))
+  cmp($UN.cast{a}(x1), $UN.cast{a}(x2))
 //
 in
   stream_merge<a>(xs1, xs2)
 end // end of [stream_merge_cloref]
 
-(* ****** ****** *)
-//
-implement
-{a}(*tmp*)
-stream_merge$cmp
-  (x1, x2) = gcompare_val_val<a>(x1, x2)
-//
 (* ****** ****** *)
 
 local
@@ -786,25 +893,31 @@ lam
 $delay
 (
 case+ !xs10 of
-| x1 :: xs1 =>
+| stream_nil() => !xs20
+| stream_cons(x1, xs1) =>
   (
   case+ !xs20 of
-  | x2 :: xs2 => let
+  | stream_nil() =>
+    stream_cons{a}(x1, xs1)
+  | stream_cons(x2, xs2) => let
       val sgn =
         stream_mergeq$cmp<a>(x1, x2)
       // end of [val]
     in
-      if sgn < 0 then
+      if
+      (sgn < 0)
+      then
         stream_cons{a}(x1, auxmain(xs1, xs20))
-      else if sgn > 0 then
+      else
+      if
+      (sgn > 0)
+      then
         stream_cons{a}(x2, auxmain(xs10, xs2))
       else
         stream_cons{a}(x1(*=x2*), auxmain(xs1, xs2))
       // end of [if]
     end // end of [::]
-  | stream_nil() => stream_cons{a}(x1, xs1)
-  ) (* end of [::] *)
-| stream_nil() => !xs20
+  ) (* end of [stream_cons] *)
 ) (* end of [auxmain] *)
 //
 in
@@ -813,6 +926,13 @@ end // end of [stream_mergeq]
 
 end // end of [local]
 
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+stream_mergeq$cmp
+  (x1, x2) = gcompare_val_val<a>(x1, x2)
+//
 (* ****** ****** *)
 
 implement
@@ -845,9 +965,191 @@ end // end of [stream_mergeq_cloref]
 //
 implement
 {a}(*tmp*)
-stream_mergeq$cmp
+stream_union$cmp
+  (x1, x2) = gcompare_val_val<a>(x1, x2)
+implement
+{a}(*tmp*)
+stream_inter$cmp
+  (x1, x2) = gcompare_val_val<a>(x1, x2)
+implement
+{a}(*tmp*)
+stream_differ$cmp
+  (x1, x2) = gcompare_val_val<a>(x1, x2)
+implement
+{a}(*tmp*)
+stream_symdiff$cmp
   (x1, x2) = gcompare_val_val<a>(x1, x2)
 //
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+stream_union
+(
+  xs, ys
+) = auxmain(xs, ys) where
+{
+//
+fun
+auxmain
+( xs0: stream(a)
+, ys0: stream(a)
+) :<!laz> stream(a) = $delay
+(
+case+ !xs0 of
+| stream_nil
+    () => !(ys0)
+  // stream_nil
+| stream_cons
+    (x0, xs1) =>
+  (
+    case+ !ys0 of
+    | stream_nil() =>
+      stream_cons(x0, xs1)
+    | stream_cons(y0, ys1) => let
+        val sgn =
+        stream_union$cmp<a>(x0, y0)
+      in
+        ifcase
+        | sgn < 0 =>
+          stream_cons(x0, auxmain(xs1, ys0))
+        | sgn > 0 =>
+          stream_cons(y0, auxmain(xs0, ys1))
+        | _(*sgn=0*) =>
+          stream_cons(x0, auxmain(xs1, ys1))
+      end // end of [stream_cons]
+  )
+) (* end of [auxmain] *)
+//
+} (* end of [stream_union] *)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+stream_inter
+(
+  xs, ys
+) = auxmain(xs, ys) where
+{
+//
+fun
+auxmain
+( xs0: stream(a)
+, ys0: stream(a)
+) :<!laz> stream(a) = $delay
+(
+case+ !xs0 of
+| stream_nil() =>
+  stream_nil()
+| stream_cons(x0, xs1) =>
+  (
+    case+ !ys0 of
+    | stream_nil() =>
+      stream_nil()
+    | stream_cons(y0, ys1) => let
+        val sgn =
+        stream_inter$cmp<a>(x0, y0)
+      in
+        ifcase
+        | sgn < 0 => !(auxmain(xs1, ys0))
+        | sgn > 0 => !(auxmain(xs0, ys1))
+        | _(*sgn=0*) =>
+            stream_cons(x0, auxmain(xs1, ys1))
+          // end of [else]
+      end // end of [stream_cons]
+  )
+) (* end of [auxmain] *)
+//
+} (* end of [stream_inter] *)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+stream_differ
+(
+  xs, ys
+) = auxmain(xs, ys) where
+{
+//
+fun
+auxmain
+( xs0: stream(a)
+, ys0: stream(a)
+) :<!laz> stream(a) = $delay
+(
+case+ !xs0 of
+| stream_nil() =>
+  stream_nil()
+| stream_cons(x0, xs1) =>
+  (
+    case+ !ys0 of
+    | stream_nil() =>
+      stream_cons(x0, xs1)
+    | stream_cons(y0, ys1) => let
+        val sgn =
+        stream_differ$cmp<a>(x0, y0)
+      in
+        ifcase
+        | sgn < 0 =>
+          stream_cons
+            (x0, auxmain(xs1, ys0))
+          // stream_cons
+        | sgn > 0 => !(auxmain(xs0, ys1))
+        | _(*sgn=0*) => !(auxmain(xs1, ys1))
+      end // end of [stream_cons]
+  )
+) (* end of [auxmain] *)
+//
+} (* end of [stream_differ] *)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+stream_symdiff
+(
+  xs, ys
+) = auxmain(xs, ys) where
+{
+//
+fun
+auxmain
+( xs0: stream(a)
+, ys0: stream(a)
+) :<!laz> stream(a) = $delay
+(
+case+ !xs0 of
+| stream_nil
+    () => !(ys0)
+  // stream_nil
+| stream_cons
+    (x0, xs1) =>
+  (
+    case+ !ys0 of
+    | stream_nil() =>
+      stream_cons(x0, xs1)
+    | stream_cons(y0, ys1) => let
+        val sgn =
+        stream_symdiff$cmp<a>(x0, y0)
+      in
+        ifcase
+        | sgn < 0 =>
+          stream_cons
+            (x0, auxmain(xs1, ys0))
+          // stream_cons
+        | sgn > 0 =>
+            stream_cons
+            (y0, auxmain(xs0, ys1))
+          // stream_cons
+        | _(*sgn=0*) => !(auxmain(xs1, ys1))
+      end // end of [stream_cons]
+  )
+) (* end of [auxmain] *)
+//
+} (* end of [stream_symdiff] *)
+
 (* ****** ****** *)
 
 implement
@@ -1017,6 +1319,49 @@ loop(xs: stream(a)): void =
 //
 } (* end of [stream_foreach_cloref] *)
 
+(* ****** ****** *)
+//
+//
+implement
+{a}(*tmp*)
+stream_iforeach_fun
+  (xs, fwork) =
+  loop(0, xs) where
+{
+//
+fun
+loop
+( i: intGte(0)
+, xs: stream(a)): void =
+(
+case+ !xs of
+| stream_nil() => ()
+| stream_cons(x, xs) =>
+  let val () = fwork(i, x) in loop(i+1, xs) end
+)
+//
+} (* end of [stream_iforeach_fun] *)
+//
+implement
+{a}(*tmp*)
+stream_iforeach_cloref
+  (xs, fwork) =
+  loop(0, xs) where
+{
+//
+fun
+loop
+( i: intGte(0)
+, xs: stream(a)): void =
+(
+case+ !xs of
+| stream_nil() => ()
+| stream_cons(x, xs) =>
+  let val () = fwork(i, x) in loop(i+1, xs) end
+)
+//
+} (* end of [stream_iforeach_cloref] *)
+//
 (* ****** ****** *)
 
 implement

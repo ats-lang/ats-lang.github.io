@@ -28,17 +28,17 @@
 /* ****** ****** */
 
 /*
-** Source:
-** $PATSHOME/prelude/CATS/CODEGEN/filebas.atxt
-** Time of generation: Wed Dec 14 18:44:57 2016
+(* Author: Hongwei Xi *)
+(* Start time: January, 2013 *)
+(* Authoremail: hwxiATcsDOTbuDOTedu *)
 */
 
 /* ****** ****** */
 
 /*
-(* Author: Hongwei Xi *)
-(* Authoremail: hwxi AT cs DOT bu DOT edu *)
-(* Start time: January, 2013 *)
+** Source:
+** $PATSHOME/prelude/CATS/CODEGEN/filebas.atxt
+** Time of generation: Wed Oct 10 21:08:57 2018
 */
 
 /* ****** ****** */
@@ -76,8 +76,9 @@ atspre_test_file_exists
 {
   int err;
   struct stat st ;
-  err = stat ((const char*)path, &st) ;
-  return (err==0) ? atsbool_true : atsbool_false ;
+  err = stat((const char*)path, &st) ;
+  return
+  (err==0 ? atsbool_true : atsbool_false) ;
 } // end of [atspre_test_file_exists]
 
 /* ****** ****** */
@@ -93,7 +94,8 @@ atspre_test_file_mode_fun
   struct stat st ;
   err = stat ((const char*)path, &st) ;
   if (err < 0) return -1 ;
-  return ((atstype_bool(*)(atstype_uint))(pred))(st.st_mode) ? 1 : 0 ;
+  return
+  ((atstype_bool(*)(atstype_uint))(pred))(st.st_mode) ? 1 : 0 ;
 }
 
 /* ****** ****** */
@@ -169,26 +171,6 @@ atspre_test_file_isfifo
 /* ****** ****** */
 
 ATSinline()
-atstype_ref
-atspre_fileref_open_exn
-  (atstype_string path, atstype_string fm)
-{
-  FILE* filr ;
-  filr = fopen((char*)path, (char*)fm) ;
-  if (!filr) {
-    fprintf(
-      stderr
-    , "exit(ATS): [atspre_fileref_open_exn(%s, %s)] failed.\n"
-    , (char*)path, (char*)fm
-    ) ;
-    exit(1) ;
-  }
-  return filr ;
-} // end of [atspre_fileref_open]
-
-/* ****** ****** */
-
-ATSinline()
 atsvoid_t0ype
 atspre_fileref_close
   (atstype_ref filr)
@@ -227,9 +209,30 @@ atspre_fileref_flush
 /* ****** ****** */
 
 ATSinline()
+atstype_ref
+atspre_fileref_open_exn
+  (atstype_string path, atstype_string fm)
+{
+  FILE* filr ;
+  filr = fopen((char*)path, (char*)fm) ;
+  if (!filr) {
+    fprintf(
+      stderr
+    , "exit(ATS): [atspre_fileref_open_exn(%s, %s)] failed.\n"
+    , (char*)path, (char*)fm
+    ) ;
+    exit(1) ;
+  }
+  return filr ;
+} // end of [atspre_fileref_open]
+
+/* ****** ****** */
+
+ATSinline()
 atstype_int
 atspre_fileref_getc
-  (atstype_ref filr) { return fgetc((FILE*)filr) ; }
+  (atstype_ref filr)
+  { return fgetc((FILE*)filr) ; }
 // end of [atspre_fileref_getc]
 
 /* ****** ****** */
@@ -243,18 +246,20 @@ atspre_fileref_putc
   fputc (c, (FILE*)filr) ; return ;
 } // end of [atspre_fileref_putc]
 //
-#define atspre_fileref_putc_int atspre_fileref_putc
-#define atspre_fileref_putc_char atspre_fileref_putc
+#define \
+atspre_fileref_putc_int atspre_fileref_putc
+#define \
+atspre_fileref_putc_char atspre_fileref_putc
 //
 /* ****** ****** */
 
 ATSinline()
 atsvoid_t0ype
 atspre_fileref_puts
-(
-  atstype_ref filr, atstype_ptr cs
-) {
-  fputs ((char*)cs, (FILE*)filr) ; return ;
+( atstype_ref fout
+, atstype_ptr data)
+{
+  fputs((char*)data, (FILE*)fout) ; return ;
 } // end of [atspre_fileref_puts]
 
 /* ****** ****** */
@@ -265,8 +270,9 @@ atspre_fileref_is_eof
   (atstype_ref filr)
 {
   int eof ;
-  eof = feof ((FILE*)filr) ;
-  return (eof != 0 ? atsbool_true : atsbool_false) ;
+  eof = feof((FILE*)filr) ;
+  return
+  (eof != 0 ? atsbool_true : atsbool_false) ;
 } // end of [atspre_fileref_is_eof]
 
 /* ****** ****** */
@@ -274,43 +280,59 @@ atspre_fileref_is_eof
 ATSinline()
 atstype_bool
 atspre_fileref_load_int
-  (atstype_ref inp, atstype_ref x)
+(atstype_ref finp, atstype_ref data)
 {
   int n ;
-  n = fscanf((FILE*)inp, "%i", (atstype_int*)x) ;
-  return (n == 1 ? atsbool_true : atsbool_false) ;
+  n = fscanf
+      ( (FILE*)finp
+      , "%i"
+      , (atstype_int*)data) ;
+  return
+  (n==1 ? atsbool_true : atsbool_false) ;
 } // end of [atspre_fileref_load_int]
 
 ATSinline()
 atstype_bool
-atspre_fileref_load_lint
-  (atstype_ref inp, atstype_ref x)
+atspre_fileref_load_uint
+(atstype_ref finp, atstype_ref data)
 {
   int n ;
-  n = fscanf((FILE*)inp, "%li", (atstype_lint*)x) ;
-  return (n == 1 ? atsbool_true : atsbool_false) ;
-} // end of [atspre_fileref_load_lint]
+  n = fscanf
+      ( (FILE*)finp
+      , "%u"
+      , (atstype_uint*)data) ;
+  return
+  (n==1 ? atsbool_true : atsbool_false) ;
+} // end of [atspre_fileref_load_uint]
 
 /* ****** ****** */
 
 ATSinline()
 atstype_bool
-atspre_fileref_load_uint
-  (atstype_ref inp, atstype_ref x)
+atspre_fileref_load_lint
+(atstype_ref finp, atstype_ref data)
 {
   int n ;
-  n = fscanf((FILE*)inp, "%u", (atstype_uint*)x) ;
-  return (n == 1 ? atsbool_true : atsbool_false) ;
-} // end of [atspre_fileref_load_uint]
+  n = fscanf
+      ( (FILE*)finp
+      , "%li"
+      , (atstype_lint*)data) ;
+  return
+  (n==1 ? atsbool_true : atsbool_false) ;
+} // end of [atspre_fileref_load_lint]
 
 ATSinline()
 atstype_bool
 atspre_fileref_load_ulint
-  (atstype_ref inp, atstype_ref x)
+(atstype_ref finp, atstype_ref data)
 {
   int n ;
-  n = fscanf((FILE*)inp, "%lu", (atstype_ulint*)x) ;
-  return (n == 1 ? atsbool_true : atsbool_false) ;
+  n = fscanf
+      ( (FILE*)finp
+      , "%lu"
+      , (atstype_ulint*)data) ;
+  return
+  (n==1 ? atsbool_true : atsbool_false) ;
 } // end of [atspre_fileref_load_ulint]
 
 /* ****** ****** */
@@ -318,21 +340,29 @@ atspre_fileref_load_ulint
 ATSinline()
 atstype_bool
 atspre_fileref_load_float
-  (atstype_ref inp, atstype_ref x)
+(atstype_ref finp, atstype_ref data)
 {
   int n ;
-  n = fscanf((FILE*)inp, "%f", (atstype_float*)x) ;
-  return (n == 1 ? atsbool_true : atsbool_false) ;
+  n = fscanf
+      ( (FILE*)finp
+      , "%f"
+      , (atstype_float*)data) ;
+  return
+  (n==1 ? atsbool_true : atsbool_false) ;
 } // end of [atspre_fileref_load_float]
 
 ATSinline()
 atstype_bool
 atspre_fileref_load_double
-  (atstype_ref inp, atstype_ref x)
+  (atstype_ref finp, atstype_ref data)
 {
   int n ;
-  n = fscanf((FILE*)inp, "%lf", (atstype_double*)x) ;
-  return (n == 1 ? atsbool_true : atsbool_false) ;
+  n = fscanf
+      ( (FILE*)finp
+      , "%lf"
+      , (atstype_double*)data) ;
+  return
+  (n==1 ? atsbool_true : atsbool_false) ;
 } // end of [atspre_fileref_load_double]
 
 /* ****** ****** */
@@ -342,8 +372,8 @@ atstype_ptr
 atspre_fileref_get_line_string_main2
 (
   atstype_int bsz // int bsz
-, atstype_ptr filp // FILE* filp
-, atstype_ref nlen // int *nlen
+, atstype_ptr filp // FILE*filp
+, atstype_ref nlen // (int)*nlen
 ) ; // endfun
 
 /* ****** ****** */

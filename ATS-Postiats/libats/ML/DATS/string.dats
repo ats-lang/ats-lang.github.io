@@ -28,14 +28,24 @@
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: gmhwxiATgmailDOTcom *)
 (* Start time: July, 2012 *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
 
 (* ****** ****** *)
-
-#define ATS_DYNLOADFLAG 0 // no need for dynloading at run-time
-#define ATS_EXTERN_PREFIX "atslib_ML_" // prefix for external names
-
+//
+// HX:
+// no need for
+// dynloading at run-time
+//
+#define
+ATS_DYNLOADFLAG 0
+//
+// HX:
+// prefix for external names
+//
+#define
+ATS_EXTERN_PREFIX "atslib_ML_"
+//
 (* ****** ****** *)
 //
 #include
@@ -115,6 +125,8 @@ prelude_string_foreach = string_foreach
 //
 macdef
 prelude_streamize_string_char = streamize_string_char
+macdef
+prelude_un_streamize_string_char = un_streamize_string_char
 //
 (* ****** ****** *)
 
@@ -142,7 +154,7 @@ implement
 {}(*tmp*)
 string_sing(c) =
 strnptr2string
-  ($effmask_wrt(prelude_string_sing (c)))
+  ($effmask_wrt(prelude_string_sing(c)))
 //
 (* ****** ****** *)
 //
@@ -251,15 +263,32 @@ string_make_list
   (cs) = let
 //
 val cs =
-$UN.cast{list0(charNZ)}(cs)
+$UN.cast
+{List0(charNZ)}(cs)
 //
 val str =
 $effmask_wrt
-  (prelude_string_make_list (g1ofg0_list(cs)))
+(prelude_string_make_list(cs))
 //
 in
-  strnptr2string (str)
+  strnptr2string(str)
 end // end of [string_make_list]
+implement
+{}(*tmp*)
+string_make_list0
+  (cs) =
+  string_make_list<>(g1ofg0_list(cs))
+implement
+{}(*tmp*)
+string_make_list_vt
+  (cs) = res where
+{
+  val res =
+  string_make_list<>($UN.list_vt2t(cs))
+  val ((*freed*)) = list_vt_free<char>(cs)
+}
+//
+(* ****** ****** *)
 //
 implement
 {}(*tmp*)
@@ -267,18 +296,42 @@ string_make_rlist
   (cs) = let
 //
 val cs =
-$UN.cast{list0(charNZ)}(cs)
+$UN.cast
+{List0(charNZ)}(cs)
 //
 val str =
 $effmask_wrt
-  (prelude_string_make_rlist(g1ofg0_list(cs)))
+(prelude_string_make_rlist(cs))
 //
 in
   strnptr2string(str)
-end // end of [string_make_rlist]
+end // end of [string_make_rlist0]
+implement
+{}(*tmp*)
+string_make_rlist0
+  (cs) =
+  string_make_rlist<>(g1ofg0_list(cs))
+implement
+{}(*tmp*)
+string_make_rlist_vt
+  (cs) = res where
+{
+  val res =
+  string_make_rlist<>($UN.list_vt2t(cs))
+  val ((*freed*)) = list_vt_free<char>(cs)
+}
 //
 (* ****** ****** *)
-
+//
+implement
+{}(*tmp*)
+string_make_prefix
+  (x, ln) = let
+  val st = i2sz(0)
+in
+  string_make_substring<>(x, st, ln)
+end // end of [string_make_prefix]
+//
 implement
 {}(*tmp*)
 string_make_substring
@@ -287,21 +340,21 @@ string_make_substring
 val x = g1ofg0_string(x)
 val st = g1ofg0_uint(st)
 and ln = g1ofg0_uint(ln)
-val lnx = prelude_string1_length (x)
+val lnx = prelude_string1_length(x)
 //
-val st = min (st, lnx)
+val st = min(st, lnx)
 //
 val
 substr =
 $effmask_wrt
 (
-  prelude_string_make_substring (x, st, min (ln, lnx-st))
+  prelude_string_make_substring(x, st, min(ln, lnx-st))
 ) (* end of [val] *)
 //
 in
   $UN.castvwtp0{string}(substr)
 end // end of [string_make_substring]
-
+//
 (* ****** ****** *)
 
 implement
@@ -458,23 +511,23 @@ end (* end of [mul_int_string] *)
 implement
 {}(*tmp*)
 stringlst_concat
-  (xs) = let
+  (xs) =
+  strptr2string(res) where
+{
 //
 val res =
 $effmask_wrt
 (
   prelude_stringlst_concat(g1ofg0_list(xs))
 ) (* $effmask_wrt *)
-in
-  strptr2string (res)
-end // end of [stringlst_concat]
+} (* end of [stringlst_concat] *)
 
 (* ****** ****** *)
 //
 implement
 {}(*tmp*)
 string_implode
-  (cs) = string_make_list<>(cs)
+  (cs) = string_make_list0<>(cs)
 //
 (* ****** ****** *)
 
@@ -500,6 +553,22 @@ end // end of [string_explode]
 
 implement
 {}(*tmp*)
+string_copywith
+  (cs, fopr) = let
+//
+val cs = g1ofg0(cs)
+//
+in
+//
+string_tabulate<>
+(length(cs), lam(i) => fopr(cs[i]))
+//
+end // end of [string_copywith]
+
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
 string_tabulate
   {n}(n0, fopr) = let
 //
@@ -507,12 +576,21 @@ val n0 = g1ofg0_uint(n0)
 //
 implement
 string_tabulate$fopr<>
-  (i) = fopr($UN.cast{sizeLt(n)}(i))
+  (i) =
+  fopr($UN.cast{sizeLt(n)}(i))
 //
 in
-  strnptr2string(prelude_string_tabulate(n0))
+  strnptr2string
+  (prelude_string_tabulate(n0))
 end // end of [string_tabulate]
 
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+string_find_index
+  (str, c0) = strchr<>(g1ofg0(str), c0)
+//
 (* ****** ****** *)
 
 implement
@@ -549,10 +627,12 @@ end // end of [string_iexists]
 //
 implement{}
 string_exists_method
-  (cs) = lam(pred) => string_exists(cs, pred)
+  (cs) =
+  lam(pred) => string_exists<>(cs, pred)
 implement{}
 string_iexists_method
-  (cs) = lam(pred) => string_iexists(cs, pred)
+  (cs) =
+  lam(pred) => string_iexists<>(cs, pred)
 //
 (* ****** ****** *)
 
@@ -590,10 +670,12 @@ end // end of [string_iforall]
 //
 implement{}
 string_forall_method
-  (cs) = lam(pred) => string_forall(cs, pred)
+  (cs) =
+  lam(pred) => string_forall<>(cs, pred)
 implement{}
 string_iforall_method
-  (cs) = lam(pred) => string_iforall(cs, pred)
+  (cs) =
+  lam(pred) => string_iforall<>(cs, pred)
 //
 (* ****** ****** *)
 
@@ -647,13 +729,13 @@ end // end of [string_iforeach]
 //
 implement{}
 string_foreach_method
-  (cs) = lam(f) => string_foreach(cs, f)
+  (cs) = lam(f) => string_foreach<>(cs, f)
 implement{}
 string_iforeach_method
-  (cs) = lam(f) => string_iforeach(cs, f)
+  (cs) = lam(f) => string_iforeach<>(cs, f)
 //
 (* ****** ****** *)
-
+//
 implement
 {res}(*tmp*)
 string_foldleft
@@ -668,7 +750,8 @@ p0: ptr, res: res
 in
 //
 if isneqz(c)
-  then loop(ptr_succ<char>(p0), fopr(res, c)) else res
+  then loop(ptr_succ<char>(p0), fopr(res, c))
+  else res
 //
 end // end of [loop]
 //
@@ -680,13 +763,72 @@ implement
 {res}(*tmp*)
 string_foldleft_method
   (cs, _) =
-  lam(ini,fopr) => string_foldleft<res>(cs, ini, fopr)
+(
+lam(ini,fopr) => string_foldleft<res>(cs, ini, fopr)
+)
 //
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+string_list0_map
+  (cs, fopr) = let
+//
+fun
+loop
+(
+p0: ptr, res: &ptr? >> list0(a)
+) : void = let
+  val c0 =
+  $UN.ptr0_get<char>(p0)
+in
+  if
+  isneqz(c0)
+  then
+  {
+    val x0 =
+      fopr($UN.cast{charNZ}(c0))
+    // end of [val]
+    val () =
+      (res := list0_cons(x0, _))
+    // end of [val]
+    val+list0_cons(_, res1) = res
+    val () = loop(ptr_succ<char>(p0), res1)
+    prval ((*folded*)) = fold@(res)
+  } (* end of [then] *)
+  else (res := list0_nil(*void*))
+end // end of [loop]
+//
+in
+//
+let var res: ptr in loop(string2ptr(cs), res); res end
+//
+end (* end of [string_list0_map] *)
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+string_list0_map_method
+( cs
+, _(*type*)
+) =
+(
+lam(fopr) => string_list0_map<a>(cs, fopr)
+) (* end of [string_list0_map_method] *)
+
 (* ****** ****** *)
 //
 implement{}
 streamize_string_char
   (cs) = prelude_streamize_string_char(cs)
+//
+implement{}
+un_streamize_string_char
+  (cs) =
+(
+  strptr2string(prelude_un_streamize_string_char(cs))
+) (* un_streamize_string_char *)
 //
 (* ****** ****** *)
 

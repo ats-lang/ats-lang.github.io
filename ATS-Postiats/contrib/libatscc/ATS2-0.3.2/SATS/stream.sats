@@ -1,7 +1,7 @@
+(* ****** ****** *)
 (*
 ** libatscc-common
 *)
-
 (* ****** ****** *)
 
 (*
@@ -64,9 +64,11 @@ stream2list_rev
 fun
 stream_takeLte
   {a:t0p}
-(
-  xs: stream(INV(a)), n0: intGte(0)
-) : stream_vt(a) = "mac#%" // end-of-fun
+  (stream(INV(a)), n0: Nat): stream(a) = "mac#%"
+fun
+stream_takeLte_vt
+  {a:t0p}
+  (stream(INV(a)), n0: Nat): stream_vt(a) = "mac#%"
 //
 (* ****** ****** *)
 //
@@ -75,32 +77,28 @@ stream_take_opt
   {a:t0p}{n:nat}
 (
 xs: stream(INV(a)), n: int(n)
-) : Option_vt(list(a,n)) = "mac#%" // end-of-fun
+) : Option_vt(list(a,n)) = "mac#%" // endfun
 //
 fun
 stream_drop_opt
   {a:t0p}{n:nat}
 (
 xs: stream(INV(a)), n: int(n)
-) : Option_vt(stream(a)) = "mac#%" // end-of-fun
+) : Option_vt(stream(a)) = "mac#%" // endfun
 //
 (* ****** ****** *)
 //
 fun
 stream_append
   {a:t0p}
-(
-  stream(INV(a)), stream(a)
-) : stream(a) = "mac#%" // end-of-function
+  (stream(INV(a)), stream(a)): stream(a) = "mac#%"
 //
 (* ****** ****** *)
 //
 fun
 stream_concat
   {a:t0p}
-(
-  xss: stream(stream(INV(a)))
-) : stream(a) = "mac#%" // end-of-function
+  (xss: stream(stream(INV(a)))): stream(a) = "mac#%"
 //
 (* ****** ****** *)
 //
@@ -108,15 +106,27 @@ fun
 stream_map_cloref
   {a:t0p}{b:t0p}
 (
-  xs: stream(INV(a)), fopr: (a) -<cloref1> b
+xs: stream(INV(a)), fopr: (a) -<cloref1> b
 ) : stream(b) = "mac#%" // end-of-function
 //
 fun
 stream_map_method
   {a:t0p}{b:t0p}
 (
-  xs: stream(INV(a)), TYPE(b))(fopr: (a) -<cloref1> b
+xs: stream(INV(a)), TYPE(b))(fopr: (a) -<cloref1> b
 ) : stream(b) = "mac#%" // end-of-function
+//
+(* ****** ****** *)
+//
+fun
+stream_scan_cloref
+  {res:t0p}{a:t0p}
+  ( xs: stream(INV(a))
+  , r0: res, fopr: cfun(res, a, res)): stream(res) = "mac#%"
+fun
+stream_scan_method
+  {res:t0p}{a:t0p}
+  (stream(INV(a)), TYPE(res))(res, cfun(res, a, res)): stream(res) = "mac#%"
 //
 (* ****** ****** *)
 //
@@ -124,13 +134,13 @@ fun
 stream_filter_cloref
   {a:t0p}
 (
-  xs: stream(INV(a)), pred: (a) -<cloref1> bool
+xs: stream(INV(a)), pred: (a) -<cloref1> bool
 ) : stream(a) = "mac#%" // end-of-function
 fun
 stream_filter_method
   {a:t0p}
 (
-  xs: stream(INV(a)))(pred: (a) -<cloref1> bool
+xs: stream(INV(a)))(pred: (a) -<cloref1> bool
 ) : stream(a) = "mac#%" // end-of-function
 //
 (* ****** ****** *)
@@ -139,13 +149,13 @@ fun
 stream_forall_cloref
   {a:t0p}
 (
-  xs: stream(INV(a)), pred: (a) -<cloref1> bool
+xs: stream(INV(a)), pred: (a) -<cloref1> bool
 ) : bool = "mac#%" // end-of-function
 fun
 stream_forall_method
   {a:t0p}
 (
-  xs: stream(INV(a)))(pred: (a) -<cloref1> bool
+xs: stream(INV(a)))(pred: (a) -<cloref1> bool
 ) : bool = "mac#%" // end-of-function
 //
 (* ****** ****** *)
@@ -154,13 +164,13 @@ fun
 stream_exists_cloref
   {a:t0p}
 (
-  xs: stream(INV(a)), pred: (a) -<cloref1> bool
+xs: stream(INV(a)), pred: (a) -<cloref1> bool
 ) : bool = "mac#%" // end-of-function
 fun
 stream_exists_method
   {a:t0p}
 (
-  xs: stream(INV(a)))(pred: (a) -<cloref1> bool
+xs: stream(INV(a)))(pred: (a) -<cloref1> bool
 ) : bool = "mac#%" // end-of-function
 //
 (* ****** ****** *)
@@ -168,15 +178,14 @@ stream_exists_method
 fun
 stream_foreach_cloref
   {a:t0p}
-(
-  xs: stream(INV(a))
+( xs: stream(INV(a))
 , fwork: (a) -<cloref1> void
 ) : void = "mac#%" // end-of-function
 fun
 stream_foreach_method
   {a:t0p}
 (
-  xs: stream(INV(a)))(fwork: (a) -<cloref1> void
+xs: stream(INV(a)))(fwork: (a) -<cloref1> void
 ) : void = "mac#%" // end-of-function
 //
 (* ****** ****** *)
@@ -184,15 +193,14 @@ stream_foreach_method
 fun
 stream_iforeach_cloref
   {a:t0p}
-(
-  xs: stream(INV(a))
+( xs: stream(INV(a))
 , fwork: (Nat, a) -<cloref1> void
 ) : void = "mac#%" // end-of-function
 fun
 stream_iforeach_method
   {a:t0p}
 (
-  xs: stream(INV(a)))(fwork: (Nat, a) -<cloref1> void
+xs: stream(INV(a)))(fwork: (Nat, a) -<cloref1> void
 ) : void = "mac#%" // end-of-function
 //
 (* ****** ****** *)
@@ -208,14 +216,14 @@ fun
 cross_stream_list
   {a,b:t0p}{res:t0p}
 (
-  xs: stream(INV(a)), ys: List0(INV(b))
-) : stream($tup(a, b)) = "mac#%" // end-of-fun
+xs: stream(INV(a)), ys: List0(INV(b))
+) : stream($tup(a, b)) = "mac#%" // end-of-function
 fun
 cross_stream_list0
   {a,b:t0p}{res:t0p}
 (
-  xs: stream(INV(a)), ys: list0(INV(b))
-) : stream($tup(a, b)) = "mac#%" // end-of-fun
+xs: stream(INV(a)), ys: list0(INV(b))
+) : stream($tup(a, b)) = "mac#%" // end-of-function
 //
 (* ****** ****** *)
 //

@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/filebas.atxt
-** Time of generation: Mon Apr 24 22:47:01 2017
+** Time of generation: Fri Nov 30 08:45:21 2018
 *)
 
 (* ****** ****** *)
@@ -57,6 +57,7 @@ val stderr_ref : FILEref = "mac#%FILE_stderr"
 (* ****** ****** *)
 
 fun{} dirsep_get ():<> charNZ
+fun{} dirsep_gets ():<> string
 fun{} dirname_self ():<> string
 fun{} dirname_parent ():<> string
 
@@ -235,7 +236,7 @@ a:t0p
 
 macdef
 fileref_get_exnloc
-  (inp) = fileref_get_exnmsg (,(inp), $mylocation)
+  (inp) = fileref_get_exnmsg(,(inp), $mylocation)
 // end of [fileref_get_exnloc]
 
 (* ****** ****** *)
@@ -268,8 +269,13 @@ fileref_get2_file_charlst(inp: FILEref, n: int): List0_vt(char)
 //
 (* ****** ****** *)
 //
+//
 fun
-fileref_put_charlst(inp: FILEref, cs: NSH(List(char))): void
+fileref_put_string
+  (out: FILEref, cs: NSH(string)): void
+fun
+fileref_put_charlst
+  (inp: FILEref, cs: NSH(List(char))): void
 //
 (* ****** ****** *)
 //
@@ -331,6 +337,21 @@ fun{}
 streamize_fileref_char(inp: FILEref): stream_vt(char)
 fun{}
 streamize_fileref_line(inp: FILEref): stream_vt(Strptr1)
+//
+(* ****** ****** *)
+//
+absvtype FILEptr1_vtype = ptr
+vtypedef FILEptr1 = FILEptr1_vtype
+//
+fun{}
+streamize_fileptr_char(inp: FILEptr1): stream_vt(char)
+fun{}
+streamize_fileptr_line(inp: FILEptr1): stream_vt(Strptr1)
+//
+(* ****** ****** *)
+//
+fun{}
+streamize_dirname_fname(dir: NSH(string)): stream_vt(Strptr1)
 //
 (* ****** ****** *)
 

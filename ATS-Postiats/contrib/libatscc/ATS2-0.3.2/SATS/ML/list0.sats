@@ -1,7 +1,7 @@
+(* ****** ****** *)
 (*
 ** libatscc-common
 *)
-
 (* ****** ****** *)
 
 (*
@@ -9,11 +9,13 @@ staload "./../../basics.sats"
 *)
 
 (* ****** ****** *)
-
+//
 #define nil0 list0_nil
 #define cons0 list0_cons
-#define sing0(x) list0_cons(x, list0_nil)
-
+//
+#define
+sing0(x) list0_cons(x, list0_nil)
+//
 (* ****** ****** *)
 //
 fun{}
@@ -46,6 +48,8 @@ list0_tail_opt
   {a:t0p}
   (list0(INV(a))): Option_vt(list0(a)) = "mac#%"
 //
+overload head_opt with list0_head_opt of 100
+overload tail_opt with list0_tail_opt of 100
 overload .head_opt with list0_head_opt of 100
 overload .tail_opt with list0_tail_opt of 100
 //
@@ -57,6 +61,7 @@ list0_length
   (xs: list0(a)): intGte(0) = "mac#%"
 //
 overload length with list0_length of 100
+overload .length with list0_length of 100
 //
 (* ****** ****** *)
 //
@@ -110,8 +115,7 @@ fun
 print_list0_sep
   (xs: list0(INV(a)), sep: string): void = "mac#%"
 //
-overload
-print with print_list0 of 100
+overload print with print_list0 of 100
 //
 (* ****** ****** *)
 //
@@ -153,13 +157,18 @@ fun
 list0_reverse
   {a:t0p}
   (xs: list0(INV(a))): list0(a) = "mac#%"
+//
+overload reverse with list0_reverse of 100
+//
 fun
 list0_reverse_append
   {a:t0p}
   (xs: list0(INV(a)), ys: list0(a)): list0(a) = "mac#%"
 //
-overload reverse with list0_reverse of 100
-overload revappend with list0_reverse_append of 100
+macdef
+list0_revapp = list0_reverse_append
+//
+overload revapp with list0_reverse_append of 100
 //
 (* ****** ****** *)
 //
@@ -181,7 +190,9 @@ list0_remove_at_opt
 fun
 list0_exists
   {a:t0p}
-  (list0(INV(a)), pred: cfun(a, bool)): bool = "mac#%"
+(
+xs: list0(INV(a)), pred: cfun(a, bool)
+) : bool = "mac#%" // end of [list0_exists]
 fun
 list0_exists_method
   {a:t0p}
@@ -209,7 +220,9 @@ overload .iexists with list0_iexists_method
 fun
 list0_forall
   {a:t0p}
-  (list0(INV(a)), pred: cfun(a, bool)): bool = "mac#%"
+(
+xs: list0(INV(a)), pred: cfun(a, bool)
+) : bool = "mac#%" // end of [list0_forall]
 fun
 list0_forall_method
   {a:t0p}
@@ -261,13 +274,13 @@ fun
 list0_iforeach
   {a:t0p}
 (
-  xs: list0(INV(a)), fwork: cfun(int, a, void)
+xs: list0(INV(a)), fwork: cfun(int, a, void)
 ) : void = "mac#%" // end-of-function
 fun
 list0_iforeach_method
   {a:t0p}
 (
-  xs: list0(INV(a)))(fwork: cfun(int, a, void)
+xs: list0(INV(a)))(fwork: cfun(int, a, void)
 ) : void = "mac#%" // end-of-function
 //
 overload .iforeach with list0_iforeach_method
@@ -277,11 +290,15 @@ overload .iforeach with list0_iforeach_method
 fun
 list0_rforeach
   {a:t0p}
-  (xs: list0(INV(a)), fwork: cfun(a, void)): void = "mac#%"
+(
+xs: list0(INV(a)), fwork: cfun(a, void)
+) : void = "mac#%" // end-of-function
 fun
 list0_rforeach_method
   {a:t0p}
-  (xs: list0(INV(a)))(fwork: cfun(a, void)): void = "mac#%"
+(
+xs: list0(INV(a)))(fwork: cfun(a, void)
+) : void = "mac#%" // end-of-function
 //
 overload .rforeach with list0_rforeach_method
 //
@@ -305,22 +322,68 @@ overload .filter with list0_filter_method
 (* ****** ****** *)
 //
 fun
+list0_labelize
+  {x:t0p}
+  (list0(INV(x))): list0($tup(int, x)) = "mac#%"
+// end of [list0_labelize]
+//
+(* ****** ****** *)
+//
+fun
 list0_map
   {a:t0p}{b:t0p}
-  (list0(INV(a)), fopr: cfun(a, b)): list0(b) = "mac#%"
+(
+xs: list0(INV(a)), fopr: cfun(a, b)
+) : list0(b) = "mac#%" // end-of-function
 fun
 list0_map_method
   {a:t0p}{b:t0p}
-  (list0(INV(a)), TYPE(b))(fopr: cfun(a, b)): list0(b) = "mac#%"
+(
+xs: list0(INV(a)), TYPE(b))(fopr: cfun(a, b)
+) : list0(b) = "mac#%" // end-of-function
 //
 overload .map with list0_map_method
 //
 (* ****** ****** *)
 //
 fun
+list0_imap
+  {a:t0p}{b:t0p}
+(
+xs: list0(INV(a)), fopr: cfun(Nat, a, b)
+) : list0(b) = "mac#%" // end-of-function
+fun
+list0_imap_method
+  {a:t0p}{b:t0p}
+(
+xs: list0(INV(a)), TYPE(b))(fopr: cfun(Nat, a, b)
+) : list0(b) = "mac#%" // end-of-function
+//
+overload .imap with list0_imap_method
+//
+(* ****** ****** *)
+//
+fun
+list0_map2
+{a1,a2:t0p}{b:t0p}
+( xs1: list0(INV(a1))
+, xs2: list0(INV(a2)), fopr: cfun(a1, a2, b)
+) : list0(b) = "mac#%" // end of [list0_map2]
+//
+(* ****** ****** *)
+//
+fun
 list0_mapcons
   {a:t0p}
-  (x0: a, xss: list0(list0(INV(a)))): list0(list0(a)) = "mac#%"
+( x0: (a)
+, xss: list0(list0(INV(a)))) : list0(list0(a)) = "mac#%"
+//
+(* ****** ****** *)
+//
+fun
+list0_tabulate
+  {a:t0p}
+  (n0: int, fopr: (int) -<cloref1> a): list0(a) = "mac#%"
 //
 (* ****** ****** *)
 //
@@ -328,16 +391,33 @@ fun
 list0_find_opt
   {a:t0p}
 (
-  xs: list0(INV(a)), pred: cfun(a, bool)
+xs: list0(INV(a)), pred: cfun(a, bool)
 ) : Option_vt(a) = "mac#%" // end-of-fun
 fun
 list0_find_opt_method
   {a:t0p}
 (
-  xs: list0(INV(a)))(pred: cfun(a, bool)
+xs: list0(INV(a)))(pred: cfun(a, bool)
 ) : Option_vt(a) = "mac#%" // end-of-fun
 //
 overload .find_opt with list0_find_opt_method
+//
+(* ****** ****** *)
+//
+fun
+list0_find_suffix
+  {a:t0p}
+(
+xs: list0(INV(a)), pred: cfun(list0(a), bool)
+) : list0(a) = "mac#%" // end-of-fun
+fun
+list0_find_suffix_method
+  {a:t0p}
+(
+xs: list0(INV(a)))(pred: cfun(list0(a), bool)
+) : list0(a) = "mac#%" // end-of-fun
+//
+overload .find_suffix with list0_find_suffix_method
 //
 (* ****** ****** *)
 //
@@ -366,7 +446,7 @@ overload .map2 with list0_zipwith_method
 overload .zipwith with list0_zipwith_method
 //
 (* ****** ****** *)
-
+//
 fun
 list0_foldleft
   {res:t0p}{a:t0p}
@@ -379,7 +459,7 @@ list0_foldright
 (
   list0(INV(a)), fopr: cfun(a, res, res), sink: res
 ) : res = "mac#%" // end-of-function
-
+//
 (* ****** ****** *)
 //
 fun
@@ -395,8 +475,18 @@ list0_sort_2
 ) : list0(a) = "mac#%"
 //
 symintr list0_sort
+//
 overload list0_sort with list0_sort_1 of 100
 overload list0_sort with list0_sort_2 of 100
+//
+(* ****** ****** *)
+//
+fun
+list0_mergesort
+  {a:t0p}
+(
+  list0(INV(a)), cmp: (a, a) -<cloref1> int
+) : list0(a) = "mac#%"
 //
 (* ****** ****** *)
 //

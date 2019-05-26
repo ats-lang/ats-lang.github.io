@@ -1,8 +1,8 @@
+(* ****** ****** *)
 (*
 ** For writing ATS code
 ** that translates into Perl
 *)
-
 (* ****** ****** *)
 
 #define ATS_DYNLOADFLAG 0
@@ -43,6 +43,12 @@ staload "./../SATS/print.sats"
 //
 (* ****** ****** *)
 
+staload "./../SATS/list.sats"
+staload "./../SATS/list_vt.sats"
+
+(* ****** ****** *)
+
+staload "./../SATS/stream.sats"
 staload "./../SATS/stream_vt.sats"
 
 (* ****** ****** *)

@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/matrixptr.atxt
-** Time of generation: Sun Nov 20 21:18:20 2016
+** Time of generation: Fri Nov 30 08:45:25 2018
 *)
 
 (* ****** ****** *)
@@ -276,25 +276,19 @@ a:vt0p
 } matrixptr_freelin
   {l:addr}{m,n:int}
 (
-  A: matrixptr(INV(a), l, m, n), m: size_t(m), n: size_t(n)
+matrixptr(INV(a), l, m, n), m: size_t(m), n: size_t(n)
 ) : void = "mac#%" // end-of-function
 //
 (* ****** ****** *)
 //
 (*
 fun{a:vt0p}
-matrix_tabulate$fopr (i: size_t, j: size_t): (a)
+matrix_tabulate$fopr(i: size_t, j: size_t): (a)
 *)
 fun{a:vt0p}
 matrixptr_tabulate
-  {m,n:int} (nrow: size_t m, ncol: size_t n): matrixptr (a, m, n)
-//
-fun{a:vt0p}
-matrixptr_tabulate_cloref
   {m,n:int}
-(
-  nrow: size_t m, ncol: size_t n, f: (sizeLt(m), sizeLt(n)) -<cloref> a
-) : matrixptr (a, m, n) // end-of-function
+  (nrow: size_t(m), ncol: size_t(n)): matrixptr(a, m, n)
 //
 (* ****** ****** *)
 
@@ -308,13 +302,13 @@ fun{
 a:vt0p
 } matrixptr_foreach{m,n:int}
 (
-  A: !matrixptr(INV(a), m, n) >> _, m: size_t m, n: size_t n
+M0: !matrixptr(INV(a), m, n) >> _, m: size_t m, n: size_t n
 ) : void // end of [matrixptr_foreach]
 fun{
 a:vt0p}{env:vt0p
 } matrixptr_foreach_env{m,n:int}
 (
-  A: !matrixptr(INV(a), m, n) >> _, m: size_t m, n: size_t n, env: &(env) >> _
+M0: !matrixptr(INV(a), m, n) >> _, m: size_t m, n: size_t n, env: &(env) >> _
 ) : void // end of [matrixptr_foreach_env]
 
 (* ****** ****** *)
@@ -324,8 +318,8 @@ a:vt0p}{env:vt0p
 (* ****** ****** *)
 
 overload [] with matrixptr_get_at_int
-overload [] with matrixptr_get_at_size
 overload [] with matrixptr_set_at_int
+overload [] with matrixptr_get_at_size
 overload [] with matrixptr_set_at_size
 
 (* ****** ****** *)

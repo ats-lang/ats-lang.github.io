@@ -1,8 +1,8 @@
+(* ****** ****** *)
 (*
 ** For writing ATS code
 ** that translates into JavaScript
 *)
-
 (* ****** ****** *)
 
 (*
@@ -23,27 +23,33 @@
 
 (*
 ** Author: Hongwei Xi
-** Authoremail: gmhwxi AT gmail DOT com
 ** Start Time: April, 2015
+** Authoremail: gmhwxiATgmailDOTcom
 *)
 
 (* ****** ****** *)
 //
-// no staloading at run-time
-//
-#define
-ATS_STALOADFLAG 0
+// HX:
+// prefix for
+// external names
 //
 #define
 ATS_EXTERN_PREFIX
-"ats2js_baconjs_" // prefix for extern names
+"ats2js_baconjs_"
+//
+(*
+#define // no staloading at
+ATS_STALOADFLAG 0 // run-time
+*)
 //
 (* ****** ****** *)
 //
-#include
-"share/atspre_define.hats"
-#include
-"{$LIBATSCC2JS}/mylibies.hats"
+#define
+LIBATSCC2JS_targetloc
+"$PATSHOME/contrib/libatscc2js"
+//
+#staload
+"{$LIBATSCC2JS}/basics_js.sats"
 //
 (* ****** ****** *)
 //
@@ -104,7 +110,14 @@ Bacon_repeat
   {a:t0p}
 (
   fopr: cfun(intGte(0), EStream(a))
-) : EStream(a) = "mac#%" // end-of-fun
+) : EStream(a) = "mac#%" // end of [Bacon_repeat]
+//
+(* ****** ****** *)
+//
+fun
+Bacon_fromPoll
+  {a:t0p}
+  (ms: intGte(0), fopr: cfun(a)): EStream(a) = "mac#%"
 //
 (* ****** ****** *)
 //
@@ -214,19 +227,23 @@ EStream_merge2
 fun
 EStream_merge3
   {a:t0p}
-  (EStream(a), EStream(a), EStream(a)): EStream(a) = "mac#%"
+( EStream(a)
+, EStream(a), EStream(a)): EStream(a) = "mac#%"
 fun
 EStream_merge4
   {a:t0p}
-  (EStream(a), EStream(a), EStream(a), EStream(a)): EStream(a) = "mac#%"
+( EStream(a), EStream(a)
+, EStream(a), EStream(a)): EStream(a) = "mac#%"
 fun
 EStream_merge5
   {a:t0p}
-  (EStream(a), EStream(a), EStream(a), EStream(a), EStream(a)): EStream(a) = "mac#%"
+( EStream(a), EStream(a)
+, EStream(a), EStream(a), EStream(a)): EStream(a) = "mac#%"
 fun
 EStream_merge6
   {a:t0p}
-  (EStream(a), EStream(a), EStream(a), EStream(a), EStream(a), EStream(a)): EStream(a) = "mac#%"
+( EStream(a), EStream(a), EStream(a)
+, EStream(a), EStream(a), EStream(a) ): EStream(a) = "mac#%"
 //
 overload merge with EStream_merge2
 overload merge with EStream_merge3
@@ -445,7 +462,7 @@ overload zipwith with EStream_zipwith_estream_cfun
 (* ****** ****** *)
 //
 // HX-2015-10-10:
-// Bus: an estream
+// Bus: an Estream
 // onto which values can be pushed
 //
 fun

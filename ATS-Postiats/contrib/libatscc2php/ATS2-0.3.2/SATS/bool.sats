@@ -14,8 +14,45 @@ ATS_EXTERN_PREFIX "ats2phppre_"
 (* ****** ****** *)
 //
 fun
+boolize
+{a:t@ype}
+(x: (a)): bool = "mac#%"
+fun
+boolize_vt
+{a:vt@ype}
+(x: !INV(a)): bool = "mac#%"
+//
+(* ****** ****** *)
+//
+fun
+bool2int0
+  (b: bool):<> natLt(2) = "mac#%"
+fun
+bool2int1
+  {b:bool}
+  (b: bool(b)):<> int(bool2int(b)) = "mac#%"
+//
+symintr bool2int
+overload bool2int with bool2int0 of 100
+overload bool2int with bool2int1 of 110
+//
+(* ****** ****** *)
+//
+fun
+int2bool0 (i: int):<> bool = "mac#%"
+fun
+int2bool1
+  {i:int}(i: int(i)):<> bool(i != 0) = "mac#%"
+//
+symintr int2bool
+overload int2bool with int2bool0 of 100
+overload int2bool with int2bool1 of 110
+//
+(* ****** ****** *)
+//
+fun
 neg_bool0
-  : bool -> bool = "mac#%"
+  : (bool) -> bool = "mac#%"
 fun
 neg_bool1
   : {b:bool} bool(b) -> bool(~b) = "mac#%"
@@ -103,14 +140,6 @@ overload = with eq_bool1_bool1 of 120
 //
 overload != with neq_bool0_bool0 of 100
 overload != with neq_bool1_bool1 of 120
-//
-(* ****** ****** *)
-//
-fun int2bool0 : int -> bool = "mac#%"
-fun int2bool1 : {i:int} int(i) -> bool(i != 0) = "mac#%"
-//
-fun bool2int0 : bool -> natLt(2) = "mac#%"
-fun bool2int1 : {b:bool} bool(b) -> int(bool2int(b)) = "mac#%"
 //
 (* ****** ****** *)
 

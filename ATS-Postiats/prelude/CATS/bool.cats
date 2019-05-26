@@ -30,7 +30,7 @@
 /*
 ** Source:
 ** $PATSHOME/prelude/CATS/CODEGEN/bool.atxt
-** Time of generation: Wed Dec 14 18:44:55 2016
+** Time of generation: Wed Oct 10 21:08:55 2018
 */
 
 /* ****** ****** */

@@ -1,8 +1,8 @@
+(* ****** ****** *)
 (*
 ** For writing ATS code
 ** that translates into JavaScript
 *)
-
 (* ****** ****** *)
 
 #define ATS_DYNLOADFLAG 0
@@ -13,26 +13,27 @@
 // prefix for external names
 //
 #define
-ATS_EXTERN_PREFIX "ats2jspre_BUCS320_"
+ATS_EXTERN_PREFIX
+"ats2js_bucs320_"
 #define
-ATS_STATIC_PREFIX "_ats2jspre_BUCS320_GraphSearch_dfs_"
+ATS_STATIC_PREFIX
+"_ats2js_bucs320_graphsearch_dfs_"
 //
 (* ****** ****** *)
 //
 #define
 LIBATSCC_targetloc
 "$PATSHOME/contrib/libatscc"
+#define
+LIBATSCC2JS_targetloc
+"$PATSHOME/contrib/libatscc2js"
 //
 (* ****** ****** *)
 //
-#staload "./../../../basics_js.sats"
-//
-#staload "./../../../SATS/bool.sats"
-#staload "./../../../SATS/integer.sats"
+#include
+  "{$LIBATSCC2JS}/mylibies.hats"
 //
 (* ****** ****** *)
-//
-#staload "./../../../SATS/slistref.sats"
 //
 macdef
 slistref_insert = slistref_push

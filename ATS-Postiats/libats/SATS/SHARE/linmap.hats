@@ -114,12 +114,12 @@ fun{
 key:t0p;itm:vt0p
 } linmap_insert
 (
-  &map (key, INV(itm)) >> _, key, itm, res: &itm? >> opt (itm, b)
+  &map (key, INV(itm)) >> _, key, itm, res: &itm? >> opt(itm, b)
 ) : #[b:bool] bool(b) // endfun
 fun{
 key:t0p;itm:vt0p
 } linmap_insert_opt
-  (map: &map (key, INV(itm)) >> _, k0: key, x0: itm): Option_vt (itm)
+  (map: &map(key, INV(itm)) >> _, k0: key, x0: itm): Option_vt(itm)
 // end of [linmap_insert_opt]
 
 (* ****** ****** *)
@@ -217,7 +217,7 @@ fun{
 key:t0p;itm:vt0p
 } linmap_free_ifnil
 (
-  map: !map (key, INV(itm)) >> opt (map (key, itm), b)
+  map: !map (key, INV(itm)) >> opt(map(key, itm), b)
 ) :<!wrt> #[b:bool] bool(b) (*~freed*) // endfun
 //
 (* ****** ****** *)
@@ -235,7 +235,7 @@ fun
 {key:t0p
 ;itm:vt0p}
 {ki2:vt0p}
-linmap_flistize (map: map (key, INV(itm))): List_vt (ki2)
+linmap_flistize (map: map (key, INV(itm))): List0_vt(ki2)
 //
 (* ****** ****** *)
 
@@ -243,12 +243,12 @@ fun
 {key:t0p
 ;itm:vt0p}
 linmap_listize
-  (map: map (key, INV(itm))):<!wrt> List_vt @(key, itm)
+  (map: map (key, INV(itm))):<!wrt> List0_vt@(key, itm)
 // end of [linmap_listize]
 fun{
 key,itm:t0p
 } linmap_listize1
-  (map: !map (key, INV(itm))):<!wrt> List_vt @(key, itm)
+  (map: !map (key, INV(itm))):<!wrt> List0_vt@(key, itm)
 // end of [linmap_listize1]
 
 (* ****** ****** *)

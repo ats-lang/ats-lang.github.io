@@ -50,6 +50,10 @@ $(ATSCC2CLJ) -o ./output/DATS/intrange_dats.clj -i
 ######
 #
 all:: ; \
+$(PATSOPT) -d ./DATS/funarray.dats | \
+$(ATSCC2CLJ) -o ./output/DATS/funarray_dats.clj -i
+#
+all:: ; \
 $(PATSOPT) -d ./DATS/slistref.dats | \
 $(ATSCC2CLJ) -o ./output/DATS/slistref_dats.clj -i
 #
@@ -62,6 +66,9 @@ $(ATSCC2CLJ) -o ./output/DATS/qlistref_dats.clj -i
 all:: ; \
 $(PATSOPT) -d ./DATS/ML/list0.dats | \
 $(ATSCC2CLJ) -o ./output/DATS/ML/list0_dats.clj -i
+all:: ; \
+$(PATSOPT) -d ./DATS/ML/option0.dats | \
+$(ATSCC2CLJ) -o ./output/DATS/ML/option0_dats.clj -i
 #
 ######
 
@@ -84,6 +91,8 @@ PRINTF=printf
 # libatscc2clj_all:: ; \
 # $(ECHO) | $(CAT) - >$(LIBATSCC2CLJ_ALL_CLJ)
 #
+libatscc2clj_all:: ; \
+$(PRINTF) '\n' | $(CAT) - >$(LIBATSCC2CLJ_ALL_CLJ)
 libatscc2clj_all:: ; \
 $(PRINTF) ';;\n' | $(CAT) - >>$(LIBATSCC2CLJ_ALL_CLJ)
 libatscc2clj_all:: ; \
@@ -122,9 +131,11 @@ output/DATS/option_dats.clj \
 output/DATS/stream_dats.clj \
 output/DATS/stream_vt_dats.clj \
 output/DATS/intrange_dats.clj \
+output/DATS/funarray_dats.clj \
 output/DATS/slistref_dats.clj \
 output/DATS/qlistref_dats.clj \
 output/DATS/ML/list0_dats.clj \
+output/DATS/ML/option0_dats.clj \
 
 ######
 #
@@ -154,6 +165,8 @@ clean:: ; $(RMF) *~ */*~
 ######
 
 cleanall:: clean
+cleanall:: ; $(RMF) output/DATS/*_?ats.clj
+cleanall:: ; $(RMF) output/DATS/ML/*_?ats.clj
 cleanall:: ; $(RMF) $(LIBATSCC2CLJ_ALL_CLJ)
 
 ######

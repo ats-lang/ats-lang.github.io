@@ -1,8 +1,8 @@
+(* ****** ****** *)
 (*
 ** For writing ATS code
-** that translates into Perl
+** that translates into Perl5
 *)
-
 (* ****** ****** *)
 //
 // HX-2014-08:

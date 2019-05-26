@@ -8,9 +8,11 @@
 #
 
 ######
-
-CCOPT=gcc -std=c99
-
+#
+CCOPT=gcc
+#
+# CCOPT=gcc -std=c99
+#
 ######
 
 ifeq ("$(PATSHOME)","")
@@ -740,6 +742,17 @@ libats_ML_monad_maybe_dats.c: libats_ML_monad_maybe.dats ;   $(PATSOPT) -IATS$(P
 clean:: ; $(RMF) libats_ML_monad_maybe_dats.o
 clean:: ; $(RMF) libats_ML_monad_maybe_dats.c
 cleanall:: ; $(RMF) libats_ML_monad_maybe.exe
+
+
+######
+
+all:: libats_ML_COMPILE_all
+libats_ML_COMPILE_all: libats_ML_COMPILE_all.exe
+libats_ML_COMPILE_all.exe: libats_ML_COMPILE_all_dats.c ;   $(CCOPT) -D_GNU_SOURCE -O2     -I$(PATSHOMEQ) -I$(PATSHOMEQ)/ccomp/runtime -DATS_MEMALLOC_LIBC -o $@ $< -L$(PATSLIB) -latslib
+libats_ML_COMPILE_all_dats.c: libats_ML_COMPILE_all.dats ;   $(PATSOPT) -IATS$(PATSHOMEQ)/contrib --output libats_ML_COMPILE_all_dats.c --dynamic libats_ML_COMPILE_all.dats
+clean:: ; $(RMF) libats_ML_COMPILE_all_dats.o
+clean:: ; $(RMF) libats_ML_COMPILE_all_dats.c
+cleanall:: ; $(RMF) libats_ML_COMPILE_all.exe
 
 
 ######

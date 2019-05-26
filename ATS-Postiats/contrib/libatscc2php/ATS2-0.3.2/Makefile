@@ -31,17 +31,32 @@ all:: ; \
 $(PATSOPT) -d ./DATS/stream_vt.dats | \
 $(ATSCC2PHP) -o ./output/DATS/stream_vt_dats.php -i
 all:: ; \
+$(PATSOPT) -d ./DATS/filebas.dats | \
+$(ATSCC2PHP) -o ./output/DATS/filebas_dats.php -i
+all:: ; \
 $(PATSOPT) -d ./DATS/intrange.dats | \
 $(ATSCC2PHP) -o ./output/DATS/intrange_dats.php -i
 all:: ; \
+$(PATSOPT) -d ./DATS/PHParray.dats | \
+$(ATSCC2PHP) -o ./output/DATS/PHParray_dats.php -i
+all:: ; \
+$(PATSOPT) -d ./DATS/PHParref.dats | \
+$(ATSCC2PHP) -o ./output/DATS/PHParref_dats.php -i
+all:: ; \
 $(PATSOPT) -d ./DATS/arrayref.dats | \
 $(ATSCC2PHP) -o ./output/DATS/arrayref_dats.php -i
+all:: ; \
+$(PATSOPT) -d ./DATS/matrixref.dats | \
+$(ATSCC2PHP) -o ./output/DATS/matrixref_dats.php -i
 all:: ; \
 $(PATSOPT) -d ./DATS/reference.dats | \
 $(ATSCC2PHP) -o ./output/DATS/reference_dats.php -i
 
 ######
 
+all:: ; \
+$(PATSOPT) -d ./DATS/funarray.dats | \
+$(ATSCC2PHP) -o ./output/DATS/funarray_dats.php -i
 all:: ; \
 $(PATSOPT) -d ./DATS/slistref.dats | \
 $(ATSCC2PHP) -o ./output/DATS/slistref_dats.php -i
@@ -57,6 +72,12 @@ $(ATSCC2PHP) -o ./output/DATS/ML/list0_dats.php -i
 all:: ; \
 $(PATSOPT) -d ./DATS/ML/array0.dats | \
 $(ATSCC2PHP) -o ./output/DATS/ML/array0_dats.php -i
+all:: ; \
+$(PATSOPT) -d ./DATS/ML/option0.dats | \
+$(ATSCC2PHP) -o ./output/DATS/ML/option0_dats.php -i
+all:: ; \
+$(PATSOPT) -d ./DATS/ML/matrix0.dats | \
+$(ATSCC2PHP) -o ./output/DATS/ML/matrix0_dats.php -i
 
 ######
 #
@@ -75,6 +96,8 @@ PRINTF=printf
 # all_in_one:: ; \
 # $(ECHO) | $(CAT) - >$(LIBATSCC2PHP_ALL_PHP)
 #
+all_in_one:: ; \
+$(PRINTF) '\n' | $(CAT) - >$(LIBATSCC2PHP_ALL_PHP)
 all_in_one:: ; \
 $(PRINTF) '<?php\n' | $(CAT) - >>$(LIBATSCC2PHP_ALL_PHP)
 #
@@ -111,13 +134,20 @@ output/DATS/list_vt_dats.php \
 output/DATS/option_dats.php \
 output/DATS/stream_dats.php \
 output/DATS/stream_vt_dats.php \
+output/DATS/filebas_dats.php \
 output/DATS/intrange_dats.php \
+output/DATS/PHParray_dats.php \
+output/DATS/PHParref_dats.php \
 output/DATS/arrayref_dats.php \
+output/DATS/matrixref_dats.php \
 output/DATS/reference_dats.php \
+output/DATS/funarray_dats.php \
 output/DATS/slistref_dats.php \
 output/DATS/qlistref_dats.php \
 output/DATS/ML/list0_dats.php \
 output/DATS/ML/array0_dats.php \
+output/DATS/ML/option0_dats.php \
+output/DATS/ML/matrix0_dats.php \
 
 ######
 #

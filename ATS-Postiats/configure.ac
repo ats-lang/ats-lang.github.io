@@ -46,7 +46,15 @@ dnl = checks for library functions
 dnl = checks for system services
 dnl = AC_CONFIG_FILES([file...])
 
-AC_INIT([ATS2/Postiats], [0.3.5], [gmpostiats@gmail.com])
+AC_INIT([ATS2/Postiats], [0.3.13], [gmpostiats@gmail.com])
+dnl = AC_INIT([ATS2/Postiats], [0.3.12], [gmpostiats@gmail.com])
+dnl = AC_INIT([ATS2/Postiats], [0.3.11], [gmpostiats@gmail.com])
+dnl = AC_INIT([ATS2/Postiats], [0.3.10], [gmpostiats@gmail.com])
+dnl = AC_INIT([ATS2/Postiats], [0.3.9], [gmpostiats@gmail.com])
+dnl = AC_INIT([ATS2/Postiats], [0.3.8], [gmpostiats@gmail.com])
+dnl = AC_INIT([ATS2/Postiats], [0.3.7], [gmpostiats@gmail.com])
+dnl = AC_INIT([ATS2/Postiats], [0.3.6], [gmpostiats@gmail.com])
+dnl = AC_INIT([ATS2/Postiats], [0.3.5], [gmpostiats@gmail.com])
 dnl = AC_INIT([ATS2/Postiats], [0.3.4], [gmpostiats@gmail.com])
 dnl = AC_INIT([ATS2/Postiats], [0.3.3], [gmpostiats@gmail.com])
 dnl = AC_INIT([ATS2/Postiats], [0.3.2], [gmpostiats@gmail.com])
@@ -95,6 +103,7 @@ AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_FILES([config.mk])
 AC_CONFIG_FILES([bin/patscc_env.sh])
+AC_CONFIG_FILES([bin/myatscc_env.sh])
 AC_CONFIG_FILES([bin/patsopt_env.sh])
 
 dnl = AM_INIT_AUTOMAKE

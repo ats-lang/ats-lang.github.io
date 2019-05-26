@@ -30,19 +30,30 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/arrayptr.atxt
-** Time of generation: Sun Nov 20 21:18:28 2016
+** Time of generation: Wed Oct 10 21:08:52 2018
 *)
 
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: hwxi AT cs DOT bu DOT edu *)
 (* Start time: May, 2012 *)
+(* Authoremail: hwxi AT cs DOT bu DOT edu *)
 
 (* ****** ****** *)
 
 staload UN = "prelude/SATS/unsafe.sats"
 
+(* ****** ****** *)
+//
+extern
+fun
+memcpy
+( d0: ptr
+, s0: ptr
+, n0: size_t
+) :<!wrt> ptr = "mac#atspre_array_memcpy"
+// end of [memcpy]
+//
 (* ****** ****** *)
 
 implement
@@ -53,9 +64,9 @@ arrayptr_make_elt
 val
 (
   pf, pfgc | p
-) = array_ptr_alloc<a> (asz)
+) = array_ptr_alloc<a>(asz)
 //
-val () = array_initize_elt<a> (!p, asz, elt)
+val () = array_initize_elt<a>(!p, asz, elt)
 //
 in
   arrayptr_encode(pf, pfgc | p)
@@ -70,7 +81,7 @@ arrayptr_make_intrange
 //
 val asz = g1int2uint (r-l)
 val [A:addr] A =
-  arrayptr_make_uninitized<int> (asz)
+  arrayptr_make_uninitized<int>(asz)
 //
 fun loop
   {n:nat} .<n>. (
@@ -79,14 +90,14 @@ fun loop
 in
 //
 if asz > 0 then let
-  val () = $UN.ptr0_set<int> (p, l)
+  val () = $UN.ptr0_set<int>(p, l)
 in
-  loop (ptr0_succ<int> (p), pred (asz), l+1)
+  loop(ptr0_succ<int>(p), pred(asz), l+1)
 end else () // end of [if]
 //
 end // end of [loop]
 //
-val () = loop (ptrcast (A), asz, l)
+val () = loop(ptrcast(A), asz, l)
 //
 in
   $UN.castvwtp0{arrayptr(intBtw(l,r),A,r-l)}(A)
@@ -103,9 +114,9 @@ prval () = lemma_list_param (xs)
 //
 val (
   pf, pfgc | p
-) = array_ptr_alloc<a> (i2sz(asz))
+) = array_ptr_alloc<a>(i2sz(asz))
 //
-val () = array_initize_list<a> (!p, asz, xs)
+val () = array_initize_list<a>(!p, asz, xs)
 //
 in
   arrayptr_encode(pf, pfgc | p)
@@ -120,9 +131,9 @@ prval () = lemma_list_param (xs)
 //
 val (
   pf, pfgc | p
-) = array_ptr_alloc<a> (i2sz(asz))
+) = array_ptr_alloc<a>(i2sz(asz))
 //
-val () = array_initize_rlist<a> (!p, asz, xs)
+val () = array_initize_rlist<a>(!p, asz, xs)
 //
 in
   arrayptr_encode(pf, pfgc | p)
@@ -136,17 +147,17 @@ arrayptr_make_subarray
   {n}{st,ln}(A, st, ln) = let
 //
 val p1 =
-ptr_add<a> ($UN.cast2ptr(A), st)
+ptr_add<a>($UN.cast2ptr(A), st)
 val (
   pf1, fpf | p1
 ) = $UN.ptr_vtake{array(a,ln)}(p1)
 //
 val A2 =
-arrayptr_make_uninitized<a> (ln)
+arrayptr_make_uninitized<a>(ln)
 val p2 = ptrcast (A2)
 prval pf2 = arrayptr_takeout (A2)
 //
-val () = array_copy<a> (!p2, !p1, ln)
+val () = array_copy<a>(!p2, !p1, ln)
 //
 prval () = fpf (pf1)
 prval () = arrayptr_addback (pf2 | A2)
@@ -162,12 +173,14 @@ implement
 arrayptr_make_list_vt
   (asz, xs) = let
 //
-prval () = lemma_list_vt_param (xs)
+prval() = lemma_list_vt_param(xs)
 //
 val (
  pf, pfgc | p
-) = array_ptr_alloc<a> (i2sz(asz))
-val () = array_initize_list_vt<a> (!p, asz, xs)
+) = array_ptr_alloc<a>(i2sz(asz))
+//
+val () =
+array_initize_list_vt<a>(!p, asz, xs)
 //
 in
   arrayptr_encode(pf, pfgc | p)
@@ -178,12 +191,13 @@ implement
 arrayptr_make_rlist_vt
   (asz, xs) = let
 //
-prval () = lemma_list_vt_param (xs)
+prval() = lemma_list_vt_param(xs)
 //
 val (
  pf, pfgc | p
-) = array_ptr_alloc<a> (i2sz(asz))
-val () = array_initize_rlist_vt<a> (!p, asz, xs)
+) = array_ptr_alloc<a>(i2sz(asz))
+//
+val () = array_initize_rlist_vt<a>(!p, asz, xs)
 //
 in
   arrayptr_encode(pf, pfgc | p)
@@ -196,7 +210,7 @@ implement
 arrayptr_make_uninitized
   (asz) = let
 in
-  arrayptr_encode2(array_ptr_alloc<a> (asz))
+  arrayptr_encode2(array_ptr_alloc<a>(asz))
 end // end of [arrayptr_uninitize]
 
 (* ****** ****** *)
@@ -215,6 +229,149 @@ prval () = arrayptr_addback (pf | A)
 
 (* ****** ****** *)
 
+implement
+{a}(*tmp*)
+arrayptr_make_stream
+  (xs, asz) = let
+//
+fun
+loop
+{n:int|0 < n}
+{i:nat|i <= n}
+( xs: stream(a)
+, p0: ptr, pi: ptr
+, n0: size_t(n), i0: size_t(i)
+) : (ptr, Size_t) = (
+//
+case+ !xs of
+| stream_nil() =>
+  (
+    p0, i0
+  ) (* stream_nil *)
+| stream_cons(x, xs) =>
+  if
+  (i0 < n0)
+  then
+  let
+    val () = $UN.ptr0_set<a>(pi, x)
+  in
+    loop
+    (xs, p0, ptr_succ<a>(pi), n0, succ(i0))
+  end // end of [then]
+  else let
+//
+    val n02 = n0 + n0
+    val A02 =
+    arrayptr_make_uninitized<a>(n02)
+    val p02 = $UN.castvwtp0{ptr}(A02)
+//
+    val _(*p02*) =
+      memcpy(p02, p0, i0*sizeof<a>)
+    val ((*freed*)) =
+      arrayptr_free($UN.castvwtp0(p0))
+//
+    val pi = ptr_add<a>(p02, i0)
+    val () = $UN.ptr0_set<a>(pi, x)
+//
+  in
+    loop
+    (xs, p02, ptr_succ<a>(pi), n02, succ(i0))
+  end // end of [else]
+) (* end of [loop] *)
+//
+val n0 =
+arrayptr_make_stream$bufsize<>
+  ((*void*))
+//
+val n0 = i2sz(n0)
+val A0 = arrayptr_make_uninitized<a>(n0)
+val p0 = $UN.castvwtp0{ptr}(A0)
+//
+val (p0, n0) =
+  $effmask_all(loop(xs, p0, p0, n0, i2sz(0)))
+//
+in
+//
+  let val () = asz := n0 in $UN.castvwtp0(p0) end
+//
+end // end of [arrayptr_make_stream]
+
+(* ****** ****** *)
+
+implement
+{a}(*tmp*)
+arrayptr_make_stream_vt
+  (xs, asz) = let
+//
+fun
+loop
+{n:int|0 < n}
+{i:nat|i <= n}
+( xs: stream_vt(a)
+, p0: ptr, pi: ptr
+, n0: size_t(n), i0: size_t(i)
+) : (ptr, Size_t) = (
+//
+case+ !xs of
+| ~stream_vt_nil() =>
+  (
+    p0, i0
+  )
+| ~stream_vt_cons(x, xs) =>
+  if
+  (i0 < n0)
+  then
+  let
+    val () = $UN.ptr0_set<a>(pi, x)
+  in
+    loop
+    (xs, p0, ptr_succ<a>(pi), n0, succ(i0))
+  end // end of [then]
+  else let
+//
+    val n02 = n0 + n0
+    val A02 =
+    arrayptr_make_uninitized<a>(n02)
+    val p02 = $UN.castvwtp0{ptr}(A02)
+//
+    val _(*p02*) =
+      memcpy(p02, p0, i0*sizeof<a>)
+    val ((*freed*)) =
+      arrayptr_free($UN.castvwtp0(p0))
+//
+    val pi = ptr_add<a>(p02, i0)
+    val () = $UN.ptr0_set<a>(pi, x)
+//
+  in
+    loop
+    (xs, p02, ptr_succ<a>(pi), n02, succ(i0))
+  end // end of [else]
+) (* end of [loop] *)
+//
+val n0 =
+arrayptr_make_stream$bufsize<>
+  ((*void*))
+//
+val n0 = i2sz(n0)
+val A0 = arrayptr_make_uninitized<a>(n0)
+val p0 = $UN.castvwtp0{ptr}(A0)
+//
+val (p0, n0) =
+  $effmask_all(loop(xs, p0, p0, n0, i2sz(0)))
+//
+in
+//
+  let val () = asz := n0 in $UN.castvwtp0(p0) end
+//
+end // end of [arrayptr_make_stream_vt]
+
+(* ****** ****** *)
+//
+implement
+arrayptr_make_stream$bufsize<> ((*void*)) = 16
+//
+(* ****** ****** *)
+
 (*
 implement
 arrayptr_free = ATS_MFREE // HX: in arrayptr.cats
@@ -229,9 +386,10 @@ fprint_arrayptr
 {
 //
 val p = ptrcast(A)
-prval pf = arrayptr_takeout (A)
-val () = fprint_array<a> (out, !p, n)
-prval () = arrayptr_addback (pf | A)
+prval pf = arrayptr_takeout(A)
+//
+val () = fprint_array<a>(out, !p, n)
+prval () = arrayptr_addback(pf | A)
 //
 } // end of [fprint_arrayptr]
 
@@ -244,9 +402,9 @@ fprint_arrayptr_sep
 {
 //
 val p = ptrcast (A)
-prval pf = arrayptr_takeout (A)
-val () = fprint_array_sep<a> (out, !p, n, sep)
-prval () = arrayptr_addback (pf | A)
+prval pf = arrayptr_takeout(A)
+val () = fprint_array_sep<a>(out, !p, n, sep)
+prval () = arrayptr_addback(pf | A)
 //
 } // end of [fprint_arrayptr_sep]
 
@@ -256,16 +414,16 @@ implement
 {a}{tk}
 arrayptr_get_at_gint
   (A, i) = let
-  val p = ptrcast (A) in
-  $UN.ptr0_get<a> (ptr1_add_gint<a><tk> (p, i))
+  val p = ptrcast(A) in
+  $UN.ptr0_get<a>(ptr1_add_gint<a><tk>(p, i))
 end // end of [arrayptr_get_at_gint]
 
 implement
 {a}{tk}
 arrayptr_get_at_guint
   (A, i) = let
-  val p = ptrcast (A) in
-  $UN.ptr0_get<a> (ptr1_add_guint<a><tk> (p, i))
+  val p = ptrcast(A) in
+  $UN.ptr0_get<a>(ptr1_add_guint<a><tk>(p, i))
 end // end of [arrayptr_get_at_guint]
 
 (* ****** ****** *)
@@ -274,16 +432,16 @@ implement
 {a}{tk}
 arrayptr_set_at_gint
   (A, i, x) = let
-  val p = ptrcast (A) in
-  $UN.ptr0_set<a> (ptr1_add_gint<a><tk> (p, i), x)
+  val p = ptrcast(A) in
+  $UN.ptr0_set<a>(ptr1_add_gint<a><tk>(p, i), x)
 end // end of [arrayptr_set_at_gint]
 
 implement
 {a}{tk}
 arrayptr_set_at_guint
   (A, i, x) = let
-  val p = ptrcast (A) in
-  $UN.ptr0_set<a> (ptr1_add_guint<a><tk> (p, i), x)
+  val p = ptrcast(A) in
+  $UN.ptr0_set<a>(ptr1_add_guint<a><tk>(p, i), x)
 end // end of [arrayptr_set_at_guint]
 
 (* ****** ****** *)
@@ -309,32 +467,22 @@ implement
 arrayptr_foreach
   (A, asz) = let
   var env: void = () in
-  arrayptr_foreach_env<a><void> (A, asz, env)
+  arrayptr_foreach_env<a><void>(A, asz, env)
 end // end of [arrayptr_foreach]
 
 implement
 {a}{env}
 arrayptr_foreach_env
   (A, asz, env) = res where {
-  val p = ptrcast (A)
-  prval pfarr = arrayptr_takeout (A)
-  val res = array_foreach_env<a><env> (!p, asz, env)
-  prval () = arrayptr_addback (pfarr | A)
+//
+val p = ptrcast (A)
+prval pfarr = arrayptr_takeout(A)
+//
+val res =
+array_foreach_env<a><env>(!p, asz, env)
+prval () = arrayptr_addback{a}(pfarr | A)
+//
 } // end of [arrayptr_foreach_env]
-
-(* ****** ****** *)
-
-implement
-{a}(*tmp*)
-arrayptr_foreach_fun
-  (A, asz, f) = let
-  val p = ptrcast (A)
-  prval pfarr = arrayptr_takeout (A)
-  val () = array_foreach_fun<a> (!p, asz, f)
-  prval () = arrayptr_addback (pfarr | A)
-in
-  // nothing
-end // end of [arrayptr_foreach_fun]
 
 (* ****** ****** *)
 
@@ -344,10 +492,11 @@ arrayptr_foreach_funenv
   (pfv | A, asz, f, env) = let
 //
 val p = ptrcast (A)
-prval pfarr = arrayptr_takeout (A)
+prval pfarr = arrayptr_takeout(A)
+//
 val () =
-  array_foreach_funenv<a> (pfv | !p, asz, f, env)
-prval () = arrayptr_addback (pfarr | A)
+array_foreach_funenv<a>(pfv | !p, asz, f, env)
+prval () = arrayptr_addback{a}(pfarr | A)
 //
 in
   // nothing
@@ -360,17 +509,21 @@ implement
 arrayptr_iforeach
   (A, asz) = let
   var env: void = () in
-  arrayptr_iforeach_env<a><void> (A, asz, env)
+  arrayptr_iforeach_env<a><void>(A, asz, env)
 end // end of [arrayptr_iforeach]
 
 implement
 {a}{env}
 arrayptr_iforeach_env
   (A, asz, env) = res where {
-  val p = ptrcast (A)
-  prval pfarr = arrayptr_takeout (A)
-  val res = array_iforeach_env<a><env> (!p, asz, env)
-  prval () = arrayptr_addback (pfarr | A)
+//
+val p = ptrcast (A)
+prval pfarr = arrayptr_takeout (A)
+//
+val res =
+array_iforeach_env<a><env>(!p, asz, env)
+prval () = arrayptr_addback{a}(pfarr | A)
+//
 } // end of [arrayptr_iforeach_env]
 
 (* ****** ****** *)
@@ -380,17 +533,21 @@ implement
 arrayptr_rforeach
   (A, asz) = let
   var env: void = () in
-  arrayptr_rforeach_env<a><void> (A, asz, env)
+  arrayptr_rforeach_env<a><void>(A, asz, env)
 end // end of [arrayptr_rforeach]
 
 implement
 {a}{env}
 arrayptr_rforeach_env
   (A, asz, env) = res where {
-  val p = ptrcast (A)
-  prval pfarr = arrayptr_takeout (A)
-  val res = array_rforeach_env<a><env> (!p, asz, env)
-  prval () = arrayptr_addback (pfarr | A)
+//
+val p = ptrcast(A)
+prval pfarr = arrayptr_takeout(A)
+//
+val res =
+array_rforeach_env<a><env>(!p, asz, env)
+prval () = arrayptr_addback{a}(pfarr | A)
+//
 } // end of [arrayptr_rforeach_env]
 
 (* ****** ****** *)
@@ -399,10 +556,13 @@ implement
 {a}(*tmp*)
 arrayptr_initize
   (A, asz) = () where {
-  val p = ptrcast (A)
-  prval pfarr = arrayptr_takeout (A)
-  val () = array_initize<a> (!p, asz)
-  prval () = arrayptr_addback (pfarr | A)
+//
+val p = ptrcast(A)
+prval pfarr = arrayptr_takeout(A)
+//
+val () = array_initize<a>(!p, asz)
+prval () = arrayptr_addback{a}(pfarr | A)
+//
 } // end of [arrayptr_initize]
 
 (* ****** ****** *)
@@ -411,10 +571,13 @@ implement
 {a}(*tmp*)
 arrayptr_uninitize
   (A, asz) = () where {
-  val p = ptrcast (A)
-  prval pfarr = arrayptr_takeout (A)
-  val () = array_uninitize<a> (!p, asz)
-  prval () = arrayptr_addback (pfarr | A)
+//
+val p = ptrcast(A)
+prval pfarr = arrayptr_takeout(A)
+//
+val () = array_uninitize<a>(!p, asz)
+prval () = arrayptr_addback{a?}(pfarr | A)
+//
 } // end of [arrayptr_uninitize]
 
 (* ****** ****** *)
@@ -424,7 +587,7 @@ implement
 arrayptr_freelin
   (A, asz) = let
 //
-val () = arrayptr_uninitize<a> (A, asz)
+val () = arrayptr_uninitize<a>(A, asz)
 //
 in
   arrayptr_free{a?}(A)
@@ -435,22 +598,25 @@ end // end of [arrayptr_freelin]
 implement
 {a}(*tmp*)
 arrayptr_tabulate
-  (asz) = arrayptr_encode2(array_ptr_tabulate<a> (asz))
+  (asz) =
+  arrayptr_encode2(array_ptr_tabulate<a>(asz))
 // end of [arrayptr_tabulate]
 
 (* ****** ****** *)
 
 implement
 {a}(*tmp*)
-arrayptr_tabulate_cloref
-  {n} (asz, f) = let
+arrayptr_bsearch
+  (A, asz) = res where
+{
 //
-implement(a2)
-array_tabulate$fopr<a2> (i) = $UN.castvwtp0{a2}(f($UN.cast{sizeLt(n)}(i)))
+val p = ptrcast(A)
+prval pfarr = arrayptr_takeout(A)
 //
-in
-  arrayptr_tabulate<a> (asz)
-end // end of [arrayptr_tabulate_cloref]
+val res = array_bsearch<a>(!p, asz)
+prval () = arrayptr_addback{a}(pfarr | A)
+//
+} (* end of [arrayptr_bsearch] *)
 
 (* ****** ****** *)
 
@@ -459,10 +625,13 @@ implement
 arrayptr_quicksort
   (A, asz) = () where
 {
-  val p = ptrcast (A)
-  prval pfarr = arrayptr_takeout (A)
-  val () = array_quicksort<a> (!p, asz)
-  prval () = arrayptr_addback (pfarr | A)
+//
+val p = ptrcast(A)
+prval pfarr = arrayptr_takeout(A)
+//
+val () = array_quicksort<a>(!p, asz)
+prval () = arrayptr_addback{a}(pfarr | A)
+//
 } (* end of [arrayptr_quicksort] *)
 
 (* ****** ****** *)

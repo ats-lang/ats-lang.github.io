@@ -1,3 +1,5 @@
+//usr/bin/env myatscc "$0"; exit
+(* ****** ****** *)
 (*
 **
 ** Automatic Differentiation
@@ -8,7 +10,6 @@
 ** Time: January, 2008
 **
 *)
-
 (* ****** ****** *)
 //
 // HX-2012-11-26: ported to ATS/Postiats
@@ -23,6 +24,14 @@
 // By the current standard, the following code looks
 // a bit ugly. However, it does shed some light on coding
 // in ATS during its early development.
+//
+(* ****** ****** *)
+//
+(*
+##myatsccdef=\
+patsopt --constraint-ignore --dynamic $1 | \
+tcc -run -DATS_MEMALLOC_LIBC -I${PATSHOME} -I${PATSHOME}/ccomp/runtime -
+*)
 //
 (* ****** ****** *)
 //

@@ -196,6 +196,8 @@ extern fun hidexp_ccomp_selptr : hidexp_ccomp_funtype
 extern fun hidexp_ccomp_ptrofvar : hidexp_ccomp_funtype
 extern fun hidexp_ccomp_ptrofsel : hidexp_ccomp_funtype
 
+extern fun hidexp_ccomp_vararg: hidexp_ccomp_funtype
+
 extern fun hidexp_ccomp_refarg : hidexp_ccomp_funtype
 
 extern fun hidexp_ccomp_assgn_var : hidexp_ccomp_funtype
@@ -247,17 +249,24 @@ extern fun hidexp_ccomp_ret_fixinit : hidexp_ccomp_ret_funtype
 
 local
 
-fun auxret (
+fun
+auxret
+(
   env: !ccompenv
 , res: !instrseq
 , hde0: hidexp
 ) : primval = let
-  val loc0 = hde0.hidexp_loc
-  val hse0 = hde0.hidexp_type
-  val tmpret = tmpvar_make (loc0, hse0)
-  val () = hidexp_ccomp_ret (env, res, tmpret, hde0)
+//
+val loc0 = hde0.hidexp_loc
+val hse0 = hde0.hidexp_type
+//
+val tmpret = tmpvar_make(loc0, hse0)
+//
+val ((*void*)) =
+  hidexp_ccomp_ret(env, res, tmpret, hde0)
+//
 in
-  primval_make_tmp (loc0, tmpret)
+  primval_make_tmp(loc0, tmpret)
 end // end of [auxret]
 
 in (* in of [local] *)
@@ -270,129 +279,151 @@ val loc0 = hde0.hidexp_loc
 val hse0 = hde0.hidexp_type
 //
 (*
-val () = println! ("hidexp_ccomp: hde0 = ", hde0)
-val () = println! ("hidexp_ccomp: hse0 = ", hse0)
+val () =
+println! ("hidexp_ccomp: hse0 = ", hse0)
+val () =
+println! ("hidexp_ccomp: hde0 = ", hde0)
 *)
 //
 in
 //
-case+ hde0.hidexp_node of
+case+
+hde0.hidexp_node
+of (* case+ *)
 //
-| HDEvar _ => hidexp_ccomp_var (env, res, hde0)
-| HDEcst _ => hidexp_ccomp_cst (env, res, hde0)
+| HDEvar _ =>
+  hidexp_ccomp_var(env, res, hde0)
+| HDEcst _ =>
+  hidexp_ccomp_cst(env, res, hde0)
 //
-| HDEint (i) => primval_int (loc0, hse0, i)
-| HDEintrep (rep) => primval_intrep (loc0, hse0, rep)
+| HDEint(int) =>
+    primval_int(loc0, hse0, int)
+| HDEintrep(rep) =>
+    primval_intrep(loc0, hse0, rep)
 //
-| HDEbool (b) => primval_bool (loc0, hse0, b)
-| HDEchar (c) => primval_char (loc0, hse0, c)
+| HDEbool(bool) =>
+    primval_bool(loc0, hse0, bool)
+| HDEchar(char) =>
+    primval_char(loc0, hse0, char)
 //
-| HDEfloat (rep) => let
-    val f =
-      $UT.double_make_string (rep) in primval_float (loc0, hse0, f)
-    // end of [val]
+| HDEfloat(rep) => let
+    val
+    float =
+    $UT.double_make_string(rep)
+  in
+    primval_float(loc0, hse0, float)
   end // end of [HDEfloat]
 //
-| HDEstring _ => hidexp_ccomp_string (env, res, hde0)
+| HDEstring _ =>
+  hidexp_ccomp_string(env, res, hde0)
 //
-| HDEi0nt (tok) => primval_i0nt (loc0, hse0, tok)
-| HDEf0loat (tok) => primval_f0loat (loc0, hse0, tok)
+| HDEi0nt (tok) => primval_i0nt(loc0, hse0, tok)
+| HDEf0loat (tok) => primval_f0loat(loc0, hse0, tok)
 //
-| HDEcstsp _ => hidexp_ccomp_cstsp (env, res, hde0)
+| HDEcstsp _ => hidexp_ccomp_cstsp(env, res, hde0)
 //
-| HDEtyrep _ => hidexp_ccomp_tyrep (env, res, hde0)
+| HDEtyrep _ => hidexp_ccomp_tyrep(env, res, hde0)
 //
-| HDEtop () => primval_top (loc0, hse0)
-| HDEempty () => primval_empty (loc0, hse0)
-| HDEignore (hde) => hidexp_ccomp (env, res, hde)
+| HDEtop() => primval_top(loc0, hse0)
+| HDEempty() => primval_empty(loc0, hse0)
+| HDEignore(hde) => hidexp_ccomp(env, res, hde)
 //
-| HDEextval (name) => primval_extval (loc0, hse0, name)
+| HDEextval(name) => primval_extval (loc0, hse0, name)
 //
 | HDEcastfn
   (
     d2c_fun, hde_arg
   ) => let
-    val pmv_arg =
-      hidexp_ccomp (env, res, hde_arg)
-    // end of [val]
+    val
+    pmv_arg =
+    hidexp_ccomp(env, res, hde_arg)
   in
-    primval_castfn (loc0, hse0, d2c_fun, pmv_arg)
+    primval_castfn(loc0, hse0, d2c_fun, pmv_arg)
   end // end of [HDEcastfn]
 //
-| HDEextfcall _ => auxret (env, res, hde0)
-| HDEextmcall _ => auxret (env, res, hde0)
+| HDEextfcall _ => auxret(env, res, hde0)
+| HDEextmcall _ => auxret(env, res, hde0)
 //
-| HDEcon _ => auxret (env, res, hde0)
+| HDEcon _ => auxret(env, res, hde0)
 //
 | HDEtmpcst _ =>
-    hidexp_ccomp_tmpcst (env, res, hde0)
+    hidexp_ccomp_tmpcst(env, res, hde0)
 | HDEtmpvar (d2v, t2mas) =>
-    hidexp_ccomp_tmpvar (env, res, hde0)
+    hidexp_ccomp_tmpvar(env, res, hde0)
 //
-| HDEfoldat _ => primval_empty (loc0, hse0)
-| HDEfreeat (hde) => let
-    val pmv = hidexp_ccomp (env, res, hde)
-    val ins_free = instr_freecon (loc0, pmv)
-    val ((*void*)) = instrseq_add (res, ins_free)
+| HDEfoldat _ =>
+    primval_empty(loc0, hse0)
+| HDEfreeat(hde) => let
+    val pmv = hidexp_ccomp(env, res, hde)
+    val ins_free = instr_freecon(loc0, pmv)
+    val ((*void*)) = instrseq_add(res, ins_free)
   in
-    primval_empty (loc0, hse0)
+    primval_empty(loc0, hse0)
   end // end of [HDEfreeat]
 //
-| HDElet (hids, hde_scope) => let
+| HDElet(hids, hde_scope) => let
 //
-    val (pfpush|()) = ccompenv_push (env)
+    val (pfpush|()) = ccompenv_push(env)
 //
-    val pmds = hideclist_ccomp (env, hids)
-    val ins_push = instr_letpush (loc0, pmds)
-    val () = instrseq_add (res, ins_push)
+    val pmds = hideclist_ccomp(env, hids)
+    val ins_push = instr_letpush(loc0, pmds)
+    val ((*void*)) = instrseq_add(res, ins_push)
 //
-    val pmv_scope = hidexp_ccomp (env, res, hde_scope)
+    val pmv_scope = hidexp_ccomp(env, res, hde_scope)
 //
-    val ins_pop = instr_letpop (loc0)
-    val () = instrseq_add (res, ins_pop)
+    val ins_pop = instr_letpop(loc0)
+    val ((*void*)) = instrseq_add(res, ins_pop)
 //
-    val ((*popped*)) = ccompenv_pop (pfpush | env)
+    val ((*popped*)) = ccompenv_pop(pfpush | env)
 //
   in
-    pmv_scope
-  end // end of [HDElet]
+    pmv_scope(*returned*)
+  end (* end of [HDElet] *)
 //
-| HDEapp _ => auxret (env, res, hde0)
+| HDEapp _ => auxret(env, res, hde0)
 //
-| HDEif _ => auxret (env, res, hde0)
+| HDEif _  =>
+  let val pmv = auxret(env, res, hde0) in pmv end
+| HDEcase _ =>
+  let val pmv = auxret(env, res, hde0) in pmv end
 //
-| HDEcase _ => auxret (env, res, hde0)
+| HDElst _ =>
+  let val pmv = auxret(env, res, hde0) in pmv end
+| HDErec _ =>
+  let val pmv = auxret(env, res, hde0) in pmv end
 //
-| HDElst _ => auxret (env, res, hde0)
+| HDEseq _ => hidexp_ccomp_seq(env, res, hde0)
 //
-| HDErec _ => auxret (env, res, hde0)
-//
-| HDEseq _ => hidexp_ccomp_seq (env, res, hde0)
-//
-| HDEselab _ => hidexp_ccomp_selab (env, res, hde0)
+| HDEselab _ => hidexp_ccomp_selab(env, res, hde0)
 //
 | HDEptrofvar _ =>
-    hidexp_ccomp_ptrofvar (env, res, hde0)
+    hidexp_ccomp_ptrofvar(env, res, hde0)
+  // end of [HDEptrofvar]
 | HDEptrofsel _ =>
-    hidexp_ccomp_ptrofsel (env, res, hde0)
+    hidexp_ccomp_ptrofsel(env, res, hde0)
+  // end of [HDEptrofsel]
 //
-| HDErefarg _ => hidexp_ccomp_refarg (env, res, hde0)
+| HDEvararg _ => hidexp_ccomp_vararg(env, res, hde0)
 //
-| HDEselvar _ => hidexp_ccomp_selvar (env, res, hde0)
-| HDEselptr _ => hidexp_ccomp_selptr (env, res, hde0)
+| HDErefarg _ => hidexp_ccomp_refarg(env, res, hde0)
 //
-| HDEassgn_var _ => hidexp_ccomp_assgn_var (env, res, hde0)
-| HDEassgn_ptr _ => hidexp_ccomp_assgn_ptr (env, res, hde0)
+| HDEselvar _ => hidexp_ccomp_selvar(env, res, hde0)
+| HDEselptr _ => hidexp_ccomp_selptr(env, res, hde0)
 //
-| HDExchng_var _ => hidexp_ccomp_xchng_var (env, res, hde0)
-| HDExchng_ptr _ => hidexp_ccomp_xchng_ptr (env, res, hde0)
+| HDEassgn_var _ => hidexp_ccomp_assgn_var(env, res, hde0)
+| HDEassgn_ptr _ => hidexp_ccomp_assgn_ptr(env, res, hde0)
 //
-| HDEarrpsz _ => auxret (env, res, hde0)
+| HDExchng_var _ => hidexp_ccomp_xchng_var(env, res, hde0)
+| HDExchng_ptr _ => hidexp_ccomp_xchng_ptr(env, res, hde0)
 //
-| HDEraise (hde_exn) => auxret (env, res, hde0)
+| HDEarrpsz _ => auxret(env, res, hde0)
+//
+| HDEraise
+    (hde_exn) => auxret(env, res, hde0)
+  // end of [HDEraise]
 //
 (*
-| HDEvcopyenv (d2v) => HX: HDEvar (d2v)
+| HDEvcopyenv(d2v) => HX: HDEvar( d2v )
 *)
 //
 | HDEtempenver(d2vs) => let
@@ -458,7 +489,8 @@ implement
 hidexplst_ccomp
   (env, res, hdes) = let
 //
-fun loop (
+fun
+loop (
   env: !ccompenv
 , res: !instrseq
 , hdes: hidexplst
@@ -467,24 +499,28 @@ fun loop (
 in
 //
 case+ hdes of
+| list_nil
+    ((*void*)) =>
+  {
+    val () =
+    pmvs := list_vt_nil(*void*)
+  } (* end of [list_nil] *)
 | list_cons
     (hde, hdes) => let
     val pmv =
-      hidexp_ccomp (env, res, hde)
+      hidexp_ccomp(env, res, hde)
     // end of [val]
     val () =
     (
-      pmvs := list_vt_cons {..}{0} (pmv, ?)
+      pmvs :=
+      list_vt_cons{..}{0}(pmv, ?)
     ) (* end of [val] *)
-    val list_vt_cons (_, !p_pmvs) = pmvs
-    val () = loop (env, res, hdes, !p_pmvs)
-    prval ((*folded*)) = fold@ (pmvs)
+    val+list_vt_cons(_, !p_pmvs) = pmvs
+    val () = loop(env, res, hdes, !p_pmvs)
+    prval ((*folded*)) = fold@(pmvs)
   in
     // nothing
   end // end of [list_cons]
-| list_nil () => let
-    val () = pmvs := list_vt_nil () in (*nothing*)
-  end // end of [list_nil]
 //
 end // end of [loop]
 //
@@ -568,6 +604,10 @@ println! ("labhidexplst_ccomp: loop")
 in
 //
 case+ lhdes of
+| list_nil() =>
+  (
+    lpmvs := list_vt_nil()
+  ) (* end of [list_nil] *)
 | list_cons
     (lhde, lhdes) => let
 //
@@ -597,18 +637,17 @@ case+ lhdes of
   in
     // nothing
   end // end of [list_cons]
-| list_nil () => let
-    val () = lpmvs := list_vt_nil () in (*nothing*)
-  end // end of [list_nil]
 //
 end // end of [loop]
 //
-var lpmvs: labprimvalist_vt
-val () = loop (env, res, lhdes, lpmvs)
-//
 in
 //
-list_of_list_vt (lpmvs)
+  let
+    var
+    lpmvs: labprimvalist_vt
+  in
+    loop(env, res, lhdes, lpmvs); list_of_list_vt(lpmvs)
+  end // end of [let]
 //
 end // end of [labhidexplst_ccomp]
 
@@ -625,10 +664,10 @@ auxval
 , hde0_val: hidexp
 ) : void = let
   val loc0 = hde0_val.hidexp_loc
-  val pmv0 = hidexp_ccomp (env, res, hde0_val)
-  val ins0 = instr_move_val (loc0, tmpret, pmv0)
+  val pmv0 = hidexp_ccomp(env, res, hde0_val)
+  val ins0 = instr_move_val(loc0, tmpret, pmv0)
 in
-  instrseq_add (res, ins0)
+  instrseq_add(res, ins0)
 end // end of [auxval]
 
 in (* in of [local] *)
@@ -644,47 +683,50 @@ val hse0 = hde0.hidexp_type
 //
 in
 //
-case+ hde0.hidexp_node of
+case+
+hde0.hidexp_node
+of (* case+ *)
 //
-| HDEvar _ => auxval (env, res, tmpret, hde0)
-| HDEcst _ => auxval (env, res, tmpret, hde0)
+| HDEvar _ => auxval(env, res, tmpret, hde0)
+| HDEcst _ => auxval(env, res, tmpret, hde0)
 //
-| HDEint _ => auxval (env, res, tmpret, hde0)
-| HDEintrep _ => auxval (env, res, tmpret, hde0)
+| HDEint _ => auxval(env, res, tmpret, hde0)
+| HDEintrep _ => auxval(env, res, tmpret, hde0)
 //
-| HDEbool _ => auxval (env, res, tmpret, hde0)
-| HDEchar _ => auxval (env, res, tmpret, hde0)
-| HDEfloat _ => auxval (env, res, tmpret, hde0)
-| HDEstring _ => auxval (env, res, tmpret, hde0)
+| HDEbool _ => auxval(env, res, tmpret, hde0)
+| HDEchar _ => auxval(env, res, tmpret, hde0)
+| HDEfloat _ => auxval(env, res, tmpret, hde0)
+| HDEstring _ => auxval(env, res, tmpret, hde0)
 //
-| HDEi0nt _ => auxval (env, res, tmpret, hde0)
-| HDEf0loat _ => auxval (env, res, tmpret, hde0)
+| HDEi0nt _ => auxval(env, res, tmpret, hde0)
+| HDEf0loat _ => auxval(env, res, tmpret, hde0)
 //
 | HDEtop _ => ()
-| HDEempty _ => auxval (env, res, tmpret, hde0)
+| HDEempty _ => auxval(env, res, tmpret, hde0)
 | HDEignore (hde) => let
-    val _ = hidexp_ccomp (env, res, hde) in (*nothing*)
+    val _ = hidexp_ccomp(env, res, hde) in (*nothing*)
   end (* end of [HDEignore] *)
 //
-| HDEcastfn _ => auxval (env, res, tmpret, hde0)
+| HDEcastfn _ => auxval(env, res, tmpret, hde0)
 //
-| HDEextval _ => auxval (env, res, tmpret, hde0)
+| HDEextval _ => auxval(env, res, tmpret, hde0)
+//
 | HDEextfcall _ =>
-    hidexp_ccomp_ret_extfcall (env, res, tmpret, hde0)
+  hidexp_ccomp_ret_extfcall(env, res, tmpret, hde0)
   (* end of [HDEextfcall] *)
 | HDEextmcall _ =>
-    hidexp_ccomp_ret_extmcall (env, res, tmpret, hde0)
+  hidexp_ccomp_ret_extmcall(env, res, tmpret, hde0)
   (* end of [HDEextmcall] *)
 //
 | HDEcon _ => 
-    hidexp_ccomp_ret_con (env, res, tmpret, hde0)
+    hidexp_ccomp_ret_con(env, res, tmpret, hde0)
   (* end of [HDEcon] *)
 //
-| HDEtmpcst _ => auxval (env, res, tmpret, hde0)
-| HDEtmpvar _ => auxval (env, res, tmpret, hde0)
+| HDEtmpcst _ => auxval(env, res, tmpret, hde0)
+| HDEtmpvar _ => auxval(env, res, tmpret, hde0)
 //
-| HDEfoldat _ => auxval (env, res, tmpret, hde0)
-| HDEfreeat _ => auxval (env, res, tmpret, hde0)
+| HDEfoldat _ => auxval(env, res, tmpret, hde0)
+| HDEfreeat _ => auxval(env, res, tmpret, hde0)
 //
 | HDElet (
     hids, hde_scope
@@ -694,70 +736,78 @@ case+ hde0.hidexp_node of
 //
     val pmds = hideclist_ccomp (env, hids)
     val ins_push = instr_letpush (loc0, pmds)
-    val () = instrseq_add (res, ins_push)
+    val () = instrseq_add(res, ins_push)
 //
-    val () = hidexp_ccomp_ret (env, res, tmpret, hde_scope)
+    val () = hidexp_ccomp_ret(env, res, tmpret, hde_scope)
 //
-    val ins_pop = instr_letpop (loc0)
-    val () = instrseq_add (res, ins_pop)
+    val ins_pop = instr_letpop(loc0)
+    val () = instrseq_add(res, ins_pop)
 //
-    val () = ccompenv_pop (pf(*push*) | env)
+    val () = ccompenv_pop(pf(*push*) | env)
 //
   in
     // nothing
   end // end of [HDElet]
 //
 | HDEapp _ =>
-    hidexp_ccomp_ret_app (env, res, tmpret, hde0)
+  hidexp_ccomp_ret_app(env, res, tmpret, hde0)
 //
 | HDEif _ =>
-    hidexp_ccomp_ret_if (env, res, tmpret, hde0)
+  (
+    hidexp_ccomp_ret_if(env, res, tmpret, hde0)
+  )
 //
 | HDEcase _ =>
-    hidexp_ccomp_ret_case (env, res, tmpret, hde0)
+  hidexp_ccomp_ret_case(env, res, tmpret, hde0)
 //
 | HDElst _ =>
-    hidexp_ccomp_ret_lst (env, res, tmpret, hde0)
+  hidexp_ccomp_ret_lst(env, res, tmpret, hde0)
 //
 | HDErec _ =>
-    hidexp_ccomp_ret_rec (env, res, tmpret, hde0)
+  hidexp_ccomp_ret_rec(env, res, tmpret, hde0)
 //
 | HDEseq _ =>
-    hidexp_ccomp_ret_seq (env, res, tmpret, hde0)
+  hidexp_ccomp_ret_seq(env, res, tmpret, hde0)
 //
-| HDEselab _ => auxval (env, res, tmpret, hde0)
+| HDEselab _ => auxval(env, res, tmpret, hde0)
 //
-| HDEptrofvar _ => auxval (env, res, tmpret, hde0)
-| HDEptrofsel _ => auxval (env, res, tmpret, hde0)
+| HDEptrofvar _ => auxval(env, res, tmpret, hde0)
+| HDEptrofsel _ => auxval(env, res, tmpret, hde0)
 //
-| HDEselvar _ => auxval (env, res, tmpret, hde0)
-| HDEselptr _ => auxval (env, res, tmpret, hde0)
+| HDEselvar _ => auxval(env, res, tmpret, hde0)
+| HDEselptr _ => auxval(env, res, tmpret, hde0)
 //
-| HDEassgn_var _ => auxval (env, res, tmpret, hde0)
-| HDEassgn_ptr _ => auxval (env, res, tmpret, hde0)
+| HDEassgn_var _ => auxval(env, res, tmpret, hde0)
+| HDEassgn_ptr _ => auxval(env, res, tmpret, hde0)
 //
-| HDExchng_var _ => auxval (env, res, tmpret, hde0)
-| HDExchng_ptr _ => auxval (env, res, tmpret, hde0)
+| HDExchng_var _ => auxval(env, res, tmpret, hde0)
+| HDExchng_ptr _ => auxval(env, res, tmpret, hde0)
 //
 | HDEarrpsz _ =>
-    hidexp_ccomp_ret_arrpsz (env, res, tmpret, hde0)
+  hidexp_ccomp_ret_arrpsz(env, res, tmpret, hde0)
 | HDEarrinit _ =>
-    hidexp_ccomp_ret_arrinit (env, res, tmpret, hde0)
+  hidexp_ccomp_ret_arrinit(env, res, tmpret, hde0)
 //
-| HDEraise (hde_exn) =>
-    hidexp_ccomp_ret_raise (env, res, tmpret, hde0)
+| HDEraise(hde_exn) =>
+  (
+    hidexp_ccomp_ret_raise(env, res, tmpret, hde0)
+  )
 //
-| HDElam (knd, _, _) =>
+| HDEvararg(hdes_arg) => auxval(env, res, tmpret, hde0)
+//
+| HDElam(knd, _, _) =>
   (
     if knd != 0
       then auxval (env, res, tmpret, hde0)
       else hidexp_ccomp_ret_laminit (env, res, tmpret, hde0)
+    // end of [if]
   )
-| HDEfix (knd, _, _) =>
+| HDEfix(knd, _, _) =>
   (
     if knd != 0
       then auxval (env, res, tmpret, hde0)
       else hidexp_ccomp_ret_fixinit (env, res, tmpret, hde0)
+    // end of [if]
   ) (* end of [HDEfix] *)
 //
 | HDEdelay _ => hidexp_ccomp_ret_delay (env, res, tmpret, hde0)
@@ -826,17 +876,20 @@ hidexp_ccomp_var
 //
 val loc0 = hde0.hidexp_loc
 val hse0 = hde0.hidexp_type
-val-HDEvar (d2v) = hde0.hidexp_node
 //
-val pmv = d2var_ccomp (env, loc0, hse0, d2v)
+val-
+HDEvar(d2v) = hde0.hidexp_node
+//
+val pmv = d2var_ccomp(env, loc0, hse0, d2v)
 //
 in
 //
 case+
-d2var_get_view (d2v) of
+d2var_get_view(d2v)
+of (* case+ *)
 //
 | None _(*val*) => pmv
-| Some _(*ref*) => primval_selptr (loc0, hse0, pmv, hse0, list_nil)
+| Some _(*ref*) => primval_selptr(loc0, hse0, pmv, hse0, list_nil)
 //
 end // end of [hidexp_ccomp_var]
 
@@ -848,11 +901,13 @@ hidexp_ccomp_cst
 //
 val loc0 = hde0.hidexp_loc
 val hse0 = hde0.hidexp_type
-val-HDEcst (d2c) = hde0.hidexp_node
-val () = the_dyncstlst_add (d2c)
+//
+val-
+HDEcst(d2c) = hde0.hidexp_node
+val () = the_dyncstlst_add(d2c)
 //
 in
-  primval_cst (loc0, hse0, d2c)
+  primval_cst(loc0, hse0, d2c)
 end // end of [hidexp_ccomp_cst]
 
 (* ****** ****** *)
@@ -1144,6 +1199,22 @@ end // end of [hidexp_ccomp_ptrofsel]
 (* ****** ****** *)
 
 implement
+hidexp_ccomp_vararg
+  (env, res, hde0) = let
+//
+val loc0 = hde0.hidexp_loc
+val hse0 = hde0.hidexp_type
+val-HDEvararg(hdes) = hde0.hidexp_node
+//
+val pmvs = hidexplst_ccomp(env, res, hdes)
+//
+in
+  primval_vararg(loc0, hse0, pmvs)
+end // end of [hidexp_ccomp_vararg]
+
+(* ****** ****** *)
+
+implement
 hidexp_ccomp_refarg
   (env, res, hde0) = let
 //
@@ -1271,14 +1342,14 @@ val loc0 = hde0.hidexp_loc
 val hse0 = hde0.hidexp_type
 val-HDEapp(hde_fun, hse_fun, hdes_arg) = hde0.hidexp_node
 //
-val pmv_fun = hidexp_ccomp (env, res, hde_fun)
-val pmvs_arg = hidexplst_ccomp (env, res, hdes_arg)
+val pmv_fun = hidexp_ccomp(env, res, hde_fun)
+val pmvs_arg = hidexplst_ccomp(env, res, hdes_arg)
 //
 var added: int = 0
 //
 val
 tlcalopt =
-  $GLOBAL.the_CCOMPATS_tlcalopt_get()
+$GLOBAL.the_CCOMPATS_tlcalopt_get()
 //
 val isret =
 (
@@ -1413,13 +1484,13 @@ println!
 *)
 //
 val () =
-if added > 0 then tmpvar_inc_tailcal (tmpret)
+if added > 0 then tmpvar_inc_tailcal(tmpret)
 //
 val () =
 if added = 0 then let
-  val ins = instr_fcall (loc0, tmpret, pmv_fun, hse_fun, pmvs_arg)
+  val ins = instr_fcall(loc0, tmpret, pmv_fun, hse_fun, pmvs_arg)
 in
-  instrseq_add (res, ins)
+  instrseq_add(res, ins)
 end // end of [then] // end of [if]
 //
 in
@@ -1625,20 +1696,20 @@ hidexp_ccomp_ret_rec
 val loc0 = hde0.hidexp_loc
 val hse0 = hde0.hidexp_type
 //
-val-HDErec (knd, lhdes, hse_rec) = hde0.hidexp_node
+val-HDErec(knd, lhdes, hse_rec) = hde0.hidexp_node
 //
-val lpmvs = auxlst (env, res, lhdes)
+val lpmvs = auxlst(env, res, lhdes)
 //
 val ins = (
   if knd > 0 then
-    instr_move_boxrec (loc0, tmpret, lpmvs, hse_rec)
+    instr_move_boxrec(loc0, tmpret, lpmvs, hse_rec)
   else
-    instr_move_fltrec2 (loc0, tmpret, lpmvs, hse_rec)
+    instr_move_fltrec2(loc0, tmpret, lpmvs, hse_rec)
   // end of [if]
 ) : instr // end of [val]
 //
 in
-  instrseq_add (res, ins)
+  instrseq_add(res, ins)
 end // end of [hidexp_ccomp_ret_rec]
 
 end // end of [local]
@@ -1817,11 +1888,12 @@ hidexp_ccomp_ret_raise
   (env, res, tmpret, hde0) = let
 //
 val loc0 = hde0.hidexp_loc
-val-HDEraise (hde_exn) = hde0.hidexp_node
-val pmv_exn = hidexp_ccomp (env, res, hde_exn)
+val-HDEraise(hde_exn) = hde0.hidexp_node
+val pmv_exn = hidexp_ccomp(env, res, hde_exn)
 //
-val ins = instr_raise (loc0, tmpret, pmv_exn)
-val () = instrseq_add (res, ins)
+val ins =
+instr_raise (loc0, tmpret, pmv_exn)
+val ((*void*)) = instrseq_add (res, ins)
 //
 in
   // nothing

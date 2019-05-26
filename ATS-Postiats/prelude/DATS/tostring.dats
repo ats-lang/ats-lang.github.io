@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/tostring.atxt
-** Time of generation: Sun Nov 20 21:18:29 2016
+** Time of generation: Wed Oct 10 21:08:53 2018
 *)
 
 (* ****** ****** *)
@@ -269,8 +269,12 @@ implement
 tostrptr_array
   (A, n) = let
 //
+prval() =
+lemma_g1uint_param(n)
+//
 fun
-loop{n:int}
+loop
+{n:nat} .<n>.
 (
   i: int
 , p: ptr, n: size_t(n)
@@ -286,11 +290,11 @@ then let
     if i > 0
       then let
         val sep =
-          tostrptr_array$sep<> ()
+          tostrptr_array$sep<>()
         // end of [val]
-        val sep = string0_copy (sep)
+        val sep = string0_copy(sep)
       in
-        list_vt_cons (sep, res)
+        list_vt_cons(sep, res)
       end // end of [then]
       else res // end of [else]
   ) : List0_vt(Strptr1)
@@ -299,10 +303,10 @@ then let
   (pf, fpf | p) =
     $UN.ptr_vtake{a}(p)
   // end of [val]
-  val xrep = tostrptr_ref<a> (!p)
-  prval ((*returned*)) = fpf (pf)
+  val xrep = tostrptr_ref<a>(!p)
+  prval ((*returned*)) = fpf(pf)
 //
-  val res2 = list_vt_cons (xrep, res1)
+  val res2 = list_vt_cons(xrep, res1)
 //
 in
   loop (i+1, ptr_succ<a>(p), pred(n), res2)
@@ -311,21 +315,25 @@ else res // end of [else]
 //
 ) (* end of [loop] *)
 //
-val res = list_vt_nil ()
+val res = list_vt_nil()
 //
-val _beg =
-  tostrptr_array$beg<> ()
-val _beg = string0_copy(_beg)
-val res = list_vt_cons (_beg, res)
+val
+_beg =
+tostrptr_array$beg<>()
+val
+_beg = string0_copy<>(_beg)
 //
-val res = loop (0, addr@A, n, res)
+val res = list_vt_cons(_beg, res)
+val res = loop(0, addr@A, n, res)
 //
-val _end =
-  tostrptr_array$end<> ()
-val _end = string0_copy(_end)      
-val res = list_vt_cons (_end, res)
+val
+_end =
+tostrptr_array$end<>()
+val
+_end = string0_copy<>(_end)
 //
-val res = list_vt_reverse<Strptr1> (res)
+val res = list_vt_cons(_end, res)
+val res = list_vt_reverse<Strptr1>(res)
 //
 in
 //
@@ -335,9 +343,12 @@ end // end of [tostrptr_array]
 
 (* ****** ****** *)
 //
-implement{} tostrptr_array$beg() = ""
-implement{} tostrptr_array$end() = ""
-implement{} tostrptr_array$sep() = ""
+implement{}
+tostrptr_array$beg() = "" // HX: default
+implement{}
+tostrptr_array$end() = "" // HX: default
+implement{}
+tostrptr_array$sep() = "" // HX: default
 //
 (* ****** ****** *)
 
@@ -351,7 +362,7 @@ val (vbox pf | p) =
 //
 in
 //
-$effmask_ref(tostrptr_array<a> (!p, n))
+$effmask_ref(tostrptr_array<a>(!p, n))
 //
 end // end of [tostrptr_arrayref]
 
@@ -362,11 +373,10 @@ implement
 tostrptr_arrszref
   (ASZ) = let
 //
-var n: size_t
-val A = arrszref_get_refsize (ASZ, n)
+var asz: size_t
 //
 in
-  tostrptr_arrayref<a> (A, n)
+  tostrptr_arrayref<a>(arrszref_get_refsize<>(ASZ, asz), asz)
 end // end of [tostrptr_arrszref]
 
 (* ****** ****** *)

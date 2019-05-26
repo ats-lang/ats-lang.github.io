@@ -45,6 +45,46 @@ staload
 //
 (* ****** ****** *)
 //
+fun
+{a:t0p}
+stream2list0_vt
+  (xs: stream_vt(a)):<!wrt> list0(a)
+//
+(* ****** ****** *)
+//
+fun
+{a:t0p}
+stream_vt_make_list0
+  (xs: list0(a)):<!laz> stream_vt(a)
+//
+(* ****** ****** *)
+//
+fun{}
+intGte_stream_vt
+  (start: int):<!laz> stream_vt(int)
+//
+(* ****** ****** *)
+//
+fun{}
+stream_vt_make_intrange_lr
+  (l: int, r: int):<!laz> stream_vt(int)
+fun{}
+stream_vt_make_intrange_lrd
+  (l: int, r: int, d: int):<!laz> stream_vt(int)
+//
+(* ****** ****** *)
+//
+overload
+intrange_stream_vt
+with
+stream_vt_make_intrange_lr
+overload
+intrange_stream_vt
+with
+stream_vt_make_intrange_lrd
+//
+(* ****** ****** *)
+//
 fun{
 a:vt0p}{b:vt0p
 } stream_vt_map_method

@@ -1,8 +1,8 @@
+(* ****** ****** *)
 (*
 ** For writing ATS code
 ** that translates into JavaScript
 *)
-
 (* ****** ****** *)
 
 (*
@@ -23,8 +23,8 @@
 
 (*
 ** Author: Hongwei Xi
-** Authoremail: gmhwxi AT gmail DOT com
 ** Start Time: October, 2015
+** Authoremail: gmhwxiATgmailDOTcom
 *)
 
 (* ****** ****** *)
@@ -33,8 +33,10 @@
 //
 (* ****** ****** *)
 //
+(*
 #define
 ATS_STALOADFLAG 0 // no staloading at run-time
+*)
 //
 #define
 ATS_EXTERN_PREFIX
@@ -42,10 +44,11 @@ ATS_EXTERN_PREFIX
 //
 (* ****** ****** *)
 //
-#include
-"share/atspre_define.hats"
-#include
-"{$LIBATSCC2JS}/mylibies.hats"
+#define
+LIBATSCC2JS_targetloc
+"$PATSHOME/contrib/libatscc2js"
+#staload
+"{$LIBATSCC2JS}/basics_js.sats"
 //
 (* ****** ****** *)
 //

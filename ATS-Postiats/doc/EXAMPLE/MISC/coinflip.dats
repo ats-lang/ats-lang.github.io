@@ -1,3 +1,5 @@
+//usr/bin/env myatscc "$0"; exit
+(* ****** ****** *)
 //
 // One of the early examples
 // It was first done in ATS/Geizella
@@ -16,6 +18,14 @@
 (* ****** ****** *)
 //
 // HX-2013-06-08: ported to ATS2
+//
+(* ****** ****** *)
+//
+(*
+##myatsccdef=\
+patsopt --constraint-ignore --dynamic $1 | \
+tcc -run -DATS_MEMALLOC_LIBC -I${PATSHOME} -I${PATSHOME}/ccomp/runtime -
+*)
 //
 (* ****** ****** *)
 //

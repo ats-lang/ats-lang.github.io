@@ -28,8 +28,8 @@
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: gmhwxiATgmailDOTcom *)
 (* Start time: June, 2013 *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
 
 (* ****** ****** *)
 
@@ -68,6 +68,10 @@ setenv_err
 ) : int(*err*) // end of [setenv_err]
 //
 (* ****** ****** *)
+//
+// HX:
+// Default implementation
+// is based on STDLIB.random
 //
 fun{}
 randint{n:pos}(n: int(n)): natLt(n)

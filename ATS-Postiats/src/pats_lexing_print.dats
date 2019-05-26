@@ -119,7 +119,6 @@ fprint_token
   | T_LOCAL () => fprintf (out, "LOCAL()", @())
   | T_MACDEF (x) => fprintf (out, "MACDEF(%i)", @(x))
   | T_NONFIX () => fprintf (out, "NONFIX()", @())
-  | T_OVERLOAD () => fprintf (out, "OVERLOAD()", @())
   | T_OF () => fprintf (out, "OF()", @())
   | T_OP () => fprintf (out, "OP()", @())
   | T_REC () => fprintf (out, "REC()", @())
@@ -135,8 +134,11 @@ fprint_token
 (*
   | T_STAVAR () => fprintf (out, "STAVAR()", @())
 *)
+//
   | T_SYMELIM () => fprintf (out, "SYMELIM()", @())
   | T_SYMINTR () => fprintf (out, "SYMINTR()", @())
+  | T_SYMLOAD () => fprintf (out, "SYMLOAD()", @())
+//
   | T_THEN () => fprintf (out, "THEN()", @())
   | T_TKINDEF () =>  fprintf (out, "TKINDEF()", @())
   | T_TRY () => fprintf (out, "TRY()", @())
@@ -190,9 +192,11 @@ fprint_token
 //
   | T_DLRRAISE () => fprintf (out, "DLRRAISE()", @())
 //
-  | T_DLRSHOWTYPE () => fprintf (out, "DLRSHOWTYPE()", @())
+  | T_DLRVARARG () => fprintf (out, "DLRVARARG()", @())
 //
   | T_DLRVCOPYENV (x) => fprintf (out, "DLRVCOPYENV(%i)", @(x))
+//
+  | T_DLRSHOWTYPE () => fprintf (out, "DLRSHOWTYPE()", @())
 //
   | T_DLRTEMPENVER () => fprintf (out, "DLRTEMPENVER()", @())
 //

@@ -169,6 +169,49 @@ in
 end // end of [list_length]
 
 (* ****** ****** *)
+//
+implement
+list_length_gte
+{x}(xs, n2) =
+  (list_length_compare{x}(xs, n2) >= 0)
+//
+implement
+list_length_compare
+{x}(xs, n2) =
+  loop(xs, n2) where
+{
+//
+fun
+loop
+{i:nat;j:int} .<i>.
+(xs: list(x, i), j: int j) :<> int(sgn(i-j)) =
+(
+if
+(j < 0)
+then 1 else
+(
+case+ xs of
+| list_cons
+    (_, xs) => loop(xs, j-1)
+  // list_cons
+| _ (*list_nil*) =>> (if j = 0 then 0 else ~1)
+)
+) (* end of [loop] *)
+//
+prval() = lemma_list_param(xs)
+//
+} (* end of [list_length_compare] *)
+
+(* ****** ****** *)
+//
+implement
+list_head(xs) =
+let val+list_cons(x, _) = xs in x end
+implement
+list_tail(xs) =
+let val+list_cons(_, xs) = xs in xs end
+//
+(* ****** ****** *)
 
 implement
 list_last(xs) = let
@@ -587,8 +630,11 @@ aux{n:int}
   case+ xs of
   | list_nil() => list_nil()
   | list_cons(x, xs) =>
-      if p(x) then list_cons(x, aux(xs)) else aux(xs)
-    // end of [list_cons]
+    (
+      if p(x)
+        then list_cons(x, aux(xs)) else aux(xs)
+      // end of [if]
+    ) // end of [list_cons]
 //
 } (* end of [list_filter] *)
 //
@@ -596,6 +642,12 @@ implement
 list_filter_method
   {a}(xs) = lam(pred) => list_filter{a}(xs, pred)
 //  
+(* ****** ****** *)
+//
+implement
+list_labelize
+  {a}(xs) = list_imap{a}(xs, lam(i, x) => $tup(i, x))
+//
 (* ****** ****** *)
 //
 implement
@@ -614,8 +666,10 @@ xs: list(a, n)
 ) : list(b, n) =
 (
 case+ xs of
-| list_nil() => list_nil()
-| list_cons(x, xs) => list_cons(fopr(x), aux(xs))
+| list_nil() =>
+  list_nil()
+| list_cons(x, xs) =>
+  list_cons(fopr(x), aux(xs))
 ) (* end of [aux] *)
 //
 prval () = lemma_list_param(xs)
@@ -625,6 +679,68 @@ prval () = lemma_list_param(xs)
 implement
 list_map_method
   {a}(xs, _) = lam(fopr) => list_map{a}(xs, fopr)
+//
+(* ****** ****** *)
+//
+implement
+list_imap
+  {a}{b}
+(
+  xs, fopr
+) = aux(0, xs) where
+{
+//
+fun
+aux
+{n:nat} .<n>.
+(
+i0: Nat,
+xs: list(a, n)
+) : list(b, n) =
+(
+case+ xs of
+| list_nil() =>
+  list_nil()
+| list_cons(x, xs) =>
+  list_cons(fopr(i0, x), aux(i0+1, xs))
+) (* end of [aux] *)
+//
+prval () = lemma_list_param(xs)
+//
+} (* end of [list_imap] *)
+//
+implement
+list_imap_method
+  {a}(xs, _) = lam(fopr) => list_imap{a}(xs, fopr)
+//
+(* ****** ****** *)
+//
+implement
+list_map2
+(
+  xs1, xs2, fopr
+) = let
+//
+prval() =
+lemma_list_param(xs1)
+prval() =
+lemma_list_param(xs2)
+//
+in
+//
+case+ xs1 of
+| list_nil() =>
+  list_nil()
+| list_cons(x1, xs1) =>
+  (
+    case+ xs2 of
+    | list_nil() =>
+      list_nil()
+    | list_cons(x2, xs2) =>
+      list_cons(fopr(x1, x2), list_map2(xs1, xs2, fopr))
+  )
+//
+end (* end of [list_map2] *)
 //
 (* ****** ****** *)
 
@@ -754,6 +870,62 @@ list_sort_1(xs) =
     (xs, lam(x1, x2) => gcompare_val_val<a>(x1, x2))
   // end of [list_sort_2]
 ) (* list_sort_1 *)
+//
+(* ****** ****** *)
+//
+implement
+list_mergesort
+{a}(xs, cmp) = let
+//
+fun
+msort
+{n:int}
+(
+xs: list(a, n), n: int(n)
+) : list(a, n) =
+(
+if
+(n < 2)
+then xs
+else let
+  val n2 = half(n)
+  val
+  $tup(xs1, xs2) =
+  list_split_at(xs, n2)
+in
+  merge(msort(xs1, n2), msort(xs2, n-n2))
+end // end of [then]
+) (* end of [msort] *)
+//
+and
+merge
+{n1,n2:int}
+(
+xs10: list(a, n1)
+,
+xs20: list(a, n2)
+) : list(a, n1+n2) =
+(
+case+ xs10 of
+| list_nil() => xs20
+| list_cons(x10, xs11) =>
+  (
+    case+ xs20 of
+    | list_nil() => xs10
+    | list_cons(x20, xs21) => let
+        val sgn = cmp(x10, x20)
+      in
+        if
+        (sgn <= 0)
+        then list_cons(x10, merge(xs11, xs20))
+        else list_cons(x20, merge(xs10, xs21))
+      end // end of [list_cons]
+  )
+)
+//
+in
+  msort(xs, list_length(xs))
+end // end of [list_mergesort]
 //
 (* ****** ****** *)
 //

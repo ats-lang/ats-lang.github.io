@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/matrixref.atxt
-** Time of generation: Sun Nov 20 21:18:21 2016
+** Time of generation: Fri Nov 30 08:45:25 2018
 *)
 
 (* ****** ****** *)
@@ -201,25 +201,19 @@ fun{a:t0p}
 matrixref_copy
   {m,n:int}
 (
-  M: matrixref(a, m, n), m: size_t(m), n: size_t(n)
+M0: matrixref(a, m, n), m: size_t(m), n: size_t(n)
 ) : matrixptr (a, m, n) // end-of-fun
 //
 (* ****** ****** *)
-
+//
 (*
 fun{a:vt0p}
-matrix_tabulate$fopr (i: size_t, j: size_t): (a)
+matrix_tabulate$fopr(i: size_t, j: size_t): (a)
 *)
 fun{a:vt0p}
 matrixref_tabulate
-  {m,n:int} (nrow: size_t m, ncol: size_t n): matrixref(a, m, n)
-//
-fun{a:vt0p}
-matrixref_tabulate_cloref
   {m,n:int}
-(
-  nrow: size_t m, ncol: size_t n, f: (sizeLt(m), sizeLt(n)) -<cloref> a
-) : matrixref(a, m, n) // end-of-fun
+  (m: size_t(m), n: size_t(n)): matrixref(a, m, n)
 //
 (* ****** ****** *)
 
@@ -232,24 +226,20 @@ a:vt0p}{env:vt0p
 //
 fun{
 a:vt0p
-} matrixref_foreach{m,n:int}
-(
-  A: matrixref(a, m, n), m: size_t m, n: size_t n
+} matrixref_foreach
+  {m,n:int}
+( M: matrixref(a, m, n)
+, m: size_t(m), n: size_t(n)
 ) : void // end of [matrixref_foreach]
 //
 fun{
 a:vt0p}{env:vt0p
-} matrixref_foreach_env{m,n:int}
+} matrixref_foreach_env
+  {m,n:int}
 (
-  A: matrixref(a, m, n), m: size_t m, n: size_t n, env: &(env) >> _
+  M: matrixref(a, m, n)
+, m: size_t(m), n: size_t(n), env: &(env) >> _
 ) : void // end of [matrixref_foreach_env]
-//
-fun{
-a:vt0p
-} matrixref_foreach_cloref{m,n:int}
-(
-  A: matrixref(a, m, n), m: size_t(m), n: size_t(n), fwork: (&(a) >> _) -<cloref1> void 
-) : void // end of [mtrxszref_foreach_cloref]
 //
 (* ****** ****** *)
 //
@@ -363,11 +353,6 @@ fun{
 a:vt0p}{env:vt0p
 } mtrxszref_foreach_env(mtrxszref(a), &(env) >> _) : void
 //
-fun
-{a:vt0p}
-mtrxszref_foreach_cloref
-  (M: mtrxszref(a), fwork: (&(a) >> _) -<cloref1> void ): void
-//
 (* ****** ****** *)
 //
 (*
@@ -379,14 +364,6 @@ fun
 {a:vt0p}
 mtrxszref_tabulate
   (nrow: size_t, ncol: size_t): mtrxszref(a)
-//
-fun
-{a:vt0p}
-mtrxszref_tabulate_cloref
-  {m,n:int}
-(
-  m: size_t(m), n: size_t(n), f: (sizeLt(m), sizeLt(n)) -<cloref> a
-) : mtrxszref(a) // end-of-fun
 //
 (* ****** ****** *)
 //

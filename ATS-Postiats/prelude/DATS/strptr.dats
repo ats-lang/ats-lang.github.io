@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/strptr.atxt
-** Time of generation: Wed Mar  8 20:38:46 2017
+** Time of generation: Wed Oct 10 21:08:47 2018
 *)
 
 (* ****** ****** *)
@@ -168,9 +168,14 @@ neq_strptr_strptr
 // HX: implemented in [strptr.cats]
 //
 implement
-print_strptr (x) = fprint_strptr (stdout_ref, x)
+print_strptr(x) = fprint_strptr(stdout_ref, x)
 implement
-prerr_strptr (x) = fprint_strptr (stderr_ref, x)
+prerr_strptr(x) = fprint_strptr(stderr_ref, x)
+//
+implement
+print_strnptr(x) = fprint_strnptr(stdout_ref, x)
+implement
+prerr_strnptr(x) = fprint_strnptr(stderr_ref, x)
 *)
 
 (* ****** ****** *)
@@ -248,7 +253,8 @@ strptr_append
 //
 val
 isnot1 =
-ptr_isnot_null(strptr2ptr(x1))
+isneqz
+(strptr2ptr(x1))
 //
 in
 //
@@ -258,7 +264,8 @@ then let
 //
 val
 isnot2 =
-ptr_isnot_null(strptr2ptr(x2))
+isneqz
+(strptr2ptr(x2))
 //
 in
 //
@@ -268,7 +275,10 @@ isnot2
   strnptr2strptr(
     string1_append($UN.strptr2string(x1), $UN.strptr2string(x2))
   ) (*strnptr2strptr*)
-) else strptr1_copy(x1)
+) else
+(
+  strptr1_copy(x1)
+)
 // end of [if]
 //
 end else
@@ -277,6 +287,22 @@ end else
 ) (* end of [if] *)
 //
 end // end of [strptr_append]
+
+(* ****** ****** *)
+
+implement
+{}(*tmp*)
+strnptr_append
+{n1,n2}(x1, x2) = let
+//
+  val x1 =
+  $UN.strnptr2string(x1)
+  and x2 =
+  $UN.strnptr2string(x2)
+//
+in
+  string1_append(x1, x2)
+end // end of [strnptr_append]
 
 (* ****** ****** *)
 

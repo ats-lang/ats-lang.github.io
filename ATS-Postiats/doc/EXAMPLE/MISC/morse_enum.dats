@@ -1,3 +1,5 @@
+//usr/bin/env myatscc "$0"; exit
+(* ****** ****** *)
 (*
 //
 // This code is based on some code by
@@ -8,7 +10,14 @@
 // Time: July 18-19, 2012
 //
 *)
-
+(* ****** ****** *)
+//
+(*
+##myatsccdef=\
+patsopt --constraint-ignore --dynamic $1 | \
+tcc - -run -DATS_MEMALLOC_LIBC -I${PATSHOME} -I${PATSHOME}/ccomp/runtime -L${PATSHOME}/ccomp/atslib/lib -latslib
+*)
+//
 (* ****** ****** *)
 //
 #include
@@ -16,8 +25,10 @@
 //
 (* ****** ****** *)
 //
-staload "libats/ML/SATS/string.sats"
+staload "libats/ML/SATS/atspre.sats"
+staload _ = "libats/ML/DATS/atspre.dats"
 //
+staload "libats/ML/SATS/string.sats"
 staload _ = "libats/ML/DATS/string.dats"
 //
 (* ****** ****** *)

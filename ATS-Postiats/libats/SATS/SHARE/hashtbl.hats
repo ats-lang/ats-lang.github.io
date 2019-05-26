@@ -39,7 +39,7 @@ hashtbl_vtype
 //
 vtypedef
 hashtbl
-  (k:t0p, i:vt0p) = hashtbl_vtype(k, i)
+(k:t0p, i:vt0p) = hashtbl_vtype(k, i)
 //
 (* ****** ****** *)
 
@@ -68,8 +68,8 @@ key:t0p;itm:vt0p
 //
 fun{}
 hashtbl_get_size
-  {key:t0p;itm:vt0p}
-  (tbl: !hashtbl(key, INV(itm))):<> size_t
+{key:t0p;itm:vt0p}
+(tbl: !hashtbl(key, INV(itm))):<> sizeGte(0)
 // end of [hashtbl_get_size]
 
 (* ****** ****** *)
@@ -78,8 +78,8 @@ hashtbl_get_size
 //
 fun{}
 hashtbl_get_capacity
-  {key:t0p;itm:vt0p}
-  (tbl: !hashtbl(key, INV(itm))):<> sizeGte(1)
+{key:t0p;itm:vt0p}
+(tbl: !hashtbl(key, INV(itm))):<> sizeGte(1)
 // end of [hashtbl_get_capacity]
 
 (* ****** ****** *)
@@ -199,7 +199,7 @@ fprint_hashtbl$mapto (out: FILEref): void // default: fprint("->")
 fun
 {key:t0p
 ;itm:vt0p}
-hashtbl_foreach (tbl: !hashtbl(key, INV(itm))): void
+hashtbl_foreach(tbl: !hashtbl(key, INV(itm))): void
 fun
 {key:t0p
 ;itm:vt0p}
@@ -211,7 +211,7 @@ fun
 {key:t0p
 ;itm:vt0p}
 {env:vt0p}
-hashtbl_foreach$fwork (k: key, x: &itm >> _, &env >> _): void
+hashtbl_foreach$fwork(k: key, x: &itm >> _, &env >> _): void
 //
 (* ****** ****** *)
 //
@@ -236,7 +236,7 @@ fun
 {key:t0p
 ;itm:vt0p}
 {ki2:vt0p}
-hashtbl_flistize$fopr (k: key, x: itm): ki2
+hashtbl_flistize$fopr(k: key, x: itm): ki2
 fun
 {key:t0p
 ;itm:vt0p}

@@ -30,14 +30,14 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/matrix.atxt
-** Time of generation: Sun Nov 20 21:18:20 2016
+** Time of generation: Fri Nov 30 08:45:24 2018
 *)
 
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: hwxi AT cs DOT bu DOT edu *)
 (* Start time: Feburary, 2012 *)
+(* Authoremail: hwxiATcsDOTbuDOTedu *)
 
 (* ****** ****** *)
 
@@ -53,19 +53,23 @@ sortdef vtp = viewtype
 sortdef vt0p = viewt@ype
 
 (* ****** ****** *)
-
+//
 absvt@ype
 matrix_vt0ype_int_int_vt0ype
-  (a:vt@ype+, row:int, col:int) = array(a, row*col)
-stadef matrix = matrix_vt0ype_int_int_vt0ype
-
+( a:vt@ype+
+, row:int, col:int) = array(a, row*col)
+//
 (* ****** ****** *)
-
+//
+stadef
+matrix = matrix_vt0ype_int_int_vt0ype
+//
 viewdef
-matrix_v (
-  a:viewt@ype+, l:addr, row:int, col:int
-) = matrix (a, row, col) @ l
-
+matrix_v
+( a:vt0p
+, l:addr
+, row:int, col:int) = matrix(a, row, col) @ l
+//
 (* ****** ****** *)
 
 exception
@@ -77,17 +81,13 @@ praxi
 lemma_matrix_param
   {a:vt0p}
   {l:addr}{m,n:int}
-(
-  M: &matrix(INV(a), m, n)
-) : [m >= 0; n >= 0] void
+  (M: &matrix(INV(a), m, n)): [m>=0; n>=0] void
 //
 praxi
 lemma_matrix_v_param
   {a:vt0p}
   {l:addr}{m,n:int}
-(
-  pf0: !matrix_v(INV(a), l, m, n)
-) : [m >= 0; n >= 0] void // end-of-fun
+  (pf0: !matrix_v(INV(a),l,m,n)): [m>=0;n>=0] void
 //
 (* ****** ****** *)
 //
@@ -98,12 +98,12 @@ array2matrix_v
 (
   pf0:
   array_v(INV(a), l, m*n)
-) : matrix_v (a, l, m(*nrow*), n(*ncol*))
+) : matrix_v(a, l, m(*nrow*), n(*ncol*))
 praxi
 matrix2array_v
   {a:vt0p}
   {l:addr}{m,n:int}
-  (pf0: matrix_v(INV(a), l, m, n)): array_v (a, l, m*n)
+  (pf0: matrix_v(INV(a), l, m, n)): array_v(a, l, m*n)
 //
 (* ****** ****** *)
 //
@@ -134,16 +134,16 @@ matrix_getref_at_int
   {m,n:int}
 (
   M: &RD(matrix(INV(a), m, n))
-, i: natLt (m), n: int n, j: natLt (n)
-) :<> cPtr1 (a) // end-of-function
+, i: natLt(m), n: int(n), j: natLt(n)
+) :<> cPtr1(a) // end-of-function
 //
 fun{a:vt0p}
 matrix_getref_at_size
   {m,n:int}
 (
   M: &RD(matrix(INV(a), m, n))
-, i: sizeLt (m), n: size_t n, j: sizeLt (n)
-) :<> cPtr1 (a) // end-of-function
+, i: sizeLt(m), n: size_t(n), j: sizeLt(n)
+) :<> cPtr1(a) // end-of-function
 //
 symintr matrix_getref_at
 //

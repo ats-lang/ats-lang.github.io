@@ -36,7 +36,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/float.atxt
-** Time of generation: Sun Nov 20 21:18:16 2016
+** Time of generation: Fri Nov 30 08:45:19 2018
 *)
 
 (* ****** ****** *)
@@ -424,9 +424,6 @@ fun
 add_float_int
   (float, int):<> float = "mac#%"
 //
-overload + with add_int_float of 0
-overload + with add_float_int of 0
-//
 fun
 add_int_double
   (int, double):<> double = "mac#%"
@@ -434,6 +431,8 @@ fun
 add_double_int
   (double, int):<> double = "mac#%"
 //
+overload + with add_int_float of 0
+overload + with add_float_int of 0
 overload + with add_int_double of 0
 overload + with add_double_int of 0
 //
@@ -446,9 +445,6 @@ fun
 sub_float_int
   (float, int):<> float = "mac#%"
 //
-overload - with sub_int_float of 0
-overload - with sub_float_int of 0
-//
 fun
 sub_int_double
   (int, double):<> double = "mac#%"
@@ -456,6 +452,8 @@ fun
 sub_double_int
   (double, int):<> double = "mac#%"
 //
+overload - with sub_int_float of 0
+overload - with sub_float_int of 0
 overload - with sub_int_double of 0
 overload - with sub_double_int of 0
 //
@@ -468,9 +466,6 @@ fun
 mul_float_int
   (float, int):<> float = "mac#%"
 //
-overload * with mul_int_float of 0
-overload * with mul_float_int of 0
-//
 fun
 mul_int_double
   (int, double):<> double = "mac#%"
@@ -478,6 +473,8 @@ fun
 mul_double_int
   (double, int):<> double = "mac#%"
 //
+overload * with mul_int_float of 0
+overload * with mul_float_int of 0
 overload * with mul_int_double of 0
 overload * with mul_double_int of 0
 //
@@ -489,8 +486,6 @@ div_int_float
 fun
 div_float_int
   (float, int):<> float = "mac#%"
-overload / with div_int_float of 0
-overload / with div_float_int of 0
 //
 fun
 div_int_double
@@ -498,8 +493,130 @@ div_int_double
 fun
 div_double_int
   (double, int):<> double = "mac#%"
+//
+overload / with div_int_float of 0
+overload / with div_float_int of 0
 overload / with div_int_double of 0
 overload / with div_double_int of 0
+//
+(* ****** ****** *)
+//
+fun
+lt_int_float
+  (int, float):<> bool = "mac#%"
+fun
+lt_float_int
+  (float, int):<> bool = "mac#%"
+fun
+lt_int_double
+  (int, double):<> bool = "mac#%"
+fun
+lt_double_int
+  (double, int):<> bool = "mac#%"
+//
+overload < with lt_int_float of 0
+overload < with lt_float_int of 0
+overload < with lt_int_double of 0
+overload < with lt_double_int of 0
+//
+fun
+lte_int_float
+  (int, float):<> bool = "mac#%"
+fun
+lte_float_int
+  (float, int):<> bool = "mac#%"
+fun
+lte_int_double
+  (int, double):<> bool = "mac#%"
+fun
+lte_double_int
+  (double, int):<> bool = "mac#%"
+//
+overload <= with lte_int_float of 0
+overload <= with lte_float_int of 0
+overload <= with lte_int_double of 0
+overload <= with lte_double_int of 0
+//
+(* ****** ****** *)
+//
+fun
+gt_int_float
+  (int, float):<> bool = "mac#%"
+fun
+gt_float_int
+  (float, int):<> bool = "mac#%"
+fun
+gt_int_double
+  (int, double):<> bool = "mac#%"
+fun
+gt_double_int
+  (double, int):<> bool = "mac#%"
+//
+overload > with gt_int_float of 0
+overload > with gt_float_int of 0
+overload > with gt_int_double of 0
+overload > with gt_double_int of 0
+//
+fun
+gte_int_float
+  (int, float):<> bool = "mac#%"
+fun
+gte_float_int
+  (float, int):<> bool = "mac#%"
+fun
+gte_int_double
+  (int, double):<> bool = "mac#%"
+fun
+gte_double_int
+  (double, int):<> bool = "mac#%"
+//
+overload >= with gte_int_float of 0
+overload >= with gte_float_int of 0
+overload >= with gte_int_double of 0
+overload >= with gte_double_int of 0
+//
+(* ****** ****** *)
+//
+fun
+eq_int_float
+  (int, float):<> bool = "mac#%"
+fun
+eq_float_int
+  (float, int):<> bool = "mac#%"
+fun
+eq_int_double
+  (int, double):<> bool = "mac#%"
+fun
+eq_double_int
+  (double, int):<> bool = "mac#%"
+//
+overload = with eq_int_float of 0
+overload = with eq_float_int of 0
+overload = with eq_int_double of 0
+overload = with eq_double_int of 0
+//
+fun
+neq_int_float
+  (int, float):<> bool = "mac#%"
+fun
+neq_float_int
+  (float, int):<> bool = "mac#%"
+fun
+neq_int_double
+  (int, double):<> bool = "mac#%"
+fun
+neq_double_int
+  (double, int):<> bool = "mac#%"
+//
+overload != with neq_int_float of 0
+overload <> with neq_int_float of 0
+overload != with neq_float_int of 0
+overload <> with neq_float_int of 0
+//
+overload != with neq_int_double of 0
+overload <> with neq_int_double of 0
+overload != with neq_double_int of 0
+overload <> with neq_double_int of 0
 //
 (* ****** ****** *)
 //

@@ -42,11 +42,12 @@ abstype JSdate // new Date()
 //
 abstype JSfilr // nominal!
 //
+abstype JSregexp // new RegExp()
+//
 (* ****** ****** *)
 //
-abstype JSarray(a:vt@ype)
-//
-abstype JSregexp // new RegExp()
+abstype JSarray(a:vt@ype) // [...]
+abstype JSobjmap(a:vt@ype) // {...}
 //
 (* ****** ****** *)
 //
@@ -161,6 +162,31 @@ overload logats with logats6
 overload logats with logats7
 overload logats with logats8
 overload logats with logats9
+//
+(* ****** ****** *)
+//
+(*
+typedef strchr = string(1)
+*)
+//
+(* ****** ****** *)
+//
+fun
+fun2cloref0
+{res:t@ype}
+  (fopr: () -> res): cfun(res) = "mac#%"
+fun
+fun2cloref1
+{a:t@ype}{res:t@ype}
+  (fopr: (a) -> res): cfun(a, res) = "mac#%"
+fun
+fun2cloref2
+{a1,a2:t@ype}{res:t@ype}
+  (fopr: (a1, a2) -> res): cfun(a1, a2, res) = "mac#%"
+fun
+fun2cloref3
+{a1,a2,a3:t@ype}{res:t@ype}
+  (fopr: (a1, a2, a3) -> res): cfun(a1, a2, a3, res) = "mac#%"
 //
 (* ****** ****** *)
 

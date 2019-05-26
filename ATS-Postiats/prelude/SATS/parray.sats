@@ -27,42 +27,48 @@
 
 (* ****** ****** *)
 
-(*
-** Source:
-** $PATSHOME/prelude/SATS/CODEGEN/parray.atxt
-** Time of generation: Sun Nov 20 21:18:22 2016
-*)
+(* Author: Hongwei Xi *)
+(* Start time: April, 2012 *)
+(* Authoremail: hwxiATcsDOTbuDOTedu *)
 
 (* ****** ****** *)
 
-(* Author: Hongwei Xi *)
-(* Authoremail: hwxi AT cs DOT bu DOT edu *)
-(* Start time: April, 2012 *)
+(*
+** Source:
+** $PATSHOME/prelude/SATS/CODEGEN/parray.atxt
+** Time of generation: Fri Nov 30 08:45:26 2018
+*)
 
 (* ****** ****** *)
 
 sortdef vtp = viewtype
 
 (* ****** ****** *)
-
+//
 (*
 ** HX: for null-pointer terminated arrays
 *)
-
+//
 dataview
-parray_v (
-  a:viewt@ype+, addr(*l*), int(*n*)
+parray_v
+(
+ a:vt@ype+, addr(*l*), int(*n*)
 ) = // for arrays with a sentinel at the end
-  | {l:addr}{n:int}
-    parray_v_cons (a, l, n+1) of (a @ l, parray_v (a, l+sizeof(a), n))
-  | {l:addr} parray_v_nil (a, l, 0) of (ptr null @ l)
+  | {l:addr}
+    parray_v_nil(a, l, 0) of ptr(null) @ l
+  | {l:addr}{n:nat}
+    parray_v_cons(a, l, n+1) of
+      (a @ l, parray_v(a, l + sizeof(a), n))
+    // parray_v_cons
 // end of [parray_v]
+//
 
 (* ****** ****** *)
 
 prfun
-lemma_parray_v_params{a:vtp}
-  {l:addr}{n:int} (pf: !parray_v (INV(a), l, n)): [l > null;n >= 0] void
+lemma_parray_v_params
+{a:vtp}{l:addr}{n:int}
+(pf: !parray_v(INV(a), l, n)): [l > null;n >= 0] void
 // end of [lemma_parray_v_params]
 
 (* ****** ****** *)
@@ -70,15 +76,15 @@ lemma_parray_v_params{a:vtp}
 fun{
 a:vtp
 } parray_is_empty
-  {l:addr}{n:int} (
-  pf: !parray_v (INV(a), l, n) | p: ptr l
-) :<> bool (n == 0) // end of [parray_is_empty]
+  {l:addr}{n:int}
+  (pf: !parray_v(INV(a), l, n) | ptr(l)):<> bool(n==0)
+// end of [parray_is_empty]
 
 fun{
 a:vtp
 } parray_isnot_empty
   {l:addr}{n:int}
-  (pf: !parray_v (INV(a), l, n) | p: ptr l):<> bool (n > 0)
+  (pf: !parray_v(INV(a), l, n) | ptr(l)):<> bool(n > 0)
 // end of [parray_isnot_empty]
 
 (* ****** ****** *)
@@ -87,7 +93,7 @@ fun{
 a:vtp
 } parray_size
   {l:addr}{n:int}
-  (pf: !parray_v (INV(a), l, n) | p: ptr l):<> size_t (n)
+  (pf: !parray_v(INV(a), l, n) | p: ptr(l)):<> size_t(n)
 // end of [parray_size]
 
 (* ****** ****** *)

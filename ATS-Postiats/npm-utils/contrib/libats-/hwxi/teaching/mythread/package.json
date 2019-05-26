@@ -2,7 +2,7 @@
 "name":
 "atscntrb-hx-teaching-mythread"
 ,
-"version": "1.0.3"
+"version": "1.0.4"
 ,
 "description":
 "This package contains library code for teaching some basic thread concepts."
@@ -11,7 +11,9 @@
 ,
 "scripts": {}
 ,
-"repository": {}
+"repository": {
+  "url": "https://github.com/githwxi/ATS-Postiats/tree/master/npm-utils/contrib/libats-/hwxi/teaching/mythread"
+}
 ,
 "keywords": [
   "ATS",

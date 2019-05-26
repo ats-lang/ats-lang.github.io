@@ -1,6 +1,12 @@
+######
 #
 # Some key steps in releasing ATS
 #
+######
+
+HX-2018-03-11:
+The following description is out-of-date.
+Please see ${PATSHOME}/doc/DISTRIB/README
 
 ###### beg of [how-to-release.txt] ######
 
@@ -55,7 +61,7 @@ make atspackaging
 make atspacktarzvcf # for ATS2-Postiats-xxx.tgz
 #
 make atscontribing
-make atscntrbtarzvcf # for ATS2-Postiats-contrib-xxx.tgz
+make atscontribtarzvcf # for ATS2-Postiats-contrib-xxx.tgz
 #
 # Update [Makefile_inclats] with
 # the current version number of ATS

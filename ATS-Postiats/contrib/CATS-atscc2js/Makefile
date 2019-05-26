@@ -40,7 +40,6 @@ SOURCES_SATS += $(CATSPARSEMIT)/SATS/catsparse.sats
 #
 SOURCES_CATS :=
 SOURCES_CATS += $(CATSPARSEMIT)/CATS/catsparse_all_dats.c
-SOURCES_CATS += $(CATSPARSEMIT)/CATS/catsparse_mylib_dats.c
 #
 ######
 #
@@ -50,15 +49,16 @@ $(MAKE) -C CATS-parsemit all
 ######
 #
 all:: \
-atscc2js
-atscc2js: \
+bin_atscc2js
+bin_atscc2js: \
 $(SOURCES_DATS); \
-$(PATSCC) -O2 -DATS_MEMALLOC_GCBDW -o $@ \
+$(PATSCC) \
+  -O2 -DATS_MEMALLOC_GCBDW -o bin/atscc2js \
   $(SOURCES_DATS) $(SOURCES_SATS) $(SOURCES_CATS) -lgc
 #
 ######
 #
-npm:: atscc2js
+npm:: bin_atscc2js
 npm:: ; $(CPF) catsparse_sats.c atscc2js_*_dats.c npm/CATS/.
 #
 ######
@@ -66,7 +66,6 @@ npm:: ; $(CPF) catsparse_sats.c atscc2js_*_dats.c npm/CATS/.
 OBJECTS := \
   catsparse_sats.o \
   catsparse_all_dats.o \
-  catsparse_mylib_dats.o \
   atscc2js_main_dats.o \
   atscc2js_emit_dats.o \
   atscc2js_emit2_dats.o \
@@ -81,8 +80,6 @@ $(CATSPARSEMIT)/SATS/catsparse.sats; $(PATSCC) -O2 -c $<
 #
 catsparse_all_dats.o: \
 $(CATSPARSEMIT)/CATS/catsparse_all_dats.c; $(PATSCC) -O2 -c $<
-catsparse_mylib_dats.o: \
-$(CATSPARSEMIT)/CATS/catsparse_mylib_dats.c; $(PATSCC) -O2 -c $<
 #
 ######
 #
@@ -106,7 +103,7 @@ clean:: ; $(RMF) libatscc2js_ext_?ats.c
 #
 cleanall:: clean
 #
-cleanall:: ; $(RMF) ./atscc2js
+cleanall:: ; $(RMF) ./bin/atscc2js
 cleanall:: ; $(RMF) ./libatscc2js.a
 cleanall:: ; $(RMF) ./npm/CATS/catsparse_sats.c
 cleanall:: ; $(RMF) ./npm/CATS/atscc2js_*_dats.c 

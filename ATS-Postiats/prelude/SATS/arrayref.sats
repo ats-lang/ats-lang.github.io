@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/arrayref.atxt
-** Time of generation: Mon Feb 20 12:15:44 2017
+** Time of generation: Fri Nov 30 08:45:24 2018
 *)
 
 (* ****** ****** *)
@@ -316,13 +316,6 @@ fun{a:vt0p}
 arrayref_tabulate
   {n:int}(asz: size_t(n)): arrayref(a, n)
 //
-fun{a:vt0p}
-arrayref_tabulate_cloref
-  {n:int}
-(
-  asz: size_t(n), fopr: (sizeLt(n)) -<cloref> (a)
-) : arrayref(a, n) // end-of-function
-//
 (* ****** ****** *)
 
 (*
@@ -408,7 +401,22 @@ a:vt0p}{env:vt0p
 fun
 {a:vt0p}
 arrayref_is_ordered
-  {n:int}(A: arrayref(a, n), asz: size_t(n)): bool
+  {n:int}
+  (A: arrayref(a, n), asz: size_t(n)): bool
+//
+(* ****** ****** *)
+//
+(*
+fun
+{a:vt0p}
+array_bsearch$ford(x: &RD(a)):<> int
+*)
+//
+fun
+{a:vt0p}
+arrayref_bsearch
+  {n:int}
+  (A: arrayref(a, n), n: size_t(n)): sizeLte(n)
 //
 (* ****** ****** *)
 //
@@ -491,17 +499,17 @@ arrszref_get_refsize{a:vt0p}
 (* ****** ****** *)
 
 fun{a:t0p}
-arrszref_make_elt (asz: size_t, x: a):<!wrt> arrszref(a)
+arrszref_make_elt(asz: size_t, x: a):<!wrt> arrszref(a)
 // end of [arrszref_make_elt]
 
 (* ****** ****** *)
 
 fun{a:t0p}
-arrszref_make_list (xs: List (INV(a))):<!wrt> arrszref(a)
+arrszref_make_list(xs: List(INV(a))):<!wrt> arrszref(a)
 // end of [arrszref_make_list]
 
 fun{a:t0p}
-arrszref_make_rlist (xs: List (INV(a))):<!wrt> arrszref(a)
+arrszref_make_rlist(xs: List(INV(a))):<!wrt> arrszref(a)
 // end of [arrszref_make_rlist]
 
 (* ****** ****** *)
@@ -625,11 +633,6 @@ array_tabulate$fopr(size_t): (a)
 *)
 fun{a:vt0p}
 arrszref_tabulate(asz: size_t): arrszref(a)
-//
-fun{a:vt0p}
-arrszref_tabulate_cloref
-  {n:int}
-  (size_t(n), (sizeLt(n)) -<cloref> a): arrszref(a)
 //
 (* ****** ****** *)
 //

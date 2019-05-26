@@ -1,8 +1,8 @@
+(* ****** ****** *)
 (*
 ** For writing ATS code
 ** that translates into JavaScript
 *)
-
 (* ****** ****** *)
 //
 // HX-2014-10:
@@ -21,6 +21,15 @@ LIBATSCC_targetloc
 #staload "./../basics_js.sats"
 //
 #include "{$LIBATSCC}/SATS/matrixref.sats"
+//
+(* ****** ****** *)
+//
+fun
+matrixref_uninitized
+  {a:vt0p}
+  {m,n:nat}
+  ( nrow: int(m)
+  , ncol: int(n) ) : matrixref(a?, m, n) = "mac#%"
 //
 (* ****** ****** *)
 

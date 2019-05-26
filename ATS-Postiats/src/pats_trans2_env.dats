@@ -205,9 +205,10 @@ val (pf0 | ()) = vbox_make_view_ptr {s2rtenv} (pf | p0)
 (* ****** ****** *)
 
 fun
-the_s2rtenv_find_namespace .<>.
+the_s2rtenv_find_namespace
+  .<>.
   (id: symbol): s2rtextopt_vt = let
-  fn f (
+  fn fopr (
     fenv: filenv
   ) :<cloptr1> s2rtextopt_vt = let
     val (pf, fpf | p) = filenv_get_s2temap (fenv)
@@ -215,9 +216,9 @@ the_s2rtenv_find_namespace .<>.
     prval () = minus_addback (fpf, pf | fenv)
   in
     ans
-  end // end of [f]
+  end // end of [fopr]
 in
-  the_namespace_search (f)
+  the_namespace_search(fopr)
 end // end of [the_s2rtenv_find_namespace]
 
 (* ****** ****** *)
@@ -243,7 +244,8 @@ in
 case+ ans of
 | Some_vt _ => (fold@ ans; ans)
 | ~None_vt () => let
-    val ans = the_s2rtenv_find_namespace (id)
+    val ans =
+    the_s2rtenv_find_namespace(id)
   in
     case+ ans of
     | Some_vt _ => (fold@ ans; ans)
@@ -413,9 +415,10 @@ val (pf0 | ()) = vbox_make_view_ptr {s2expenv} (pf | p0)
 (* ****** ****** *)
 
 fun
-the_s2expenv_find_namespace .<>.
+the_s2expenv_find_namespace
+  .<>.
   (id: symbol): s2itmopt_vt = let
-  fn f (
+  fn fopr (
     fenv: filenv
   ) :<cloptr1> s2itmopt_vt = let
     val (pf, fpf | p) = filenv_get_s2itmmap (fenv)
@@ -423,9 +426,9 @@ the_s2expenv_find_namespace .<>.
     prval () = minus_addback (fpf, pf | fenv)
   in
     ans
-  end // end of [f]
+  end // end of [fopr]
 in
-  the_namespace_search (f)
+  the_namespace_search(fopr)
 end // end of [the_s2expenv_find_namespace]
 
 (* ****** ****** *)
@@ -451,7 +454,8 @@ in
 case+ ans of
 | Some_vt _ => (fold@ ans; ans)
 | ~None_vt () => let
-    val ans = the_s2expenv_find_namespace (id)
+    val ans =
+    the_s2expenv_find_namespace(id)
   in
     case+ ans of
     | Some_vt _ => (fold@ ans; ans)
@@ -888,19 +892,74 @@ val (pf0 | ()) = vbox_make_view_ptr {d2expenv} (pf | p0)
 //
 (* ****** ****** *)
 
-fn the_d2expenv_find_namespace
-  (id: symbol): d2itmopt_vt = let
-  fn f (
+fun
+the_d2expenv_find_namespace
+  .<>.
+(
+id: symbol
+) : d2itmopt_vt = let
+//
+(*
+  fn
+  export
+  ( opt
+    : d2itmopt_vt
+  ) : d2itmopt_vt =
+  (
+  case+ opt of
+  | None_vt() =>
+    (fold@(opt); opt)
+  | Some_vt(d2i) =>
+    (
+    case+ d2i of
+    | D2ITMvar _ =>
+      (free@{d2itm}(opt); None_vt())
+    | _(*non-D2ITMvar*) => (fold@(opt); opt)
+    )
+  )
+*)
+//
+  fn fopr
+  (
     fenv: filenv
   ) :<cloptr1> d2itmopt_vt = let
-    val (pf, fpf | p) = filenv_get_d2itmmap (fenv)
-    val ans = symmap_search (!p, id)
-    prval () = minus_addback (fpf, pf | fenv)
+    val
+    (pf0
+    ,fpf | p0) =
+    filenv_get_d2itmmap(fenv)
+    val d2iopt =
+      symmap_search(!p0, id)
+    prval ((*void*)) =
+      minus_addback(fpf, pf0 | fenv)
   in
-    ans
-  end // end of [f]
+(*
+    case+
+    d2iopt of
+    | ~None_vt() =>
+       None_vt()
+    | ~Some_vt(d2i) =>
+      (
+      case+ d2i of
+      // HX-2019-02-11:
+      // d2var is not exported
+      | D2ITMvar _ => None_vt() | _ => Some_vt(d2i)
+      )
+*)
+    case+
+    d2iopt of
+    | None_vt() =>
+      (fold@(d2iopt); d2iopt)
+    | Some_vt(d2i) =>
+      (
+      case+ d2i of
+      | D2ITMvar _ =>
+        (free@{d2itm}(d2iopt); None_vt())
+      | _(*non-D2ITMvar*) => (fold@(d2iopt); d2iopt)
+      )
+    // end-of-case
+  end // end of [fopr]
 in
-  the_namespace_search (f)
+  the_namespace_search(fopr)
 end // end of [the_d2expenv_find_namespace]
 
 in (* in of [local] *)
@@ -922,7 +981,8 @@ in
 case+ ans of
 | Some_vt _ => (fold@ ans; ans)
 | ~None_vt () => let
-    val ans = the_d2expenv_find_namespace (id)
+    val ans =
+    the_d2expenv_find_namespace(id)
   in
     case+ ans of
     | Some_vt _ => (fold@ ans; ans)
@@ -1299,7 +1359,7 @@ the_trans2_env_localjoin
 } // end of [trans2_env_localjoin]
 
 implement
-the_trans2_env_pervasive_joinwth
+the_trans2_env_pervasive_joinwth1
   (pfenv | fil, d2cs) = {
   val m0 = the_s2rtenv_pop (pfenv.0 | (*none*))
   val () = the_s2rtenv_pervasive_joinwth1 (m0)
@@ -1308,9 +1368,9 @@ the_trans2_env_pervasive_joinwth
   val m2 = the_d2expenv_pop (pfenv.2 | (*none*))
   val () = the_d2expenv_pervasive_joinwth1 (m2)
 //
-  val fsymb = $FIL.filename_get_fullname (fil)
+  val fsym = $FIL.filename_get_fullname (fil)
   val fenv = filenv_make (fil, m0, m1, m2, d2cs)
-  val ((*void*)) = the_filenvmap_add (fsymb, fenv)
+  val ((*void*)) = the_filenvmap_add (fsym, fenv)
 //
 } // end of [the_trans2_env_pervasive_joinwth1]
 
@@ -1388,18 +1448,18 @@ the_s2rtenv_initialize
 //
   val () = the_s2rtenv_add ($SYM.symbol_PROP, S2TEsrt s2rt_prop)
 //
+  val () = the_s2rtenv_add ($SYM.symbol_VIEW, S2TEsrt s2rt_view)
+//
   val () = the_s2rtenv_add ($SYM.symbol_TYPE, S2TEsrt s2rt_type)
   val () = the_s2rtenv_add ($SYM.symbol_T0YPE, S2TEsrt s2rt_t0ype)
 //
-  val () = the_s2rtenv_add ($SYM.symbol_VIEW, S2TEsrt s2rt_view)
+  val () = the_s2rtenv_add ($SYM.symbol_TYPES, S2TEsrt s2rt_types)
 //
   val () = the_s2rtenv_add ($SYM.symbol_VTYPE, S2TEsrt s2rt_vtype)
   val () = the_s2rtenv_add ($SYM.symbol_VT0YPE, S2TEsrt s2rt_vt0ype)
 //
   val () = the_s2rtenv_add ($SYM.symbol_VIEWTYPE, S2TEsrt s2rt_vtype)
   val () = the_s2rtenv_add ($SYM.symbol_VIEWT0YPE, S2TEsrt s2rt_vt0ype)
-//
-  val () = the_s2rtenv_add ($SYM.symbol_TYPES, S2TEsrt s2rt_types)
 //
   val map = the_s2rtenv_pop (pfenv | (*none*))
   val ((*void*)) = the_s2rtenv_pervasive_joinwth0 (map)

@@ -1,8 +1,8 @@
+(* ****** ****** *)
 (*
 ** For writing ATS code
 ** that translates into Javascript
 *)
-
 (* ****** ****** *)
 
 #define ATS_DYNLOADFLAG 0
@@ -50,4 +50,4 @@ UN = "prelude/SATS/unsafe.sats"
 //
 (* ****** ****** *)
 
-(* end of [list.dats] *)
+(* end of [funarray.dats] *)

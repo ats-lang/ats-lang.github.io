@@ -13,12 +13,12 @@
 ** the terms of  the GNU GENERAL PUBLIC LICENSE (GPL) as published by the
 ** Free Software Foundation; either version 3, or (at  your  option)  any
 ** later version.
-** 
+**
 ** ATS is distributed in the hope that it will be useful, but WITHOUT ANY
 ** WARRANTY; without  even  the  implied  warranty  of MERCHANTABILITY or
 ** FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License
 ** for more details.
-** 
+**
 ** You  should  have  received  a  copy of the GNU General Public License
 ** along  with  ATS;  see the  file COPYING.  If not, please write to the
 ** Free Software Foundation,  51 Franklin Street, Fifth Floor, Boston, MA
@@ -95,7 +95,7 @@ token_node =
   | T_LT of () // < // for opening a tmparg
   | T_GT of () // > // for closing a tmparg
 //
-  | T_GTLT of () // <>
+  | T_GTLT of () // ><
   | T_DOTLT of () // .< // opening termetric
   | T_GTDOT of () // >. // closing termetric
   | T_DOTLTGTDOT of () // .<>. // for empty termetric
@@ -140,7 +140,7 @@ token_node =
   | T_IFCASE of () // (dynamic) ifcase
 //
   | T_IMPLEMENT of
-      (int) // 0/1/2: implmnt/implement/primplmnt
+      (int) // 0/1/-1: implmnt/implement/primplmnt
   | T_IMPORT of () // import (for packages)
   | T_IN of () // in
   | T_LAM of int // lam, llam (linear lam) and lam@ (flat lam)
@@ -148,7 +148,6 @@ token_node =
   | T_LOCAL of () // local
   | T_MACDEF of (int) // 0/1: macdef/macrodef
   | T_NONFIX of () // nonfix
-  | T_OVERLOAD of () // overload
   | T_OF of () // of
   | T_OP of () // op // HX: taken from ML
   | T_REC of () // rec
@@ -167,8 +166,11 @@ token_node =
 (*
   | T_STAVAR of () // stavar // HX: a suspended hack
 *)
-  | T_SYMELIM of () // symelim // symbol elimination
-  | T_SYMINTR of () // symintr // symbol introduction
+//
+  | T_SYMELIM of () // symelim
+  | T_SYMINTR of () // symintr
+  | T_SYMLOAD of () // symload
+//
   | T_THEN of () // the [then] keyword
   | T_TKINDEF of () // tkindef // for introducting tkinds
   | T_TRY of () // try
@@ -226,9 +228,11 @@ token_node =
 //
   | T_DLRRAISE of () // $raise // raising exceptions
 //
-  | T_DLRSHOWTYPE of () // $showtype // for debugging purpose
+  | T_DLRVARARG of () // $vararg // variadicity support
 //
   | T_DLRVCOPYENV of (int) // $vcopyenv_v(v)/$vcopyenv_vt(vt)
+//
+  | T_DLRSHOWTYPE of () // $showtype // for debugging purpose
 //
   | T_DLRTEMPENVER of () // $tempenver // for adding environvar
 //
@@ -321,8 +325,8 @@ token_node =
   | T_EXTCODE of (int(*kind*), string) // external code
 //
   | T_COMMENT_line of () // line comment
-  | T_COMMENT_block of () // block comment
   | T_COMMENT_rest of () // rest-of-file comment
+  | T_COMMENT_block of () // (embeddable) block comment
 //
   | T_ERR of () // for errors
 //
@@ -416,23 +420,47 @@ val REFAT : tnode
 
 val TKINDEF : tnode
 
-val TYPE : tnode
+(* ****** ****** *)
+//
+val PROP : tnode // ident
+val VIEW : tnode // ident
+val TYPE : tnode // ident
+val TBOX : tnode // ident
+val TFLT : tnode // ident
+val VTYPE : tnode // ident
+val VTBOX : tnode // ident
+val VTFLT : tnode // ident
+val VIEWTYPE : tnode // ident
+(*
+val VIEWTBOX : tnode // ident
+val VIEWTFLT : tnode // ident
+*)
+//
+val T0YPE : tnode // keyword
+val VT0YPE : tnode // keyword
+val VIEWT0YPE : tnode // keyword
+//
+(* ****** ****** *)
+
 val TYPE_pos : tnode
 val TYPE_neg : tnode
-val T0YPE : tnode
 val T0YPE_pos : tnode
 val T0YPE_neg : tnode
-val PROP : tnode
+
+(*
+val TYPES : tnode
+val TYPES_pos : tnode
+val TYPES_neg : tnode
+*)
+
 val PROP_pos : tnode
 val PROP_neg : tnode
-val VIEW : tnode
+
 val VIEWAT : tnode
 val VIEW_pos : tnode
 val VIEW_neg : tnode
-val VIEWTYPE : tnode
 val VIEWTYPE_pos : tnode
 val VIEWTYPE_neg : tnode
-val VIEWT0YPE : tnode
 val VIEWT0YPE_pos : tnode
 val VIEWT0YPE_neg : tnode
 
@@ -486,8 +514,8 @@ val DLRVCOPYENV_VT : tnode
 (* ****** ****** *)
 
 val DOT : tnode // = T_DOT
-val PERCENT : tnode // = IDENT_sym ("%")
 val QMARK : tnode // = IDENT_sym ("?")
+val PERCENT : tnode // = IDENT_sym ("%")
 
 (* ****** ****** *)
 
@@ -520,7 +548,7 @@ fun tnode_is_comment (node: tnode): bool
 // if the return is not T_NONE, then it does
 //
 fun tnode_search (x: string): tnode
-
+//
 (* ****** ****** *)
 
 datatype
@@ -540,7 +568,11 @@ lexerr_node =
 //
   | LE_DIGIT_oct_89 of (char)
 //
+  | LE_IDIGITS_empty of () // YD-2018-07-10: fix hex int format.
+//
   | LE_FEXPONENT_empty of ()
+  | LE_FEXPONENT_missing of () // YD-2018-07-09: fix hex float format.
+  | LE_FINTFRAC_missing of () // YD-2018-07-10: fix hex float format.
 //
   | LE_UNSUPPORTED_char of (char)
 // end of [lexerr_node]

@@ -21,10 +21,18 @@ fun
 abs_int0 : int -<fun> int = "mac#%"
 overload abs with abs_int0 of 100
 //
+(* ****** ****** *)
+//
 fun
 neg_int0 : int -<fun> int = "mac#%"
+//
+fun neg_int1
+  : {i:int} int(i) -<fun> int(~i) = "mac#%"
+//
 overload ~ with neg_int0 of 100
+overload ~ with neg_int1 of 110
 overload neg with neg_int0 of 100
+overload neg with neg_int1 of 110
 //
 (* ****** ****** *)
 //
@@ -41,6 +49,14 @@ overload pred with pred_int0 of 100
 //
 overload succ with succ_int1 of 110
 overload pred with pred_int1 of 110
+//
+(* ****** ****** *)
+//
+fun half_int0 : int -<fun> int = "mac#%"
+fun half_int1 : {i:int} int(i) -<fun> int(i/2) = "mac#%"
+//
+overload half with half_int0 of 100
+overload half with half_int1 of 110
 //
 (* ****** ****** *)
 //

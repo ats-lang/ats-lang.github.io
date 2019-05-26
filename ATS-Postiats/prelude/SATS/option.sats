@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/option.atxt
-** Time of generation: Thu Dec 22 00:36:39 2016
+** Time of generation: Fri Nov 30 08:45:23 2018
 *)
 
 (* ****** ****** *)
@@ -158,11 +158,14 @@ option_equal$eqfn(x1: a, x2: a):<> bool
 //
 (* ****** ****** *)
 //
-fun{a:t0p}
+fun
+{a:t0p}
 print_option(opt: Option(INV(a))): void
-fun{a:t0p}
+fun
+{a:t0p}
 prerr_option(opt: Option(INV(a))): void
-fun{a:t0p}
+fun
+{a:t0p}
 fprint_option(FILEref, Option(INV(a))): void
 //
 (* ****** ****** *)

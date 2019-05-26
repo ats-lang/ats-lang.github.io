@@ -1,8 +1,8 @@
+(* ****** ****** *)
 (*
 ** For writing ATS code
 ** that translates into PHP
 *)
-
 (* ****** ****** *)
 //
 // HX-2014-08:
@@ -24,6 +24,10 @@ LIBATSCC_targetloc
 //
 #include "{$LIBATSCC}/basics.sats"
 //
+(* ****** ****** *)
+
+abstype PHPobj
+
 (* ****** ****** *)
 
 abstype PHPfilr
@@ -53,6 +57,10 @@ abstype PHPref(a:vt@ype) // reference
 abstype PHParray(a:vt@ype) // risk on your own!!!
 abstype PHParref(a:vt@ype) // reference to PHParray
 //
+(* ****** ****** *)
+
+abstype PHPobjmap(a:vt@ype) // string-keyed hashmap
+
 (* ****** ****** *)
 //
 fun{
@@ -105,6 +113,17 @@ overload echo with echo8
 //
 (* ****** ****** *)
 //
+typedef strchr = string(1)
+//
+(* ****** ****** *)
+//
+fun
+intval(rep: string): int = "mac#%"
+fun
+floatval(rep: string): double = "mac#%"
+//
+(* ****** ****** *)
+//
 fun
 lazy2cloref
   {a:t0p}
@@ -123,12 +142,34 @@ assert_errmsg_bool1
   {b:bool}
   (x: bool b, msg: string): [b] void = "mac#%"
 //
-overload assert_errmsg with assert_errmsg_bool0 of 100
-overload assert_errmsg with assert_errmsg_bool1 of 110
+overload
+assert_errmsg with assert_errmsg_bool0 of 100
+overload
+assert_errmsg with assert_errmsg_bool1 of 110
 //
 (* ****** ****** *)
 //
-macdef assertloc (x) = assert_errmsg (,(x), $mylocation)
+macdef
+assertloc(x) = assert_errmsg (,(x), $mylocation)
+//
+(* ****** ****** *)
+//
+fun
+fun2cloref0
+{res:t@ype}
+  (fopr: () -> res): cfun(res) = "mac#%"
+fun
+fun2cloref1
+{a:t@ype}{res:t@ype}
+  (fopr: (a) -> res): cfun(a, res) = "mac#%"
+fun
+fun2cloref2
+{a1,a2:t@ype}{res:t@ype}
+  (fopr: (a1, a2) -> res): cfun(a1, a2, res) = "mac#%"
+fun
+fun2cloref3
+{a1,a2,a3:t@ype}{res:t@ype}
+  (fopr: (a1, a2, a3) -> res): cfun(a1, a2, a3, res) = "mac#%"
 //
 (* ****** ****** *)
 

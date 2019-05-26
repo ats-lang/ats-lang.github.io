@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/reference.atxt
-** Time of generation: Sun Mar 26 07:39:45 2017
+** Time of generation: Fri Nov 30 08:45:21 2018
 *)
 
 (* ****** ****** *)
@@ -59,14 +59,17 @@ macdef ptr_of_ref = ref_get_ptr
 
 (* ****** ****** *)
 
-fun{a:vt0p} ref(x: a):<!wrt> ref(a)
-fun{a:vt0p} ref_make_elt(x: a):<!wrt> ref(a)
+fun{a:vt0p}
+ref(x: a):<!wrt> ref(a)
+fun{a:vt0p}
+ref_make_elt(x: a):<!wrt> ref(a)
 
 (* ****** ****** *)
 
 castfn
 ref_make_viewptr
-  {a:vt0p}{l:addr} (pf: a @ l | p: ptr l):<> ref(a)
+  {a:vt0p}{l:addr}
+  (pf: a @ l | p: ptr(l)):<> ref(a)
 // end of [ref_make_viewptr]
 
 (* ****** ****** *)
@@ -76,12 +79,15 @@ ref_make_type_elt(TYPE(a), a):<!wrt> ref(a)
 
 (* ****** ****** *)
 //
-fun{a:t0p} ref_get_elt (r: ref a):<!ref> a
-fun{a:t0p} ref_set_elt (r: ref a, x: a):<!refwrt> void
+fun{a:t0p}
+ref_get_elt(r: ref a):<!ref> (a)
+fun{a:t0p}
+ref_set_elt(r: ref a, x: a):<!refwrt> void
 //
 (* ****** ****** *)
 //
-fun{a:vt0p} ref_exch_elt (r: ref a, x: &a>>a):<!refwrt> void
+fun{a:vt0p}
+ref_exch_elt(r: ref a, x: &a>>a):<!refwrt> void
 //
 (* ****** ****** *)
 

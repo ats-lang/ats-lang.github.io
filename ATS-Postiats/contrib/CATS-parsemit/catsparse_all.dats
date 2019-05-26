@@ -15,6 +15,10 @@ ATS_MAINATSFLAG 1
 ATS_DYNLOADNAME "catsparse_all_dynload"
 //
 (* ****** ****** *)
+
+local #include "./DATS/catsparse_mylib.dats" in (*nothing*) end
+
+(* ****** ****** *)
 //
 local #include "./DATS/catsparse_error.dats" in (*nothing*) end
 local #include "./DATS/catsparse_print.dats" in (*nothing*) end

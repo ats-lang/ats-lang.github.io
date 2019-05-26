@@ -22,8 +22,8 @@ ATSOPT=$(ATSHOME)/bin/atsopt
 ######
 
 CFLAGS=-g
-#CFLAGS=-g -O
-#CFLAGS=-g -O2
+CFLAGS=-g -O
+CFLAGS=-g -O2
 
 ######
 #
@@ -37,10 +37,10 @@ GCFLAG=
 #
 # Bootstrapping:
 #
-# [gmpknd] for CBOOT
-# [intknd] for CBOOTmin
+# [gmpknd] for CBOOTgmp
+# [intknd] for CBOOTint
 #
-C3NSTRINTKND=gmpknd
+#C3NSTRINTKND=gmpknd
 #C3NSTRINTKND=intknd
 #
 ######
@@ -835,10 +835,7 @@ cleanall:: ; $(RMF) patsopt
 #
 libatsopt:: $(TARGETS)
 #
-libatsopt:: \
-$(OBJECTS) pats_main_none_dats.o; $(ARR) libatsopt.a $^
-#
-libatsopt:: ; $(CPF) ./libatsopt.a ./../ccomp/atslib/lib/.
+libatsopt:: $(OBJECTS)   pats_main_none_dats.o; $(ARR) libatsopt.a $^
 #
 ######
 #
@@ -850,19 +847,19 @@ BUILD/patsopt: ; make -C BUILD -j8 -f Makefile patsopt
 #
 ######
 #
-CBOOT:: ; $(CPF) pats_*.hats CBOOT
-CBOOT:: ; $(CPF) pats_*.cats CBOOT
-CBOOT:: ; $(CPF) pats_*_sats.c CBOOT
-CBOOT:: ; $(CPF) pats_*_dats.c CBOOT
-CBOOT:: ; $(CPF) Makefile_CBOOT CBOOT/Makefile
+CBOOTgmp:: ; $(CPF) pats_*.hats CBOOT
+CBOOTgmp:: ; $(CPF) pats_*.cats CBOOT
+CBOOTgmp:: ; $(CPF) pats_*_sats.c CBOOT
+CBOOTgmp:: ; $(CPF) pats_*_dats.c CBOOT
+CBOOTgmp:: ; $(CPF) Makefile_CBOOTgmp CBOOT/Makefile
 #
 ######
 #
-CBOOTmin:: ; $(CPF) pats_*.hats CBOOT
-CBOOTmin:: ; $(CPF) pats_*.cats CBOOT
-CBOOTmin:: ; $(CPF) pats_*_sats.c CBOOT
-CBOOTmin:: ; $(CPF) pats_*_dats.c CBOOT
-CBOOTmin:: ; $(CPF) Makefile_CBOOTmin CBOOT/Makefile
+CBOOTint:: ; $(CPF) pats_*.hats CBOOT
+CBOOTint:: ; $(CPF) pats_*.cats CBOOT
+CBOOTint:: ; $(CPF) pats_*_sats.c CBOOT
+CBOOTint:: ; $(CPF) pats_*_dats.c CBOOT
+CBOOTint:: ; $(CPF) Makefile_CBOOTint CBOOT/Makefile
 #
 ######
 

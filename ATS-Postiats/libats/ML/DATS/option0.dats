@@ -48,7 +48,7 @@ implement
 option0_some(x) = Some0{a}(x)
 //
 implement{}
-option0_none ((*void*)) = None0((*void*))
+option0_none((*void*)) = None0((*void*))
 //
 (* ****** ****** *)
 
@@ -79,7 +79,8 @@ option0_unsome_exn
 (
 //
 case+ opt of
-| Some0(x) => x | _ => $raise NotSomeExn()
+| Some0(x) => x
+| None0 _  => $raise NotSomeExn()
 //
 ) // end of [option0_unsome_exn]
 
@@ -87,16 +88,23 @@ case+ opt of
 //
 implement
 {a}{b}
-option0_map(opt, fopr) =
+option0_map
+  (opt, fopr) =
 (
 case+ opt of
-| Some0(x) => Some0(fopr(x)) | _ => None0()
+| None0() => None0()
+| Some0(x) => Some0(fopr(x))
 ) (* end of [option0_map] *)
 //
 implement
 {a}{b}
 option0_map_method
-  (opt, _(*TYPE*)) = lam(fopr) => option0_map(opt, fopr)
+(
+  opt, _(*TYPE*)
+) =
+(
+lam(fopr) => option0_map<a>(opt, fopr)
+)
 //
 (* ****** ****** *)
 //
@@ -105,28 +113,78 @@ implement
 option0_filter(opt, pred) =
 (
 case+ opt of
-| None0 _ => None0()
-| Some0 x => if pred(x) then opt else None0()
+| None0 _ =>
+  None0((*void*))
+| Some0 x =>
+  if pred(x) then opt else None0()
 ) (* end of [option0_map] *)
 //
 implement
 {a}(*tmp*)
 option0_filter_method
-  (opt) = lam(pred) => option0_filter(opt, pred)
+(
+  opt
+) =
+(
+lam(pred) => option0_filter<a>(opt, pred)
+)
 //
 (* ****** ****** *)
-
+//
+implement
+{a}(*tmp*)
+option0_foreach
+  (opt, fwork) =
+(
+case+ opt of
+| None0() => () | Some0(x) => fwork(x)
+)
+implement
+{a}(*tmp*)
+option0_foreach_method
+(
+  opt
+) =
+(
+lam(fwork) => option0_foreach<a>(opt, fwork)
+)
+//
+(* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+print_option0
+  (opt) =
+  fprint_option0<a>(stdout_ref, opt)
+implement
+{a}(*tmp*)
+prerr_option0
+  (opt) =
+  fprint_option0<a>(stderr_ref, opt)
+//
+(* ****** ****** *)
+//
 implement
 {a}(*tmp*)
 fprint_option0
-  (out, opt) = fprint_option<a>(out, g1ofg0_option(opt))
-// end of [fprint_option0]
-
+(
+  out, opt
+) = let
+//
+val
+opt =
+g1ofg0_option(opt)
+//
+in
+  fprint_option<a>(out, opt)
+end // end of [fprint_option0]
+//
 (* ****** ****** *)
 //
 implement
 (a)(*tmp*)
-fprint_val<option0(a)>(out, x) = fprint_option0<a>(out, x)
+fprint_val<option0(a)>
+  (out, x) = fprint_option0<a>(out, x)
 //
 (* ****** ****** *)
 

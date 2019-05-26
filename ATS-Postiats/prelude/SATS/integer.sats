@@ -36,7 +36,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/integer.atxt
-** Time of generation: Mon Jan 30 09:02:14 2017
+** Time of generation: Fri Nov 30 08:45:17 2018
 *)
 
 (* ****** ****** *)
@@ -59,9 +59,10 @@ stadef uintknd = uint_kind
 //
 (* ****** ****** *)
 //
-fun{
-k1,k2:tk
-} g0int2int(x: g0int(k1)):<> g0int(k2)
+fun
+{k1
+,k2:tk}
+g0int2int(x: g0int(k1)):<> g0int(k2)
 //
 fun
 g0int2int_int_int(i0: int):<> int = "mac#%"
@@ -71,7 +72,8 @@ g0int2int_int_int(i0: int):<> int = "mac#%"
 // HX-2015-09-20:
 // These are implemented in prelude/string.cats:
 //
-fun{tk:tk}
+fun
+{tk:tk}
 g0int2string(g0int(tk)):<!wrt> Strptr1
 //
 fun
@@ -165,6 +167,18 @@ fun
 g0int_mod : g0int_aop_type(tk)
 overload % with g0int_mod of 0
 overload mod with g0int_mod of 0
+
+(* ****** ****** *)
+
+fun{}
+add_int1_size0{i:nat}(int(i), size_t):<> size_t
+fun{}
+add_size0_int1{j:nat}(size_t, int(j)):<> size_t
+
+(* ****** ****** *)
+
+overload + with add_int1_size0 of 11
+overload + with add_size0_int1 of 11
 
 (* ****** ****** *)
 

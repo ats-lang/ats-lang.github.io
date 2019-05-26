@@ -1,3 +1,5 @@
+//usr/bin/env myatscc "$0"; exit
+(* ****** ****** *)
 (*
 ** A verfied implementation of the integer sqare root function
 ** that is non-tail-recursive and of logarithmic time complexity
@@ -6,10 +8,17 @@
 ** Authoremail: hwxi AT cs DOT bu DOT edu
 ** Time: November, 2009
 *)
-
 (* ****** ****** *)
 //
 // The code is ported to ATS2 by Hongwei Xi on Friday, July 20, 2012
+//
+(* ****** ****** *)
+//
+(*
+##myatsccdef=\
+patsopt --constraint-ignore --dynamic $1 | \
+tcc -run -DATS_MEMALLOC_LIBC -I${PATSHOME} -I${PATSHOME}/ccomp/runtime -
+*)
 //
 (* ****** ****** *)
 

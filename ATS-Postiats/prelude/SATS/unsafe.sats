@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/unsafe.atxt
-** Time of generation: Sun Nov 20 21:18:17 2016
+** Time of generation: Fri Nov 30 08:45:21 2018
 *)
 
 (* ****** ****** *)
@@ -140,16 +140,16 @@ fun{} int2ptr (i: int): ptr and ptr2int (p: ptr): int
 // HX: these are popular ones:
 //
 castfn list_vt2t
-  {a:t0p}{n:int} (xs: !list_vt (INV(a), n)):<> list (a, n)
+  {a:t0p}{n:int} (xs: !list_vt(INV(a), n)):<> list(a, n)
 // end of [list_vt2t]
 
 castfn arrayptr2ref
-  {a:vt0p}{n:int} (x: !arrayptr (INV(a), n)):<> arrayref (a, n)
+  {a:vt0p}{n:int} (x: !arrayptr (INV(a), n)):<> arrayref(a, n)
 // end of [arrayptr2ref]
 
-castfn strptr2string {l:agz} (x: !strptr l):<> String0
-castfn strptr2stropt {l:addr} (x: !strptr l):<> Stropt0
-castfn strnptr2string {l:addr}{n:nat} (x: !strnptr (l, n)):<> string (n)
+castfn strptr2string{l:agz}(x: !strptr(l)):<> String0
+castfn strptr2stropt{l:addr}(x: !strptr(l)):<> Stropt0
+castfn strnptr2string{l:addr}{n:nat}(x: !strnptr(l, n)):<> string(n)
 
 (* ****** ****** *)
 //
@@ -162,11 +162,11 @@ ptr0_vtake
   {a:vt0p}
 (
   p0: ptr
-) :<> [l:addr] (a@l, a@l -<lin,prf> void | ptr l)
+) :<> [l:addr] (a@l, a@l -<lin,prf> void | ptr(l))
 castfn
 ptr1_vtake
   {a:vt0p}{l:addr}
-  (p0: ptr(l)):<> (a@l, a@l -<lin,prf> void | ptr l) 
+  (p0: ptr(l)):<> (a@l, a@l -<lin,prf> void | ptr(l))
 //
 overload ptr_vtake with ptr0_vtake of 0
 overload ptr_vtake with ptr1_vtake of 10
@@ -174,39 +174,46 @@ overload ptr_vtake with ptr1_vtake of 10
 (* ****** ****** *)
 
 castfn
-ref_vtake{a:vt0p}
-  {l:addr} (r: ref (a)):<> [l:addr] (a@l, a@l -<lin,prf> void | ptr l)
+ref_vtake
+{a:vt0p}
+{l:addr}
+(
+  ref: ref(a)
+) :<>
+[
+  l:addr
+] (a@l, a@l -<lin,prf> void | ptr(l))
 // end of [ref_vtake]
 
 (* ****** ****** *)
 
 praxi
-vtakeout_void {v:view} (pf: !v): vtakeout0 (v)
+vtakeout_void{v:view}(pf: !v): vtakeout0(v)
 castfn
-vttakeout_void {a:vt0p} (x: !a):<> vttakeout0 (a)
+vttakeout_void{a:vt0p}(x0: !a):<> vttakeout0(a)
 
 (* ****** ****** *)
 //
 // HX: only if you know what you are doing ...
 //
-fun{a:vt0p} ptr0_get (p: ptr):<> a
-fun{a:vt0p} ptr1_get (p: Ptr1):<> a
+fun{a:vt0p} ptr0_get(p: ptr):<> (a)
+fun{a:vt0p} ptr1_get(p: Ptr1):<> (a)
 //
-fun{a:vt0p} ptr0_set (p: ptr, x: INV(a)):<!wrt> void
-fun{a:vt0p} ptr1_set (p: Ptr1, x: INV(a)):<!wrt> void
+fun{a:vt0p} ptr0_set(p: ptr, x: INV(a)):<!wrt> void
+fun{a:vt0p} ptr1_set(p: Ptr1, x: INV(a)):<!wrt> void
 //
-fun{a:vt0p} ptr0_exch (p: ptr, x: &INV(a) >> a):<!wrt> void
-fun{a:vt0p} ptr1_exch (p: Ptr1, x: &INV(a) >> a):<!wrt> void
+fun{a:vt0p} ptr0_exch(p: ptr, x: &INV(a) >> a):<!wrt> void
+fun{a:vt0p} ptr1_exch(p: Ptr1, x: &INV(a) >> a):<!wrt> void
 //
-fun{a:vt0p} ptr0_intch (p1: ptr, p2: ptr):<!wrt> void
-fun{a:vt0p} ptr1_intch (p1: Ptr1, p2: Ptr1):<!wrt> void
+fun{a:vt0p} ptr0_intch(p1: ptr, p2: ptr):<!wrt> void
+fun{a:vt0p} ptr1_intch(p1: Ptr1, p2: Ptr1):<!wrt> void
 //
 (* ****** ****** *)
 //
 fun{a:vt0p}
-ptr0_getinc(p: &ptr >> _): a
+ptr0_getinc(p: &ptr >> _): (a)
 fun{a:vt0p}
-ptr1_getinc{l:addr}(p: &ptr(l) >> ptr(l+sizeof(a))): a
+ptr1_getinc{l:addr}(p: &ptr(l) >> ptr(l+sizeof(a))): (a)
 //
 fun{a:vt0p}
 ptr0_setinc(p: &ptr >> _, x: a): void
@@ -216,14 +223,14 @@ ptr1_setinc{l:addr}(p: &ptr(l) >> ptr(l+sizeof(a)), x: a): void
 (* ****** ****** *)
 //
 fun{a:vt0p}
-ptr0_get_at_int (p: ptr, i: int):<> a
+ptr0_get_at_int(p: ptr, i: int):<> a
 fun{a:vt0p}
-ptr0_set_at_int (p: ptr, i: int, x: a):<!wrt> void
+ptr0_set_at_int(p: ptr, i: int, x: a):<!wrt> void
 //
 fun{a:vt0p}
-ptr0_get_at_size (p: ptr, i: size_t):<> a
+ptr0_get_at_size(p: ptr, i: size_t):<> a
 fun{a:vt0p}
-ptr0_set_at_size (p: ptr, i: size_t, x: a):<!wrt> void
+ptr0_set_at_size(p: ptr, i: size_t, x: a):<!wrt> void
 //
 symintr ptr0_get_at
 symintr ptr0_set_at
@@ -239,29 +246,29 @@ overload ptr0_set_at with ptr0_set_at_size
 // generic ops on numbers: +=, -=, *=, /=, %=
 //
 fun{a:t0p}
-ptr0_addby (p: ptr, x: a):<!wrt> void // !p += x
+ptr0_addby(p: ptr, x: a):<!wrt> void // !p += x
 fun{a:t0p}
-ptr1_addby (p: Ptr1, x: a):<!wrt> void // !p += x
+ptr1_addby(p: Ptr1, x: a):<!wrt> void // !p += x
 //
 fun{a:t0p}
-ptr0_subby (p: ptr, x: a):<!wrt> void // !p -= x
+ptr0_subby(p: ptr, x: a):<!wrt> void // !p -= x
 fun{a:t0p}
-ptr1_subby (p: Ptr1, x: a):<!wrt> void // !p -= x
+ptr1_subby(p: Ptr1, x: a):<!wrt> void // !p -= x
 //
 fun{a:t0p}
-ptr0_mulby (p: ptr, x: a):<!wrt> void // !p *= x
+ptr0_mulby(p: ptr, x: a):<!wrt> void // !p *= x
 fun{a:t0p}
-ptr1_mulby (p: Ptr1, x: a):<!wrt> void // !p *= x
+ptr1_mulby(p: Ptr1, x: a):<!wrt> void // !p *= x
 //
 fun{a:t0p}
-ptr0_divby (p: ptr, x: a):<!exnwrt> void // !p /= x
+ptr0_divby(p: ptr, x: a):<!exnwrt> void // !p /= x
 fun{a:t0p}
-ptr1_divby (p: Ptr1, x: a):<!exnwrt> void // !p /= x
+ptr1_divby(p: Ptr1, x: a):<!exnwrt> void // !p /= x
 //
 fun{a:t0p}
-ptr0_modby (p: ptr, x: a):<!exnwrt> void // !p %= x
+ptr0_modby(p: ptr, x: a):<!exnwrt> void // !p %= x
 fun{a:t0p}
-ptr1_modby (p: Ptr1, x: a):<!exnwrt> void // !p %= x
+ptr1_modby(p: Ptr1, x: a):<!exnwrt> void // !p %= x
 //
 (* ****** ****** *)
 
@@ -282,16 +289,21 @@ castfn
 cptr_vtake
   {a:vt0p}{l:agz}
 (
-  cp: cptr(INV(a), l)
+cp: cptr(INV(a), l)
 ) :<> (a@l, a@l -<lin,prf> void | ptr l)
 // end of [cptr_vtake]
 //
-fun{a:vt0p}
+fun
+{a:vt0p}
 cptr_get(cp: cPtr1(INV(a))):<> a
-fun{a:vt0p}
-cptr_set(cp: cPtr1(INV(a)), x: a):<!wrt> void
-fun{a:vt0p}
-cptr_exch(cp: cPtr1(INV(a)), xr: &a >> a):<!wrt> void
+fun
+{a:vt0p}
+cptr_set
+(cp: cPtr1(INV(a)), x: a):<!wrt> void
+fun
+{a:vt0p}
+cptr_exch
+(cp: cPtr1(INV(a)), xr: &a >> a):<!wrt> void
 //
 (*
 overload .get with cptr_get
@@ -299,6 +311,11 @@ overload .set with cptr_set
 overload .exch with cptr_exch
 *)
 //
+(* ****** ****** *)
+
+fun{}
+string_get_at(src: string, i: intGte(0)): char
+
 (* ****** ****** *)
 
 (* end of [unsafe.sats] *)

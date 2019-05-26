@@ -1,7 +1,7 @@
+(* ****** ****** *)
 (*
 ** libatscc-common
 *)
-
 (* ****** ****** *)
 
 (*
@@ -74,6 +74,31 @@ list_length
   (xs: list(a, n)): int(n) = "mac#%"
 //
 overload length with list_length of 100
+//
+(* ****** ****** *)
+//
+fun
+list_length_gte
+  {x:t0p}{n1,n2:int}
+  (list(INV(x), n1), int(n2)): bool(n1 >= n2) = "mac#"
+fun
+list_length_compare
+  {x:t0p}{n1,n2:int}
+  (list(INV(x), n1), int(n2)): int(sgn(n1-n2)) = "mac#"
+//
+overload >= with list_length_gte of 100
+overload compare with list_length_compare of 100
+//
+(* ****** ****** *)
+//
+fun
+list_head
+{x:t0p}{n:pos}
+(list(INV(x), n)):<> (x) = "mac#%"
+fun
+list_tail
+{x:t0p}{n:pos}
+(SHR(list(INV(x), n))):<> list(x, n-1) = "mac#%"
 //
 (* ****** ****** *)
 //
@@ -329,19 +354,57 @@ overload .filter with list_filter_method
 (* ****** ****** *)
 //
 fun
+list_labelize
+{x:t0p}{n:int}
+(list(INV(x), n)): list($tup(int, x), n) = "mac#%"
+// end of [list_labelize]
+//
+(* ****** ****** *)
+//
+fun
 list_map
-  {a:t0p}{b:t0p}{n:int}
+{a:t0p}
+{b:t0p}{n:int}
 (
   xs: list(INV(a), n), fopr: cfun(a, b)
 ) : list(b, n) = "mac#%" // end-of-function
 fun
 list_map_method
-  {a:t0p}{b:t0p}{n:int}
+{a:t0p}{b:t0p}{n:int}
 (
   xs: list(INV(a), n), TYPE(b))(fopr: cfun(a, b)
 ) : list(b, n) = "mac#%" // end-of-function
 //
 overload .map with list_map_method // HX: xs.map(TYPE{b})(...)
+//
+(* ****** ****** *)
+//
+fun
+list_imap
+{a:t0p}
+{b:t0p}{n:int}
+(
+  xs: list(INV(a), n), fopr: cfun(Nat, a, b)
+) : list(b, n) = "mac#%" // end-of-function
+fun
+list_imap_method
+{a:t0p}{b:t0p}{n:int}
+(
+  xs: list(INV(a), n), TYPE(b))(fopr: cfun(Nat, a, b)
+) : list(b, n) = "mac#%" // end-of-function
+//
+overload .imap with list_imap_method // HX: xs.imap(TYPE{b})(...)
+//
+(* ****** ****** *)
+//
+fun
+list_map2
+{a1,a2:t0p}
+{b:t0p}{n1,n2:int}
+(
+  xs1: list(INV(a1), n1)
+, xs2: list(INV(a2), n2), fopr: cfun(a1, a2, b)
+) : list(b, min(n1,n2)) = "mac#%" // end-of-function
 //
 (* ****** ****** *)
 //
@@ -431,6 +494,15 @@ list_sort_2
 symintr list_sort
 overload list_sort with list_sort_1 of 100
 overload list_sort with list_sort_2 of 100
+//
+(* ****** ****** *)
+//
+fun
+list_mergesort
+{a:t0p}{n:int}
+(
+  list(INV(a), n), cmp: (a, a) -<cloref1> int
+) : list(a, n) = "mac#%"
 //
 (* ****** ****** *)
 //

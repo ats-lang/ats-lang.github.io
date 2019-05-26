@@ -13,8 +13,13 @@
 
 sub
 ats2plpre_abs_int0($) { return abs($_[0]); }
+
+############################################
+
 sub
 ats2plpre_neg_int0($) { return ( -($_[0]) ); }
+sub
+ats2plpre_neg_int1($) { return ( -($_[0]) ); }
 
 ############################################
 
@@ -22,6 +27,13 @@ sub
 ats2plpre_succ_int0($) { return ($_[0] + 1); }
 sub
 ats2plpre_pred_int0($) { return ($_[0] - 1); }
+
+############################################
+
+sub
+ats2plpre_half_int0($) { return int($_[0] / 2); }
+sub
+ats2plpre_half_int1($) { return int($_[0] / 2); }
 
 ############################################
 
@@ -88,7 +100,7 @@ ats2plpre_neq_int1_int1($$) { return ($_[0] != $_[1]); }
 1; #note that it is needed by 'use' or 'require'
 ######
 
-######
+############################################
 #end of [integer_cats.pl]
-######
+############################################
 

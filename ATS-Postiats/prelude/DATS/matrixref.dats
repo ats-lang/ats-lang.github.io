@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/matrixref.atxt
-** Time of generation: Sun Nov 20 21:18:29 2016
+** Time of generation: Wed Oct 10 21:08:53 2018
 *)
 
 (* ****** ****** *)
@@ -99,7 +99,8 @@ matrixref_set_at_int
 //
 (* ****** ****** *)
 
-implement{a}
+implement
+{a}(*tmp*)
 fprint_matrixref
   {m,n}
 (
@@ -107,15 +108,19 @@ fprint_matrixref
 ) = {
 //
 val M =
-$UN.castvwtp1{matrixptr(a, m, n)}(M)
+$UN.castvwtp1
+{matrixptr(a, m, n)}(M)
 //
-val () = fprint_matrixptr<a> (out, M, nrow, ncol)
+val () =
+fprint_matrixptr<a>(out, M, nrow, ncol)
 //
-prval ((*void*)) = $UN.cast2void (M)
+prval
+((*void*)) = $UN.cast2void(M)
 //
 } (* end of [fprint_matrixref] *)
 
-implement{a}
+implement
+{a}(*tmp*)
 fprint_matrixref_sep
   {m,n}
 (
@@ -126,7 +131,7 @@ val M =
 $UN.castvwtp1{matrixptr(a, m, n)}(M)
 //
 val () =
-fprint_matrixptr_sep<a> (out, M, nrow, ncol, sep1, sep2)
+fprint_matrixptr_sep<a>(out, M, nrow, ncol, sep1, sep2)
 //
 prval ((*void*)) = $UN.cast2void (M)
 //
@@ -142,7 +147,10 @@ matrixref_copy
 val A = $UN.cast{arrayref(a,m*n)}(M)
 //
 in
-  $UN.castvwtp0{matrixptr(a,m,n)}(arrayref_copy<a>(A, m*n))
+//
+$UN.castvwtp0
+{matrixptr(a,m,n)}(arrayref_copy<a>(A, m*n))
+//
 end // end of [matrixref_copy]
 
 (* ****** ****** *)
@@ -151,14 +159,8 @@ implement{a}
 matrixref_tabulate
   (nrow, ncol) =
 (
-  matrixptr_refize (matrixptr_tabulate<a>(nrow, ncol))
+  matrixptr_refize(matrixptr_tabulate<a>(nrow, ncol))
 ) (* end of [matrixref_tabulate] *)
-
-implement{a}
-matrixref_tabulate_cloref
-  (nrow, ncol, f) =
-  matrixptr_refize (matrixptr_tabulate_cloref<a>(nrow, ncol, f))
-// end of [matrixref_tabulate_cloref]
 
 (* ****** ****** *)
 
@@ -169,39 +171,20 @@ matrixref_foreach
 var env: void = ()
 //
 in
-  matrixref_foreach_env<a><void> (A, m, n, env)
+  matrixref_foreach_env<a><void>(A, m, n, env)
 end // end of [matrixref_foreach]
 
 implement
 {a}{env}
 matrixref_foreach_env
-  (A, m, n, env) = let
-  val (vbox pf | p) = matrixref_get_viewptr (A)
+  (M, m, n, env) = let
+//
+val
+(vbox pf | p) = matrixref_get_viewptr(M)
+//
 in
-  $effmask_ref (matrix_foreach_env<a><env> (!p, m, n, env))
+  $effmask_ref(matrix_foreach_env<a><env>(!p, m, n, env))
 end // end of [matrixref_foreach_env]
-
-(* ****** ****** *)
-
-implement
-{a}(*tmp*)
-matrixref_foreach_cloref
-  (A, m, n, fwork) = let
-//
-implement
-{a2}{env}
-matrix_foreach$fwork
-  (x, env) = let
-  val (pf, fpf | p) = $UN.ptr_vtake{a}(addr@x)
-  val ((*void*)) = fwork(!p)
-  prval ((*void*)) = fpf(pf)
-in
-  // nothing
-end // end of [matrix_foreach$work]
-//
-in
-  matrixref_foreach<a>(A, m, n)
-end // end of [matrixref_foreach_cloref]
 
 (* ****** ****** *)
 
@@ -447,27 +430,6 @@ end // end of [mtrxszref_foreach_env]
 
 implement
 {a}(*tmp*)
-mtrxszref_foreach_cloref
-  (MSZ, fwork) = let
-//
-implement
-{a2}{env}
-matrix_foreach$fwork
-  (x, env) = let
-  val (pf, fpf | p) = $UN.ptr_vtake{a}(addr@x)
-  val ((*void*)) = fwork(!p)
-  prval ((*void*)) = fpf(pf)
-in
-  // nothing
-end // end of [matrix_foreach$work]
-//
-in
-  mtrxszref_foreach(MSZ)
-end // end of [mtrxszref_foreach_cloref]
-
-(* ****** ****** *)
-
-implement{a}
 mtrxszref_tabulate
   (nrow, ncol) = let
 //
@@ -479,26 +441,6 @@ val M =
 in 
   mtrxszref_make_matrixref (M, nrow, ncol)
 end // end of [mtrxszref_tabulate]
-
-(* ****** ****** *)
-
-implement{a}
-mtrxszref_tabulate_cloref
-(
-  nrow, ncol, fclo
-) = let
-//
-val M =
-matrixref_tabulate_cloref<a>
-(
-  nrow, ncol, fclo
-) (* end of [val] *)
-//
-in
-//
-mtrxszref_make_matrixref (M, nrow, ncol)
-//
-end // end of [mtrxszref_tabulate_cloref]
 
 (* ****** ****** *)
 //

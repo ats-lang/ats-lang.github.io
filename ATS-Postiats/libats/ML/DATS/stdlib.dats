@@ -28,8 +28,8 @@
 (* ****** ****** *)
 
 (* Author: Hongwei Xi *)
-(* Authoremail: gmhwxiATgmailDOTcom *)
 (* Start time: June, 2013 *)
+(* Authoremail: gmhwxiATgmailDOTcom *)
 
 (* ****** ****** *)
 //
@@ -131,7 +131,7 @@ setenv_err
 implement
 {}(*tmp*)
 randint(n) =
-  $UN.cast($UN.cast2int($STDLIB.random()) % n)
+$UN.cast($UN.cast2int($STDLIB.random()) % n)
 //
 (* ****** ****** *)
 

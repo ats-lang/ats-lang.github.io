@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/option_vt.atxt
-** Time of generation: Sun Nov 20 22:15:34 2016
+** Time of generation: Fri Nov 30 08:45:23 2018
 *)
 
 (* ****** ****** *)
@@ -86,16 +86,17 @@ option_vt_is_none
 // end of [option_vt_is_none]
 
 (* ****** ****** *)
-
+//
 fun
 {a:vt0p}
 option_vt_unsome
-  (opt: option_vt(INV(a), true)):<!wrt> (a)
+(opt: option_vt(INV(a), true)):<!wrt> (a)
+//
 fun
 {a:vt0p}
 option_vt_unnone
-  (opt: option_vt(INV(a), false)):<!wrt> void
-
+(opt: option_vt(INV(a), false)):<!wrt> void
+//
 (* ****** ****** *)
 //
 fun{a:t0p}
@@ -103,15 +104,17 @@ option_vt_free
   (opt: Option_vt(INV(a))):<!wrt> void
 fun{a:t0p}
 option2bool_vt
-  {b:bool}(opt: option_vt(INV(a), b)):<!wrt> bool(b)
+  {b:bool}
+  (opt: option_vt(INV(a), b)):<!wrt> bool(b)
 //
 (* ****** ****** *)
-
+//
 fun{a:vt0p}
 fprint_option_vt{b:bool}
-   (out: FILEref, opt: !option_vt (INV(a), b)): void
+(out: FILEref, opt: !option_vt(INV(a), b)): void
+//
 overload fprint with fprint_option_vt
-
+//
 (* ****** ****** *)
 //
 // overloading for certain symbols

@@ -49,6 +49,17 @@ staload "libats/ML/SATS/stream.sats"
 (* ****** ****** *)
 //
 implement
+{}(*tmp*)
+intgte_stream(n) = f(n) where
+{
+fun
+f(n:int):<!laz> stream(int) =
+ $delay(stream_cons(n, f(n+1)))
+}
+//
+(* ****** ****** *)
+//
+implement
 {a}(*tmp*)
 stream2list0(xs) =
 list0_of_list_vt(stream2list(xs))
@@ -70,13 +81,56 @@ stream_make_list0<a>
 ) = lam(xs) => $delay
 (
 case+ xs of
-| list0_nil() => stream_nil()
-| list0_cons(x, xs) => stream_cons(x, auxmain(xs))
+| list0_nil() =>
+  stream_nil()
+| list0_cons(x, xs) =>
+  stream_cons(x, auxmain(xs))
 )
 //
 } (* end of [stream_make_list0] *)
 
 (* ****** ****** *)
+//
+implement
+{}(*tmp*)
+stream_make_intrange_lr
+  (l, r) =
+(
+stream_make_intrange_lrd<>(l, r, 1)
+)
+//
+implement
+{}(*tmp*)
+stream_make_intrange_lrd
+  (l, r, d) = let
+//
+fun
+auxmain
+(
+  l: int
+, r: int
+, d: int
+) :<!laz> stream(int) = $delay
+(
+if
+(l >= r)
+then stream_nil()
+else stream_cons(l, auxmain(l+d, r, d))
+)
+//
+in
+  auxmain(l, r, d)
+end // end of [stream_make_intrange_lrd]
+//
+(* ****** ****** *)
+//
+implement
+{a}{b}
+stream_map
+  (xs, fopr) =
+(
+  stream_map_cloref<a><b>(xs, fopr)
+)
 //
 implement
 {a}{b}
@@ -90,6 +144,14 @@ lam(fopr) => stream_map_cloref<a><b>(xs, fopr)
 //
 implement
 {a}{b}
+stream_imap
+  (xs, fopr) =
+(
+  stream_imap_cloref<a><b>(xs, fopr)
+)
+//
+implement
+{a}{b}
 stream_imap_method
   (xs, _) =
 (
@@ -100,27 +162,75 @@ lam(fopr) => stream_imap_cloref<a><b>(xs, fopr)
 //
 implement
 {a}(*tmp*)
-stream_filter_method(xs) =
+stream_filter
+  (xs, pred) = stream_filter_cloref<a>(xs, pred)
+implement
+{a}(*tmp*)
+stream_filter_method
+  (xs) =
+(
   lam(pred) => stream_filter_cloref<a>(xs, pred)
+)
 //
 (* ****** ****** *)
 //
 implement
 {res}{x}
+stream_scan
+  (xs, res, fopr) =
+(
+stream_scan_cloref<res><x>(xs, res, fopr)
+)
+//
+implement
+{res}{x}
 stream_scan_method(xs, _) =
-  lam(res, fopr) =>
+(
+lam(res, fopr) =>
   stream_scan_cloref<res><x>(xs, res, fopr)
+)
 //
 (* ****** ****** *)
 //
 implement
 {a}(*tmp*)
+stream_foreach
+  (xs, fwork) =
+  stream_foreach_cloref<a>(xs, fwork)
+//
+implement
+{a}(*tmp*)
 stream_foreach_method(xs) =
+(
   lam(fwork) =>
     stream_foreach_cloref<a>(xs, fwork)
   // end of [lam]
+)
 //
 (* ****** ****** *)
+//
+implement
+{a}(*tmp*)
+stream_iforeach
+  (xs, fwork) =
+  stream_iforeach_cloref<a>(xs, fwork)
+//
+implement
+{a}(*tmp*)
+stream_iforeach_method(xs) =
+(
+  lam(fwork) =>
+    stream_iforeach_cloref<a>(xs, fwork)
+  // end of [lam]
+)
+//
+(* ****** ****** *)
+//
+implement
+{res}{a}
+stream_foldleft
+  (xs, ini, fopr) =
+  stream_foldleft_cloref<res><a>(xs, ini, fopr)
 //
 implement
 {res}{a}

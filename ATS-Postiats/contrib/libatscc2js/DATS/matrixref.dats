@@ -1,8 +1,8 @@
+(* ****** ****** *)
 (*
 ** For writing ATS code
 ** that translates into Javascript
 *)
-
 (* ****** ****** *)
 
 #define ATS_DYNLOADFLAG 0
@@ -68,6 +68,32 @@ ats2jspre_matrixref_make_elt
   for (i = 0; i < m; i += 1)
   {
     for (j = 0; j < n; j += 1) A[i*n+j] = x;
+  } ; return A; // initized
+}
+//
+function
+ats2jspre_matrixref_uninitized
+  (nrow, ncol)
+{
+  var A = new Array(nrow*ncol); return A;
+}
+//
+%} // end of [%{^]
+
+(* ****** ****** *)
+
+%{^
+//
+function
+ats2jspre_matrixref_tabulate_cloref
+  (m, n, fopr)
+{
+  var A, i, j;
+  A = new Array(m*n);
+  for (i = 0; i < m; i += 1)
+  {
+    for (j = 0; j < n; j += 1)
+    A[i*n+j] = ats2jspre_cloref2_app(fopr, i, j);
   }
   return A;
 }
@@ -95,16 +121,22 @@ end // end of [matrixref_set_at]
 %{^
 //
 function
+ats2jspre_mtrxszref_get_nrow
+  (MSZ) { return (MSZ.nrow); }
+function
+ats2jspre_mtrxszref_get_ncol
+  (MSZ) { return (MSZ.ncol); }
+//
+function
+ats2jspre_mtrxszref_get_matrixref
+  (MSZ) { return (MSZ.matrix); }
+//
+function
 ats2jspre_mtrxszref_make_matrixref
   (M, m, n)
 {
   return { matrix: M, nrow: m, ncol: n };
 }
-//
-function
-ats2jspre_mtrxszref_get_nrow(MSZ) { return MSZ.nrow; }
-function
-ats2jspre_mtrxszref_get_ncol(MSZ) { return MSZ.ncol; }
 //
 function
 ats2jspre_mtrxszref_get_at

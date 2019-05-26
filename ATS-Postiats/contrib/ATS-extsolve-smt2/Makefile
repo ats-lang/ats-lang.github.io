@@ -43,7 +43,8 @@ CFLAGS += -DATS_MEMALLOC_LIBC
 #
 CFLAGS2 :=
 CFLAGS2 +=-DATS_MEMALLOC_LIBC
-CFLAGS2 +=-I${PATSHOMEQ}/contrib
+CFLAGS2 +=\
+-I${PATSHOMEQ}/contrib/atscntrb
 #
 CFLAGS2 += \
 $(shell pkg-config --cflags json-c)
@@ -54,12 +55,15 @@ EXTRA_CFLAGS :=
 
 ######
 
-PATSCC2=$(PATSCC) $(CFLAGS2) $(EXTRA_CFLAGS)
+PATSCC2 = \
+$(PATSCC) \
+$(CFLAGS2) $(EXTRA_CFLAGS)
 
 ######
 
 LDFLAGS :=
-LDFLAGS += $(shell pkg-config --libs json-c)
+LDFLAGS += \
+$(shell pkg-config --libs json-c)
 LDFLAGS +=-lgc
 
 ######
@@ -103,13 +107,13 @@ all:: ; \
 $(MAKE) -C ATS-extsolve DATS_C
 #
 all:: \
-patsolve_smt2
-patsolve_smt2: \
+bin_patsolve_smt2
+bin_patsolve_smt2: \
 $(TARGETS_DATS_O); \
-$(PATSCC2) -O2 -o $@ \
+$(PATSCC2) -O2 -o bin/patsolve_smt2 \
 $(SOURCES_SATS) $(SOURCES_CATS) $(TARGETS_DATS_O) $(LDFLAGS)
 #
-cleanall:: ; $(RMF) patsolve_smt2
+cleanall:: ; $(RMF) bin/patsolve_smt2
 #
 ######
 #

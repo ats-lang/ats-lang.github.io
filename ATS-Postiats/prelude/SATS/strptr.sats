@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/SATS/CODEGEN/strptr.atxt
-** Time of generation: Sun Apr 16 07:51:02 2017
+** Time of generation: Fri Nov 30 08:45:19 2018
 *)
 
 (* ****** ****** *)
@@ -106,22 +106,22 @@ lemma_strbuf_v_param
 
 castfn
 strptr2ptr
-  {l:addr} (x: !strptr l):<> ptr (l)
+  {l:addr}(x: !strptr l):<> ptr (l)
 castfn
 strnptr2ptr
-  {l:addr}{n:int} (x: !strnptr(l, n)):<> ptr(l)
+  {l:addr}{n:int}(x: !strnptr(l, n)):<> ptr(l)
 // end of [strnptr2ptr]
 
 (* ****** ****** *)
 //
 castfn
 strnptr2strptr
-  {l:addr}{n:int} (x: strnptr(l, n)):<> strptr(l)
+  {l:addr}{n:int}(x: strnptr(l, n)):<> strptr(l)
 // end of [strnptr2strptr]
 
 castfn
 strptr2strnptr
-  {l:addr} (x: strptr(l)):<> [n:int] strnptr(l, n)
+  {l:addr}(x: strptr(l)):<> [n:int] strnptr(l, n)
 // end of [strptr2strnptr]
 //
 (* ****** ****** *)
@@ -247,8 +247,8 @@ fun compare_strptr_string
 //
 (* ****** ****** *)
 
-fun strptr_free (x: Strptr0):<!wrt> void = "mac#%"
-fun strnptr_free (x: Strnptr0):<!wrt> void = "mac#%"
+fun strptr_free(x: Strptr0):<!wrt> void = "mac#%"
+fun strnptr_free(x: Strnptr0):<!wrt> void = "mac#%"
 
 (* ****** ****** *)
 //
@@ -258,8 +258,8 @@ fprint_strptr
   out: FILEref, x: !Strptr0
 ) : void = "mac#%"
 //
-fun print_strptr (x: !Strptr0): void = "mac#%"
-fun prerr_strptr (x: !Strptr0): void = "mac#%"
+fun print_strptr(x: !Strptr0): void = "mac#%"
+fun prerr_strptr(x: !Strptr0): void = "mac#%"
 //
 (* ****** ****** *)
 //
@@ -272,14 +272,25 @@ prerr_strbuf
 //
 fun
 fprint_strbuf{m,n:int}
-  (out: FILEref, buf: &strbuf (m, n)): void = "mac#%"
+  (out: FILEref, buf: &strbuf(m, n)): void = "mac#%"
+//
+(* ****** ****** *)
+//
+fun
+fprint_strnptr
+(
+  out: FILEref, x: !Strnptr0
+) : void = "mac#%"
+//
+fun print_strnptr(x: !Strnptr0): void = "mac#%"
+fun prerr_strnptr(x: !Strnptr0): void = "mac#%"
 //
 (* ****** ****** *)
 //
 fun{}
 strnptr_get_at_size
   {n:int}
-  (str: !strnptr (n), i: sizeLt n):<> charNZ
+  (str: !strnptr(n), i: sizeLt(n)):<> charNZ
 //
 fun{tk:tk}
 strnptr_get_at_gint
@@ -317,27 +328,28 @@ overload strnptr_set_at with strnptr_set_at_gint of 0
 overload strnptr_set_at with strnptr_set_at_guint of 0
 //
 (* ****** ****** *)
-
+//
 fun{}
-strptr_length (x: !Strptr0):<> ssize_t
+strptr_length(x: !Strptr0):<> ssize_t
 fun{}
-strnptr_length {n:int} (x: !strnptr n):<> ssize_t (n)
-
+strnptr_length{n:int}(x: !strnptr(n)):<> ssize_t(n)
+//
 (* ****** ****** *)
 //
 fun{}
-strptr0_copy (x: !Strptr0):<!wrt> Strptr0
+strptr0_copy(x: !Strptr0):<!wrt> Strptr0
 fun{}
-strptr1_copy (x: !Strptr1):<!wrt> Strptr1
+strptr1_copy(x: !Strptr1):<!wrt> Strptr1
 fun{}
 strnptr_copy
-  {n:int} (x: !strnptr (n)):<!wrt> strnptr (n)
+  {n:int}(x: !strnptr (n)):<!wrt> strnptr(n)
 //
 (* ****** ****** *)
 //
 fun{}
 strptr_append
   (x1: !Strptr0, x2: !Strptr0):<!wrt> Strptr0
+//
 fun{}
 strnptr_append{n1,n2:nat}
   (x1: !strnptr n1, x2: !strnptr n2):<!wrt> strnptr(n1+n2)
@@ -428,6 +440,10 @@ overload fprint with fprint_strptr
 overload print with print_strbuf
 overload prerr with prerr_strbuf
 overload fprint with fprint_strbuf
+//
+overload print with print_strnptr
+overload prerr with prerr_strnptr
+overload fprint with fprint_strnptr
 //
 overload ptrcast with strptr2ptr
 overload ptrcast with strnptr2ptr

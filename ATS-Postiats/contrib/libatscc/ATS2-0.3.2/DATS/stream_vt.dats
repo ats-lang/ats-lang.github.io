@@ -21,6 +21,22 @@ implement
 stream_vt_make_nil() =
 $ldelay(stream_vt_nil())
 //
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+stream_vt_make_cons(x, xs) =
+$ldelay(
+  stream_vt_cons(x, xs), $effmask_wrt(~xs)
+)(*$ldelay*)
+//
+(* ****** ****** *)
+//
+implement
+{}(*tmp*)
+stream_vt_sing(x0) =
+stream_vt_cons(x0, stream_vt_make_nil())
+//
 implement
 {}(*tmp*)
 stream_vt_make_sing(x0) =
@@ -135,6 +151,7 @@ case+ !xs of
 
 (* ****** ****** *)
 //
+(*
 implement
 stream2list_vt
   {a}(xs) =
@@ -151,6 +168,15 @@ case+ !xs of
 )
 //
 }
+*)
+(* ****** ****** *)
+//
+implement
+stream2list_vt
+  {a}(xs) =
+  list_vt_reverse(stream2list_vt_rev(xs))
+//
+(* ****** ****** *)
 //
 implement
 stream2list_vt_rev
@@ -264,6 +290,49 @@ stream_vt_map_method
   (xs, _) =
 (
   llam(f0) => stream_vt_map_cloref(xs, f0)
+) (* end of [stream_vt_map_method] *)
+//
+(* ****** ****** *)
+//
+implement
+stream_vt_mapopt_cloref
+  {a}{b}
+(
+  xs, f0
+) =
+  auxmain(xs) where
+{
+//
+fun
+auxmain
+(
+xs: stream_vt(a)
+) : stream_vt(b) = $ldelay
+(
+(
+case+ !xs of
+| ~stream_vt_nil() =>
+    stream_vt_nil()
+| ~stream_vt_cons(x, xs) =>
+  (
+    case+ f0(x) of
+    | ~None_vt() => !(auxmain(xs))
+    | ~Some_vt(y) =>
+        stream_vt_cons(y, auxmain(xs))
+      // end of [Some_vt]
+  )
+) : stream_vt_con(b)
+,
+~(xs) // called when the stream is freed
+) (* end of [auxmain] *)
+//
+} (* end of [stream_vt_mapopt_cloref] *)
+//
+implement
+stream_vt_mapopt_method
+  (xs, _) =
+(
+  llam(f0) => stream_vt_mapopt_cloref(xs, f0)
 ) (* end of [stream_vt_map_method] *)
 //
 (* ****** ****** *)
