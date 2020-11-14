@@ -49,8 +49,10 @@ sortdef tk = tkind
 
 (* ****** ****** *)
 
-typedef SHR(a:t@ype) = a // for commenting purpose
-typedef NSH(a:t@ype) = a // for commenting purpose
+typedef
+SHR(a:t@ype) = a // for commenting purpose
+typedef
+NSH(a:t@ype) = a // for commenting purpose
 
 (* ****** ****** *)
 //

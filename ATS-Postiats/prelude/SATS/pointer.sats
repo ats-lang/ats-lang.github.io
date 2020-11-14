@@ -503,26 +503,33 @@ ptr_nullize_tsz{a:vt0p}
 ) :<!wrt> void = "mac#%" // end of [ptr_nullize_tsz]
 //
 (* ****** ****** *)
-
+//
 fun
 {a:vt0p}
-ptr_alloc((*void*))
-  :<> [l:agz] (a? @ l, mfree_gc_v(l) | ptr(l))
+ptr_alloc
+((*void*)):<!wrt>
+[l:agz] (a? @ l, mfree_gc_v(l) | ptr(l))
 // end of [ptr_alloc]
-
+//
 fun
 ptr_alloc_tsz
-  {a:vt0p}(tsz: sizeof_t(a))
-  :<> [l:agz] (a? @ l, mfree_gc_v(l) | ptr(l)) = "mac#%"
+  {a:vt0p}
+(
+  tsz: sizeof_t(a)
+) :<!wrt> [l:agz]
+  (a? @ l, mfree_gc_v(l) | ptr(l)) = "mac#%"
 // end of [ptr_alloc_tsz]
-
+//
 (* ****** ****** *)
-
+//
 fun
-ptr_free{a:t@ype}{l:addr}
-  (pfgc: mfree_gc_v(l), pfat: a @ l | p: ptr(l)):<> void = "mac#%"
+ptr_free
+{a:t@ype}{l:addr}
+( pfgc
+: mfree_gc_v(l)
+, pfat: (a) @ l | p: ptr(l)):<!wrt> void = "mac#%"
 // end of [ptr_free]
-
+//
 (* ****** ****** *)
 //
 absvtype

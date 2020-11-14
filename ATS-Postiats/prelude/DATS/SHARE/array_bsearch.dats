@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/array.atxt
-** Time of generation: Sun Mar 11 13:35:52 2018
+** Time of generation: Fri May 31 10:22:09 2019
 *)
 
 (* ****** ****** *)
@@ -106,7 +106,7 @@ end (* end of [array_bsearch_fun] *)
 
 (*
 //
-// HX: [qsort] is in libc/stdlib
+// HX: [bsearch] is in libc/stdlib
 //
 void *bsearch
 (

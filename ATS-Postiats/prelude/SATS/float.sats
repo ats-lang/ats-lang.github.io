@@ -245,6 +245,7 @@ fun
 {tk:tk}
 g0float_compare
   : g0float_compare_type(tk)
+// end of [g0float_compare]
 //
 overload compare with g0float_compare of 0
 //

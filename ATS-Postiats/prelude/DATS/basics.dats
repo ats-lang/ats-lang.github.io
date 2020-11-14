@@ -30,7 +30,7 @@
 (*
 ** Source:
 ** $PATSHOME/prelude/DATS/CODEGEN/basics.atxt
-** Time of generation: Wed Oct 10 21:08:50 2018
+** Time of generation: Sat Dec 28 23:16:43 2019
 *)
 
 (* ****** ****** *)
@@ -234,6 +234,8 @@ gclear_ref<a> (x) = ((*void*))
 //
 implement
 gequal_val_val<int> (x, y) = (x = y)
+implement
+gequal_val_val<uint> (x, y) = (x = y)
 implement
 gequal_val_val<bool> (x, y) = (x = y)
 implement

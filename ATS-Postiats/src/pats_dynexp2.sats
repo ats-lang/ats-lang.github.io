@@ -265,11 +265,15 @@ fun d2cst_get_stamp (x: d2cst): stamp
 
 (* ****** ****** *)
 //
+fun d2cst_is_mac (d2c: d2cst): bool // function
+//
 fun d2cst_is_prf (d2c: d2cst): bool // a proof
 fun d2cst_is_nonprf (d2c: d2cst): bool // a nonproof
 //
-fun d2cst_is_mac (d2c: d2cst): bool // function
-fun d2cst_is_fun (d2c: d2cst): bool // function
+(*
+HX: implemented in pats_hidynexp_util:
+*)
+fun d2cst_is_fun (d2c: d2cst): bool // FUNCLOfun?
 //
 fun d2cst_is_static (d2c: d2cst): bool // static
 //
@@ -277,6 +281,7 @@ fun d2cst_is_fundec (d2c: d2cst): bool // fun declaration
 fun d2cst_is_valdec (d2c: d2cst): bool // val declaration
 fun d2cst_is_castfn (d2c: d2cst): bool // castfn declaration
 //
+fun d2cst_is_funcst (d2c: d2cst): bool // function?
 fun d2cst_is_tmpcst (d2c: d2cst): bool // template?
 //
 fun d2cst_is_mainats (d2c: d2cst): bool // a [mainats] fun
@@ -1022,7 +1027,10 @@ and d2eclist = List (d2ecl)
 and
 d2exp = '{
   d2exp_loc= loc_t
-, d2exp_node= d2exp_node, d2exp_type= s2expopt
+, d2exp_node= d2exp_node
+(*
+// , d2exp_type= s2expopt
+*)
 } (* end of [d2exp] *)
 
 and d2explst = List (d2exp)
@@ -1255,10 +1263,12 @@ overload fprint with fprint_d2lval
 //
 (* ****** ****** *)
 
+(*
 fun d2exp_set_type
 (
   d2e: d2exp, opt: s2expopt
 ) : void = "ext#patsopt_d2exp_set_type"
+*)
 
 (* ****** ****** *)
 

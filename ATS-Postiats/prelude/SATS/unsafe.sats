@@ -147,6 +147,7 @@ castfn arrayptr2ref
   {a:vt0p}{n:int} (x: !arrayptr (INV(a), n)):<> arrayref(a, n)
 // end of [arrayptr2ref]
 
+castfn string_vt2t{l:agz}(x: !strptr(l)):<> String0
 castfn strptr2string{l:agz}(x: !strptr(l)):<> String0
 castfn strptr2stropt{l:addr}(x: !strptr(l)):<> Stropt0
 castfn strnptr2string{l:addr}{n:nat}(x: !strnptr(l, n)):<> string(n)
