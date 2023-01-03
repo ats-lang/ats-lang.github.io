@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/bash
 
 ######
 #
@@ -120,7 +120,7 @@ cp -f ATS2/utils/libatsopt/libatsopt.a ${ATSHOME}/ccomp/lib
 #
 (cd ATS2/utils/libatsynmark && make && make clean)
 #
-cp -f ATS2/utils/libatsynmark/libatsynmark.a ${ATSHOME}/ccomp/lib
+cp -f ATS2/utils/libatsynmark/BUILD/libatsynmark.a ${ATSHOME}/ccomp/lib
 #
 ######
 #
