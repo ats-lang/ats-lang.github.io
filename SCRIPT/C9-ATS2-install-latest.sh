@@ -139,12 +139,12 @@ sudo apt-get install -y libjson-c-dev
 # For building patsolve_z3
 #
 (cd ATS2/contrib/ATS-extsolve-z3 && time make all)
-(cd ATS2/contrib/ATS-extsolve-z3 && mv -f patsolve_z3 ${PATSHOME}/bin)
+(cd ATS2/contrib/ATS-extsolve-z3 && mv -f bin/patsolve_z3 ${PATSHOME}/bin)
 #
 # For building patsolve_smt2
 #
 (cd ATS2/contrib/ATS-extsolve-smt2 && time make all)
-(cd ATS2/contrib/ATS-extsolve-smt2 && mv -f patsolve_smt2 ${PATSHOME}/bin)
+(cd ATS2/contrib/ATS-extsolve-smt2 && mv -f bin/patsolve_smt2 ${PATSHOME}/bin)
 #
 ######
 #
