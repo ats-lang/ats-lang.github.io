@@ -337,12 +337,12 @@ NAME="AEN664"
 CLASS="programlisting"
 ><p class="patsyntax"><span class="dynexp"><span class="keyword">fun</span> safety_test1
 <span class="keyword">(</span>
-  i0<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j0<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> i1<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j1<span class="keyword">:</span> <span class="staexp">int</span>
+  i0<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j0<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> i<span class="keyword">:</span> <span class="staexp">int</span><span class="keyword">,</span> j<span class="keyword">:</span> <span class="staexp">int</span>
 <span class="keyword">)</span> <span class="keyword">:</span> <span class="staexp">bool</span> <span class="keyword">=</span>
 <span class="comment">(*
 ** [abs]: the absolute value function
 *)</span>
-  j0 != j1 andalso abs <span class="keyword">(</span>i0 - i1<span class="keyword">)</span> != abs <span class="keyword">(</span>j0 - j1<span class="keyword">)</span></span>
+  j0 != j andalso abs <span class="keyword">(</span>i0 - i<span class="keyword">)</span> != abs <span class="keyword">(</span>j0 - j<span class="keyword">)</span></span>
 <span class="comment">// end of [safety_test1]</span>
 
 <span class="dynexp"><span class="keyword">fun</span> safety_test2
