@@ -8,13 +8,13 @@ For hosting certain parts of http://www.ats-lang.org
 ## What is ATS?
 
 Let me first paraphrase
-[Prof.~John~Reynolds](https://en.wikipedia.org/wiki/John_C._Reynolds).
-A programming language should be simple and general; it should possess
+[Prof. John Reynolds](https://en.wikipedia.org/wiki/John_C._Reynolds).
+_A programming language should be simple and general; it should possess
 a (highly) efficient implementation and allow for (highly) extensive
-error-checking both statically and dynamically.  And I now add my own.
-A programming language should also (greatly) enhance programming
+error-checking both statically and dynamically_.  And I now add my own.
+_A programming language should also (greatly) enhance programming
 productivity through its forever expanding meta-programming
-support. ATS aspires to be such a superman programing language, and it
+support_. ATS aspires to be such a superman programing language, and it
 is becoming one.
 
 ATS is a statically typed programming language that unifies
