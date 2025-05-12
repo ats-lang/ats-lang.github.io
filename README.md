@@ -36,3 +36,14 @@ and linear types are available in ATS.
 - ATS allows the programmer to write safe low-level code that runs in OS kernels.
 - ATS can help teach type theory, demonstrating both convincingly and concretely
   the power and potential of types in constructing high-quality software.
+
+## Suggestion on learning ATS
+
+ATS is feature-rich (like C++). Prior knowledge of functional
+programming based on ML and imperative programming based on C can be a
+big plus for learning ATS. In general, one should expect to encounter
+many unfamiliar programming concepts and features in ATS and be
+prepared to spend a substantial amount of time on learning
+them. Hopefully, one will become a superbly confident programmer at
+the end who can enjoy implementing large and complex systems with
+minimal need for debugging.
