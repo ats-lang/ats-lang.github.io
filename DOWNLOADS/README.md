@@ -3,8 +3,7 @@
 Please find various information on downloads for learning and using
 ATS3 as well as contributing to its development.
 
-## XATS2JS Compilers
+## XATSHOME
 
-## XATS2PY Compilers
-
-## XATS2CC Compilers
+[XATSHOME](https://github.com/githwxi/XATSHOME) is a public repository
+located at `github.com`.
