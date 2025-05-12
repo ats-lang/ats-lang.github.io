@@ -6,6 +6,12 @@ For hosting certain parts of
 
 [comment]: # HX-2025-05-06: Let's start to build now!
 
+## Resources
+
+- [Downloads](./DOWNLOAD/README.md)
+- [Documents](./DOCUMENT/README.md)
+- [Libraries](./LIBRARY0/README.md)
+
 ## What is ATS?
 
 Let me first paraphrase
