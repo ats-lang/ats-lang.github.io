@@ -8,9 +8,10 @@ For hosting certain parts of
 
 ## Resources
 
-- [Downloads](./DOWNLOAD/README.md)
-- [Documents](./DOCUMENT/README.md)
-- [Libraries](./LIBRARY0/README.md)
+- [Libraries](./LIBRARIES/README.md)
+- [Downloads](./DOWNLOADS/README.md)
+- [Documents](./DOCUMENTS/README.md)
+- [Community](./COMMUNITY/README.md)
 
 ## What is ATS?
 
