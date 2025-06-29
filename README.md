@@ -27,9 +27,11 @@ is becoming one.
 
 ATS is a statically typed programming language originally designed to
 unify implementation with formal specification. It is equipped with a
-highly expressive type system rooted in the framework Applied Type System,
-which gives the language its name. In particular, both dependent types
-and linear types are available in ATS.
+highly expressive type system rooted in the framework Applied Type
+System, which gives the language its name. In particular, both
+dependent types and linear types are available in ATS. Please note
+that _ATS is not Applied Type System_; the former is a programming
+langague while the latter is a framework for formulating type systems.
 
 ## What is ATS good for?
 - ATS can greatly enforce precision in practical programming.
